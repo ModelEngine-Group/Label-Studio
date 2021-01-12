@@ -62,7 +62,7 @@
     </div>
     <div class="actions">
       <span id="success-actions" hidden>
-        <a data-tooltip="You can start the labeling right now" class="ui button positive" href=".">Start Labeling</a>
+        <a data-tooltip="You can start the labeling right now" class="ui button positive" href="./label-old">Start Labeling</a>
         <a data-tooltip="Explore all imported tasks" class="ui button positive" href="tasks">Explore Tasks</a>
       </span>
 
@@ -233,7 +233,7 @@
       // send url as task data
       if (IsJsonString(upload_url)) {
         request = {
-          url: "api/project/import",
+          url: "api/project/import?json_string=1",
           data: upload_url,
           contentType: 'application/json',
           method: 'post'
@@ -242,7 +242,7 @@
       // send url as regular url
       else {
         request = {
-          url: "api/project/import",
+          url: "api/project/import?upload_url=1",
           data: {url: upload_url},
           method: 'post'
         }
@@ -275,9 +275,9 @@
 
     $.ajax(request)
       .done(answer => {
-        let msg = '<h2>Tasks created: ' + answer['task_count'] + '</h2>' +
-          'Completions created: ' + answer['completion_count'] +
-          '<br>Predictions created: ' + answer['prediction_count'] +
+        let msg = '<h2>Tasks created: ' + answer['total_tasks'] + '</h2>' +
+          'Completions created: ' + answer['total_completions'] +
+          '<br>Predictions created: ' + answer['total_predictions'] +
           '<br><br>Duration: ' + answer['duration'].toFixed(2) + ' sec';
         stop_wait(msg, true);
       })
