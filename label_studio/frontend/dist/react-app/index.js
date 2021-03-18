@@ -2105,8 +2105,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var _providers_ApiProvider__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../providers/ApiProvider */ "./src/providers/ApiProvider.js");
-/* harmony import */ var _Error__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Error */ "./src/components/Error/Error.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../utils/bem */ "./src/utils/bem.tsx");
+/* harmony import */ var _Error__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Error */ "./src/components/Error/Error.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
 
 
 
@@ -2114,15 +2116,19 @@ __webpack_require__.r(__webpack_exports__);
 
 const InlineError = ({
   children,
-  includeValidation
+  includeValidation,
+  className,
+  style
 }) => {
   const context = react__WEBPACK_IMPORTED_MODULE_0__.useContext(_providers_ApiProvider__WEBPACK_IMPORTED_MODULE_1__.ApiContext);
   react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
     context.showModal = false;
   }, [context]);
-  return context.error ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
-    className: "inline-error",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_Error__WEBPACK_IMPORTED_MODULE_2__.ErrorWrapper, {
+  return context.error ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_utils_bem__WEBPACK_IMPORTED_MODULE_2__.Block, {
+    name: "inline-error",
+    mix: className,
+    style: style,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_Error__WEBPACK_IMPORTED_MODULE_3__.ErrorWrapper, {
       possum: false,
       ...context.errorFormatter(context.error, {
         includeValidation
@@ -2977,6 +2983,8 @@ class Form extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
         action: this.props.action,
         onSubmit: this.onFormSubmitted,
         onChange: this.onFormChanged,
+        autoComplete: this.props.autoComplete,
+        autoSave: this.props.autoSave,
         children: [this.props.children, this.state.validation && this.state.showValidation && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(ValidationRenderer, {
           validation: this.state.validation
         })]
@@ -3275,31 +3283,37 @@ Form.Row = ({
 Form.Builder = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(({
   fields,
   children,
+  formData,
   ...props
 }, ref) => {
   const renderFields = fields => {
     return fields.map((field, index) => {
       if (!field) return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {}, `spacer-${index}`);
+      const defaultValue = (formData === null || formData === void 0 ? void 0 : formData[field.name]) || undefined;
 
       if (field.type === 'select') {
-        var _field$name;
+        var _field$name, _field$value;
 
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_Elements__WEBPACK_IMPORTED_MODULE_7__.Select, { ...field
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_Elements__WEBPACK_IMPORTED_MODULE_7__.Select, { ...field,
+          value: (_field$value = field.value) !== null && _field$value !== void 0 ? _field$value : defaultValue
         }, (_field$name = field.name) !== null && _field$name !== void 0 ? _field$name : index);
       } else if (field.type === 'counter') {
-        var _field$name2;
+        var _field$name2, _field$value2;
 
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_Elements__WEBPACK_IMPORTED_MODULE_7__.Counter, { ...field
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_Elements__WEBPACK_IMPORTED_MODULE_7__.Counter, { ...field,
+          value: (_field$value2 = field.value) !== null && _field$value2 !== void 0 ? _field$value2 : defaultValue
         }, (_field$name2 = field.name) !== null && _field$name2 !== void 0 ? _field$name2 : index);
       } else if (field.type === 'toggle') {
-        var _field$name3;
+        var _field$name3, _field$value3;
 
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_Elements__WEBPACK_IMPORTED_MODULE_7__.Toggle, { ...field
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_Elements__WEBPACK_IMPORTED_MODULE_7__.Toggle, { ...field,
+          checked: (_field$value3 = field.value) !== null && _field$value3 !== void 0 ? _field$value3 : defaultValue
         }, (_field$name3 = field.name) !== null && _field$name3 !== void 0 ? _field$name3 : index);
       } else {
-        var _field$name4;
+        var _field$name4, _field$value4;
 
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_Elements__WEBPACK_IMPORTED_MODULE_7__.Input, { ...field
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_Elements__WEBPACK_IMPORTED_MODULE_7__.Input, { ...field,
+          defaultValue: (_field$value4 = field.value) !== null && _field$value4 !== void 0 ? _field$value4 : defaultValue
         }, (_field$name4 = field.name) !== null && _field$name4 !== void 0 ? _field$name4 : index);
       }
     });
@@ -9252,6 +9266,9 @@ const StorageCard = ({
 
     setSyncing(false);
   }, [storage]);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    setStorageData(storage);
+  }, [storage]);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_components__WEBPACK_IMPORTED_MODULE_1__.Card, {
     header: (_storageData$title = storageData.title) !== null && _storageData$title !== void 0 ? _storageData$title : `Untitled ${storageData.type}`,
     extra: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_components__WEBPACK_IMPORTED_MODULE_1__.Dropdown.Trigger, {
@@ -9281,8 +9298,9 @@ const StorageCard = ({
     }),
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_StorageSummary__WEBPACK_IMPORTED_MODULE_4__.StorageSummary, {
       storage: storageData,
+      enableLastSync: target !== 'export',
       className: rootClass.elem('summary')
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+    }), target !== 'export' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
       className: rootClass.elem('sync'),
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_components_Space_Space__WEBPACK_IMPORTED_MODULE_2__.Space, {
         size: "small",
@@ -9426,6 +9444,8 @@ const StorageForm = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRe
     },
     skipEmpty: true,
     onSubmit: onSubmit,
+    autoFill: "off",
+    autoComplete: "off",
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_components_Form__WEBPACK_IMPORTED_MODULE_3__.Input, {
       type: "hidden",
       name: "project",
@@ -9545,8 +9565,8 @@ const StorageSet = ({
     }
 
     setLoading(false);
-  }, [project.id]);
-  const onAddStoragePress = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(storage => {
+  }, [project]);
+  const showStorageFormModal = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(storage => {
     const action = storage ? "Edit" : "Add";
     const actionTarget = target === 'export' ? 'Target' : 'Source';
     const title = `${action} ${actionTarget} Storage`;
@@ -9562,8 +9582,9 @@ const StorageSet = ({
         storage: storage,
         project: project.id,
         rootClass: rootClass,
-        onSubmit: () => {
-          fetchStorages().then(() => modalRef.close());
+        onSubmit: async () => {
+          await fetchStorages();
+          modalRef.close();
         }
       }),
       footer: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
@@ -9573,10 +9594,10 @@ const StorageSet = ({
         }), "."]
       })
     });
-  }, [project.id]);
+  }, [project, fetchStorages, target, formRef, rootClass]);
   const onEditStorage = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(async storage => {
-    onAddStoragePress(storage);
-  }, []);
+    showStorageFormModal(storage);
+  }, [showStorageFormModal]);
   const onDeleteStorage = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(async storage => {
     (0,_components_Modal_Modal__WEBPACK_IMPORTED_MODULE_2__.confirm)({
       title: "Deleting storage",
@@ -9602,7 +9623,7 @@ const StorageSet = ({
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
       className: rootClass.elem("controls"),
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
-        onClick: () => onAddStoragePress(),
+        onClick: () => showStorageFormModal(),
         children: buttonLabel
       })
     }), loading && !loaded ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
@@ -9705,7 +9726,8 @@ __webpack_require__.r(__webpack_exports__);
 
 const StorageSummary = ({
   storage,
-  className
+  className,
+  enableLastSync = false
 }) => {
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
     className: className,
@@ -9716,7 +9738,7 @@ const StorageSummary = ({
           case: "s3",
           storage: storage
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_components_DescriptionList_DescriptionList__WEBPACK_IMPORTED_MODULE_1__.DescriptionList.Item, {
+      }), enableLastSync && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_components_DescriptionList_DescriptionList__WEBPACK_IMPORTED_MODULE_1__.DescriptionList.Item, {
         term: "Last Sync",
         children: storage.last_sync ? (0,date_fns_esm__WEBPACK_IMPORTED_MODULE_4__.default)(new Date(storage.last_sync), 'MMMM dd, yyyy ∙ HH:mm:ss') : "Never synced"
       })]
@@ -31788,7 +31810,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 // extracted by mini-css-extract-plugin
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({"storage-settings":"ls-storage-settings","storage-settings__description":"ls-storage-settings__description","storage-settings__controls":"ls-storage-settings__controls","storage-settings__empty":"ls-storage-settings__empty","storage-settings__submit":"ls-storage-settings__submit","inline-error":"ls-inline-error","storage-settings__info":"ls-storage-settings__info","storage-settings__info_valid":"ls-storage-settings__info_valid","storage-settings__summary":"ls-storage-settings__summary","storage-settings__sync":"ls-storage-settings__sync","storage-settings__sync-count":"ls-storage-settings__sync-count"});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({"storage-settings":"ls-storage-settings","storage-settings__description":"ls-storage-settings__description","storage-settings__controls":"ls-storage-settings__controls","storage-settings__empty":"ls-storage-settings__empty","storage-settings__submit":"ls-storage-settings__submit","inline-error":"ls-inline-error","storage-settings__info":"ls-storage-settings__info","storage-settings__info_valid":"ls-storage-settings__info_valid","storage-settings__sync":"ls-storage-settings__sync","storage-settings__sync-count":"ls-storage-settings__sync-count"});
 
 /***/ }),
 
