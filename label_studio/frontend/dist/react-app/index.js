@@ -5577,6 +5577,7 @@ const Configurator = ({
   setTemplate,
   onBrowse,
   onSaveClick,
+  onValidate,
   disableSaveButton
 }) => {
   const [configure, setConfigure] = react__WEBPACK_IMPORTED_MODULE_2__.useState((0,_Template__WEBPACK_IMPORTED_MODULE_12__.isEmptyConfig)(config) ? "code" : "visual");
@@ -5603,6 +5604,7 @@ const Configurator = ({
       return;
     } else {
       setError(null);
+      onValidate === null || onValidate === void 0 ? void 0 : onValidate(await res.json());
     }
 
     res = await fetch(`/api/projects/${project.id}/sample-task?label_config=${c}`);
@@ -5728,6 +5730,7 @@ const ConfigPage = ({
   project,
   onUpdate,
   onSaveClick,
+  onValidate,
   disableSaveButton,
   show = true
 }) => {
@@ -5811,6 +5814,7 @@ const ConfigPage = ({
         template: template,
         setTemplate: setTemplate,
         onBrowse: setMode.bind(null, "list"),
+        onValidate: onValidate,
         disableSaveButton: disableSaveButton,
         onSaveClick: onSaveClick
       })]
@@ -8804,11 +8808,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "LabelingSettings": () => (/* binding */ LabelingSettings)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react_router__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-router */ "./node_modules/react-router/esm/react-router.js");
-/* harmony import */ var _providers_ApiProvider__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../providers/ApiProvider */ "./src/providers/ApiProvider.js");
-/* harmony import */ var _providers_ProjectProvider__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../providers/ProjectProvider */ "./src/providers/ProjectProvider.js");
-/* harmony import */ var _CreateProject_Config_Config__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../CreateProject/Config/Config */ "./src/pages/CreateProject/Config/Config.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var react_router__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react-router */ "./node_modules/react-router/esm/react-router.js");
+/* harmony import */ var _components_Modal_Modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../components/Modal/Modal */ "./src/components/Modal/Modal.js");
+/* harmony import */ var _providers_ApiProvider__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../providers/ApiProvider */ "./src/providers/ApiProvider.js");
+/* harmony import */ var _providers_ProjectProvider__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../providers/ProjectProvider */ "./src/providers/ProjectProvider.js");
+/* harmony import */ var _CreateProject_Config_Config__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../CreateProject/Config/Config */ "./src/pages/CreateProject/Config/Config.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
 
 
 
@@ -8816,14 +8822,15 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const LabelingSettings = () => {
-  const history = (0,react_router__WEBPACK_IMPORTED_MODULE_5__.useHistory)();
+  const history = (0,react_router__WEBPACK_IMPORTED_MODULE_6__.useHistory)();
   const {
     project,
     fetchProject
-  } = (0,_providers_ProjectProvider__WEBPACK_IMPORTED_MODULE_2__.useProject)();
+  } = (0,_providers_ProjectProvider__WEBPACK_IMPORTED_MODULE_3__.useProject)();
   const [config, setConfig] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("");
-  const api = (0,_providers_ApiProvider__WEBPACK_IMPORTED_MODULE_1__.useAPI)();
-  const onSave = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(async () => {
+  const [essentialDataChanged, setEssentialDataChanged] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const api = (0,_providers_ApiProvider__WEBPACK_IMPORTED_MODULE_2__.useAPI)();
+  const saveConfig = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(async () => {
     const res = await api.callApi("updateProjectRaw", {
       params: {
         pk: project.id
@@ -8842,16 +8849,33 @@ const LabelingSettings = () => {
     fetchProject();
     return error;
   }, [project, config]);
+  const onSave = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(async () => {
+    if (essentialDataChanged) {
+      (0,_components_Modal_Modal__WEBPACK_IMPORTED_MODULE_1__.confirm)({
+        title: "Config data changed",
+        body: "Labeling config has essential changes that affect data displaying. Saving the config may lead to deleting all tabs previously created in the Data Manager.",
+        buttonLook: "destructive",
+        onOk: () => saveConfig(),
+        okText: "Save"
+      });
+    } else {
+      saveConfig();
+    }
+  }, [essentialDataChanged, saveConfig]);
   const onUpdate = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(config => {
     setConfig(config);
     fetchProject();
   });
+  const onValidate = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(validation => {
+    setEssentialDataChanged(validation.config_essential_data_has_changed);
+  }, []);
   if (!project.id) return null;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_CreateProject_Config_Config__WEBPACK_IMPORTED_MODULE_3__.ConfigPage, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_CreateProject_Config_Config__WEBPACK_IMPORTED_MODULE_4__.ConfigPage, {
     config: project.label_config,
     project: project,
     onUpdate: onUpdate,
-    onSaveClick: onSave
+    onSaveClick: onSave,
+    onValidate: onValidate
   });
 };
 LabelingSettings.title = "Labeling Interface";
