@@ -5530,18 +5530,11 @@ const ConfigureSettings = ({
 
 const ConfigureColumns = ({
   columns,
-  template,
-  project
+  template
 }) => {
-  var _project$parsed_label, _project$parsed_label2, _project$parsed_label3, _project$parsed_label4;
-
-  const defaultValue = (_project$parsed_label = project.parsed_label_config) === null || _project$parsed_label === void 0 ? void 0 : (_project$parsed_label2 = _project$parsed_label.label) === null || _project$parsed_label2 === void 0 ? void 0 : (_project$parsed_label3 = _project$parsed_label2.inputs) === null || _project$parsed_label3 === void 0 ? void 0 : (_project$parsed_label4 = _project$parsed_label3[0]) === null || _project$parsed_label4 === void 0 ? void 0 : _project$parsed_label4.value;
-  const [selectedValue, setSelectedValue] = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)(defaultValue);
-
   const updateValue = obj => e => {
     const attrName = e.target.value.replace(/^\$/, "");
     obj.setAttribute("value", "$" + attrName);
-    setSelectedValue(attrName);
     template.render();
   };
 
@@ -5556,19 +5549,23 @@ const ConfigureColumns = ({
     }), (columns === null || columns === void 0 ? void 0 : columns.length) === 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("p", {
       className: configClass.elem("object-error"),
       children: "To select which field(s) to label you need to upload the data. Alternatively, you can provide it using Code mode."
-    }), template.objects.map(obj => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)("p", {
-      children: ["Use ", obj.tagName.toLowerCase(), template.objects > 1 && ` for ${obj.getAttribute("name")}`, " from ", (columns === null || columns === void 0 ? void 0 : columns.length) > 0 && columns[0] !== _Template__WEBPACK_IMPORTED_MODULE_12__.DEFAULT_COLUMN && "field ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)("select", {
-        onChange: updateValue(obj),
-        value: selectedValue,
-        children: [columns === null || columns === void 0 ? void 0 : columns.map(column => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("option", {
-          value: column,
-          children: column === _Template__WEBPACK_IMPORTED_MODULE_12__.DEFAULT_COLUMN ? "<imported file>" : `$${column}`
-        }, column)), !(columns !== null && columns !== void 0 && columns.length) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("option", {
-          value: obj.getAttribute("value"),
-          children: "<imported file>"
+    }), template.objects.map(obj => {
+      var _obj$getAttribute, _obj$getAttribute2;
+
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)("p", {
+        children: ["Use ", obj.tagName.toLowerCase(), template.objects > 1 && ` for ${obj.getAttribute("name")}`, " from ", (columns === null || columns === void 0 ? void 0 : columns.length) > 0 && columns[0] !== _Template__WEBPACK_IMPORTED_MODULE_12__.DEFAULT_COLUMN && "field ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)("select", {
+          onChange: updateValue(obj),
+          value: (_obj$getAttribute = obj.getAttribute("value")) === null || _obj$getAttribute === void 0 ? void 0 : _obj$getAttribute.replace(/^\$/, ""),
+          children: [columns === null || columns === void 0 ? void 0 : columns.map(column => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("option", {
+            value: column,
+            children: column === _Template__WEBPACK_IMPORTED_MODULE_12__.DEFAULT_COLUMN ? "<imported file>" : `$${column}`
+          }, column)), !(columns !== null && columns !== void 0 && columns.length) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("option", {
+            value: (_obj$getAttribute2 = obj.getAttribute("value")) === null || _obj$getAttribute2 === void 0 ? void 0 : _obj$getAttribute2.replace(/^\$/, ""),
+            children: "<imported file>"
+          })]
         })]
-      })]
-    }, obj.getAttribute("name")))]
+      }, obj.getAttribute("name"));
+    })]
   });
 };
 
@@ -6042,7 +6039,7 @@ class Template {
     let free = columns.filter(c => !existing.includes(c));
 
     for (let obj of this.objects) {
-      if (!columns.includes(obj.getAttribute("value"))) {
+      if (!columns.includes(obj.getAttribute("value").replace(/^\$/, ''))) {
         var _free$shift;
 
         obj.setAttribute("value", "$" + ((_free$shift = free.shift()) !== null && _free$shift !== void 0 ? _free$shift : columns[0]));
