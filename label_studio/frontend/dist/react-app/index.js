@@ -11923,6 +11923,43 @@ var ForwardRef = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(SvgE
 
 /***/ }),
 
+/***/ "./src/assets/icons/error.svg":
+/*!************************************!*\
+  !*** ./src/assets/icons/error.svg ***!
+  \************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
+
+
+var _ref = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("path", {
+  d: "M13.348 10.313c.433.75-.11 1.687-.974 1.687H1.126a1.126 1.126 0 01-.974-1.687L5.776.563a1.126 1.126 0 011.948 0l5.624 9.75zM6.75 8.297a1.078 1.078 0 100 2.156 1.078 1.078 0 000-2.156zM5.726 4.422L5.9 7.609c.008.15.132.266.281.266H7.32c.15 0 .273-.117.28-.266l.175-3.187a.281.281 0 00-.281-.297H6.007a.281.281 0 00-.28.297z",
+  fill: "#F5222D"
+});
+
+function SvgError(props, svgRef) {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("svg", _extends({
+    width: 14,
+    height: 12,
+    viewBox: "0 0 14 12",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg",
+    ref: svgRef
+  }, props), _ref);
+}
+
+var ForwardRef = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(SvgError);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ForwardRef);
+
+/***/ }),
+
 /***/ "./src/assets/icons/folder-empty.svg":
 /*!*******************************************!*\
   !*** ./src/assets/icons/folder-empty.svg ***!
@@ -13245,20 +13282,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "LsDoor": () => (/* reexport safe */ _door_svg__WEBPACK_IMPORTED_MODULE_8__.default),
 /* harmony export */   "LsEllipsis": () => (/* reexport safe */ _ellipsis_svg__WEBPACK_IMPORTED_MODULE_9__.default),
 /* harmony export */   "IconEmptyFolder": () => (/* reexport safe */ _folder_empty_svg__WEBPACK_IMPORTED_MODULE_10__.default),
-/* harmony export */   "IconFolder": () => (/* reexport safe */ _folder_svg__WEBPACK_IMPORTED_MODULE_11__.default),
-/* harmony export */   "IconGear": () => (/* reexport safe */ _gear_svg__WEBPACK_IMPORTED_MODULE_12__.default),
-/* harmony export */   "LsGitHub": () => (/* reexport safe */ _github_svg__WEBPACK_IMPORTED_MODULE_13__.default),
-/* harmony export */   "IconInfo": () => (/* reexport safe */ _info_svg__WEBPACK_IMPORTED_MODULE_14__.default),
-/* harmony export */   "LsMinus": () => (/* reexport safe */ _minus_svg__WEBPACK_IMPORTED_MODULE_15__.default),
-/* harmony export */   "IconPersonInCircle": () => (/* reexport safe */ _person_circle_svg__WEBPACK_IMPORTED_MODULE_16__.default),
-/* harmony export */   "IconPin": () => (/* reexport safe */ _pin_svg__WEBPACK_IMPORTED_MODULE_17__.default),
-/* harmony export */   "LsPlus": () => (/* reexport safe */ _plus_svg__WEBPACK_IMPORTED_MODULE_18__.default),
-/* harmony export */   "LsSettings": () => (/* reexport safe */ _settings_svg__WEBPACK_IMPORTED_MODULE_19__.default),
-/* harmony export */   "LsSlack": () => (/* reexport safe */ _slack_svg__WEBPACK_IMPORTED_MODULE_20__.default),
-/* harmony export */   "IconTerminal": () => (/* reexport safe */ _terminal_svg__WEBPACK_IMPORTED_MODULE_21__.default),
-/* harmony export */   "LsThumbsDown": () => (/* reexport safe */ _thumbs_down_svg__WEBPACK_IMPORTED_MODULE_22__.default),
-/* harmony export */   "LsThumbsUp": () => (/* reexport safe */ _thumbs_up_svg__WEBPACK_IMPORTED_MODULE_23__.default),
-/* harmony export */   "IconUpload": () => (/* reexport safe */ _upload_svg__WEBPACK_IMPORTED_MODULE_24__.default)
+/* harmony export */   "IconError": () => (/* reexport safe */ _error_svg__WEBPACK_IMPORTED_MODULE_11__.default),
+/* harmony export */   "IconFolder": () => (/* reexport safe */ _folder_svg__WEBPACK_IMPORTED_MODULE_12__.default),
+/* harmony export */   "IconGear": () => (/* reexport safe */ _gear_svg__WEBPACK_IMPORTED_MODULE_13__.default),
+/* harmony export */   "LsGitHub": () => (/* reexport safe */ _github_svg__WEBPACK_IMPORTED_MODULE_14__.default),
+/* harmony export */   "IconInfo": () => (/* reexport safe */ _info_svg__WEBPACK_IMPORTED_MODULE_15__.default),
+/* harmony export */   "LsMinus": () => (/* reexport safe */ _minus_svg__WEBPACK_IMPORTED_MODULE_16__.default),
+/* harmony export */   "IconPersonInCircle": () => (/* reexport safe */ _person_circle_svg__WEBPACK_IMPORTED_MODULE_17__.default),
+/* harmony export */   "IconPin": () => (/* reexport safe */ _pin_svg__WEBPACK_IMPORTED_MODULE_18__.default),
+/* harmony export */   "LsPlus": () => (/* reexport safe */ _plus_svg__WEBPACK_IMPORTED_MODULE_19__.default),
+/* harmony export */   "LsSettings": () => (/* reexport safe */ _settings_svg__WEBPACK_IMPORTED_MODULE_20__.default),
+/* harmony export */   "LsSlack": () => (/* reexport safe */ _slack_svg__WEBPACK_IMPORTED_MODULE_21__.default),
+/* harmony export */   "IconTerminal": () => (/* reexport safe */ _terminal_svg__WEBPACK_IMPORTED_MODULE_22__.default),
+/* harmony export */   "LsThumbsDown": () => (/* reexport safe */ _thumbs_down_svg__WEBPACK_IMPORTED_MODULE_23__.default),
+/* harmony export */   "LsThumbsUp": () => (/* reexport safe */ _thumbs_up_svg__WEBPACK_IMPORTED_MODULE_24__.default),
+/* harmony export */   "IconUpload": () => (/* reexport safe */ _upload_svg__WEBPACK_IMPORTED_MODULE_25__.default)
 /* harmony export */ });
 /* harmony import */ var _all_projects_svg__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./all-projects.svg */ "./src/assets/icons/all-projects.svg");
 /* harmony import */ var _bell_svg__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./bell.svg */ "./src/assets/icons/bell.svg");
@@ -13271,20 +13309,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _door_svg__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./door.svg */ "./src/assets/icons/door.svg");
 /* harmony import */ var _ellipsis_svg__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./ellipsis.svg */ "./src/assets/icons/ellipsis.svg");
 /* harmony import */ var _folder_empty_svg__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./folder-empty.svg */ "./src/assets/icons/folder-empty.svg");
-/* harmony import */ var _folder_svg__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./folder.svg */ "./src/assets/icons/folder.svg");
-/* harmony import */ var _gear_svg__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./gear.svg */ "./src/assets/icons/gear.svg");
-/* harmony import */ var _github_svg__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./github.svg */ "./src/assets/icons/github.svg");
-/* harmony import */ var _info_svg__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./info.svg */ "./src/assets/icons/info.svg");
-/* harmony import */ var _minus_svg__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./minus.svg */ "./src/assets/icons/minus.svg");
-/* harmony import */ var _person_circle_svg__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./person-circle.svg */ "./src/assets/icons/person-circle.svg");
-/* harmony import */ var _pin_svg__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./pin.svg */ "./src/assets/icons/pin.svg");
-/* harmony import */ var _plus_svg__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./plus.svg */ "./src/assets/icons/plus.svg");
-/* harmony import */ var _settings_svg__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./settings.svg */ "./src/assets/icons/settings.svg");
-/* harmony import */ var _slack_svg__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./slack.svg */ "./src/assets/icons/slack.svg");
-/* harmony import */ var _terminal_svg__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./terminal.svg */ "./src/assets/icons/terminal.svg");
-/* harmony import */ var _thumbs_down_svg__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./thumbs-down.svg */ "./src/assets/icons/thumbs-down.svg");
-/* harmony import */ var _thumbs_up_svg__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./thumbs-up.svg */ "./src/assets/icons/thumbs-up.svg");
-/* harmony import */ var _upload_svg__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./upload.svg */ "./src/assets/icons/upload.svg");
+/* harmony import */ var _error_svg__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./error.svg */ "./src/assets/icons/error.svg");
+/* harmony import */ var _folder_svg__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./folder.svg */ "./src/assets/icons/folder.svg");
+/* harmony import */ var _gear_svg__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./gear.svg */ "./src/assets/icons/gear.svg");
+/* harmony import */ var _github_svg__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./github.svg */ "./src/assets/icons/github.svg");
+/* harmony import */ var _info_svg__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./info.svg */ "./src/assets/icons/info.svg");
+/* harmony import */ var _minus_svg__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./minus.svg */ "./src/assets/icons/minus.svg");
+/* harmony import */ var _person_circle_svg__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./person-circle.svg */ "./src/assets/icons/person-circle.svg");
+/* harmony import */ var _pin_svg__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./pin.svg */ "./src/assets/icons/pin.svg");
+/* harmony import */ var _plus_svg__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./plus.svg */ "./src/assets/icons/plus.svg");
+/* harmony import */ var _settings_svg__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./settings.svg */ "./src/assets/icons/settings.svg");
+/* harmony import */ var _slack_svg__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./slack.svg */ "./src/assets/icons/slack.svg");
+/* harmony import */ var _terminal_svg__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./terminal.svg */ "./src/assets/icons/terminal.svg");
+/* harmony import */ var _thumbs_down_svg__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./thumbs-down.svg */ "./src/assets/icons/thumbs-down.svg");
+/* harmony import */ var _thumbs_up_svg__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./thumbs-up.svg */ "./src/assets/icons/thumbs-up.svg");
+/* harmony import */ var _upload_svg__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./upload.svg */ "./src/assets/icons/upload.svg");
+
 
 
 
@@ -17685,7 +17725,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Form__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../components/Form */ "./src/components/Form/index.js");
 /* harmony import */ var _components_Oneof_Oneof__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../components/Oneof/Oneof */ "./src/components/Oneof/Oneof.js");
 /* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../utils/bem */ "./src/utils/bem.tsx");
-/* harmony import */ var _utils_colors__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../utils/colors */ "./src/utils/colors.js");
+/* harmony import */ var _utils_colors__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../utils/colors */ "./src/utils/colors.ts");
 /* harmony import */ var _colors__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./colors */ "./src/pages/CreateProject/Config/colors.js");
 /* harmony import */ var _Config_styl__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./Config.styl */ "./src/pages/CreateProject/Config/Config.styl");
 /* harmony import */ var _Preview__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./Preview */ "./src/pages/CreateProject/Config/Preview.js");
@@ -18386,8 +18426,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "isEmptyConfig": () => (/* binding */ isEmptyConfig),
 /* harmony export */   "Template": () => (/* binding */ Template)
 /* harmony export */ });
-/* harmony import */ var _tags__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./tags */ "./src/pages/CreateProject/Config/tags.js");
-/* harmony import */ var _utils_colors__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../utils/colors */ "./src/utils/colors.js");
+/* harmony import */ var _tags__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./tags */ "./src/pages/CreateProject/Config/tags.ts");
+/* harmony import */ var _utils_colors__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../utils/colors */ "./src/utils/colors.ts");
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
@@ -18808,9 +18848,9 @@ const colorNames = {
 
 /***/ }),
 
-/***/ "./src/pages/CreateProject/Config/tags.js":
+/***/ "./src/pages/CreateProject/Config/tags.ts":
 /*!************************************************!*\
-  !*** ./src/pages/CreateProject/Config/tags.js ***!
+  !*** ./src/pages/CreateProject/Config/tags.ts ***!
   \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -18824,6 +18864,9 @@ __webpack_require__.r(__webpack_exports__);
 const OBJECTS = {
   Image: {
     type: 'Image',
+    sample: value => ({
+      [value]: "https://app.heartex.ai/static/samples/sample.jpg"
+    }),
     settings: {
       strokeWidth: {
         title: 'Width of region borders',
@@ -18854,6 +18897,9 @@ const OBJECTS = {
   },
   Text: {
     type: 'Text',
+    sample: (value, $obj) => ({
+      [value]: $obj.getAttribute("valueType") === "url" ? "https://htx-pub.s3.amazonaws.com/example.txt" : "Showers continued throughout the week in the Bahia cocoa zone, alleviating the drought since early January and improving prospects for the coming temporao, although normal humidity levels have not been restored, Comissaria Smith said in its weekly review.\n\nThe dry period means the temporao will be late this year. Arrivals for the week ended February 22 were 155,221 bags of 60 kilos making a cumulative total for the season of 5.93 mln against 5.81 at the same stage last year. Again it seems that cocoa delivered earlier on consignment was included in the arrivals figures.\n\nComissaria Smith said there is still some doubt as to how much old crop cocoa is still available as harvesting has practically come to an end. With total Bahia crop estimates around 6.4 mln bags and sales standing at almost 6.2 mln there are a few hundred thousand bags still in the hands of farmers, middlemen, exporters and processors."
+    }),
     settings: {
       granularity: {
         title: 'Select text by words',
@@ -18865,7 +18911,10 @@ const OBJECTS = {
     }
   },
   HyperText: {
-    type: 'HyperText'
+    type: 'HyperText',
+    sample: (value, $obj) => ({
+      [value]: '<div style="max-width: 750px"><div style="clear: both"><div style="float: right; display: inline-block; border: 1px solid #F2F3F4; background-color: #F8F9F9; border-radius: 5px; padding: 7px; margin: 10px 0;"><p><b>Jules</b>: No no, Mr. Wolfe, it\'s not like that. Your help is definitely appreciated.</p></div></div><div style="clear: both"><div style="float: right; display: inline-block; border: 1px solid #F2F3F4; background-color: #F8F9F9; border-radius: 5px; padding: 7px; margin: 10px 0;"><p><b>Vincent</b>: Look, Mr. Wolfe, I respect you. I just don\'t like people barking orders at me, that\'s all.</p></div></div><div style="clear: both"><div style="display: inline-block; border: 1px solid #D5F5E3; background-color: #EAFAF1; border-radius: 5px; padding: 7px; margin: 10px 0;"><p><b>The Wolf</b>: If I\'m curt with you, it\'s because time is a factor. I think fast, I talk fast, and I need you two guys to act fast if you want to get out of this. So pretty please, with sugar on top, clean the car.</p></div></div></div>'
+    })
   },
   Audio: {
     type: 'Audio'
@@ -18886,7 +18935,7 @@ const OBJECTS = {
 const Labels = {
   type: 'Labels',
   settings: {
-    placeLabelsLeft: {
+    placeLabels: {
       title: 'Display labels:',
       type: ["bottom", "left", "right", "top"],
       control: true,
@@ -19332,6 +19381,31 @@ const Upload = ({
   });
 };
 
+const ErrorMessage = ({
+  error
+}) => {
+  var _error$validation_err;
+
+  if (!error) return null;
+  let extra = (_error$validation_err = error.validation_errors) !== null && _error$validation_err !== void 0 ? _error$validation_err : error.extra; // support all possible responses
+
+  if (extra && typeof extra === "object" && !Array.isArray(extra)) {
+    var _extra$non_field_erro;
+
+    extra = (_extra$non_field_erro = extra.non_field_errors) !== null && _extra$non_field_erro !== void 0 ? _extra$non_field_erro : Object.values(extra);
+  }
+
+  if (Array.isArray(extra)) extra = extra.join("; ");
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+    className: importClass.elem("error"),
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_assets_icons__WEBPACK_IMPORTED_MODULE_5__.IconError, {
+      style: {
+        marginRight: 8
+      }
+    }), error.id && `[${error.id}] `, error.detail || error.message, extra && ` (${extra})`]
+  });
+};
+
 const ImportPage = ({
   project,
   show = true,
@@ -19420,7 +19494,19 @@ const ImportPage = ({
   };
 
   const onError = err => {
-    console.error(err);
+    console.error(err); // @todo workaround for error about input size in a wrong html format
+
+    if (typeof err === "string" && err.includes("RequestDataTooBig")) {
+      var _err$match;
+
+      const message = "Imported file is too big";
+      const extra = (_err$match = err.match(/"exception_value">(.*)<\/pre>/)) === null || _err$match === void 0 ? void 0 : _err$match[1];
+      err = {
+        message,
+        extra
+      };
+    }
+
     setError(err);
     setLoading(false);
     onWaiting === null || onWaiting === void 0 ? void 0 : onWaiting(false);
@@ -19446,7 +19532,8 @@ const ImportPage = ({
     });
     const query = dontCommitToProject ? {
       commit_to_project: "false"
-    } : {};
+    } : {}; // @todo use json for dataset uploads by URL
+
     const contentType = body instanceof FormData ? 'multipart/form-data' // usual multipart for usual files
     : 'application/x-www-form-urlencoded'; // chad urlencoded for URL uploads
 
@@ -19465,7 +19552,7 @@ const ImportPage = ({
     dispatch({
       sent: files
     });
-  }, [project]);
+  }, [project, onFinish]);
   const sendFiles = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(files => {
     onStart();
     onWaiting === null || onWaiting === void 0 ? void 0 : onWaiting(true);
@@ -19581,9 +19668,8 @@ const ImportPage = ({
         className: importClass.elem("status"),
         children: files.uploaded.length ? `${files.uploaded.length} files uploaded` : ""
       })]
-    }), error && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-      className: importClass.elem("error"),
-      children: [error.id && `[${error.id}]`, error.detail || error.message, error.validation_errors && `(${error.validation_errors[0]})`]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(ErrorMessage, {
+      error: error
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("main", {
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(Upload, {
         sendFiles: sendFiles,
@@ -19609,7 +19695,7 @@ const ImportPage = ({
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("dt", {
                 children: "Images"
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("dd", {
-                children: "jpg, png, gif, bmp, tiff, svg, webp"
+                children: "jpg, png, gif, bmp, svg, webp"
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("dt", {
                 children: "HTML"
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("dd", {
@@ -22793,6 +22879,7 @@ const handleError = async (response, showModal = true) => {
         message: "Server not responding. Is it still running?"
       }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_components_Error_Error__WEBPACK_IMPORTED_MODULE_1__.ErrorWrapper, { ...formattedError
       }),
+      simple: true,
       style: {
         width: 680
       }
@@ -22972,7 +23059,7 @@ const CurrentUserProvider = ({
     api.callApi('me').then(user => {
       setUser(user);
     });
-  }, [api]);
+  }, [api.callApi]);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     fetch();
   }, [fetch]);
@@ -24372,9 +24459,9 @@ const {
 
 /***/ }),
 
-/***/ "./src/utils/colors.js":
+/***/ "./src/utils/colors.ts":
 /*!*****************************!*\
-  !*** ./src/utils/colors.js ***!
+  !*** ./src/utils/colors.ts ***!
   \*****************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -24393,7 +24480,6 @@ function* Palette(colors = LABELS_PALETTE) {
     index = (index + 1) % colors.length;
   }
 }
-window.Palette = Palette;
 
 /***/ }),
 
