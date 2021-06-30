@@ -21107,7 +21107,6 @@ ProjectsPage.path = "/projects";
 ProjectsPage.exact = true;
 
 ProjectsPage.routes = ({
-  config,
   store
 }) => [{
   title: () => {
@@ -21118,8 +21117,9 @@ ProjectsPage.routes = ({
   path: "/:id(\\d+)",
   exact: true,
   component: () => {
+    const params = (0,_providers_RoutesProvider__WEBPACK_IMPORTED_MODULE_5__.useParams)();
     return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(react_router_dom__WEBPACK_IMPORTED_MODULE_13__.Redirect, {
-      to: `/projects/${config.projectId}/data`
+      to: `/projects/${params.id}/data`
     });
   },
   pages: {
