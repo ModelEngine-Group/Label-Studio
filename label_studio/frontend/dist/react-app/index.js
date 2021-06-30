@@ -22723,7 +22723,7 @@ const StorageSummary = ({
           case: "redis",
           storage: storage
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(LocalStorage, {
-          case: "redis",
+          case: "localfiles",
           storage: storage
         })]
       }), enableLastSync && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_components_DescriptionList_DescriptionList__WEBPACK_IMPORTED_MODULE_1__.DescriptionList.Item, {
