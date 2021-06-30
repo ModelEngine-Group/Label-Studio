@@ -17733,7 +17733,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Form__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../components/Form */ "./src/components/Form/index.js");
 /* harmony import */ var _components_Oneof_Oneof__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../components/Oneof/Oneof */ "./src/components/Oneof/Oneof.js");
 /* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../utils/bem */ "./src/utils/bem.tsx");
-/* harmony import */ var _utils_colors__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../utils/colors */ "./src/utils/colors.js");
+/* harmony import */ var _utils_colors__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../utils/colors */ "./src/utils/colors.ts");
 /* harmony import */ var _colors__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./colors */ "./src/pages/CreateProject/Config/colors.js");
 /* harmony import */ var _Config_styl__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./Config.styl */ "./src/pages/CreateProject/Config/Config.styl");
 /* harmony import */ var _Preview__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./Preview */ "./src/pages/CreateProject/Config/Preview.js");
@@ -18434,8 +18434,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "isEmptyConfig": () => (/* binding */ isEmptyConfig),
 /* harmony export */   "Template": () => (/* binding */ Template)
 /* harmony export */ });
-/* harmony import */ var _tags__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./tags */ "./src/pages/CreateProject/Config/tags.js");
-/* harmony import */ var _utils_colors__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../utils/colors */ "./src/utils/colors.js");
+/* harmony import */ var _tags__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./tags */ "./src/pages/CreateProject/Config/tags.ts");
+/* harmony import */ var _utils_colors__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../utils/colors */ "./src/utils/colors.ts");
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
@@ -18856,9 +18856,9 @@ const colorNames = {
 
 /***/ }),
 
-/***/ "./src/pages/CreateProject/Config/tags.js":
+/***/ "./src/pages/CreateProject/Config/tags.ts":
 /*!************************************************!*\
-  !*** ./src/pages/CreateProject/Config/tags.js ***!
+  !*** ./src/pages/CreateProject/Config/tags.ts ***!
   \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -18872,6 +18872,9 @@ __webpack_require__.r(__webpack_exports__);
 const OBJECTS = {
   Image: {
     type: 'Image',
+    sample: value => ({
+      [value]: "https://app.heartex.ai/static/samples/sample.jpg"
+    }),
     settings: {
       strokeWidth: {
         title: 'Width of region borders',
@@ -18902,6 +18905,9 @@ const OBJECTS = {
   },
   Text: {
     type: 'Text',
+    sample: (value, $obj) => ({
+      [value]: $obj.getAttribute("valueType") === "url" ? "https://htx-pub.s3.amazonaws.com/example.txt" : "Showers continued throughout the week in the Bahia cocoa zone, alleviating the drought since early January and improving prospects for the coming temporao, although normal humidity levels have not been restored, Comissaria Smith said in its weekly review.\n\nThe dry period means the temporao will be late this year. Arrivals for the week ended February 22 were 155,221 bags of 60 kilos making a cumulative total for the season of 5.93 mln against 5.81 at the same stage last year. Again it seems that cocoa delivered earlier on consignment was included in the arrivals figures.\n\nComissaria Smith said there is still some doubt as to how much old crop cocoa is still available as harvesting has practically come to an end. With total Bahia crop estimates around 6.4 mln bags and sales standing at almost 6.2 mln there are a few hundred thousand bags still in the hands of farmers, middlemen, exporters and processors."
+    }),
     settings: {
       granularity: {
         title: 'Select text by words',
@@ -18913,7 +18919,10 @@ const OBJECTS = {
     }
   },
   HyperText: {
-    type: 'HyperText'
+    type: 'HyperText',
+    sample: (value, $obj) => ({
+      [value]: '<div style="max-width: 750px"><div style="clear: both"><div style="float: right; display: inline-block; border: 1px solid #F2F3F4; background-color: #F8F9F9; border-radius: 5px; padding: 7px; margin: 10px 0;"><p><b>Jules</b>: No no, Mr. Wolfe, it\'s not like that. Your help is definitely appreciated.</p></div></div><div style="clear: both"><div style="float: right; display: inline-block; border: 1px solid #F2F3F4; background-color: #F8F9F9; border-radius: 5px; padding: 7px; margin: 10px 0;"><p><b>Vincent</b>: Look, Mr. Wolfe, I respect you. I just don\'t like people barking orders at me, that\'s all.</p></div></div><div style="clear: both"><div style="display: inline-block; border: 1px solid #D5F5E3; background-color: #EAFAF1; border-radius: 5px; padding: 7px; margin: 10px 0;"><p><b>The Wolf</b>: If I\'m curt with you, it\'s because time is a factor. I think fast, I talk fast, and I need you two guys to act fast if you want to get out of this. So pretty please, with sugar on top, clean the car.</p></div></div></div>'
+    })
   },
   Audio: {
     type: 'Audio'
@@ -18934,7 +18943,7 @@ const OBJECTS = {
 const Labels = {
   type: 'Labels',
   settings: {
-    placeLabelsLeft: {
+    placeLabels: {
       title: 'Display labels:',
       type: ["bottom", "left", "right", "top"],
       control: true,
@@ -24523,9 +24532,9 @@ const {
 
 /***/ }),
 
-/***/ "./src/utils/colors.js":
+/***/ "./src/utils/colors.ts":
 /*!*****************************!*\
-  !*** ./src/utils/colors.js ***!
+  !*** ./src/utils/colors.ts ***!
   \*****************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -24544,7 +24553,6 @@ function* Palette(colors = LABELS_PALETTE) {
     index = (index + 1) % colors.length;
   }
 }
-window.Palette = Palette;
 
 /***/ }),
 
