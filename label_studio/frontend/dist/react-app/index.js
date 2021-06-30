@@ -13365,6 +13365,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "Breadcrumbs": () => (/* binding */ Breadcrumbs)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
 /* harmony import */ var _providers_ConfigProvider__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../providers/ConfigProvider */ "./src/providers/ConfigProvider.js");
 /* harmony import */ var _providers_RoutesProvider__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../providers/RoutesProvider */ "./src/providers/RoutesProvider.js");
 /* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../utils/bem */ "./src/utils/bem.tsx");
@@ -13382,6 +13383,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 const {
   Block,
   Elem
@@ -13389,6 +13391,7 @@ const {
 const Breadcrumbs = () => {
   const config = (0,_providers_ConfigProvider__WEBPACK_IMPORTED_MODULE_1__.useConfig)();
   const reactBreadcrumbs = (0,_providers_RoutesProvider__WEBPACK_IMPORTED_MODULE_2__.useBreadcrumbs)();
+  const findComponent = (0,_providers_RoutesProvider__WEBPACK_IMPORTED_MODULE_2__.useFindRouteComponent)();
   const [breadcrumbs, setBreadcrumbs] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(reactBreadcrumbs);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     if (reactBreadcrumbs.length) {
@@ -13408,6 +13411,7 @@ const Breadcrumbs = () => {
         const isLastItem = index === list.length - 1;
         const key = `item-${index}-${item.title}`;
         const href = (_item$href = item.href) !== null && _item$href !== void 0 ? _item$href : item.path;
+        const isInternal = findComponent(href) !== null;
 
         const title = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(Elem, {
           tag: "span",
@@ -13459,7 +13463,11 @@ const Breadcrumbs = () => {
           mod: {
             last: isLastItem
           },
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("a", {
+          children: isInternal ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(react_router_dom__WEBPACK_IMPORTED_MODULE_9__.NavLink, {
+            to: href,
+            "data-external": true,
+            children: title
+          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("a", {
             href: (0,_utils_helpers__WEBPACK_IMPORTED_MODULE_4__.absoluteURL)(href),
             children: title
           })
@@ -21023,7 +21031,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "ProjectsPage": () => (/* binding */ ProjectsPage)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router/esm/react-router.js");
+/* harmony import */ var react_router__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router/esm/react-router.js");
 /* harmony import */ var _components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../components */ "./src/components/index.js");
 /* harmony import */ var _components_Oneof_Oneof__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../components/Oneof/Oneof */ "./src/components/Oneof/Oneof.js");
 /* harmony import */ var _components_Spinner_Spinner__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../components/Spinner/Spinner */ "./src/components/Spinner/Spinner.js");
@@ -21036,6 +21044,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Projects_styl__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./Projects.styl */ "./src/pages/Projects/Projects.styl");
 /* harmony import */ var _ProjectsList__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./ProjectsList */ "./src/pages/Projects/ProjectsList.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
 
 
 
@@ -21117,8 +21126,8 @@ ProjectsPage.routes = ({
   path: "/:id(\\d+)",
   exact: true,
   component: () => {
-    const params = (0,_providers_RoutesProvider__WEBPACK_IMPORTED_MODULE_5__.useParams)();
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(react_router_dom__WEBPACK_IMPORTED_MODULE_13__.Redirect, {
+    const params = (0,react_router__WEBPACK_IMPORTED_MODULE_13__.useParams)();
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(react_router__WEBPACK_IMPORTED_MODULE_13__.Redirect, {
       to: `/projects/${params.id}/data`
     });
   },
@@ -21822,16 +21831,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "MachineLearningList": () => (/* binding */ MachineLearningList)
 /* harmony export */ });
-/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/format/index.js");
+/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/format/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react_icons_fa__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react-icons/fa */ "./node_modules/react-icons/fa/index.esm.js");
-/* harmony import */ var _components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../components */ "./src/components/index.js");
-/* harmony import */ var _components_DescriptionList_DescriptionList__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../components/DescriptionList/DescriptionList */ "./src/components/DescriptionList/DescriptionList.js");
-/* harmony import */ var _components_Modal_Modal__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../components/Modal/Modal */ "./src/components/Modal/Modal.js");
-/* harmony import */ var _components_Oneof_Oneof__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../components/Oneof/Oneof */ "./src/components/Oneof/Oneof.js");
-/* harmony import */ var _providers_ApiProvider__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../providers/ApiProvider */ "./src/providers/ApiProvider.js");
-/* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../utils/bem */ "./src/utils/bem.tsx");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var react_icons_fa__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react-icons/fa */ "./node_modules/react-icons/fa/index.esm.js");
+/* harmony import */ var truncate_middle__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! truncate-middle */ "./node_modules/truncate-middle/index.js");
+/* harmony import */ var truncate_middle__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(truncate_middle__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../components */ "./src/components/index.js");
+/* harmony import */ var _components_DescriptionList_DescriptionList__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../components/DescriptionList/DescriptionList */ "./src/components/DescriptionList/DescriptionList.js");
+/* harmony import */ var _components_Modal_Modal__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../components/Modal/Modal */ "./src/components/Modal/Modal.js");
+/* harmony import */ var _components_Oneof_Oneof__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../components/Oneof/Oneof */ "./src/components/Oneof/Oneof.js");
+/* harmony import */ var _providers_ApiProvider__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../providers/ApiProvider */ "./src/providers/ApiProvider.js");
+/* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../utils/bem */ "./src/utils/bem.tsx");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
 
 
 
@@ -21848,8 +21860,8 @@ const MachineLearningList = ({
   fetchBackends,
   onEdit
 }) => {
-  const rootClass = (0,_utils_bem__WEBPACK_IMPORTED_MODULE_6__.cn)('ml');
-  const api = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(_providers_ApiProvider__WEBPACK_IMPORTED_MODULE_5__.ApiContext);
+  const rootClass = (0,_utils_bem__WEBPACK_IMPORTED_MODULE_7__.cn)('ml');
+  const api = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(_providers_ApiProvider__WEBPACK_IMPORTED_MODULE_6__.ApiContext);
   const onDeleteModel = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(async backend => {
     await api.callApi('deleteMLBackend', {
       params: {
@@ -21866,9 +21878,9 @@ const MachineLearningList = ({
     });
     await fetchBackends();
   }, [fetchBackends, api]);
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
     className: rootClass,
-    children: backends.map(backend => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(BackendCard, {
+    children: backends.map(backend => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(BackendCard, {
       backend: backend,
       onStartTrain: onStartTraining,
       onDelete: onDeleteModel,
@@ -21884,7 +21896,7 @@ const BackendCard = ({
   onDelete
 }) => {
   const confirmDelete = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(backend => {
-    (0,_components_Modal_Modal__WEBPACK_IMPORTED_MODULE_3__.confirm)({
+    (0,_components_Modal_Modal__WEBPACK_IMPORTED_MODULE_4__.confirm)({
       title: "Delete ML Backend",
       body: "This action cannot be undone. Are you sure?",
       buttonLook: "destructive",
@@ -21895,46 +21907,49 @@ const BackendCard = ({
 
     });
   }, [backend, onDelete]);
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_components__WEBPACK_IMPORTED_MODULE_1__.Card, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_components__WEBPACK_IMPORTED_MODULE_2__.Card, {
     style: {
       marginTop: 0
     },
     header: backend.title,
-    extra: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-      className: (0,_utils_bem__WEBPACK_IMPORTED_MODULE_6__.cn)('ml').elem('info'),
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(BackendState, {
+    extra: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+      className: (0,_utils_bem__WEBPACK_IMPORTED_MODULE_7__.cn)('ml').elem('info'),
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(BackendState, {
         backend: backend
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_components__WEBPACK_IMPORTED_MODULE_1__.Dropdown.Trigger, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components__WEBPACK_IMPORTED_MODULE_2__.Dropdown.Trigger, {
         align: "right",
-        content: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_components__WEBPACK_IMPORTED_MODULE_1__.Menu, {
+        content: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_components__WEBPACK_IMPORTED_MODULE_2__.Menu, {
           size: "small",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_components__WEBPACK_IMPORTED_MODULE_1__.Menu.Item, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components__WEBPACK_IMPORTED_MODULE_2__.Menu.Item, {
             onClick: () => onEdit(backend),
             children: "Edit"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_components__WEBPACK_IMPORTED_MODULE_1__.Menu.Item, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components__WEBPACK_IMPORTED_MODULE_2__.Menu.Item, {
             onClick: () => confirmDelete(backend),
             children: "Delete"
           })]
         }),
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
           type: "link",
-          icon: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_8__.FaEllipsisV, {})
+          icon: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_9__.FaEllipsisV, {})
         })
       })]
     }),
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_components_DescriptionList_DescriptionList__WEBPACK_IMPORTED_MODULE_2__.DescriptionList, {
-      className: (0,_utils_bem__WEBPACK_IMPORTED_MODULE_6__.cn)('ml').elem('summary'),
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_components_DescriptionList_DescriptionList__WEBPACK_IMPORTED_MODULE_2__.DescriptionList.Item, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_components_DescriptionList_DescriptionList__WEBPACK_IMPORTED_MODULE_3__.DescriptionList, {
+      className: (0,_utils_bem__WEBPACK_IMPORTED_MODULE_7__.cn)('ml').elem('summary'),
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_DescriptionList_DescriptionList__WEBPACK_IMPORTED_MODULE_3__.DescriptionList.Item, {
         term: "URL",
-        children: backend.url
-      }), backend.description && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_components_DescriptionList_DescriptionList__WEBPACK_IMPORTED_MODULE_2__.DescriptionList.Item, {
+        termStyle: {
+          whiteSpace: 'nowrap'
+        },
+        children: truncate_middle__WEBPACK_IMPORTED_MODULE_1___default()(backend.url, 20, 10, '...')
+      }), backend.description && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_DescriptionList_DescriptionList__WEBPACK_IMPORTED_MODULE_3__.DescriptionList.Item, {
         term: "Description",
         children: backend.description
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_components_DescriptionList_DescriptionList__WEBPACK_IMPORTED_MODULE_2__.DescriptionList.Item, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_DescriptionList_DescriptionList__WEBPACK_IMPORTED_MODULE_3__.DescriptionList.Item, {
         term: "Version",
-        children: backend.version ? (0,date_fns__WEBPACK_IMPORTED_MODULE_9__.default)(new Date(backend.version), 'MMMM dd, yyyy ∙ HH:mm:ss') : 'unknown'
+        children: backend.version ? (0,date_fns__WEBPACK_IMPORTED_MODULE_10__.default)(new Date(backend.version), 'MMMM dd, yyyy ∙ HH:mm:ss') : 'unknown'
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
       disabled: backend.state !== "CO",
       onClick: () => onStartTrain(backend),
       children: "Start Training"
@@ -21948,28 +21963,28 @@ const BackendState = ({
   const {
     state
   } = backend;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-    className: (0,_utils_bem__WEBPACK_IMPORTED_MODULE_6__.cn)('ml').elem('status'),
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("span", {
-      className: (0,_utils_bem__WEBPACK_IMPORTED_MODULE_6__.cn)('ml').elem('indicator').mod({
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+    className: (0,_utils_bem__WEBPACK_IMPORTED_MODULE_7__.cn)('ml').elem('status'),
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
+      className: (0,_utils_bem__WEBPACK_IMPORTED_MODULE_7__.cn)('ml').elem('indicator').mod({
         state
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_components_Oneof_Oneof__WEBPACK_IMPORTED_MODULE_4__.Oneof, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_components_Oneof_Oneof__WEBPACK_IMPORTED_MODULE_5__.Oneof, {
       value: state,
-      className: (0,_utils_bem__WEBPACK_IMPORTED_MODULE_6__.cn)('ml').elem('status-label'),
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("span", {
+      className: (0,_utils_bem__WEBPACK_IMPORTED_MODULE_7__.cn)('ml').elem('status-label'),
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
         case: "DI",
         children: "Disconnected"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("span", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
         case: "CO",
         children: "Connected"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("span", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
         case: "ER",
         children: "Error"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("span", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
         case: "TR",
         children: "Training"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("span", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
         case: "PR",
         children: "Predicting"
       })]
@@ -22693,28 +22708,79 @@ const StorageSummary = ({
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
     className: className,
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(_components_DescriptionList_DescriptionList__WEBPACK_IMPORTED_MODULE_1__.DescriptionList, {
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_components_Oneof_Oneof__WEBPACK_IMPORTED_MODULE_2__.Oneof, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(_components_Oneof_Oneof__WEBPACK_IMPORTED_MODULE_2__.Oneof, {
         value: storage.type,
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(SummaryS3, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(SummaryS3, {
           case: "s3",
           storage: storage
-        })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(GSCStorage, {
+          case: "gcs",
+          storage: storage
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(AzureStorage, {
+          case: "azure",
+          storage: storage
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(RedisStorage, {
+          case: "redis",
+          storage: storage
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(LocalStorage, {
+          case: "redis",
+          storage: storage
+        })]
       }), enableLastSync && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_components_DescriptionList_DescriptionList__WEBPACK_IMPORTED_MODULE_1__.DescriptionList.Item, {
         term: "Last Sync",
         children: storage.last_sync ? (0,date_fns_esm__WEBPACK_IMPORTED_MODULE_4__.default)(new Date(storage.last_sync), 'MMMM dd, yyyy ∙ HH:mm:ss') : "Never synced"
       })]
     })
   });
-}; // February 10, 202117:47:01
+};
 
 const SummaryS3 = ({
   storage
 }) => {
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_components_DescriptionList_DescriptionList__WEBPACK_IMPORTED_MODULE_1__.DescriptionList.Item, {
-      term: "Bucket",
-      children: storage.bucket
-    })
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_components_DescriptionList_DescriptionList__WEBPACK_IMPORTED_MODULE_1__.DescriptionList.Item, {
+    term: "Bucket",
+    children: storage.bucket
+  });
+};
+
+const GSCStorage = ({
+  storage
+}) => {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_components_DescriptionList_DescriptionList__WEBPACK_IMPORTED_MODULE_1__.DescriptionList.Item, {
+    term: "Bucket",
+    children: storage.bucket
+  });
+};
+
+const AzureStorage = ({
+  storage
+}) => {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_components_DescriptionList_DescriptionList__WEBPACK_IMPORTED_MODULE_1__.DescriptionList.Item, {
+    term: "Container",
+    children: storage.container
+  });
+};
+
+const RedisStorage = ({
+  storage
+}) => {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_components_DescriptionList_DescriptionList__WEBPACK_IMPORTED_MODULE_1__.DescriptionList.Item, {
+      term: "Path",
+      children: storage.path
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(_components_DescriptionList_DescriptionList__WEBPACK_IMPORTED_MODULE_1__.DescriptionList.Item, {
+      term: "Host",
+      children: [storage.host, storage.port ? `:${storage.post}` : '']
+    })]
+  });
+};
+
+const LocalStorage = ({
+  storage
+}) => {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_components_DescriptionList_DescriptionList__WEBPACK_IMPORTED_MODULE_1__.DescriptionList.Item, {
+    term: "Path",
+    children: storage.path
   });
 };
 
@@ -23331,6 +23397,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "RoutesContext": () => (/* binding */ RoutesContext),
 /* harmony export */   "RoutesProvider": () => (/* binding */ RoutesProvider),
 /* harmony export */   "useRoutesMap": () => (/* binding */ useRoutesMap),
+/* harmony export */   "useFindRouteComponent": () => (/* binding */ useFindRouteComponent),
 /* harmony export */   "useBreadcrumbs": () => (/* binding */ useBreadcrumbs),
 /* harmony export */   "useCurrentPath": () => (/* binding */ useCurrentPath),
 /* harmony export */   "useParams": () => (/* binding */ useParams),
@@ -23410,7 +23477,8 @@ const RoutesProvider = ({
     breadcrumbs,
     currentContext,
     setContextProps: setCurrentContextProps,
-    path: currentPath
+    path: currentPath,
+    findComponent: path => findMacthingComponents(path, routesMap)
   }), [breadcrumbs, routesMap, currentContext, currentPath, setCurrentContext]);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     const ContextComponent = lastRoute === null || lastRoute === void 0 ? void 0 : lastRoute.context;
@@ -23451,15 +23519,20 @@ const useRoutesMap = () => {
 
   return (_useContext$routesMap = (_useContext = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(RoutesContext)) === null || _useContext === void 0 ? void 0 : _useContext.routesMap) !== null && _useContext$routesMap !== void 0 ? _useContext$routesMap : [];
 };
-const useBreadcrumbs = () => {
-  var _useContext$breadcrum, _useContext2;
+const useFindRouteComponent = () => {
+  var _useContext$findCompo, _useContext2;
 
-  return (_useContext$breadcrum = (_useContext2 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(RoutesContext)) === null || _useContext2 === void 0 ? void 0 : _useContext2.breadcrumbs) !== null && _useContext$breadcrum !== void 0 ? _useContext$breadcrum : [];
+  return (_useContext$findCompo = (_useContext2 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(RoutesContext)) === null || _useContext2 === void 0 ? void 0 : _useContext2.findComponent) !== null && _useContext$findCompo !== void 0 ? _useContext$findCompo : () => null;
+};
+const useBreadcrumbs = () => {
+  var _useContext$breadcrum, _useContext3;
+
+  return (_useContext$breadcrum = (_useContext3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(RoutesContext)) === null || _useContext3 === void 0 ? void 0 : _useContext3.breadcrumbs) !== null && _useContext$breadcrum !== void 0 ? _useContext$breadcrum : [];
 };
 const useCurrentPath = () => {
-  var _useContext3;
+  var _useContext4;
 
-  return (_useContext3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(RoutesContext)) === null || _useContext3 === void 0 ? void 0 : _useContext3.path;
+  return (_useContext4 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(RoutesContext)) === null || _useContext4 === void 0 ? void 0 : _useContext4.path;
 };
 const useParams = () => {
   const location = useFixedLocation();
@@ -90016,6 +90089,45 @@ function warning(condition, message) {
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (warning);
+
+
+/***/ }),
+
+/***/ "./node_modules/truncate-middle/index.js":
+/*!***********************************************!*\
+  !*** ./node_modules/truncate-middle/index.js ***!
+  \***********************************************/
+/***/ ((module) => {
+
+"use strict";
+
+/**
+ * There are cases where important information is at the end of the string and truncating the end isn't helpful.
+ * This function solves that.
+ *
+ * @param  {string} str         String to be truncated
+ * @param  {number} frontLen    Number of characters to be remained in front.
+ * @param  {number} backLen     Number of characters to be remained at the back.
+ * @param  {string} truncateStr String that is replaced the truncated portion
+ * @return {string}             Truncated string. Defaults to '&hellip;' if unspecified.
+ */
+module.exports = function (str, frontLen, backLen, truncateStr) {
+  if (str === null) {
+    return ''
+  }
+  var strLen = str.length
+  // Setting default values
+  frontLen = ~~frontLen // will cast to integer
+  backLen = ~~backLen
+  truncateStr = truncateStr || '&hellip;'
+  if (frontLen === 0 && backLen === 0 || frontLen >= strLen || backLen >= strLen || (frontLen + backLen) >= strLen) {
+    return str
+  } else if (backLen === 0) {
+    return str.slice(0, frontLen) + truncateStr
+  } else {
+    return str.slice(0, frontLen) + truncateStr + str.slice(strLen - backLen)
+  }
+}
 
 
 /***/ }),
