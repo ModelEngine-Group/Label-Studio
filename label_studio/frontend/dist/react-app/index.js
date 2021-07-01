@@ -15189,14 +15189,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../utils/bem */ "./src/utils/bem.tsx");
 /* harmony import */ var _utils_debounce__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../utils/debounce */ "./src/utils/debounce.js");
 /* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.js");
-/* harmony import */ var _Oneof_Oneof__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../Oneof/Oneof */ "./src/components/Oneof/Oneof.js");
-/* harmony import */ var _Space_Space__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../Space/Space */ "./src/components/Space/Space.js");
-/* harmony import */ var _Elements__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./Elements */ "./src/components/Form/Elements/index.js");
-/* harmony import */ var _Form_styl__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./Form.styl */ "./src/components/Form/Form.styl");
-/* harmony import */ var _FormContext__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./FormContext */ "./src/components/Form/FormContext.js");
-/* harmony import */ var _Validation_Validators__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./Validation/Validators */ "./src/components/Form/Validation/Validators.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _Button_Button__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../Button/Button */ "./src/components/Button/Button.js");
+/* harmony import */ var _Oneof_Oneof__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../Oneof/Oneof */ "./src/components/Oneof/Oneof.js");
+/* harmony import */ var _Space_Space__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../Space/Space */ "./src/components/Space/Space.js");
+/* harmony import */ var _Elements__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./Elements */ "./src/components/Form/Elements/index.js");
+/* harmony import */ var _Form_styl__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./Form.styl */ "./src/components/Form/Form.styl");
+/* harmony import */ var _FormContext__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./FormContext */ "./src/components/Form/FormContext.js");
+/* harmony import */ var _Validation_Validators__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./Validation/Validators */ "./src/components/Form/Validation/Validators.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 
@@ -15261,6 +15263,7 @@ class Form extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
     _defineProperty(this, "onFormChanged", async e => {
       var _this$props$onChange, _this$props;
 
+      e.stopPropagation();
       (_this$props$onChange = (_this$props = this.props).onChange) === null || _this$props$onChange === void 0 ? void 0 : _this$props$onChange.call(_this$props, e);
       this.autosubmit();
     });
@@ -15287,22 +15290,22 @@ class Form extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
   }
 
   render() {
-    const providers = [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_FormContext__WEBPACK_IMPORTED_MODULE_11__.FormContext.Provider, {
+    const providers = [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_FormContext__WEBPACK_IMPORTED_MODULE_12__.FormContext.Provider, {
       value: this
-    }, "form-ctx"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_FormContext__WEBPACK_IMPORTED_MODULE_11__.FormValidationContext.Provider, {
+    }, "form-ctx"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_FormContext__WEBPACK_IMPORTED_MODULE_12__.FormValidationContext.Provider, {
       value: this.state.validation
-    }, "form-validation-ctx"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_FormContext__WEBPACK_IMPORTED_MODULE_11__.FormSubmissionContext.Provider, {
+    }, "form-validation-ctx"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_FormContext__WEBPACK_IMPORTED_MODULE_12__.FormSubmissionContext.Provider, {
       value: this.state.submitting
-    }, "form-submission-ctx"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_FormContext__WEBPACK_IMPORTED_MODULE_11__.FormStateContext.Provider, {
+    }, "form-submission-ctx"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_FormContext__WEBPACK_IMPORTED_MODULE_12__.FormStateContext.Provider, {
       value: this.state.state
-    }, "form-state-ctx"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_FormContext__WEBPACK_IMPORTED_MODULE_11__.FormResponseContext.Provider, {
+    }, "form-state-ctx"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_FormContext__WEBPACK_IMPORTED_MODULE_12__.FormResponseContext.Provider, {
       value: this.state.lastResponse
-    }, "form-response"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_providers_ApiProvider__WEBPACK_IMPORTED_MODULE_2__.ApiProvider, {
+    }, "form-response"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_providers_ApiProvider__WEBPACK_IMPORTED_MODULE_2__.ApiProvider, {
       ref: this.apiRef
     }, "form-api")];
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_providers_MultiProvider__WEBPACK_IMPORTED_MODULE_3__.MultiProvider, {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_providers_MultiProvider__WEBPACK_IMPORTED_MODULE_3__.MultiProvider, {
       providers: providers,
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("form", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)("form", {
         ref: this.formElement,
         className: (0,_utils_bem__WEBPACK_IMPORTED_MODULE_4__.cn)('form'),
         action: this.props.action,
@@ -15310,7 +15313,8 @@ class Form extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
         onChange: this.onFormChanged,
         autoComplete: this.props.autoComplete,
         autoSave: this.props.autoSave,
-        children: [this.props.children, this.state.validation && this.state.showValidation && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(ValidationRenderer, {
+        style: this.props.style,
+        children: [this.props.children, this.state.validation && this.state.showValidation && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(ValidationRenderer, {
           validation: this.state.validation
         })]
       })
@@ -15366,9 +15370,16 @@ class Form extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
   assembleFormData({
     asJSON = false,
     full = false,
-    booleansAsNumbers = false
+    booleansAsNumbers = false,
+    fieldsFilter
   } = {}) {
-    const requestBody = Array.from(this.fields).reduce((res, {
+    let fields = Array.from(this.fields);
+
+    if (fieldsFilter instanceof Function) {
+      fields = fields.filter(fieldsFilter);
+    }
+
+    const requestBody = fields.reduce((res, {
       name,
       field,
       skip
@@ -15380,7 +15391,7 @@ class Form extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
           const inputValue = field.value;
 
           if (['checkbox', 'radio'].includes(field.type)) {
-            if (inputValue !== null && inputValue !== 'on') {
+            if (inputValue !== null && inputValue !== 'on' && inputValue !== 'true') {
               return field.checked ? inputValue : null;
             }
 
@@ -15407,7 +15418,9 @@ class Form extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
     }
   }
 
-  async submit() {
+  async submit({
+    fieldsFilter
+  } = {}) {
     var _this$props$prepareDa, _this$props$prepareDa2, _this$props2;
 
     this.setState({
@@ -15417,7 +15430,8 @@ class Form extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
     const rawAction = this.formElement.current.getAttribute("action");
     const useApi = this.api.isValidMethod(rawAction);
     const data = this.assembleFormData({
-      asJSON: useApi
+      asJSON: useApi,
+      fieldsFilter
     });
     const body = (_this$props$prepareDa = (_this$props$prepareDa2 = (_this$props2 = this.props).prepareData) === null || _this$props$prepareDa2 === void 0 ? void 0 : _this$props$prepareDa2.call(_this$props2, data)) !== null && _this$props$prepareDa !== void 0 ? _this$props$prepareDa : data;
     let success = false;
@@ -15577,17 +15591,17 @@ const ValidationRenderer = ({
   validation
 }) => {
   const rootClass = (0,_utils_bem__WEBPACK_IMPORTED_MODULE_4__.cn)('form-validation');
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
     className: rootClass,
-    children: Array.from(validation).map(([name, result]) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("div", {
+    children: Array.from(validation).map(([name, result]) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)("div", {
       className: rootClass.elem('group'),
       onClick: () => result.field.focus(),
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
         className: rootClass.elem('field'),
         children: result.label
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
         className: rootClass.elem('messages'),
-        children: result.messages.map((message, i) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
+        children: result.messages.map((message, i) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
           className: rootClass.elem('message'),
           children: message
         }, `${name}-${i}`))
@@ -15596,19 +15610,22 @@ const ValidationRenderer = ({
   });
 };
 
-Form.Validator = _Validation_Validators__WEBPACK_IMPORTED_MODULE_12__;
+Form.Validator = _Validation_Validators__WEBPACK_IMPORTED_MODULE_13__;
 
 Form.Row = ({
   columnCount,
   rowGap,
   children,
-  style
+  style,
+  spread = false
 }) => {
   const styles = {};
   if (columnCount) styles['--column-count'] = columnCount;
   if (rowGap) styles['--row-gap'] = rowGap;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
-    className: (0,_utils_bem__WEBPACK_IMPORTED_MODULE_4__.cn)('form').elem('row'),
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
+    className: (0,_utils_bem__WEBPACK_IMPORTED_MODULE_4__.cn)('form').elem('row').mod({
+      spread
+    }),
     style: { ...(style !== null && style !== void 0 ? style : {}),
       ...styles
     },
@@ -15617,46 +15634,72 @@ Form.Row = ({
 };
 
 Form.Builder = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(({
-  fields,
+  fields: defaultFields,
+  formData: defaultFormData,
+  fetchFields,
+  fetchFormData,
   children,
-  formData,
+  formRowStyle,
+  onSubmit,
+  withActions,
   ...props
 }, ref) => {
+  const formRef = ref !== null && ref !== void 0 ? ref : (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
+  const [fields, setFields] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(defaultFields !== null && defaultFields !== void 0 ? defaultFields : []);
+  const [formData, setFormData] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(defaultFormData !== null && defaultFormData !== void 0 ? defaultFormData : {});
+
   const renderFields = fields => {
     return fields.map((field, index) => {
-      if (!field) return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {}, `spacer-${index}`);
+      var _field$name;
+
+      if (!field) return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {}, `spacer-${index}`);
       const defaultValue = (formData === null || formData === void 0 ? void 0 : formData[field.name]) || undefined;
+      const triggerUpdate = props.autosubmit !== true && field.trigger_form_update === true;
+      const commonProps = {
+        key: (_field$name = field.name) !== null && _field$name !== void 0 ? _field$name : index,
+        ...field
+      };
+
+      if (triggerUpdate) {
+        commonProps.onChange = async () => {
+          await formRef.current.submit({
+            fieldsFilter: f => f.name === field.name
+          });
+          await updateFields();
+          await updateFormData();
+        };
+      }
 
       if (field.type === 'select') {
-        var _field$name, _field$value;
+        var _field$value;
 
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_Elements__WEBPACK_IMPORTED_MODULE_9__.Select, { ...field,
-          value: (_field$value = field.value) !== null && _field$value !== void 0 ? _field$value : defaultValue
-        }, (_field$name = field.name) !== null && _field$name !== void 0 ? _field$name : index);
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_Elements__WEBPACK_IMPORTED_MODULE_10__.Select, { ...commonProps,
+          defaultValue: (_field$value = field.value) !== null && _field$value !== void 0 ? _field$value : defaultValue
+        });
       } else if (field.type === 'counter') {
-        var _field$name2, _field$value2;
+        var _field$value2;
 
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_Elements__WEBPACK_IMPORTED_MODULE_9__.Counter, { ...field,
-          value: (_field$value2 = field.value) !== null && _field$value2 !== void 0 ? _field$value2 : defaultValue
-        }, (_field$name2 = field.name) !== null && _field$name2 !== void 0 ? _field$name2 : index);
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_Elements__WEBPACK_IMPORTED_MODULE_10__.Counter, { ...commonProps,
+          defaultValue: (_field$value2 = field.value) !== null && _field$value2 !== void 0 ? _field$value2 : defaultValue
+        });
       } else if (field.type === 'toggle') {
-        var _field$name3, _field$value3;
+        var _field$value3;
 
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_Elements__WEBPACK_IMPORTED_MODULE_9__.Toggle, { ...field,
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_Elements__WEBPACK_IMPORTED_MODULE_10__.Toggle, { ...commonProps,
           checked: (_field$value3 = field.value) !== null && _field$value3 !== void 0 ? _field$value3 : defaultValue
-        }, (_field$name3 = field.name) !== null && _field$name3 !== void 0 ? _field$name3 : index);
+        });
       } else {
-        var _field$name4, _field$value4;
+        var _field$value4;
 
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_Elements__WEBPACK_IMPORTED_MODULE_9__.Input, { ...field,
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_Elements__WEBPACK_IMPORTED_MODULE_10__.Input, { ...commonProps,
           defaultValue: (_field$value4 = field.value) !== null && _field$value4 !== void 0 ? _field$value4 : defaultValue
-        }, (_field$name4 = field.name) !== null && _field$name4 !== void 0 ? _field$name4 : index);
+        });
       }
     });
   };
 
   const renderColumns = columns => {
-    return columns.map((col, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
+    return columns.map((col, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
       className: (0,_utils_bem__WEBPACK_IMPORTED_MODULE_4__.cn)('form').elem('column'),
       style: {
         width: col.width
@@ -15665,16 +15708,60 @@ Form.Builder = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(({
     }, index));
   };
 
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(Form, { ...props,
-    ref: ref,
-    children: [fields.map(({
+  const updateFields = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(async () => {
+    if (fetchFields) {
+      const newFields = await fetchFields();
+
+      if (JSON.stringify(fields) !== JSON.stringify(newFields)) {
+        setFields(newFields);
+      }
+    }
+  }, [fetchFields]);
+  const updateFormData = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(async () => {
+    if (fetchFormData) {
+      const newFormData = await fetchFormData();
+
+      if ((0,shallow_equal__WEBPACK_IMPORTED_MODULE_1__.shallowEqualObjects)(formData, newFormData) === false) {
+        setFormData(newFormData);
+      }
+    }
+  }, [fetchFormData]);
+  const handleOnSubmit = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(async (...args) => {
+    onSubmit === null || onSubmit === void 0 ? void 0 : onSubmit(...args);
+    await updateFields();
+    await updateFormData();
+  }, [onSubmit, fetchFormData]);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    updateFields();
+  }, [updateFields]);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    updateFormData();
+  }, [updateFormData]);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    setFields(defaultFields);
+  }, [defaultFields]);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)(Form, { ...props,
+    onSubmit: handleOnSubmit,
+    ref: formRef,
+    children: [(fields !== null && fields !== void 0 ? fields : []).map(({
       columnCount,
       fields,
       columns
-    }, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(Form.Row, {
+    }, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(Form.Row, {
       columnCount: columnCount,
+      style: formRowStyle,
+      spread: true,
       children: columns ? renderColumns(columns) : renderFields(fields)
-    }, index)), children]
+    }, index)), children, props.autosubmit !== true && withActions === true && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(Form.Actions, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_Button_Button__WEBPACK_IMPORTED_MODULE_7__.Button, {
+        type: "submit",
+        look: "primary",
+        style: {
+          width: 120
+        },
+        children: "Save"
+      })
+    })]
   });
 });
 
@@ -15685,28 +15772,28 @@ Form.Actions = ({
   size
 }) => {
   const rootClass = (0,_utils_bem__WEBPACK_IMPORTED_MODULE_4__.cn)('form');
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)("div", {
     className: rootClass.elem('submit').mod({
       size
     }),
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
       className: rootClass.elem('info').mod({
         valid
       }),
       children: extra
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_Space_Space__WEBPACK_IMPORTED_MODULE_8__.Space, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_Space_Space__WEBPACK_IMPORTED_MODULE_9__.Space, {
       children: children
     })]
   });
 };
 
 Form.Indicator = () => {
-  const state = react__WEBPACK_IMPORTED_MODULE_0__.useContext(_FormContext__WEBPACK_IMPORTED_MODULE_11__.FormStateContext);
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_utils_bem__WEBPACK_IMPORTED_MODULE_4__.Block, {
+  const state = react__WEBPACK_IMPORTED_MODULE_0__.useContext(_FormContext__WEBPACK_IMPORTED_MODULE_12__.FormStateContext);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_utils_bem__WEBPACK_IMPORTED_MODULE_4__.Block, {
     name: "form-indicator",
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_Oneof_Oneof__WEBPACK_IMPORTED_MODULE_7__.Oneof, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_Oneof_Oneof__WEBPACK_IMPORTED_MODULE_8__.Oneof, {
       value: state,
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_utils_bem__WEBPACK_IMPORTED_MODULE_4__.Elem, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_utils_bem__WEBPACK_IMPORTED_MODULE_4__.Elem, {
         tag: "span",
         mod: {
           type: state
@@ -15728,8 +15815,8 @@ Form.ResponseParser = ({
     throw new Error("Response Parser only accepts function as a child");
   }
 
-  const response = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(_FormContext__WEBPACK_IMPORTED_MODULE_11__.FormResponseContext);
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.Fragment, {
+  const response = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(_FormContext__WEBPACK_IMPORTED_MODULE_12__.FormResponseContext);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.Fragment, {
     children: response ? callback(response) : null
   });
 };
@@ -17733,7 +17820,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Form__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../components/Form */ "./src/components/Form/index.js");
 /* harmony import */ var _components_Oneof_Oneof__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../components/Oneof/Oneof */ "./src/components/Oneof/Oneof.js");
 /* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../utils/bem */ "./src/utils/bem.tsx");
-/* harmony import */ var _utils_colors__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../utils/colors */ "./src/utils/colors.ts");
+/* harmony import */ var _utils_colors__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../utils/colors */ "./src/utils/colors.js");
 /* harmony import */ var _colors__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./colors */ "./src/pages/CreateProject/Config/colors.js");
 /* harmony import */ var _Config_styl__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./Config.styl */ "./src/pages/CreateProject/Config/Config.styl");
 /* harmony import */ var _Preview__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./Preview */ "./src/pages/CreateProject/Config/Preview.js");
@@ -18434,8 +18521,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "isEmptyConfig": () => (/* binding */ isEmptyConfig),
 /* harmony export */   "Template": () => (/* binding */ Template)
 /* harmony export */ });
-/* harmony import */ var _tags__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./tags */ "./src/pages/CreateProject/Config/tags.ts");
-/* harmony import */ var _utils_colors__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../utils/colors */ "./src/utils/colors.ts");
+/* harmony import */ var _tags__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./tags */ "./src/pages/CreateProject/Config/tags.js");
+/* harmony import */ var _utils_colors__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../utils/colors */ "./src/utils/colors.js");
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
@@ -18856,9 +18943,9 @@ const colorNames = {
 
 /***/ }),
 
-/***/ "./src/pages/CreateProject/Config/tags.ts":
+/***/ "./src/pages/CreateProject/Config/tags.js":
 /*!************************************************!*\
-  !*** ./src/pages/CreateProject/Config/tags.ts ***!
+  !*** ./src/pages/CreateProject/Config/tags.js ***!
   \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -18872,9 +18959,6 @@ __webpack_require__.r(__webpack_exports__);
 const OBJECTS = {
   Image: {
     type: 'Image',
-    sample: value => ({
-      [value]: "https://app.heartex.ai/static/samples/sample.jpg"
-    }),
     settings: {
       strokeWidth: {
         title: 'Width of region borders',
@@ -18883,7 +18967,7 @@ const OBJECTS = {
         value: $obj => {
           var _$obj$$controls$0$get, _$obj$$controls$;
 
-          return (_$obj$$controls$0$get = (_$obj$$controls$ = $obj.$controls[0]) === null || _$obj$$controls$ === void 0 ? void 0 : _$obj$$controls$.getAttribute('strokeWidth')) !== null && _$obj$$controls$0$get !== void 0 ? _$obj$$controls$0$get : 3;
+          return (_$obj$$controls$0$get = (_$obj$$controls$ = $obj.$controls[0]) === null || _$obj$$controls$ === void 0 ? void 0 : _$obj$$controls$.getAttribute('strokeWidth')) !== null && _$obj$$controls$0$get !== void 0 ? _$obj$$controls$0$get : 1;
         }
       },
       zoom: {
@@ -18905,9 +18989,6 @@ const OBJECTS = {
   },
   Text: {
     type: 'Text',
-    sample: (value, $obj) => ({
-      [value]: $obj.getAttribute("valueType") === "url" ? "https://htx-pub.s3.amazonaws.com/example.txt" : "Showers continued throughout the week in the Bahia cocoa zone, alleviating the drought since early January and improving prospects for the coming temporao, although normal humidity levels have not been restored, Comissaria Smith said in its weekly review.\n\nThe dry period means the temporao will be late this year. Arrivals for the week ended February 22 were 155,221 bags of 60 kilos making a cumulative total for the season of 5.93 mln against 5.81 at the same stage last year. Again it seems that cocoa delivered earlier on consignment was included in the arrivals figures.\n\nComissaria Smith said there is still some doubt as to how much old crop cocoa is still available as harvesting has practically come to an end. With total Bahia crop estimates around 6.4 mln bags and sales standing at almost 6.2 mln there are a few hundred thousand bags still in the hands of farmers, middlemen, exporters and processors."
-    }),
     settings: {
       granularity: {
         title: 'Select text by words',
@@ -18919,10 +19000,7 @@ const OBJECTS = {
     }
   },
   HyperText: {
-    type: 'HyperText',
-    sample: (value, $obj) => ({
-      [value]: '<div style="max-width: 750px"><div style="clear: both"><div style="float: right; display: inline-block; border: 1px solid #F2F3F4; background-color: #F8F9F9; border-radius: 5px; padding: 7px; margin: 10px 0;"><p><b>Jules</b>: No no, Mr. Wolfe, it\'s not like that. Your help is definitely appreciated.</p></div></div><div style="clear: both"><div style="float: right; display: inline-block; border: 1px solid #F2F3F4; background-color: #F8F9F9; border-radius: 5px; padding: 7px; margin: 10px 0;"><p><b>Vincent</b>: Look, Mr. Wolfe, I respect you. I just don\'t like people barking orders at me, that\'s all.</p></div></div><div style="clear: both"><div style="display: inline-block; border: 1px solid #D5F5E3; background-color: #EAFAF1; border-radius: 5px; padding: 7px; margin: 10px 0;"><p><b>The Wolf</b>: If I\'m curt with you, it\'s because time is a factor. I think fast, I talk fast, and I need you two guys to act fast if you want to get out of this. So pretty please, with sugar on top, clean the car.</p></div></div></div>'
-    })
+    type: 'HyperText'
   },
   Audio: {
     type: 'Audio'
@@ -18943,7 +19021,7 @@ const OBJECTS = {
 const Labels = {
   type: 'Labels',
   settings: {
-    placeLabels: {
+    placeLabelsLeft: {
       title: 'Display labels:',
       type: ["bottom", "left", "right", "top"],
       control: true,
@@ -24532,9 +24610,9 @@ const {
 
 /***/ }),
 
-/***/ "./src/utils/colors.ts":
+/***/ "./src/utils/colors.js":
 /*!*****************************!*\
-  !*** ./src/utils/colors.ts ***!
+  !*** ./src/utils/colors.js ***!
   \*****************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -24553,6 +24631,7 @@ function* Palette(colors = LABELS_PALETTE) {
     index = (index + 1) % colors.length;
   }
 }
+window.Palette = Palette;
 
 /***/ }),
 
