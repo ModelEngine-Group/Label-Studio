@@ -11478,6 +11478,16 @@ var browserPerformanceTimeOrigin = (function () {
 
 /***/ }),
 
+/***/ "./node_modules/@sentry/webpack-plugin/src/sentry-webpack.module.js":
+/*!**************************************************************************!*\
+  !*** ./node_modules/@sentry/webpack-plugin/src/sentry-webpack.module.js ***!
+  \**************************************************************************/
+/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+
+(typeof window !== 'undefined' ? window : typeof __webpack_require__.g !== 'undefined' ? __webpack_require__.g : typeof self !== 'undefined' ? self : {}).SENTRY_RELEASE={id:"label-studio@1.1.0"};
+
+/***/ }),
+
 /***/ "./src/assets/icons/all-projects.svg":
 /*!*******************************************!*\
   !*** ./src/assets/icons/all-projects.svg ***!
@@ -17731,7 +17741,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const initSentry = history => {
-  if (true) return;
   setTags();
   _sentry_browser__WEBPACK_IMPORTED_MODULE_1__.init({
     dsn: "https://5f51920ff82a4675a495870244869c6b@o227124.ingest.sentry.io/5838868",
@@ -17742,7 +17751,8 @@ const initSentry = history => {
     // Set tracesSampleRate to 1.0 to capture 100%
     // of transactions for performance monitoring.
     // We recommend adjusting this value in production
-    tracesSampleRate:  false ? 0 : 1.0
+    tracesSampleRate: 0.25,
+    release: `label-studio@${APP_SETTINGS.version['label-studio-os-package'].version}`
   });
 };
 
@@ -17762,12 +17772,6 @@ const setTags = () => {
         version,
         commit
       } = data !== null && data !== void 0 ? data : {};
-      console.log({
-        packageName,
-        version,
-        commit,
-        data
-      });
 
       if (version) {
         tags['version-' + packageName] = version;
@@ -17779,7 +17783,6 @@ const setTags = () => {
     });
   }
 
-  console.log(tags);
   _sentry_browser__WEBPACK_IMPORTED_MODULE_3__.setTags(tags);
 };
 
@@ -90624,6 +90627,7 @@ function valueEqual(a, b) {
 /************************************************************************/
 /******/ 	// startup
 /******/ 	// Load entry module
+/******/ 	__webpack_require__("./node_modules/@sentry/webpack-plugin/src/sentry-webpack.module.js");
 /******/ 	__webpack_require__("./src/index.js");
 /******/ 	// This entry module used 'exports' so it can't be inlined
 /******/ })()
