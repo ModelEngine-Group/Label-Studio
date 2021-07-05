@@ -11478,16 +11478,6 @@ var browserPerformanceTimeOrigin = (function () {
 
 /***/ }),
 
-/***/ "./node_modules/@sentry/webpack-plugin/src/sentry-webpack.module.js":
-/*!**************************************************************************!*\
-  !*** ./node_modules/@sentry/webpack-plugin/src/sentry-webpack.module.js ***!
-  \**************************************************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
-
-(typeof window !== 'undefined' ? window : typeof __webpack_require__.g !== 'undefined' ? __webpack_require__.g : typeof self !== 'undefined' ? self : {}).SENTRY_RELEASE={id:"label-studio@1.1.0"};
-
-/***/ }),
-
 /***/ "./src/assets/icons/all-projects.svg":
 /*!*******************************************!*\
   !*** ./src/assets/icons/all-projects.svg ***!
@@ -24342,7 +24332,7 @@ class APIProxy {
 
     return {
       status: fetchResponse.status,
-      error: (_exception$message = exception === null || exception === void 0 ? void 0 : exception.message) !== null && _exception$message !== void 0 ? _exception$message : fetchResponse.statusText,
+      error: ((_exception$message = exception === null || exception === void 0 ? void 0 : exception.message) !== null && _exception$message !== void 0 ? _exception$message : fetchResponse.statusText) || "Server Error",
       response: await result
     };
   }
@@ -90627,7 +90617,6 @@ function valueEqual(a, b) {
 /************************************************************************/
 /******/ 	// startup
 /******/ 	// Load entry module
-/******/ 	__webpack_require__("./node_modules/@sentry/webpack-plugin/src/sentry-webpack.module.js");
 /******/ 	__webpack_require__("./src/index.js");
 /******/ 	// This entry module used 'exports' so it can't be inlined
 /******/ })()
