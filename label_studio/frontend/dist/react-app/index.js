@@ -12667,7 +12667,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _providers_ConfigProvider__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../providers/ConfigProvider */ "./src/providers/ConfigProvider.js");
 /* harmony import */ var _providers_LibraryProvider__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../providers/LibraryProvider */ "./src/providers/LibraryProvider.js");
 /* harmony import */ var _providers_MultiProvider__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../providers/MultiProvider */ "./src/providers/MultiProvider.js");
-/* harmony import */ var _providers_ProjectProvider__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../providers/ProjectProvider */ "./src/providers/ProjectProvider.js");
+/* harmony import */ var _providers_ProjectProvider__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../providers/ProjectProvider */ "./src/providers/ProjectProvider.tsx");
 /* harmony import */ var _providers_RoutesProvider__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../providers/RoutesProvider */ "./src/providers/RoutesProvider.js");
 /* harmony import */ var _App_styl__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./App.styl */ "./src/app/App.styl");
 /* harmony import */ var _AsyncPage_AsyncPage__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./AsyncPage/AsyncPage */ "./src/app/AsyncPage/AsyncPage.js");
@@ -14317,7 +14317,7 @@ const ErrorWrapper = ({
       dangerouslySetInnerHTML: {
         __html: preparedStackTrace.replace(/(\n)/g, '<br>')
       }
-    }), (validation === null || validation === void 0 ? void 0 : validation.length) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_utils_bem__WEBPACK_IMPORTED_MODULE_2__.Elem, {
+    }), (validation === null || validation === void 0 ? void 0 : validation.length) > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_utils_bem__WEBPACK_IMPORTED_MODULE_2__.Elem, {
       tag: "ul",
       name: "validation",
       children: validation.map(([field, errors]) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
@@ -14944,6 +14944,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 const Select = ({
   label,
   className,
@@ -14969,17 +14970,29 @@ const Select = ({
     ...props,
     children: ref => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
       className: classList,
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("select", { ...props,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("select", { ...props,
         ref: ref,
         className: rootClass.elem('list'),
-        children: (options !== null && options !== void 0 ? options : []).map(option => {
-          var _option$label;
+        children: [props.placeholder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("option", {
+          value: "",
+          disabled: true,
+          hidden: true,
+          selected: true,
+          children: props.placeholder
+        }), (options !== null && options !== void 0 ? options : []).map(option => {
+          var _option$value, _option$label, _option$disabled, _option$hidden;
 
+          const value = (_option$value = option.value) !== null && _option$value !== void 0 ? _option$value : option;
+          const label = (_option$label = option.label) !== null && _option$label !== void 0 ? _option$label : value;
+          const disabled = (_option$disabled = option.disabled) !== null && _option$disabled !== void 0 ? _option$disabled : false;
+          const hidden = (_option$hidden = option.hidden) !== null && _option$hidden !== void 0 ? _option$hidden : false;
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("option", {
-            value: option.value,
-            children: (_option$label = option.label) !== null && _option$label !== void 0 ? _option$label : option.value
-          }, option.value);
-        })
+            value: value,
+            disabled: disabled,
+            hidden: hidden,
+            children: label
+          }, value);
+        })]
       })
     })
   });
@@ -15918,6 +15931,8 @@ const FormField = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRef)
       setValue(value);
     } else if (input.type === 'checkbox' || input.type === 'radio') {
       input.checked = value !== null && value !== void 0 ? value : input.checked;
+    } else if (value === null) {
+      input.value = "";
     } else {
       input.value = value;
     }
@@ -17697,6 +17712,7 @@ const API_CONFIG = {
     deleteMLBackend: "DELETE:/ml/:pk",
     trainMLBackend: "POST:/ml/:pk/train",
     predictWithML: "POST:/ml/:pk/predict",
+    modelVersions: "/projects/:pk/model-versions",
     // Export
     export: "/projects/:pk/export",
     previousExports: "/projects/:pk/export/files",
@@ -17742,7 +17758,7 @@ const initSentry = history => {
     // of transactions for performance monitoring.
     // We recommend adjusting this value in production
     tracesSampleRate: 0.25,
-    release: `label-studio@${APP_SETTINGS.version['label-studio-os-package'].version}`
+    release: "label-studio@1.1.0-frontend"
   });
 };
 
@@ -19840,7 +19856,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Modal_Modal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../components/Modal/Modal */ "./src/components/Modal/Modal.js");
 /* harmony import */ var _components_Space_Space__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../components/Space/Space */ "./src/components/Space/Space.js");
 /* harmony import */ var _providers_ApiProvider__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../providers/ApiProvider */ "./src/providers/ApiProvider.js");
-/* harmony import */ var _providers_ProjectProvider__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../providers/ProjectProvider */ "./src/providers/ProjectProvider.js");
+/* harmony import */ var _providers_ProjectProvider__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../providers/ProjectProvider */ "./src/providers/ProjectProvider.tsx");
 /* harmony import */ var _providers_RoutesProvider__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../providers/RoutesProvider */ "./src/providers/RoutesProvider.js");
 /* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../utils/bem */ "./src/utils/bem.tsx");
 /* harmony import */ var _utils_hooks__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../utils/hooks */ "./src/utils/hooks.js");
@@ -20085,7 +20101,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Modal_Modal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../components/Modal/Modal */ "./src/components/Modal/Modal.js");
 /* harmony import */ var _components_Space_Space__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../components/Space/Space */ "./src/components/Space/Space.js");
 /* harmony import */ var _providers_LibraryProvider__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../providers/LibraryProvider */ "./src/providers/LibraryProvider.js");
-/* harmony import */ var _providers_ProjectProvider__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../providers/ProjectProvider */ "./src/providers/ProjectProvider.js");
+/* harmony import */ var _providers_ProjectProvider__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../providers/ProjectProvider */ "./src/providers/ProjectProvider.tsx");
 /* harmony import */ var _providers_RoutesProvider__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../providers/RoutesProvider */ "./src/providers/RoutesProvider.js");
 /* harmony import */ var _services_breadrumbs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../services/breadrumbs */ "./src/services/breadrumbs.js");
 /* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../utils/bem */ "./src/utils/bem.tsx");
@@ -21441,7 +21457,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Space_Space__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../components/Space/Space */ "./src/components/Space/Space.js");
 /* harmony import */ var _components_Spinner_Spinner__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../components/Spinner/Spinner */ "./src/components/Spinner/Spinner.js");
 /* harmony import */ var _providers_ApiProvider__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../providers/ApiProvider */ "./src/providers/ApiProvider.js");
-/* harmony import */ var _providers_ProjectProvider__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../providers/ProjectProvider */ "./src/providers/ProjectProvider.js");
+/* harmony import */ var _providers_ProjectProvider__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../providers/ProjectProvider */ "./src/providers/ProjectProvider.tsx");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
 
@@ -21576,7 +21592,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../components */ "./src/components/index.js");
 /* harmony import */ var _components_Form__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../components/Form */ "./src/components/Form/index.js");
 /* harmony import */ var _components_Form_Elements_RadioGroup_RadioGroup__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../components/Form/Elements/RadioGroup/RadioGroup */ "./src/components/Form/Elements/RadioGroup/RadioGroup.js");
-/* harmony import */ var _providers_ProjectProvider__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../providers/ProjectProvider */ "./src/providers/ProjectProvider.js");
+/* harmony import */ var _providers_ProjectProvider__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../providers/ProjectProvider */ "./src/providers/ProjectProvider.tsx");
 /* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../utils/bem */ "./src/utils/bem.tsx");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
@@ -21707,7 +21723,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../components */ "./src/components/index.js");
 /* harmony import */ var _components_Form__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../components/Form */ "./src/components/Form/index.js");
 /* harmony import */ var _components_Menubar_Menubar__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../components/Menubar/Menubar */ "./src/components/Menubar/Menubar.js");
-/* harmony import */ var _providers_ProjectProvider__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../providers/ProjectProvider */ "./src/providers/ProjectProvider.js");
+/* harmony import */ var _providers_ProjectProvider__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../providers/ProjectProvider */ "./src/providers/ProjectProvider.tsx");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
 
@@ -21810,7 +21826,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_router__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-router */ "./node_modules/react-router/esm/react-router.js");
 /* harmony import */ var _components_Modal_Modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../components/Modal/Modal */ "./src/components/Modal/Modal.js");
 /* harmony import */ var _providers_ApiProvider__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../providers/ApiProvider */ "./src/providers/ApiProvider.js");
-/* harmony import */ var _providers_ProjectProvider__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../providers/ProjectProvider */ "./src/providers/ProjectProvider.js");
+/* harmony import */ var _providers_ProjectProvider__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../providers/ProjectProvider */ "./src/providers/ProjectProvider.tsx");
 /* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.js");
 /* harmony import */ var _CreateProject_Config_Config__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../CreateProject/Config/Config */ "./src/pages/CreateProject/Config/Config.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
@@ -22094,7 +22110,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Form__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../components/Form */ "./src/components/Form/index.js");
 /* harmony import */ var _components_Modal_Modal__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../components/Modal/Modal */ "./src/components/Modal/Modal.js");
 /* harmony import */ var _providers_ApiProvider__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../providers/ApiProvider */ "./src/providers/ApiProvider.js");
-/* harmony import */ var _providers_ProjectProvider__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../providers/ProjectProvider */ "./src/providers/ProjectProvider.js");
+/* harmony import */ var _providers_ProjectProvider__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../providers/ProjectProvider */ "./src/providers/ProjectProvider.tsx");
 /* harmony import */ var _MachineLearningList__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./MachineLearningList */ "./src/pages/Settings/MachineLearningSettings/MachineLearningList.js");
 /* harmony import */ var _MachineLearningSettings_styl__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./MachineLearningSettings.styl */ "./src/pages/Settings/MachineLearningSettings/MachineLearningSettings.styl");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
@@ -22117,10 +22133,19 @@ const MachineLearningSettings = () => {
   const api = (0,_providers_ApiProvider__WEBPACK_IMPORTED_MODULE_8__.useAPI)();
   const {
     project,
-    fetchProject
+    fetchProject,
+    updateProject
   } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(_providers_ProjectProvider__WEBPACK_IMPORTED_MODULE_9__.ProjectContext);
   const [mlError, setMLError] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)();
   const [backends, setBackends] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
+  const [versions, setVersions] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
+  const resetMLVersion = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(async e => {
+    e.preventDefault();
+    e.stopPropagation();
+    await updateProject({
+      model_version: null
+    });
+  }, [api, project]);
   const fetchBackends = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(async () => {
     const models = await api.callApi('mlBackends', {
       params: {
@@ -22129,6 +22154,14 @@ const MachineLearningSettings = () => {
     });
     if (models) setBackends(models);
   }, [api, project, setBackends]);
+  const fetchMLVersions = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(async () => {
+    const versions = await api.callApi("modelVersions", {
+      params: {
+        pk: project.id
+      }
+    });
+    setVersions(versions);
+  }, [api, project.id]);
   const showMLFormModal = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(backend => {
     const action = backend ? "updateMLBackend" : "addMLBackend";
     const modalProps = {
@@ -22198,7 +22231,10 @@ const MachineLearningSettings = () => {
     const modalRef = (0,_components_Modal_Modal__WEBPACK_IMPORTED_MODULE_7__.modal)(modalProps);
   }, [project, fetchBackends, mlError]);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    if (project.id) fetchBackends();
+    if (project.id) {
+      fetchBackends();
+      fetchMLVersions();
+    }
   }, [project]);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(_components_Description_Description__WEBPACK_IMPORTED_MODULE_2__.Description, {
@@ -22216,7 +22252,7 @@ const MachineLearningSettings = () => {
       children: "Add Model"
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_components_Divider_Divider__WEBPACK_IMPORTED_MODULE_3__.Divider, {
       height: 32
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_components_Form__WEBPACK_IMPORTED_MODULE_6__.Form, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(_components_Form__WEBPACK_IMPORTED_MODULE_6__.Form, {
       action: "updateProject",
       formData: { ...project
       },
@@ -22225,7 +22261,7 @@ const MachineLearningSettings = () => {
       },
       onSubmit: () => fetchProject(),
       autosubmit: true,
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(_components_Form__WEBPACK_IMPORTED_MODULE_6__.Form.Row, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(_components_Form__WEBPACK_IMPORTED_MODULE_6__.Form.Row, {
         columnCount: 1,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_components_Form__WEBPACK_IMPORTED_MODULE_6__.Label, {
           text: "ML-Assisted Labeling",
@@ -22255,7 +22291,39 @@ const MachineLearningSettings = () => {
             name: "show_collab_predictions"
           })
         })]
-      })
+      }), versions.length > 1 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(_components_Form__WEBPACK_IMPORTED_MODULE_6__.Form.Row, {
+        columnCount: 1,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_components_Form__WEBPACK_IMPORTED_MODULE_6__.Label, {
+          text: "Model Version",
+          description: "Model version allows you to specify which prediction will be shown to the annotators.",
+          style: {
+            marginTop: 16
+          },
+          large: true
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
+          style: {
+            display: 'flex',
+            alignItems: 'center',
+            width: 400,
+            paddingLeft: 16
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
+            style: {
+              flex: 1,
+              paddingRight: 16
+            },
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_components_Form__WEBPACK_IMPORTED_MODULE_6__.Select, {
+              name: "model_version",
+              defaultValue: null,
+              options: [...versions],
+              placeholder: "No model version selected"
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+            onClick: resetMLVersion,
+            children: "Reset"
+          })]
+        })]
+      })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_MachineLearningList__WEBPACK_IMPORTED_MODULE_10__.MachineLearningList, {
       onEdit: backend => showMLFormModal(backend),
       fetchBackends: fetchBackends,
@@ -22574,7 +22642,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Modal_Modal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../components/Modal/Modal */ "./src/components/Modal/Modal.js");
 /* harmony import */ var _components_Spinner_Spinner__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../components/Spinner/Spinner */ "./src/components/Spinner/Spinner.js");
 /* harmony import */ var _providers_ApiProvider__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../providers/ApiProvider */ "./src/providers/ApiProvider.js");
-/* harmony import */ var _providers_ProjectProvider__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../providers/ProjectProvider */ "./src/providers/ProjectProvider.js");
+/* harmony import */ var _providers_ProjectProvider__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../providers/ProjectProvider */ "./src/providers/ProjectProvider.tsx");
 /* harmony import */ var _StorageCard__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./StorageCard */ "./src/pages/Settings/StorageSettings/StorageCard.js");
 /* harmony import */ var _StorageForm__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./StorageForm */ "./src/pages/Settings/StorageSettings/StorageForm.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
@@ -23373,10 +23441,10 @@ const MultiProvider = props => {
 
 /***/ }),
 
-/***/ "./src/providers/ProjectProvider.js":
-/*!******************************************!*\
-  !*** ./src/providers/ProjectProvider.js ***!
-  \******************************************/
+/***/ "./src/providers/ProjectProvider.tsx":
+/*!*******************************************!*\
+  !*** ./src/providers/ProjectProvider.tsx ***!
+  \*******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -23398,7 +23466,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const ProjectContext = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.createContext)();
+const ProjectContext = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.createContext)({});
 ProjectContext.displayName = 'ProjectContext';
 const projectCache = new Map();
 const ProjectProvider = ({
@@ -23410,40 +23478,58 @@ const ProjectProvider = ({
   const params = (0,_RoutesProvider__WEBPACK_IMPORTED_MODULE_4__.useParams)();
   const {
     update: updateStore
-  } = (0,_AppStoreProvider__WEBPACK_IMPORTED_MODULE_3__.useAppStore)();
-  const [projectData, setProjectData] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)((_projectCache$get = projectCache.get(params.id)) !== null && _projectCache$get !== void 0 ? _projectCache$get : {});
+  } = (0,_AppStoreProvider__WEBPACK_IMPORTED_MODULE_3__.useAppStore)(); // @todo use null for missed project data
+
+  const [projectData, setProjectData] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)((_projectCache$get = projectCache.get(+params.id)) !== null && _projectCache$get !== void 0 ? _projectCache$get : {});
   const fetchProject = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(async (id, force = false) => {
-    const finalProjectId = id !== null && id !== void 0 ? id : params.id;
-    if (!finalProjectId) return;
+    const finalProjectId = +(id !== null && id !== void 0 ? id : params.id);
+    if (isNaN(finalProjectId)) return;
 
-    if (finalProjectId) {
-      if (projectCache.has(finalProjectId)) {
-        setProjectData({ ...projectCache.get(finalProjectId)
-        });
-      }
-
-      const projectInfo = await api.callApi('project', {
-        params: {
-          pk: finalProjectId
-        },
-
-        errorFilter(result) {
-          return false;
-        }
-
+    if (!force && projectCache.has(finalProjectId)) {
+      setProjectData({ ...projectCache.get(finalProjectId)
       });
-
-      if ((0,shallow_equal__WEBPACK_IMPORTED_MODULE_1__.shallowEqualObjects)(projectData, projectInfo) === false) {
-        setProjectData({ ...projectInfo
-        });
-        updateStore({
-          project: projectInfo
-        });
-        projectCache.set(finalProjectId, projectInfo);
-      }
     }
+
+    const result = await api.callApi('project', {
+      params: {
+        pk: finalProjectId
+      },
+      errorFilter: () => false
+    });
+    const projectInfo = result;
+
+    if ((0,shallow_equal__WEBPACK_IMPORTED_MODULE_1__.shallowEqualObjects)(projectData, projectInfo) === false) {
+      setProjectData(projectInfo);
+      updateStore({
+        project: projectInfo
+      });
+      projectCache.set(projectInfo.id, projectInfo);
+    }
+
+    return projectInfo;
   }, [params]);
+  const updateProject = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(async fields => {
+    const result = await api.callApi('updateProject', {
+      params: {
+        pk: projectData.id
+      },
+      body: fields
+    });
+
+    if (result.$meta) {
+      setProjectData(result);
+      updateStore({
+        project: result
+      });
+    }
+
+    return result;
+  }, [projectData, setProjectData, updateStore]);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (+params.id !== (projectData === null || projectData === void 0 ? void 0 : projectData.id)) {
+      setProjectData({});
+    }
+
     fetchProject();
   }, [params]);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
@@ -23452,11 +23538,19 @@ const ProjectProvider = ({
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(ProjectContext.Provider, {
     value: {
       project: projectData,
-      fetchProject
+      fetchProject,
+      updateProject,
+
+      invalidateCache() {
+        projectCache.clear();
+        setProjectData({});
+      }
+
     },
     children: children
   });
-};
+}; // without this extra typing VSCode doesn't see the type after import :(
+
 const useProject = () => {
   var _useContext;
 
@@ -24798,7 +24892,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "humanReadableNumber": () => (/* binding */ humanReadableNumber),
 /* harmony export */   "absoluteURL": () => (/* binding */ absoluteURL),
 /* harmony export */   "removePrefix": () => (/* binding */ removePrefix),
-/* harmony export */   "copyText": () => (/* binding */ copyText)
+/* harmony export */   "copyText": () => (/* binding */ copyText),
+/* harmony export */   "delay": () => (/* binding */ delay)
 /* harmony export */ });
 const formDataToJPO = formData => {
   if (formData instanceof FormData === false) return formData;
@@ -24872,6 +24967,9 @@ const copyText = text => {
   input.select();
   document.execCommand('copy');
   input.remove();
+};
+const delay = (time = 0) => {
+  return new Promise(resolve => setTimeout(resolve, time));
 };
 
 /***/ }),
