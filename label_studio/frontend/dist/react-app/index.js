@@ -15878,8 +15878,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "FormField": () => (/* binding */ FormField)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var _FormContext__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./FormContext */ "./src/components/Form/FormContext.js");
-/* harmony import */ var _Validation_Validators__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Validation/Validators */ "./src/components/Form/Validation/Validators.js");
+/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.js");
+/* harmony import */ var _FormContext__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./FormContext */ "./src/components/Form/FormContext.js");
+/* harmony import */ var _Validation_Validators__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Validation/Validators */ "./src/components/Form/Validation/Validators.js");
+
 
 
 
@@ -15892,14 +15894,29 @@ const FormField = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRef)
   skip,
   setValue,
   dependency,
+  validators,
   ...props
 }, ref) => {
+  var _validators$forEach;
+
   /**@type {Form} */
-  const context = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(_FormContext__WEBPACK_IMPORTED_MODULE_1__.FormContext);
+  const context = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(_FormContext__WEBPACK_IMPORTED_MODULE_2__.FormContext);
   const [dependencyField, setDependencyField] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const field = ref !== null && ref !== void 0 ? ref : (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
   const validation = [...(validate !== null && validate !== void 0 ? validate : [])];
-  if (required) validation.push(_Validation_Validators__WEBPACK_IMPORTED_MODULE_2__.required);
+  validators === null || validators === void 0 ? void 0 : (_validators$forEach = validators.forEach) === null || _validators$forEach === void 0 ? void 0 : _validators$forEach.call(validators, validator => {
+    const [name, value] = validator.split(/:(.+)/).slice(0, 2);
+    const validatorFunc = _Validation_Validators__WEBPACK_IMPORTED_MODULE_3__[name];
+
+    if ((0,_utils_helpers__WEBPACK_IMPORTED_MODULE_1__.isDefined)(validatorFunc)) {
+      if ((0,_utils_helpers__WEBPACK_IMPORTED_MODULE_1__.isDefined)(value)) {
+        validation.push(validatorFunc(value));
+      } else {
+        validation.push(validatorFunc);
+      }
+    }
+  });
+  if (required) validation.push(_Validation_Validators__WEBPACK_IMPORTED_MODULE_3__.required);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     if (!context || !dependency) return;
     let field = null;
@@ -15967,7 +15984,9 @@ const FormField = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRef)
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "required": () => (/* binding */ required),
-/* harmony export */   "matchPattern": () => (/* binding */ matchPattern)
+/* harmony export */   "matchPattern": () => (/* binding */ matchPattern),
+/* harmony export */   "json": () => (/* binding */ json),
+/* harmony export */   "regexp": () => (/* binding */ regexp)
 /* harmony export */ });
 /* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../utils/helpers */ "./src/utils/helpers.js");
 /* harmony import */ var _Validation_styl__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Validation.styl */ "./src/components/Form/Validation/Validation.styl");
@@ -15979,8 +15998,35 @@ const required = (fieldName, value) => {
   }
 };
 const matchPattern = pattern => (fieldName, value) => {
+  pattern = typeof pattern === 'string' ? new RegExp(pattern) : pattern;
+
   if (!(0,_utils_helpers__WEBPACK_IMPORTED_MODULE_0__.isEmptyString)(value) && value.match(pattern) === null) {
-    return `${fieldName} should match pattern ${pattern}`;
+    return `${fieldName} must match the pattern ${pattern}`;
+  }
+};
+const json = (fieldName, value) => {
+  const err = `${fieldName} must be valid JSON string`;
+
+  if (typeof value !== 'string') {
+    console.log("value is not a string", value);
+    return err;
+  }
+
+  if (/^(\{|\[)/.test(value) === false || /(\}|\])$/.test(value) === false) {
+    return err;
+  }
+
+  try {
+    JSON.parse(value);
+  } catch (e) {
+    return err;
+  }
+};
+const regexp = (fieldName, value) => {
+  try {
+    new RegExp(value);
+  } catch (err) {
+    return `${fieldName} must be a valid regular expression`;
   }
 };
 
@@ -22367,7 +22413,8 @@ const StorageCard = ({
   target,
   storage,
   onEditStorage,
-  onDeleteStorage
+  onDeleteStorage,
+  storageTypes
 }) => {
   var _storageData$title;
 
@@ -22427,7 +22474,8 @@ const StorageCard = ({
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_StorageSummary__WEBPACK_IMPORTED_MODULE_4__.StorageSummary, {
       storage: storageData,
       enableLastSync: target !== 'export',
-      className: rootClass.elem('summary')
+      className: rootClass.elem('summary'),
+      storageTypes: storageTypes
     }), target !== 'export' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
       className: rootClass.elem('sync'),
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_components_Space_Space__WEBPACK_IMPORTED_MODULE_2__.Space, {
@@ -22480,28 +22528,18 @@ const StorageForm = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRe
   target,
   project,
   rootClass,
-  storage
+  storage,
+  storageTypes
 }, ref) => {
-  var _storage$type, _storage$type2;
+  var _ref, _storage$type, _storageTypes$, _storage$type2;
 
   /**@type {import('react').RefObject<Form>} */
   const api = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(_providers_ApiProvider__WEBPACK_IMPORTED_MODULE_5__.ApiContext);
   const formRef = ref !== null && ref !== void 0 ? ref : (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
-  const [type, setType] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)((_storage$type = storage === null || storage === void 0 ? void 0 : storage.type) !== null && _storage$type !== void 0 ? _storage$type : 's3');
+  const [type, setType] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)((_ref = (_storage$type = storage === null || storage === void 0 ? void 0 : storage.type) !== null && _storage$type !== void 0 ? _storage$type : storageTypes === null || storageTypes === void 0 ? void 0 : (_storageTypes$ = storageTypes[0]) === null || _storageTypes$ === void 0 ? void 0 : _storageTypes$.name) !== null && _ref !== void 0 ? _ref : 's3');
   const [checking, setChecking] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const [connectionValid, setConnectionValid] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
-  const [storageTypes, setStorageTypes] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
   const [form, setForm] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    api.callApi('storageTypes', {
-      params: {
-        target
-      }
-    }).then(types => {
-      setStorageTypes(types);
-      if (!(storage !== null && storage !== void 0 && storage.type)) setType(types[0].name);
-    });
-  }, []);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     api.callApi('storageForms', {
       params: {
@@ -22670,6 +22708,16 @@ const StorageSet = ({
   const [storages, setStorages] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
   const [loading, setLoading] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const [loaded, setLoaded] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const [storageTypes, setStorageTypes] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    api.callApi('storageTypes', {
+      params: {
+        target
+      }
+    }).then(types => {
+      setStorageTypes(types);
+    });
+  }, []);
   const fetchStorages = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(async () => {
     if (!project.id) {
       console.warn("Project ID not provided");
@@ -22683,6 +22731,12 @@ const StorageSet = ({
         target
       }
     });
+    const storageTypes = await api.callApi('storageTypes', {
+      params: {
+        target
+      }
+    });
+    setStorageTypes(storageTypes);
 
     if (result !== null) {
       setStorages(result);
@@ -22706,6 +22760,7 @@ const StorageSet = ({
         storage: storage,
         project: project.id,
         rootClass: rootClass,
+        storageTypes: storageTypes,
         onSubmit: async () => {
           await fetchStorages();
           modalRef.close();
@@ -22759,6 +22814,7 @@ const StorageSet = ({
       storage: storage,
       target: target,
       rootClass: rootClass,
+      storageTypes: storageTypes,
       onEditStorage: onEditStorage,
       onDeleteStorage: onDeleteStorage
     }, storage.id))]
@@ -22781,10 +22837,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var _components_Columns_Columns__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../components/Columns/Columns */ "./src/components/Columns/Columns.js");
 /* harmony import */ var _components_Description_Description__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../components/Description/Description */ "./src/components/Description/Description.js");
-/* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../utils/bem */ "./src/utils/bem.tsx");
-/* harmony import */ var _StorageSet__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./StorageSet */ "./src/pages/Settings/StorageSettings/StorageSet.js");
-/* harmony import */ var _StorageSettings_styl__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./StorageSettings.styl */ "./src/pages/Settings/StorageSettings/StorageSettings.styl");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _providers_ApiProvider__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../providers/ApiProvider */ "./src/providers/ApiProvider.js");
+/* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../utils/bem */ "./src/utils/bem.tsx");
+/* harmony import */ var _StorageSet__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./StorageSet */ "./src/pages/Settings/StorageSettings/StorageSet.js");
+/* harmony import */ var _StorageSettings_styl__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./StorageSettings.styl */ "./src/pages/Settings/StorageSettings/StorageSettings.styl");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
 
 
 
@@ -22794,24 +22852,24 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const StorageSettings = () => {
-  const rootClass = (0,_utils_bem__WEBPACK_IMPORTED_MODULE_3__.cn)("storage-settings");
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_utils_bem__WEBPACK_IMPORTED_MODULE_3__.Block, {
+  const rootClass = (0,_utils_bem__WEBPACK_IMPORTED_MODULE_4__.cn)("storage-settings");
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_utils_bem__WEBPACK_IMPORTED_MODULE_4__.Block, {
     name: "storage-settings",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_components_Description_Description__WEBPACK_IMPORTED_MODULE_2__.Description, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_components_Description_Description__WEBPACK_IMPORTED_MODULE_2__.Description, {
       style: {
         marginTop: 0
       },
       children: "Use cloud or database storage as the source for your labeling tasks or the target of your completed annotations."
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_components_Columns_Columns__WEBPACK_IMPORTED_MODULE_1__.Columns, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_components_Columns_Columns__WEBPACK_IMPORTED_MODULE_1__.Columns, {
       count: 2,
       gap: "40px",
       size: "320px",
       className: rootClass,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_StorageSet__WEBPACK_IMPORTED_MODULE_4__.StorageSet, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_StorageSet__WEBPACK_IMPORTED_MODULE_5__.StorageSet, {
         title: "Source Cloud Storage",
         buttonLabel: "Add Source Storage",
         rootClass: rootClass
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_StorageSet__WEBPACK_IMPORTED_MODULE_4__.StorageSet, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_StorageSet__WEBPACK_IMPORTED_MODULE_5__.StorageSet, {
         title: "Target Cloud Storage",
         target: "export",
         buttonLabel: "Add Target Storage",
@@ -22851,12 +22909,18 @@ __webpack_require__.r(__webpack_exports__);
 const StorageSummary = ({
   storage,
   className,
-  enableLastSync = false
+  enableLastSync = false,
+  storageTypes = []
 }) => {
+  var _storageTypes$find$ti, _storageTypes$find;
+
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
     className: className,
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(_components_DescriptionList_DescriptionList__WEBPACK_IMPORTED_MODULE_1__.DescriptionList, {
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(_components_Oneof_Oneof__WEBPACK_IMPORTED_MODULE_2__.Oneof, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_components_DescriptionList_DescriptionList__WEBPACK_IMPORTED_MODULE_1__.DescriptionList.Item, {
+        term: "Type",
+        children: (_storageTypes$find$ti = (_storageTypes$find = storageTypes.find(s => s.name === storage.type)) === null || _storageTypes$find === void 0 ? void 0 : _storageTypes$find.title) !== null && _storageTypes$find$ti !== void 0 ? _storageTypes$find$ti : storage.type
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(_components_Oneof_Oneof__WEBPACK_IMPORTED_MODULE_2__.Oneof, {
         value: storage.type,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(SummaryS3, {
           case: "s3",
