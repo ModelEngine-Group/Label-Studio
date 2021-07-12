@@ -16006,11 +16006,7 @@ const matchPattern = pattern => (fieldName, value) => {
 };
 const json = (fieldName, value) => {
   const err = `${fieldName} must be valid JSON string`;
-
-  if (typeof value !== 'string') {
-    console.log("value is not a string", value);
-    return err;
-  }
+  if (!(0,_utils_helpers__WEBPACK_IMPORTED_MODULE_0__.isDefined)(value) || value.trim().length === 0) return;
 
   if (/^(\{|\[)/.test(value) === false || /(\}|\])$/.test(value) === false) {
     return err;
@@ -22837,12 +22833,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var _components_Columns_Columns__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../components/Columns/Columns */ "./src/components/Columns/Columns.js");
 /* harmony import */ var _components_Description_Description__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../components/Description/Description */ "./src/components/Description/Description.js");
-/* harmony import */ var _providers_ApiProvider__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../providers/ApiProvider */ "./src/providers/ApiProvider.js");
-/* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../utils/bem */ "./src/utils/bem.tsx");
-/* harmony import */ var _StorageSet__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./StorageSet */ "./src/pages/Settings/StorageSettings/StorageSet.js");
-/* harmony import */ var _StorageSettings_styl__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./StorageSettings.styl */ "./src/pages/Settings/StorageSettings/StorageSettings.styl");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-
+/* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../utils/bem */ "./src/utils/bem.tsx");
+/* harmony import */ var _StorageSet__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./StorageSet */ "./src/pages/Settings/StorageSettings/StorageSet.js");
+/* harmony import */ var _StorageSettings_styl__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./StorageSettings.styl */ "./src/pages/Settings/StorageSettings/StorageSettings.styl");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
 
 
@@ -22852,24 +22846,24 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const StorageSettings = () => {
-  const rootClass = (0,_utils_bem__WEBPACK_IMPORTED_MODULE_4__.cn)("storage-settings");
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_utils_bem__WEBPACK_IMPORTED_MODULE_4__.Block, {
+  const rootClass = (0,_utils_bem__WEBPACK_IMPORTED_MODULE_3__.cn)("storage-settings");
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_utils_bem__WEBPACK_IMPORTED_MODULE_3__.Block, {
     name: "storage-settings",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_components_Description_Description__WEBPACK_IMPORTED_MODULE_2__.Description, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_components_Description_Description__WEBPACK_IMPORTED_MODULE_2__.Description, {
       style: {
         marginTop: 0
       },
       children: "Use cloud or database storage as the source for your labeling tasks or the target of your completed annotations."
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_components_Columns_Columns__WEBPACK_IMPORTED_MODULE_1__.Columns, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_components_Columns_Columns__WEBPACK_IMPORTED_MODULE_1__.Columns, {
       count: 2,
       gap: "40px",
       size: "320px",
       className: rootClass,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_StorageSet__WEBPACK_IMPORTED_MODULE_5__.StorageSet, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_StorageSet__WEBPACK_IMPORTED_MODULE_4__.StorageSet, {
         title: "Source Cloud Storage",
         buttonLabel: "Add Source Storage",
         rootClass: rootClass
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_StorageSet__WEBPACK_IMPORTED_MODULE_5__.StorageSet, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_StorageSet__WEBPACK_IMPORTED_MODULE_4__.StorageSet, {
         title: "Target Cloud Storage",
         target: "export",
         buttonLabel: "Add Target Storage",
