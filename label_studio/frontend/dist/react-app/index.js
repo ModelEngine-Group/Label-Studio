@@ -11478,6 +11478,16 @@ var browserPerformanceTimeOrigin = (function () {
 
 /***/ }),
 
+/***/ "./node_modules/@sentry/webpack-plugin/src/sentry-webpack.module.js":
+/*!**************************************************************************!*\
+  !*** ./node_modules/@sentry/webpack-plugin/src/sentry-webpack.module.js ***!
+  \**************************************************************************/
+/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+
+(typeof window !== 'undefined' ? window : typeof __webpack_require__.g !== 'undefined' ? __webpack_require__.g : typeof self !== 'undefined' ? self : {}).SENTRY_RELEASE={id:"label-studio@1.1.0-frontend"};
+
+/***/ }),
+
 /***/ "./src/assets/icons/all-projects.svg":
 /*!*******************************************!*\
   !*** ./src/assets/icons/all-projects.svg ***!
@@ -22556,14 +22566,14 @@ const StorageForm = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRe
   const [type, setType] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)((_ref = (_storage$type = storage === null || storage === void 0 ? void 0 : storage.type) !== null && _storage$type !== void 0 ? _storage$type : storageTypes === null || storageTypes === void 0 ? void 0 : (_storageTypes$ = storageTypes[0]) === null || _storageTypes$ === void 0 ? void 0 : _storageTypes$.name) !== null && _ref !== void 0 ? _ref : 's3');
   const [checking, setChecking] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const [connectionValid, setConnectionValid] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
-  const [form, setForm] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
+  const [formFields, setFormFields] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     api.callApi('storageForms', {
       params: {
         target,
         type
       }
-    }).then(formFields => setForm(formFields));
+    }).then(formFields => setFormFields(formFields !== null && formFields !== void 0 ? formFields : []));
   }, [type]);
   const storageTypeSelect = {
     columnCount: 1,
@@ -22622,7 +22632,7 @@ const StorageForm = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRe
       project,
       pk: storage === null || storage === void 0 ? void 0 : storage.id
     },
-    fields: [storageTypeSelect, ...form],
+    fields: [storageTypeSelect, ...(formFields !== null && formFields !== void 0 ? formFields : [])],
     formData: { ...(storage !== null && storage !== void 0 ? storage : {})
     },
     skipEmpty: true,
@@ -90794,6 +90804,7 @@ function valueEqual(a, b) {
 /************************************************************************/
 /******/ 	// startup
 /******/ 	// Load entry module
+/******/ 	__webpack_require__("./node_modules/@sentry/webpack-plugin/src/sentry-webpack.module.js");
 /******/ 	__webpack_require__("./src/index.js");
 /******/ 	// This entry module used 'exports' so it can't be inlined
 /******/ })()
