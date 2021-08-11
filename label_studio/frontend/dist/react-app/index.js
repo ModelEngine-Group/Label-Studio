@@ -11484,10 +11484,10 @@ var browserPerformanceTimeOrigin = (function () {
   \**************************************************************************/
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
-(typeof window !== 'undefined' ? window : typeof __webpack_require__.g !== 'undefined' ? __webpack_require__.g : typeof self !== 'undefined' ? self : {}).SENTRY_RELEASE={id:"label-studio@1.1.0-frontend"};
+    (typeof window !== 'undefined' ? window : typeof __webpack_require__.g !== 'undefined' ? __webpack_require__.g : typeof self !== 'undefined' ? self : {}).SENTRY_RELEASE={id:"label-studio@1.1.0-frontend"};
 
-/***/ }),
-
+    /***/ }),
+    
 /***/ "./src/assets/icons/all-projects.svg":
 /*!*******************************************!*\
   !*** ./src/assets/icons/all-projects.svg ***!
@@ -19377,7 +19377,7 @@ const CreateProject = ({
     onClose === null || onClose === void 0 ? void 0 : onClose();
   }, [project]);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_components_Modal_Modal__WEBPACK_IMPORTED_MODULE_2__.Modal, {
-    onHide: () => history.push("/projects"),
+    onHide: onDelete,
     fullscreen: true,
     visible: true,
     bare: true,
@@ -90804,7 +90804,6 @@ function valueEqual(a, b) {
 /************************************************************************/
 /******/ 	// startup
 /******/ 	// Load entry module
-/******/ 	__webpack_require__("./node_modules/@sentry/webpack-plugin/src/sentry-webpack.module.js");
 /******/ 	__webpack_require__("./src/index.js");
 /******/ 	// This entry module used 'exports' so it can't be inlined
 /******/ })()
