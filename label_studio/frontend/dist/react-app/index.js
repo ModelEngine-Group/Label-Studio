@@ -20263,8 +20263,8 @@ const initializeDataManager = async (root, props, params) => {
     showPreviews: false,
     apiEndpoints: _api_config__WEBPACK_IMPORTED_MODULE_13__.APIConfig.endpoints,
     interfaces: {
-      import: false,
-      export: false,
+      import: true,
+      export: true,
       backButton: false,
       labelingHeader: false,
       autoAnnotation: params.autoAnnotation
@@ -20410,9 +20410,7 @@ DataManagerPage.context = ({
   } = (0,_providers_ProjectProvider__WEBPACK_IMPORTED_MODULE_6__.useProject)();
   const [mode, setMode] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)((_dmRef$mode = dmRef === null || dmRef === void 0 ? void 0 : dmRef.mode) !== null && _dmRef$mode !== void 0 ? _dmRef$mode : "explorer");
   const links = {
-    '/settings': 'Settings',
-    '/data/import': "Import",
-    '/data/export': 'Export'
+    '/settings': 'Settings'
   };
 
   const updateCrumbs = currentMode => {
