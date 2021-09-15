@@ -20293,6 +20293,7 @@ const DataManagerPage = ({ ...props
   const setContextProps = (0,_providers_RoutesProvider__WEBPACK_IMPORTED_MODULE_7__.useContextProps)();
   const [crashed, setCrashed] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const dataManagerRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
+  const projectId = project === null || project === void 0 ? void 0 : project.id;
   const init = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(async () => {
     var _dataManagerRef$curre;
 
@@ -20368,7 +20369,7 @@ const DataManagerPage = ({ ...props
     setContextProps({
       dmRef: dataManager
     });
-  }, [LabelStudio, DataManager]);
+  }, [LabelStudio, DataManager, projectId]);
   const destroyDM = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(() => {
     if (dataManagerRef.current) {
       dataManagerRef.current.destroy();
