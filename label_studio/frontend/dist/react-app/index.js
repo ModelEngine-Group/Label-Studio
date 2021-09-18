@@ -17874,7 +17874,7 @@ const initSentry = history => {
     // of transactions for performance monitoring.
     // We recommend adjusting this value in production
     tracesSampleRate: 0.25,
-    release: "label-studio@1.2-frontend"
+    release: "label-studio@1.3-frontend"
   });
 };
 
