@@ -12853,6 +12853,7 @@ const loadAsyncPage = async url => {
         title: "Connection refused",
         message: "Server not responding. Is it still running?"
       }),
+      simple: true,
       allowClose: false,
       style: {
         width: 680
@@ -15138,9 +15139,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../utils/bem */ "./src/utils/bem.tsx");
 /* harmony import */ var _FormField__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../FormField */ "./src/components/Form/FormField.js");
-/* harmony import */ var _Label_Label__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Label/Label */ "./src/components/Form/Elements/Label/Label.js");
-/* harmony import */ var _Toggle_styl__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Toggle.styl */ "./src/components/Form/Elements/Toggle/Toggle.styl");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Utils */ "./src/components/Form/Utils.js");
+/* harmony import */ var _Label_Label__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Label/Label */ "./src/components/Form/Elements/Label/Label.js");
+/* harmony import */ var _Toggle_styl__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Toggle.styl */ "./src/components/Form/Elements/Toggle/Toggle.styl");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
 
 
 
@@ -15161,15 +15164,13 @@ const Toggle = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRef)(({
   skip,
   ...props
 }, ref) => {
-  var _ref2;
-
   const rootClass = (0,_utils_bem__WEBPACK_IMPORTED_MODULE_1__.cn)('toggle');
   const initialChecked = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
     var _ref;
 
     return (_ref = defaultChecked !== null && defaultChecked !== void 0 ? defaultChecked : checked) !== null && _ref !== void 0 ? _ref : false;
   }, [defaultChecked, checked]);
-  const [isChecked, setIsChecked] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)((_ref2 = defaultChecked !== null && defaultChecked !== void 0 ? defaultChecked : checked) !== null && _ref2 !== void 0 ? _ref2 : false);
+  const [isChecked, setIsChecked] = (0,_Utils__WEBPACK_IMPORTED_MODULE_3__.useValueTracker)(checked, defaultChecked !== null && defaultChecked !== void 0 ? defaultChecked : false);
   const classList = [rootClass];
   const mods = {};
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
@@ -15179,7 +15180,7 @@ const Toggle = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRef)(({
   mods.disabled = props.disabled;
   classList.push(rootClass.mod(mods), className);
 
-  const formField = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_FormField__WEBPACK_IMPORTED_MODULE_2__.FormField, {
+  const formField = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_FormField__WEBPACK_IMPORTED_MODULE_2__.FormField, {
     ref: label ? null : ref,
     label: label,
     name: props.name,
@@ -15188,9 +15189,9 @@ const Toggle = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRef)(({
     skip: skip,
     setValue: value => setIsChecked(value),
     ...props,
-    children: ref => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+    children: ref => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
       className: classList.join(" "),
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("input", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("input", {
         ref: ref,
         ...props,
         className: rootClass.elem('input'),
@@ -15200,13 +15201,13 @@ const Toggle = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRef)(({
           setIsChecked(e.target.checked);
           onChange === null || onChange === void 0 ? void 0 : onChange(e);
         }
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("span", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("span", {
         className: rootClass.elem('indicator')
       })]
     })
   });
 
-  return label ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_Label_Label__WEBPACK_IMPORTED_MODULE_3__.default, {
+  return label ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_Label_Label__WEBPACK_IMPORTED_MODULE_4__.default, {
     ref: ref,
     placement: "right",
     required: required,
@@ -15296,6 +15297,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
+const PASSWORD_PROTECTED_VALUE = 'got ya, suspicious hacker!';
 class Form extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
   constructor(...args) {
     super(...args);
@@ -15355,7 +15357,9 @@ class Form extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
 
   componentDidMount() {
     if (this.props.formData) {
-      this.fillFormData();
+      setTimeout(() => {
+        this.fillFormData();
+      }, 50);
     }
   }
 
@@ -15406,10 +15410,7 @@ class Form extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
 
     if (!existingField) {
       this.fields.add(field);
-
-      if (field.name && this.props.formData && field.name in this.props.formData) {
-        field.setValue(this.props.formData[field.name]);
-      }
+      this.fillWithFormData(field);
     } else {
       Object.assign(existingField, field);
     }
@@ -15465,16 +15466,19 @@ class Form extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
     const requestBody = fields.reduce((res, {
       name,
       field,
-      skip
+      skip,
+      allowEmpty,
+      isProtected
     }) => {
-      const skipField = skip || this.props.skipEmpty && !field.value;
+      const skipProtected = isProtected && field.value === PASSWORD_PROTECTED_VALUE;
+      const skipField = skip || skipProtected || (this.props.skipEmpty || allowEmpty === false) && !field.value;
 
       if (full === true || !skipField) {
         const value = (() => {
           const inputValue = field.value;
 
           if (['checkbox', 'radio'].includes(field.type)) {
-            if (inputValue !== null && inputValue !== 'on' && inputValue !== 'true') {
+            if ((0,_utils_helpers__WEBPACK_IMPORTED_MODULE_6__.isDefined)(inputValue) && !['', 'on', 'off', 'true', 'false'].includes(inputValue)) {
               return field.checked ? inputValue : null;
             }
 
@@ -15649,6 +15653,11 @@ class Form extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
       field: element
     } = field;
     const value = ((_element$value = element.value) === null || _element$value === void 0 ? void 0 : _element$value.trim()) || null;
+
+    if (field.isProtected && value === PASSWORD_PROTECTED_VALUE) {
+      return messages;
+    }
+
     validation.forEach(validator => {
       const result = validator(field.label, value);
       if (result) messages.push(result);
@@ -15659,13 +15668,21 @@ class Form extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
   fillFormData() {
     if (!this.props.formData) return;
     if (this.fields.size === 0) return;
-    Object.entries(this.props.formData).forEach(([key, value]) => {
-      const field = this.getFieldContext(key);
-
-      if (field && field.value !== value) {
-        field.setValue(value);
-      }
+    Array.from(this.fields).forEach(field => {
+      this.fillWithFormData(field);
     });
+  }
+
+  fillWithFormData(field) {
+    var _this$props$formData2;
+
+    const value = ((_this$props$formData2 = this.props.formData) !== null && _this$props$formData2 !== void 0 ? _this$props$formData2 : {})[field.name];
+
+    if (field.isProtected && this.props.formData) {
+      field.setValue(PASSWORD_PROTECTED_VALUE);
+    } else if ((0,_utils_helpers__WEBPACK_IMPORTED_MODULE_6__.isDefined)(value) && field.value !== value && !field.skipAutofill) {
+      field.setValue(value);
+    }
   }
 
 }
@@ -15738,10 +15755,22 @@ Form.Builder = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(({
       if (!field) return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {}, `spacer-${index}`);
       const currentValue = (_formData$field$name = formData === null || formData === void 0 ? void 0 : formData[field.name]) !== null && _formData$field$name !== void 0 ? _formData$field$name : undefined;
       const triggerUpdate = props.autosubmit !== true && field.trigger_form_update === true;
-      const commonProps = {
-        key: (_field$name = field.name) !== null && _field$name !== void 0 ? _field$name : index,
-        ...field
+
+      const getValue = () => {
+        const isProtected = field.skipAutofill && !field.allowEmpty && field.type === 'password';
+
+        if (isProtected) {
+          return PASSWORD_PROTECTED_VALUE;
+        }
+
+        if (field.skipAutofill) {
+          return null;
+        }
+
+        return currentValue !== null && currentValue !== void 0 ? currentValue : field.value;
       };
+
+      const commonProps = {};
 
       if (triggerUpdate) {
         commonProps.onChange = async () => {
@@ -15753,23 +15782,31 @@ Form.Builder = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(({
         };
       }
 
-      if (field.type === 'select') {
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_Elements__WEBPACK_IMPORTED_MODULE_10__.Select, { ...commonProps,
-          defaultValue: currentValue !== null && currentValue !== void 0 ? currentValue : field.value
-        });
-      } else if (field.type === 'counter') {
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_Elements__WEBPACK_IMPORTED_MODULE_10__.Counter, { ...commonProps,
-          defaultValue: currentValue !== null && currentValue !== void 0 ? currentValue : field.value
-        });
-      } else if (field.type === 'toggle') {
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_Elements__WEBPACK_IMPORTED_MODULE_10__.Toggle, { ...commonProps,
-          checked: currentValue !== null && currentValue !== void 0 ? currentValue : field.value
-        });
+      const InputComponent = (() => {
+        switch (field.type) {
+          case "select":
+            return _Elements__WEBPACK_IMPORTED_MODULE_10__.Select;
+
+          case "counter":
+            return _Elements__WEBPACK_IMPORTED_MODULE_10__.Counter;
+
+          case "toggle":
+            return _Elements__WEBPACK_IMPORTED_MODULE_10__.Toggle;
+
+          default:
+            return _Elements__WEBPACK_IMPORTED_MODULE_10__.Input;
+        }
+      })();
+
+      if (['checkbox', 'radio', 'toggle'].includes(field.type)) {
+        commonProps.checked = getValue();
       } else {
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_Elements__WEBPACK_IMPORTED_MODULE_10__.Input, { ...commonProps,
-          defaultValue: currentValue !== null && currentValue !== void 0 ? currentValue : field.value
-        });
+        commonProps.defaultValue = getValue();
       }
+
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(InputComponent, { ...field,
+        ...commonProps
+      }, (_field$name = field.name) !== null && _field$name !== void 0 ? _field$name : index);
     });
   };
 
@@ -15954,6 +15991,8 @@ const FormField = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRef)
   required,
   validate,
   skip,
+  allowEmpty,
+  skipAutofill,
   setValue,
   dependency,
   validators,
@@ -16021,11 +16060,15 @@ const FormField = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRef)
     input.dispatchEvent(evt);
   }, [field]);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    const isProtected = skipAutofill && !allowEmpty && field.current.type === 'password';
     context === null || context === void 0 ? void 0 : context.registerField({
       label,
       name,
       validation,
       skip,
+      allowEmpty,
+      skipAutofill,
+      isProtected,
       field: field.current,
       setValue: setValueCallback
     });
@@ -16033,6 +16076,34 @@ const FormField = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRef)
   }, [field, setValueCallback]);
   return children(field, dependencyField, context);
 });
+
+/***/ }),
+
+/***/ "./src/components/Form/Utils.js":
+/*!**************************************!*\
+  !*** ./src/components/Form/Utils.js ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "useValueTracker": () => (/* binding */ useValueTracker)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+const useValueTracker = (value, defaultValue) => {
+  const initialValue = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
+    var _ref;
+
+    return (_ref = defaultValue !== null && defaultValue !== void 0 ? defaultValue : value) !== null && _ref !== void 0 ? _ref : "";
+  }, [value, defaultValue]);
+  const [finalValue, setValue] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(initialValue);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    setValue(initialValue);
+  }, [initialValue]);
+  return [finalValue, setValue];
+};
 
 /***/ }),
 
@@ -22801,7 +22872,7 @@ const StorageForm = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRe
     fields: [storageTypeSelect, ...(formFields !== null && formFields !== void 0 ? formFields : [])],
     formData: { ...(storage !== null && storage !== void 0 ? storage : {})
     },
-    skipEmpty: true,
+    skipEmpty: false,
     onSubmit: onSubmit,
     autoFill: "off",
     autoComplete: "off",
@@ -24005,6 +24076,7 @@ __webpack_require__.r(__webpack_exports__);
 const API = new _utils_api_proxy__WEBPACK_IMPORTED_MODULE_4__.APIProxy(_config_ApiConfig__WEBPACK_IMPORTED_MODULE_3__.API_CONFIG);
 const ApiContext = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.createContext)();
 ApiContext.displayName = 'ApiContext';
+let apiLocked = false;
 
 const errorFormatter = result => {
   var _response$detail, _response$detail2, _response$exc_info, _response$validation_;
@@ -24035,11 +24107,12 @@ const handleError = async (response, showModal = true) => {
     return;
   }
 
+  const {
+    isShutdown,
+    ...formattedError
+  } = errorFormatter(result);
+
   if (showModal) {
-    const {
-      isShutdown,
-      ...formattedError
-    } = errorFormatter(result);
     (0,_components_Modal_Modal__WEBPACK_IMPORTED_MODULE_2__.modal)({
       allowClose: !isShutdown,
       body: isShutdown ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_components_Error_Error__WEBPACK_IMPORTED_MODULE_1__.ErrorWrapper, {
@@ -24054,6 +24127,8 @@ const handleError = async (response, showModal = true) => {
       }
     });
   }
+
+  return isShutdown;
 };
 
 const ApiProvider = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRef)(({
@@ -24065,15 +24140,23 @@ const ApiProvider = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRe
     errorFilter,
     ...rest
   } = {}) => {
+    if (apiLocked) return;
     setError(null);
     const result = await API[method](params, rest);
+
+    if (result.status === 401) {
+      apiLocked = true;
+      location.href = (0,_utils_helpers__WEBPACK_IMPORTED_MODULE_5__.absoluteURL)("/");
+      return;
+    }
 
     if (result.error) {
       const shouldCatchError = (errorFilter === null || errorFilter === void 0 ? void 0 : errorFilter(result)) === false;
 
       if (!errorFilter || shouldCatchError) {
         setError(result);
-        handleError(result, contextValue.showModal);
+        const isShutdown = await handleError(result, contextValue.showModal);
+        apiLocked = apiLocked || isShutdown;
         return null;
       }
     }
