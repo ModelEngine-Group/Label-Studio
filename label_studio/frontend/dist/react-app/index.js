@@ -12796,7 +12796,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Error_Error__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../components/Error/Error */ "./src/components/Error/Error.js");
 /* harmony import */ var _components_Modal_Modal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../components/Modal/Modal */ "./src/components/Modal/Modal.js");
 /* harmony import */ var _providers_ConfigProvider__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../providers/ConfigProvider */ "./src/providers/ConfigProvider.js");
-/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.js");
+/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.ts");
 /* harmony import */ var _utils_scripts__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../utils/scripts */ "./src/utils/scripts.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
@@ -13412,7 +13412,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _providers_ConfigProvider__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../providers/ConfigProvider */ "./src/providers/ConfigProvider.js");
 /* harmony import */ var _providers_RoutesProvider__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../providers/RoutesProvider */ "./src/providers/RoutesProvider.js");
 /* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../utils/bem */ "./src/utils/bem.tsx");
-/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.js");
+/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.ts");
 /* harmony import */ var _Dropdown_Dropdown__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../Dropdown/Dropdown */ "./src/components/Dropdown/Dropdown.js");
 /* harmony import */ var _Menu_Menu__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../Menu/Menu */ "./src/components/Menu/Menu.js");
 /* harmony import */ var _Breadcrumbs_styl__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Breadcrumbs.styl */ "./src/components/Breadcrumbs/Breadcrumbs.styl");
@@ -13542,7 +13542,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../utils/bem */ "./src/utils/bem.tsx");
-/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.js");
+/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.ts");
 /* harmony import */ var _Form_FormContext__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Form/FormContext */ "./src/components/Form/FormContext.js");
 /* harmony import */ var _Button_styl__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Button.styl */ "./src/components/Button/Button.styl");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
@@ -14304,7 +14304,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var _assets_icons__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../assets/icons */ "./src/assets/icons/index.js");
 /* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../utils/bem */ "./src/utils/bem.tsx");
-/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.js");
+/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.ts");
 /* harmony import */ var _Button_Button__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Button/Button */ "./src/components/Button/Button.js");
 /* harmony import */ var _Space_Space__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../Space/Space */ "./src/components/Space/Space.js");
 /* harmony import */ var _Error_styl__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Error.styl */ "./src/components/Error/Error.styl");
@@ -15139,7 +15139,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../utils/bem */ "./src/utils/bem.tsx");
 /* harmony import */ var _FormField__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../FormField */ "./src/components/Form/FormField.js");
-/* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Utils */ "./src/components/Form/Utils.js");
+/* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Utils */ "./src/components/Form/Utils.ts");
 /* harmony import */ var _Label_Label__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Label/Label */ "./src/components/Form/Elements/Label/Label.js");
 /* harmony import */ var _Toggle_styl__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Toggle.styl */ "./src/components/Form/Elements/Toggle/Toggle.styl");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
@@ -15269,7 +15269,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _providers_MultiProvider__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../providers/MultiProvider */ "./src/providers/MultiProvider.js");
 /* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../utils/bem */ "./src/utils/bem.tsx");
 /* harmony import */ var _utils_debounce__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../utils/debounce */ "./src/utils/debounce.js");
-/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.js");
+/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.ts");
 /* harmony import */ var _Button_Button__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../Button/Button */ "./src/components/Button/Button.js");
 /* harmony import */ var _Oneof_Oneof__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../Oneof/Oneof */ "./src/components/Oneof/Oneof.js");
 /* harmony import */ var _Space_Space__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../Space/Space */ "./src/components/Space/Space.js");
@@ -15977,7 +15977,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "FormField": () => (/* binding */ FormField)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.js");
+/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.ts");
 /* harmony import */ var _FormContext__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./FormContext */ "./src/components/Form/FormContext.js");
 /* harmony import */ var _Validation_Validators__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Validation/Validators */ "./src/components/Form/Validation/Validators.js");
 
@@ -16079,9 +16079,9 @@ const FormField = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRef)
 
 /***/ }),
 
-/***/ "./src/components/Form/Utils.js":
+/***/ "./src/components/Form/Utils.ts":
 /*!**************************************!*\
-  !*** ./src/components/Form/Utils.js ***!
+  !*** ./src/components/Form/Utils.ts ***!
   \**************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -16096,7 +16096,7 @@ const useValueTracker = (value, defaultValue) => {
   const initialValue = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
     var _ref;
 
-    return (_ref = defaultValue !== null && defaultValue !== void 0 ? defaultValue : value) !== null && _ref !== void 0 ? _ref : "";
+    return (_ref = value !== null && value !== void 0 ? value : defaultValue) !== null && _ref !== void 0 ? _ref : "";
   }, [value, defaultValue]);
   const [finalValue, setValue] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(initialValue);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
@@ -16121,7 +16121,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "json": () => (/* binding */ json),
 /* harmony export */   "regexp": () => (/* binding */ regexp)
 /* harmony export */ });
-/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../utils/helpers */ "./src/utils/helpers.js");
+/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../utils/helpers */ "./src/utils/helpers.ts");
 /* harmony import */ var _Validation_styl__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Validation.styl */ "./src/components/Form/Validation/Validation.styl");
 
 
@@ -16398,7 +16398,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
 /* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../utils/bem */ "./src/utils/bem.tsx");
-/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.js");
+/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.ts");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
 
@@ -16500,7 +16500,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _providers_ConfigProvider__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../providers/ConfigProvider */ "./src/providers/ConfigProvider.js");
 /* harmony import */ var _providers_RoutesProvider__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../providers/RoutesProvider */ "./src/providers/RoutesProvider.js");
 /* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../utils/bem */ "./src/utils/bem.tsx");
-/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.js");
+/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.ts");
 /* harmony import */ var _Breadcrumbs_Breadcrumbs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../Breadcrumbs/Breadcrumbs */ "./src/components/Breadcrumbs/Breadcrumbs.js");
 /* harmony import */ var _Dropdown_Dropdown__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../Dropdown/Dropdown */ "./src/components/Dropdown/Dropdown.js");
 /* harmony import */ var _Hamburger_Hamburger__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../Hamburger/Hamburger */ "./src/components/Hamburger/Hamburger.js");
@@ -17220,6 +17220,263 @@ const Oneof = ({
 
 /***/ }),
 
+/***/ "./src/components/Pagination/Pagination.tsx":
+/*!**************************************************!*\
+  !*** ./src/components/Pagination/Pagination.tsx ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Pagination": () => (/* binding */ Pagination)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../utils/bem */ "./src/utils/bem.tsx");
+/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.ts");
+/* harmony import */ var _Form_Utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Form/Utils */ "./src/components/Form/Utils.ts");
+/* harmony import */ var _Form_Elements__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Form/Elements */ "./src/components/Form/Elements/index.js");
+/* harmony import */ var _Pagination_styl__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Pagination.styl */ "./src/components/Pagination/Pagination.styl");
+/* harmony import */ var _utils_hooks__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../utils/hooks */ "./src/utils/hooks.ts");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+
+
+
+
+
+
+
+
+
+const isSystemEvent = e => {
+  return e.code.match(/arrow/i) !== null || e.shiftKey && e.code.match(/arrow/i) !== null || e.metaKey || e.ctrlKey || e.code === 'Backspace';
+};
+
+const getStoredPageSize = name => {
+  const value = localStorage.getItem(`pages:${name}`);
+
+  if ((0,_utils_helpers__WEBPACK_IMPORTED_MODULE_2__.isDefined)(value)) {
+    return parseInt(value);
+  }
+
+  return undefined;
+};
+
+const setStoredPageSize = (name, pageSize) => {
+  localStorage.setItem(`pages:${name}`, pageSize.toString());
+};
+
+const Pagination = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRef)(({
+  allowInput = true,
+  allowRewind = true,
+  disabled = false,
+  size = "medium",
+  pageSizeOptions = [],
+  ...props
+}, ref) => {
+  var _ref, _getStoredPageSize;
+
+  const [inputMode, setInputMode] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const [currentPage, setCurrentPage] = (0,_Form_Utils__WEBPACK_IMPORTED_MODULE_3__.useValueTracker)(props.page);
+  const [waiting, setWaiting] = (0,_Form_Utils__WEBPACK_IMPORTED_MODULE_3__.useValueTracker)(props.waiting);
+  const [pageSize, setPageSize] = (0,_Form_Utils__WEBPACK_IMPORTED_MODULE_3__.useValueTracker)(props.pageSize, (_ref = (_getStoredPageSize = getStoredPageSize(props.name)) !== null && _getStoredPageSize !== void 0 ? _getStoredPageSize : pageSizeOptions === null || pageSizeOptions === void 0 ? void 0 : pageSizeOptions[0]) !== null && _ref !== void 0 ? _ref : 10);
+  const totalPages = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
+    var _props$totalPages;
+
+    return (_props$totalPages = props.totalPages) !== null && _props$totalPages !== void 0 ? _props$totalPages : Math.ceil(props.totalItems / pageSize);
+  }, [pageSize, props.totalItems, props.totalPages]);
+  const visibleItems = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
+    const {
+      totalItems
+    } = props;
+    const start = pageSize * currentPage - pageSize + 1;
+    const end = start + pageSize - 1;
+    return {
+      start: (0,_utils_helpers__WEBPACK_IMPORTED_MODULE_2__.clamp)(start, 1, totalItems),
+      end: (0,_utils_helpers__WEBPACK_IMPORTED_MODULE_2__.clamp)(end, 1, totalItems)
+    };
+  }, [currentPage, totalPages, pageSize, props.totalItems]);
+  const handlePageLoad = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(async (pageNumber, pageSize) => {
+    if (props.onPageLoad) {
+      setWaiting(true);
+      await props.onPageLoad(pageNumber, pageSize);
+      setWaiting(false);
+    }
+  }, [props.onPageLoad]);
+  const setPageClamped = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)((value, force = false) => {
+    const pageNumber = (0,_utils_helpers__WEBPACK_IMPORTED_MODULE_2__.clamp)(value, 1, totalPages);
+
+    if (pageNumber !== currentPage || force === true) {
+      setCurrentPage(pageNumber);
+      updateURL(pageNumber);
+    }
+  }, [totalPages, currentPage, pageSize, handlePageLoad]);
+  const updateURL = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)((page, options = {}) => {
+    if (!props.urlParamName) return;
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set(props.urlParamName, page.toString());
+    const historyArgs = [{
+      page
+    }, "", `${location.pathname}?${urlParams.toString()}`];
+
+    if (options.replace) {
+      history.replaceState(...historyArgs);
+    } else {
+      history.pushState(...historyArgs);
+    }
+  }, [props.urlParamName]);
+
+  const applyPageNumberFromEvent = e => {
+    const result = parseInt(e.target.value);
+    setPageClamped(result);
+    setInputMode(false);
+  };
+
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    var _props$onInit;
+
+    (_props$onInit = props.onInit) === null || _props$onInit === void 0 ? void 0 : _props$onInit.call(props, currentPage, pageSize);
+    updateURL(currentPage, {
+      replace: true
+    });
+  }, []);
+  (0,_utils_hooks__WEBPACK_IMPORTED_MODULE_6__.useUpdateEffect)(() => {
+    if (currentPage > totalPages) {
+      setPageClamped(1, true);
+    } else {
+      var _props$onChange;
+
+      (_props$onChange = props.onChange) === null || _props$onChange === void 0 ? void 0 : _props$onChange.call(props, currentPage, pageSize);
+      handlePageLoad(currentPage, pageSize);
+    }
+  }, [pageSize, totalPages]);
+  (0,_utils_hooks__WEBPACK_IMPORTED_MODULE_6__.useUpdateEffect)(() => {
+    var _props$onChange2;
+
+    (_props$onChange2 = props.onChange) === null || _props$onChange2 === void 0 ? void 0 : _props$onChange2.call(props, currentPage, pageSize);
+    handlePageLoad(currentPage, pageSize);
+  }, [currentPage]);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    const popStateHandler = () => {
+      var _urlParams$get;
+
+      if (!props.urlParamName) return;
+      const urlParams = new URLSearchParams(location.search);
+      const pageNumberFromURL = parseInt((_urlParams$get = urlParams.get(props.urlParamName)) !== null && _urlParams$get !== void 0 ? _urlParams$get : "");
+
+      if (!isNaN(pageNumberFromURL) && pageNumberFromURL !== currentPage) {
+        setCurrentPage(pageNumberFromURL);
+      }
+    };
+
+    window.addEventListener('popstate', popStateHandler);
+    return () => window.removeEventListener('popstate', popStateHandler);
+  }, [props.urlParamName]);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_utils_bem__WEBPACK_IMPORTED_MODULE_1__.Block, {
+    name: "pagination",
+    mod: {
+      disabled,
+      size,
+      waiting
+    },
+    children: [props.label && (0,_utils_helpers__WEBPACK_IMPORTED_MODULE_2__.isDefined)(pageSize) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_utils_bem__WEBPACK_IMPORTED_MODULE_1__.Elem, {
+      name: "label",
+      children: [props.label, ": ", visibleItems.start, "-", visibleItems.end]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_utils_bem__WEBPACK_IMPORTED_MODULE_1__.Elem, {
+      name: "navigation",
+      children: [allowRewind && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(NavigationButton, {
+          mod: ['arrow-left', 'arrow-left-double'],
+          onClick: () => setPageClamped(1),
+          disabled: currentPage === 1
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_utils_bem__WEBPACK_IMPORTED_MODULE_1__.Elem, {
+          name: "divider"
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(NavigationButton, {
+        mod: ['arrow-left'],
+        onClick: () => setPageClamped(currentPage - 1),
+        disabled: currentPage === 1
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_utils_bem__WEBPACK_IMPORTED_MODULE_1__.Elem, {
+        name: "input",
+        children: inputMode ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("input", {
+          type: "text",
+          autoFocus: true,
+          defaultValue: currentPage,
+          pattern: "[0-9]",
+          onKeyDown: e => {
+            if (e.code === 'Escape') {
+              setInputMode(false);
+            } else if (e.code === 'Enter') {
+              applyPageNumberFromEvent(e);
+            } else if (e.code.match(/[0-9]/) === null && !isSystemEvent(e)) {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+          },
+          onBlur: e => {
+            applyPageNumberFromEvent(e);
+          }
+        }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_utils_bem__WEBPACK_IMPORTED_MODULE_1__.Elem, {
+          name: "page-indicator",
+          onClick: () => {
+            if (allowInput) setInputMode(true);
+          },
+          children: [currentPage, " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("span", {
+            children: ["of ", totalPages]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+            onClick: () => {
+              /*  */
+            }
+          })]
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(NavigationButton, {
+        mod: ['arrow-right'],
+        onClick: () => setPageClamped(currentPage + 1),
+        disabled: currentPage === totalPages
+      }), allowRewind && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_utils_bem__WEBPACK_IMPORTED_MODULE_1__.Elem, {
+          name: "divider"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(NavigationButton, {
+          mod: ['arrow-right', 'arrow-right-double'],
+          onClick: () => setPageClamped(totalPages),
+          disabled: currentPage === totalPages
+        })]
+      })]
+    }), (pageSizeOptions === null || pageSizeOptions === void 0 ? void 0 : pageSizeOptions.length) > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_utils_bem__WEBPACK_IMPORTED_MODULE_1__.Elem, {
+      name: "page-size",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_Form_Elements__WEBPACK_IMPORTED_MODULE_4__.Select, {
+        value: pageSize,
+        options: pageSizeOptions.map(v => ({
+          label: `${v} per page`,
+          value: v
+        })),
+        onChange: e => {
+          const newPageSize = parseInt(e.target.value);
+          setPageSize(newPageSize);
+
+          if (props.name) {
+            setStoredPageSize(props.name, newPageSize);
+          }
+        }
+      })
+    })]
+  });
+});
+
+const NavigationButton = props => {
+  const mod = Object.fromEntries(props.mod.map(m => [m, true]));
+  mod.disabled = props.disabled === true;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_utils_bem__WEBPACK_IMPORTED_MODULE_1__.Elem, {
+    name: "btn",
+    mod: mod,
+    onClick: props.onClick
+  });
+};
+
+/***/ }),
+
 /***/ "./src/components/SidebarMenu/SidebarMenu.js":
 /*!***************************************************!*\
   !*** ./src/components/SidebarMenu/SidebarMenu.js ***!
@@ -17803,7 +18060,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "Spinner": () => (/* reexport safe */ _Spinner_Spinner__WEBPACK_IMPORTED_MODULE_10__.Spinner),
 /* harmony export */   "ToggleItems": () => (/* reexport safe */ _ToggleItems_ToggleItems__WEBPACK_IMPORTED_MODULE_11__.ToggleItems),
 /* harmony export */   "Userpic": () => (/* reexport safe */ _Userpic_Userpic__WEBPACK_IMPORTED_MODULE_12__.Userpic),
-/* harmony export */   "VersionNotifier": () => (/* reexport safe */ _VersionNotifier_VersionNotifier__WEBPACK_IMPORTED_MODULE_13__.VersionNotifier)
+/* harmony export */   "VersionNotifier": () => (/* reexport safe */ _VersionNotifier_VersionNotifier__WEBPACK_IMPORTED_MODULE_13__.VersionNotifier),
+/* harmony export */   "Pagination": () => (/* reexport safe */ _Pagination_Pagination__WEBPACK_IMPORTED_MODULE_14__.Pagination)
 /* harmony export */ });
 /* harmony import */ var _Breadcrumbs_Breadcrumbs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Breadcrumbs/Breadcrumbs */ "./src/components/Breadcrumbs/Breadcrumbs.js");
 /* harmony import */ var _Button_Button__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Button/Button */ "./src/components/Button/Button.js");
@@ -17819,6 +18077,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ToggleItems_ToggleItems__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./ToggleItems/ToggleItems */ "./src/components/ToggleItems/ToggleItems.tsx");
 /* harmony import */ var _Userpic_Userpic__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./Userpic/Userpic */ "./src/components/Userpic/Userpic.js");
 /* harmony import */ var _VersionNotifier_VersionNotifier__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./VersionNotifier/VersionNotifier */ "./src/components/VersionNotifier/VersionNotifier.js");
+/* harmony import */ var _Pagination_Pagination__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./Pagination/Pagination */ "./src/components/Pagination/Pagination.tsx");
+
 
 
 
@@ -19561,7 +19821,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var _components_Modal_Modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../components/Modal/Modal */ "./src/components/Modal/Modal.js");
 /* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../utils/bem */ "./src/utils/bem.tsx");
-/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../utils/helpers */ "./src/utils/helpers.js");
+/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../utils/helpers */ "./src/utils/helpers.ts");
 /* harmony import */ var _Import_styl__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Import.styl */ "./src/pages/CreateProject/Import/Import.styl");
 /* harmony import */ var _assets_icons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../assets/icons */ "./src/assets/icons/index.js");
 /* harmony import */ var _providers_ApiProvider__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../providers/ApiProvider */ "./src/providers/ApiProvider.js");
@@ -20046,7 +20306,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _providers_ProjectProvider__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../providers/ProjectProvider */ "./src/providers/ProjectProvider.tsx");
 /* harmony import */ var _providers_RoutesProvider__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../providers/RoutesProvider */ "./src/providers/RoutesProvider.js");
 /* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../utils/bem */ "./src/utils/bem.tsx");
-/* harmony import */ var _utils_hooks__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../utils/hooks */ "./src/utils/hooks.js");
+/* harmony import */ var _utils_hooks__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../utils/hooks */ "./src/utils/hooks.ts");
 /* harmony import */ var _Import__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./Import */ "./src/pages/CreateProject/Import/Import.js");
 /* harmony import */ var _useImportPage__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./useImportPage */ "./src/pages/CreateProject/Import/useImportPage.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
@@ -20164,7 +20424,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var _providers_ApiProvider__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../providers/ApiProvider */ "./src/providers/ApiProvider.js");
-/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../utils/helpers */ "./src/utils/helpers.js");
+/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../utils/helpers */ "./src/utils/helpers.ts");
 
 
 
@@ -20242,9 +20502,12 @@ const useDraftProject = () => {
   const api = (0,_providers_ApiProvider__WEBPACK_IMPORTED_MODULE_1__.useAPI)();
   const [project, setProject] = react__WEBPACK_IMPORTED_MODULE_0__.useState();
   const fetchDraftProject = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(async () => {
-    const projects = await api.callApi('projects'); // always create the new one
+    var _response$results;
 
-    const lastIndex = (projects !== null && projects !== void 0 ? projects : []).length;
+    const response = await api.callApi('projects'); // always create the new one
+
+    const projects = (_response$results = response === null || response === void 0 ? void 0 : response.results) !== null && _response$results !== void 0 ? _response$results : [];
+    const lastIndex = projects.length;
     let projectNumber = lastIndex + 1;
     let projectName = `New Project #${projectNumber}`; // dirty hack to get proper non-duplicate name
 
@@ -20293,7 +20556,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _providers_RoutesProvider__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../providers/RoutesProvider */ "./src/providers/RoutesProvider.js");
 /* harmony import */ var _services_breadrumbs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../services/breadrumbs */ "./src/services/breadrumbs.js");
 /* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../utils/bem */ "./src/utils/bem.tsx");
-/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.js");
+/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.ts");
 /* harmony import */ var _CreateProject_Import_ImportModal__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../CreateProject/Import/ImportModal */ "./src/pages/CreateProject/Import/ImportModal.js");
 /* harmony import */ var _ExportPage_ExportPage__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../ExportPage/ExportPage */ "./src/pages/ExportPage/ExportPage.js");
 /* harmony import */ var _api_config__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./api-config */ "./src/pages/DataManager/api-config.js");
@@ -20584,7 +20847,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "APIConfig": () => (/* binding */ APIConfig)
 /* harmony export */ });
-/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.js");
+/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.ts");
 
 /** @type {import("../utils/api-proxy").APIProxyOptions} */
 
@@ -20682,7 +20945,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _providers_ApiProvider__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../providers/ApiProvider */ "./src/providers/ApiProvider.js");
 /* harmony import */ var _providers_RoutesProvider__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../providers/RoutesProvider */ "./src/providers/RoutesProvider.js");
 /* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../utils/bem */ "./src/utils/bem.tsx");
-/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.js");
+/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.ts");
 /* harmony import */ var _ExportPage_styl__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./ExportPage.styl */ "./src/pages/ExportPage/ExportPage.styl");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
@@ -20952,7 +21215,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../components */ "./src/components/index.js");
 /* harmony import */ var _providers_ApiProvider__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../providers/ApiProvider */ "./src/providers/ApiProvider.js");
 /* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../utils/bem */ "./src/utils/bem.tsx");
-/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../utils/helpers */ "./src/utils/helpers.js");
+/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../utils/helpers */ "./src/utils/helpers.ts");
 /* harmony import */ var _PeopleList_styl__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./PeopleList.styl */ "./src/pages/Organization/PeoplePage/PeopleList.styl");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
@@ -21092,7 +21355,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _providers_ApiProvider__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../providers/ApiProvider */ "./src/providers/ApiProvider.js");
 /* harmony import */ var _providers_ConfigProvider__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../providers/ConfigProvider */ "./src/providers/ConfigProvider.js");
 /* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../utils/bem */ "./src/utils/bem.tsx");
-/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../utils/helpers */ "./src/utils/helpers.js");
+/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../utils/helpers */ "./src/utils/helpers.ts");
 /* harmony import */ var _PeopleInvitation_styl__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./PeopleInvitation.styl */ "./src/pages/Organization/PeoplePage/PeopleInvitation.styl");
 /* harmony import */ var _PeopleList__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./PeopleList */ "./src/pages/Organization/PeoplePage/PeopleList.js");
 /* harmony import */ var _PeoplePage_styl__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./PeoplePage.styl */ "./src/pages/Organization/PeoplePage/PeoplePage.styl");
@@ -21427,19 +21690,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "ProjectsPage": () => (/* binding */ ProjectsPage)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react_router__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router/esm/react-router.js");
+/* harmony import */ var react_router__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router/esm/react-router.js");
 /* harmony import */ var _components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../components */ "./src/components/index.js");
 /* harmony import */ var _components_Oneof_Oneof__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../components/Oneof/Oneof */ "./src/components/Oneof/Oneof.js");
 /* harmony import */ var _components_Spinner_Spinner__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../components/Spinner/Spinner */ "./src/components/Spinner/Spinner.js");
 /* harmony import */ var _providers_ApiProvider__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../providers/ApiProvider */ "./src/providers/ApiProvider.js");
 /* harmony import */ var _providers_RoutesProvider__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../providers/RoutesProvider */ "./src/providers/RoutesProvider.js");
 /* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../utils/bem */ "./src/utils/bem.tsx");
-/* harmony import */ var _CreateProject_CreateProject__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../CreateProject/CreateProject */ "./src/pages/CreateProject/CreateProject.js");
-/* harmony import */ var _DataManager_DataManager__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../DataManager/DataManager */ "./src/pages/DataManager/DataManager.js");
-/* harmony import */ var _Settings__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../Settings */ "./src/pages/Settings/index.js");
-/* harmony import */ var _Projects_styl__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./Projects.styl */ "./src/pages/Projects/Projects.styl");
-/* harmony import */ var _ProjectsList__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./ProjectsList */ "./src/pages/Projects/ProjectsList.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.ts");
+/* harmony import */ var _CreateProject_CreateProject__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../CreateProject/CreateProject */ "./src/pages/CreateProject/CreateProject.js");
+/* harmony import */ var _DataManager_DataManager__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../DataManager/DataManager */ "./src/pages/DataManager/DataManager.js");
+/* harmony import */ var _Settings__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../Settings */ "./src/pages/Settings/index.js");
+/* harmony import */ var _Projects_styl__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./Projects.styl */ "./src/pages/Projects/Projects.styl");
+/* harmony import */ var _ProjectsList__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./ProjectsList */ "./src/pages/Projects/ProjectsList.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
 
 
@@ -21455,21 +21719,46 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+
+
+const getCurrentPage = () => {
+  const pageNumberFromURL = new URLSearchParams(location.search).get("page");
+  return pageNumberFromURL ? parseInt(pageNumberFromURL) : 1;
+};
 
 const ProjectsPage = () => {
+  var _localStorage$getItem;
+
   const api = react__WEBPACK_IMPORTED_MODULE_0__.useContext(_providers_ApiProvider__WEBPACK_IMPORTED_MODULE_4__.ApiContext);
   const [projectsList, setProjectsList] = react__WEBPACK_IMPORTED_MODULE_0__.useState([]);
   const [networkState, setNetworkState] = react__WEBPACK_IMPORTED_MODULE_0__.useState(null);
+  const [currentPage, setCurrentPage] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(getCurrentPage());
+  const [totalItems, setTotalItems] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(1);
   const setContextProps = (0,_providers_RoutesProvider__WEBPACK_IMPORTED_MODULE_5__.useContextProps)();
+  const defaultPageSize = parseInt((_localStorage$getItem = localStorage.getItem('pages:projects-list')) !== null && _localStorage$getItem !== void 0 ? _localStorage$getItem : 30);
   const [modal, setModal] = react__WEBPACK_IMPORTED_MODULE_0__.useState(false);
   const openModal = setModal.bind(null, true);
   const closeModal = setModal.bind(null, false);
 
-  const fetchProjects = async () => {
+  const fetchProjects = async (page = currentPage, pageSize = defaultPageSize) => {
+    var _data$count, _data$results;
+
     setNetworkState('loading');
-    const projects = await api.callApi("projects");
-    setProjectsList(projects !== null && projects !== void 0 ? projects : []);
+    const data = await api.callApi("projects", {
+      params: {
+        page,
+        page_size: pageSize
+      }
+    });
+    setTotalItems((_data$count = data === null || data === void 0 ? void 0 : data.count) !== null && _data$count !== void 0 ? _data$count : 1);
+    setProjectsList((_data$results = data.results) !== null && _data$results !== void 0 ? _data$results : []);
     setNetworkState('loaded');
+  };
+
+  const loadNextPage = async (page, pageSize) => {
+    setCurrentPage(page);
+    await fetchProjects(page, pageSize);
   };
 
   react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
@@ -21483,24 +21772,28 @@ const ProjectsPage = () => {
       showButton: projectsList.length > 0
     });
   }, [projectsList.length]);
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_utils_bem__WEBPACK_IMPORTED_MODULE_6__.Block, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_utils_bem__WEBPACK_IMPORTED_MODULE_6__.Block, {
     name: "projects-page",
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(_components_Oneof_Oneof__WEBPACK_IMPORTED_MODULE_2__.Oneof, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(_components_Oneof_Oneof__WEBPACK_IMPORTED_MODULE_2__.Oneof, {
       value: networkState,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_utils_bem__WEBPACK_IMPORTED_MODULE_6__.Elem, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_utils_bem__WEBPACK_IMPORTED_MODULE_6__.Elem, {
         name: "loading",
         case: "loading",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_components_Spinner_Spinner__WEBPACK_IMPORTED_MODULE_3__.Spinner, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_components_Spinner_Spinner__WEBPACK_IMPORTED_MODULE_3__.Spinner, {
           size: 64
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(_utils_bem__WEBPACK_IMPORTED_MODULE_6__.Elem, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(_utils_bem__WEBPACK_IMPORTED_MODULE_6__.Elem, {
         name: "content",
         case: "loaded",
-        children: [projectsList.length ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_ProjectsList__WEBPACK_IMPORTED_MODULE_11__.ProjectsList, {
-          projects: projectsList
-        }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_ProjectsList__WEBPACK_IMPORTED_MODULE_11__.EmptyProjectsList, {
+        children: [projectsList.length ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_ProjectsList__WEBPACK_IMPORTED_MODULE_12__.ProjectsList, {
+          projects: projectsList,
+          currentPage: currentPage,
+          totalItems: totalItems,
+          loadNextPage: loadNextPage,
+          pageSize: defaultPageSize
+        }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_ProjectsList__WEBPACK_IMPORTED_MODULE_12__.EmptyProjectsList, {
           openModal: openModal
-        }), modal && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_CreateProject_CreateProject__WEBPACK_IMPORTED_MODULE_7__.CreateProject, {
+        }), modal && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_CreateProject_CreateProject__WEBPACK_IMPORTED_MODULE_8__.CreateProject, {
           onClose: closeModal
         })]
       })]
@@ -21522,14 +21815,14 @@ ProjectsPage.routes = ({
   path: "/:id(\\d+)",
   exact: true,
   component: () => {
-    const params = (0,react_router__WEBPACK_IMPORTED_MODULE_13__.useParams)();
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(react_router__WEBPACK_IMPORTED_MODULE_13__.Redirect, {
+    const params = (0,react_router__WEBPACK_IMPORTED_MODULE_14__.useParams)();
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(react_router__WEBPACK_IMPORTED_MODULE_14__.Redirect, {
       to: `/projects/${params.id}/data`
     });
   },
   pages: {
-    DataManagerPage: _DataManager_DataManager__WEBPACK_IMPORTED_MODULE_8__.DataManagerPage,
-    SettingsPage: _Settings__WEBPACK_IMPORTED_MODULE_9__.SettingsPage
+    DataManagerPage: _DataManager_DataManager__WEBPACK_IMPORTED_MODULE_9__.DataManagerPage,
+    SettingsPage: _Settings__WEBPACK_IMPORTED_MODULE_10__.SettingsPage
   }
 }];
 
@@ -21538,7 +21831,7 @@ ProjectsPage.context = ({
   showButton
 }) => {
   if (!showButton) return null;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
     onClick: openModal,
     look: "primary",
     size: "compact",
@@ -21562,14 +21855,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var chroma_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! chroma-js */ "./node_modules/chroma-js/chroma.js");
 /* harmony import */ var chroma_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(chroma_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/format/index.js");
+/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/format/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react_router__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-router */ "./node_modules/react-router/esm/react-router.js");
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
 /* harmony import */ var _assets_icons__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../assets/icons */ "./src/assets/icons/index.js");
 /* harmony import */ var _components__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../components */ "./src/components/index.js");
 /* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../utils/bem */ "./src/utils/bem.tsx");
-/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.js");
+/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.ts");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
 
@@ -21583,15 +21875,31 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const ProjectsList = ({
-  projects
+  projects,
+  currentPage,
+  totalItems,
+  loadNextPage,
+  pageSize
 }) => {
-  const history = (0,react_router__WEBPACK_IMPORTED_MODULE_7__.useHistory)();
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_utils_bem__WEBPACK_IMPORTED_MODULE_4__.Elem, {
-    name: "list",
-    children: projects.map(project => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(ProjectCard, {
-      project: project,
-      history: history
-    }, project.id))
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_utils_bem__WEBPACK_IMPORTED_MODULE_4__.Elem, {
+      name: "list",
+      children: projects.map(project => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(ProjectCard, {
+        project: project
+      }, project.id))
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_utils_bem__WEBPACK_IMPORTED_MODULE_4__.Elem, {
+      name: "pages",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_components__WEBPACK_IMPORTED_MODULE_3__.Pagination, {
+        name: "projects-list",
+        label: "Projects",
+        page: currentPage,
+        totalItems: totalItems,
+        urlParamName: "page",
+        pageSize: pageSize,
+        pageSizeOptions: [10, 30, 50, 100],
+        onPageLoad: (page, pageSize) => loadNextPage(page, pageSize)
+      })
+    })]
   });
 };
 const EmptyProjectsList = ({
@@ -21620,8 +21928,7 @@ const EmptyProjectsList = ({
 };
 
 const ProjectCard = ({
-  project,
-  history
+  project
 }) => {
   var _project$title;
 
@@ -21635,7 +21942,7 @@ const ProjectCard = ({
     } : {};
   }, [color]);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_utils_bem__WEBPACK_IMPORTED_MODULE_4__.Elem, {
-    tag: react_router_dom__WEBPACK_IMPORTED_MODULE_8__.NavLink,
+    tag: react_router_dom__WEBPACK_IMPORTED_MODULE_7__.NavLink,
     name: "link",
     to: `/projects/${project.id}/data`,
     "data-external": true,
@@ -21722,7 +22029,7 @@ const ProjectCard = ({
         name: "info",
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_utils_bem__WEBPACK_IMPORTED_MODULE_4__.Elem, {
           name: "created-date",
-          children: (0,date_fns__WEBPACK_IMPORTED_MODULE_9__.default)(new Date(project.created_at), "dd MMM ’yy, HH:mm")
+          children: (0,date_fns__WEBPACK_IMPORTED_MODULE_8__.default)(new Date(project.created_at), "dd MMM ’yy, HH:mm")
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_utils_bem__WEBPACK_IMPORTED_MODULE_4__.Elem, {
           name: "created-by",
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_components__WEBPACK_IMPORTED_MODULE_3__.Userpic, {
@@ -22127,7 +22434,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Modal_Modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../components/Modal/Modal */ "./src/components/Modal/Modal.js");
 /* harmony import */ var _providers_ApiProvider__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../providers/ApiProvider */ "./src/providers/ApiProvider.js");
 /* harmony import */ var _providers_ProjectProvider__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../providers/ProjectProvider */ "./src/providers/ProjectProvider.tsx");
-/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.js");
+/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../utils/helpers */ "./src/utils/helpers.ts");
 /* harmony import */ var _CreateProject_Config_Config__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../CreateProject/Config/Config */ "./src/pages/CreateProject/Config/Config.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
@@ -22777,7 +23084,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Oneof_Oneof__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../components/Oneof/Oneof */ "./src/components/Oneof/Oneof.js");
 /* harmony import */ var _providers_ApiProvider__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../providers/ApiProvider */ "./src/providers/ApiProvider.js");
 /* harmony import */ var _utils_bem__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../utils/bem */ "./src/utils/bem.tsx");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../utils/helpers */ "./src/utils/helpers.ts");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
 
 
 
@@ -22842,8 +23151,13 @@ const StorageForm = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRe
       const body = form.assembleFormData({
         asJSON: true
       });
-      const type = form.getField('storage_type').value; // we're using api provided by the form to be able to save
+      const type = form.getField('storage_type').value;
+
+      if ((0,_utils_helpers__WEBPACK_IMPORTED_MODULE_7__.isDefined)(storage === null || storage === void 0 ? void 0 : storage.id)) {
+        body.id = storage.id;
+      } // we're using api provided by the form to be able to save
       // current api context and render inline erorrs properly
+
 
       const response = await form.api.callApi('validateStorage', {
         params: {
@@ -22856,11 +23170,11 @@ const StorageForm = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRe
     }
 
     setChecking(false);
-  }, [formRef, target, type]);
+  }, [formRef, target, type, storage]);
   const action = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
     return storage ? "updateStorage" : "createStorage";
   }, [storage]);
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_components_Form__WEBPACK_IMPORTED_MODULE_3__.Form.Builder, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_components_Form__WEBPACK_IMPORTED_MODULE_3__.Form.Builder, {
     ref: formRef,
     action: action,
     params: {
@@ -22876,17 +23190,17 @@ const StorageForm = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRe
     onSubmit: onSubmit,
     autoFill: "off",
     autoComplete: "off",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_components_Form__WEBPACK_IMPORTED_MODULE_3__.Input, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_Form__WEBPACK_IMPORTED_MODULE_3__.Input, {
       type: "hidden",
       name: "project",
       value: project
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_components_Form__WEBPACK_IMPORTED_MODULE_3__.Form.Actions, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_components_Form__WEBPACK_IMPORTED_MODULE_3__.Form.Actions, {
       valid: connectionValid,
-      extra: connectionValid !== null && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_utils_bem__WEBPACK_IMPORTED_MODULE_6__.Block, {
+      extra: connectionValid !== null && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_utils_bem__WEBPACK_IMPORTED_MODULE_6__.Block, {
         name: "form-indicator",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_components_Oneof_Oneof__WEBPACK_IMPORTED_MODULE_4__.Oneof, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_components_Oneof_Oneof__WEBPACK_IMPORTED_MODULE_4__.Oneof, {
           value: connectionValid,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_utils_bem__WEBPACK_IMPORTED_MODULE_6__.Elem, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_utils_bem__WEBPACK_IMPORTED_MODULE_6__.Elem, {
             tag: "span",
             mod: {
               type: "success"
@@ -22894,7 +23208,7 @@ const StorageForm = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRe
             name: "item",
             case: true,
             children: "Successfully connected!"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_utils_bem__WEBPACK_IMPORTED_MODULE_6__.Elem, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_utils_bem__WEBPACK_IMPORTED_MODULE_6__.Elem, {
             tag: "span",
             mod: {
               type: "fail"
@@ -22905,24 +23219,24 @@ const StorageForm = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRe
           })]
         })
       }),
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_components_Form__WEBPACK_IMPORTED_MODULE_3__.Input, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_Form__WEBPACK_IMPORTED_MODULE_3__.Input, {
         type: "hidden",
         name: "project",
         value: project
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_components__WEBPACK_IMPORTED_MODULE_1__.Button.Group, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_components__WEBPACK_IMPORTED_MODULE_1__.Button.Group, {
         className: rootClass.elem('buttons'),
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
           type: "button",
           waiting: checking,
           onClick: validateStorageConnection,
           children: "Check Connection"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
           type: "submit",
           look: "primary",
           children: storage ? "Save" : "Add Storage"
         })]
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_components_Error_InlineError__WEBPACK_IMPORTED_MODULE_2__.InlineError, {})]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_Error_InlineError__WEBPACK_IMPORTED_MODULE_2__.InlineError, {})]
   });
 });
 
@@ -24064,7 +24378,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Modal_Modal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/Modal/Modal */ "./src/components/Modal/Modal.js");
 /* harmony import */ var _config_ApiConfig__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../config/ApiConfig */ "./src/config/ApiConfig.js");
 /* harmony import */ var _utils_api_proxy__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/api-proxy */ "./src/utils/api-proxy.js");
-/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utils/helpers */ "./src/utils/helpers.js");
+/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utils/helpers */ "./src/utils/helpers.ts");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
 
@@ -24788,6 +25102,7 @@ const useContextComponent = () => {
 };
 const useFixedLocation = () => {
   const location = (0,react_router__WEBPACK_IMPORTED_MODULE_7__.useLocation)();
+  location;
   const result = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
     var _location$location;
 
@@ -24978,7 +25293,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react_singleton_hook__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-singleton-hook */ "./node_modules/react-singleton-hook/es/index.js");
-/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/helpers */ "./src/utils/helpers.js");
+/* harmony import */ var _utils_helpers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/helpers */ "./src/utils/helpers.ts");
 
 
 
@@ -25054,7 +25369,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "APIProxy": () => (/* binding */ APIProxy)
 /* harmony export */ });
-/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers */ "./src/utils/helpers.js");
+/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers */ "./src/utils/helpers.ts");
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /**
@@ -25558,8 +25873,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "Elem": () => (/* binding */ Elem)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./helpers */ "./src/utils/helpers.ts");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 var _process$env$CSS_PREF;
+
 
 
 
@@ -25586,7 +25903,7 @@ const assembleClass = (block, elem, mix, mod) => {
 
   if (mix) {
     const mixes = Array.isArray(mix) ? mix : [mix];
-    const mixMap = [].concat(...mixes).filter(m => m !== undefined && m !== null && m !== "").map(m => {
+    const mixMap = [].concat(...mixes).filter(m => (0,_helpers__WEBPACK_IMPORTED_MODULE_1__.isDefined)(m) && m !== "").map(m => {
       if (typeof m === 'string') {
         return m;
       } else {
@@ -25602,10 +25919,10 @@ const assembleClass = (block, elem, mix, mod) => {
     if (new RegExp(CSS_PREFIX).test(cls)) return cls;else return `${CSS_PREFIX}${cls}`;
   };
 
-  return finalClass.map(attachNamespace).join(" ");
+  return finalClass.filter(cls => !(0,_helpers__WEBPACK_IMPORTED_MODULE_1__.isEmptyString)(cls)).map(attachNamespace).join(" ");
 };
 
-const BlockContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext(null);
+const BlockContext = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.createContext)(null);
 const cn = (block, options = {}) => {
   const {
     elem,
@@ -25639,10 +25956,10 @@ const cn = (block, options = {}) => {
       });
     },
 
-    mix(...mix) {
+    mix(...mixes) {
       return cn(block, {
         elem,
-        mix,
+        mix: mixes,
         mod
       });
     },
@@ -25689,8 +26006,8 @@ const cn = (block, options = {}) => {
   return classNameBuilder;
 };
 const BemWithSpecifiContext = context => {
-  const Context = context !== null && context !== void 0 ? context : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext(null);
-  const Block = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(({
+  const LocalContext = context !== null && context !== void 0 ? context : /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.createContext)(null);
+  const Block = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRef)(({
     tag = 'div',
     name,
     mod,
@@ -25698,20 +26015,19 @@ const BemWithSpecifiContext = context => {
     ...rest
   }, ref) => {
     const rootClass = cn(name);
-    const finalMix = [].concat(mix).filter(cn => !!cn);
+    const finalMix = [].concat(mix).filter(cnm => !!cnm);
     const className = rootClass.mod(mod).mix(...finalMix, rest.className).toClassName();
     const finalProps = { ...rest,
       ref,
       className
     };
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(Context.Provider, {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(LocalContext.Provider, {
       value: rootClass,
-      children: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(tag, finalProps)
+      children: /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(tag, finalProps)
     });
   });
   Block.displayName = 'Block';
-  const Elem = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(({
-    tag = 'div',
+  const Elem = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.forwardRef)(({
     component,
     block,
     name,
@@ -25719,22 +26035,24 @@ const BemWithSpecifiContext = context => {
     mix,
     ...rest
   }, ref) => {
-    const blockCtx = react__WEBPACK_IMPORTED_MODULE_0__.useContext(Context);
-    const finalMix = [].concat(mix).filter(cn => !!cn);
+    var _rest$tag;
+
+    const blockCtx = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(LocalContext);
+    const finalMix = [].concat(mix).filter(cnm => !!cnm);
+    const finalTag = (_rest$tag = rest.tag) !== null && _rest$tag !== void 0 ? _rest$tag : 'div';
     const className = (block ? cn(block) : blockCtx).elem(name).mod(mod).mix(...finalMix, rest.className).toClassName();
     const finalProps = { ...rest,
       ref,
       className
     };
-    if (typeof tag !== 'string') finalProps.block = blockCtx;
-    if (component) finalProps.tag = tag;
-    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(component !== null && component !== void 0 ? component : tag, finalProps);
+    if (typeof finalTag !== 'string') finalProps.block = blockCtx;
+    return /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(component !== null && component !== void 0 ? component : finalTag, finalProps);
   });
   Elem.displayName = 'Elem';
   return {
     Block,
     Elem,
-    Context
+    Context: LocalContext
   };
 };
 const {
@@ -25922,9 +26240,9 @@ const alignElements = (elem, target, align = 'bottom-left', padding = 0) => {
 
 /***/ }),
 
-/***/ "./src/utils/helpers.js":
+/***/ "./src/utils/helpers.ts":
 /*!******************************!*\
-  !*** ./src/utils/helpers.js ***!
+  !*** ./src/utils/helpers.ts ***!
   \******************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -25936,23 +26254,30 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "isDefined": () => (/* binding */ isDefined),
 /* harmony export */   "isEmptyString": () => (/* binding */ isEmptyString),
 /* harmony export */   "objectClean": () => (/* binding */ objectClean),
+/* harmony export */   "numberWithPrecision": () => (/* binding */ numberWithPrecision),
 /* harmony export */   "humanReadableNumber": () => (/* binding */ humanReadableNumber),
 /* harmony export */   "absoluteURL": () => (/* binding */ absoluteURL),
 /* harmony export */   "removePrefix": () => (/* binding */ removePrefix),
 /* harmony export */   "copyText": () => (/* binding */ copyText),
-/* harmony export */   "delay": () => (/* binding */ delay)
+/* harmony export */   "delay": () => (/* binding */ delay),
+/* harmony export */   "clamp": () => (/* binding */ clamp)
 /* harmony export */ });
 const formDataToJPO = formData => {
-  if (formData instanceof FormData === false) return formData;
-  return Array.from(formData.entries()).reduce((res, [key, value]) => {
-    return { ...res,
-      [key]: value
-    };
-  }, {});
+  if (formData instanceof FormData) {
+    const entries = formData.entries();
+    return Array.from(entries).reduce((res, [key, value]) => {
+      return { ...res,
+        [key]: value
+      };
+    }, {});
+  }
+
+  return formData;
 };
-const unique = (list, expression = (a, b) => a === b) => {
-  return list.reduce((res, item) => {
-    const index = res.findIndex(elem => expression(elem, item));
+const unique = (list, expression) => {
+  const comparator = expression !== null && expression !== void 0 ? expression : (a, b) => a === b;
+  return (list !== null && list !== void 0 ? list : []).reduce((res, item) => {
+    const index = res.findIndex(elem => comparator(elem, item));
     if (index < 0) res.push(item);
     return res;
   }, []);
@@ -25964,27 +26289,46 @@ const isEmptyString = value => {
   return typeof value === 'string' && value.trim() === "";
 };
 const objectClean = source => {
-  const cleanObject = Object.entries(source).filter(pair => {
-    return isDefined(pair[1]) && pair[1] !== "";
-  }).map(([key, value]) => {
-    if (Object.prototype.toString.call(value) === '[object Object]') {
-      return [key, objectClean(value)];
-    } else {
-      return [key, value];
+  const cleanObject = Object.entries(source).reduce((res, [key, value]) => {
+    const valueIsDefined = isDefined(value) && !isEmptyString(value);
+
+    if (!valueIsDefined) {
+      return res;
     }
-  });
+
+    if (Object.prototype.toString.call(value) === '[object Object]') {
+      return [...res, [key, objectClean(value)]];
+    } else {
+      return [...res, [key, value]];
+    }
+  }, []);
   return Object.fromEntries(cleanObject);
 };
+const numberWithPrecision = (n, precision = 1, removeTrailinZero = false) => {
+  if (typeof n !== 'number' || isNaN(n)) return '';
+  let finalNum = n.toFixed(precision);
+
+  if (removeTrailinZero) {
+    finalNum = finalNum.replace(/.(0+)$/, '');
+  }
+
+  return finalNum;
+};
 const humanReadableNumber = n => {
-  let result = n;
+  const abs = Math.abs(n);
+  if (isNaN(abs) || n === null) return "—";
 
-  const normalizeNumber = n => n.toFixed(1).replace(/.(0+)$/, '');
+  const normalizeNumber = num => numberWithPrecision(num, 1, true);
 
-  if (n >= 1e3 && n < 1e6) {
+  let result;
+
+  if (abs < 1e3) {
+    result = normalizeNumber(n);
+  } else if (abs >= 1e3 && abs < 1e6) {
     result = `${normalizeNumber(n / 1e3)}K`;
-  } else if (n >= 1e6 && n < 1e9) {
+  } else if (abs >= 1e6 && abs < 1e9) {
     result = `${normalizeNumber(n / 1e6)}M`;
-  } else if (n >= 1e9) {
+  } else {
     result = `${normalizeNumber(n / 1e9)}B`;
   }
 
@@ -26008,6 +26352,8 @@ const removePrefix = path => {
 };
 const copyText = text => {
   const input = document.createElement('textarea');
+  input.style.position = "fixed"; // don't mess up with scroll
+
   document.body.appendChild(input);
   input.value = text;
   input.focus();
@@ -26018,12 +26364,15 @@ const copyText = text => {
 const delay = (time = 0) => {
   return new Promise(resolve => setTimeout(resolve, time));
 };
+const clamp = (value, min, max) => {
+  return Math.max(min, Math.min(value, max));
+};
 
 /***/ }),
 
-/***/ "./src/utils/hooks.js":
+/***/ "./src/utils/hooks.ts":
 /*!****************************!*\
-  !*** ./src/utils/hooks.js ***!
+  !*** ./src/utils/hooks.ts ***!
   \****************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -26031,7 +26380,9 @@ const delay = (time = 0) => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "useSet": () => (/* binding */ useSet),
-/* harmony export */   "useRefresh": () => (/* binding */ useRefresh)
+/* harmony export */   "useRefresh": () => (/* binding */ useRefresh),
+/* harmony export */   "useFirstMountState": () => (/* binding */ useFirstMountState),
+/* harmony export */   "useUpdateEffect": () => (/* binding */ useUpdateEffect)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-router */ "./node_modules/react-router/esm/react-router.js");
@@ -26080,6 +26431,24 @@ const useRefresh = () => {
     return pathname;
   }, [pathname]);
   return refresh;
+};
+function useFirstMountState() {
+  const isFirst = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(true);
+
+  if (isFirst.current) {
+    isFirst.current = false;
+    return true;
+  }
+
+  return isFirst.current;
+}
+const useUpdateEffect = (effect, deps) => {
+  const isFirstMount = useFirstMountState();
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (!isFirstMount) {
+      return effect();
+    }
+  }, deps);
 };
 
 /***/ }),
@@ -63895,6 +64264,22 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/components/Pagination/Pagination.styl":
+/*!***************************************************!*\
+  !*** ./src/components/Pagination/Pagination.styl ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+// extracted by mini-css-extract-plugin
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({"pagination":"ls-pagination","pagination_disabled":"ls-pagination_disabled","pagination__label":"ls-pagination__label","pagination__navigation":"ls-pagination__navigation","pagination_waiting":"ls-pagination_waiting","button-waiting":"ls-button-waiting","pagination__divider":"ls-pagination__divider","pagination__btn":"ls-pagination__btn","pagination__btn_disabled":"ls-pagination__btn_disabled","pagination__btn_arrow-left":"ls-pagination__btn_arrow-left","pagination__btn_arrow-right":"ls-pagination__btn_arrow-right","pagination__btn_arrow-left-double":"ls-pagination__btn_arrow-left-double","pagination__btn_arrow-right-double":"ls-pagination__btn_arrow-right-double","pagination__input":"ls-pagination__input","pagination__page-indicator":"ls-pagination__page-indicator","pagination__page-size":"ls-pagination__page-size"});
+
+/***/ }),
+
 /***/ "./src/components/SidebarMenu/SidebarMenu.styl":
 /*!*****************************************************!*\
   !*** ./src/components/SidebarMenu/SidebarMenu.styl ***!
@@ -64163,7 +64548,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 // extracted by mini-css-extract-plugin
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({"projects-page":"ls-projects-page","projects-page__loading":"ls-projects-page__loading","projects-page__list":"ls-projects-page__list","projects-page__link":"ls-projects-page__link","empty-projects-page":"ls-empty-projects-page","empty-projects-page__heidi":"ls-empty-projects-page__heidi","empty-projects-page__header":"ls-empty-projects-page__header","empty-projects-page__action":"ls-empty-projects-page__action","project-card":"ls-project-card","project-card__header":"ls-project-card__header","project-card__menu":"ls-project-card__menu","button":"ls-button","button__icon":"ls-button__icon","project-card__title":"ls-project-card__title","project-card__title-text":"ls-project-card__title-text","project-card__summary":"ls-project-card__summary","project-card__total":"ls-project-card__total","project-card__annotation":"ls-project-card__annotation","project-card__detail":"ls-project-card__detail","project-card__detail-item":"ls-project-card__detail-item","project-card__icon":"ls-project-card__icon","project-card__detail-item_type_completed":"ls-project-card__detail-item_type_completed","project-card__detail-item_type_rejected":"ls-project-card__detail-item_type_rejected","project-card__detail-item_type_predictions":"ls-project-card__detail-item_type_predictions","project-card__description":"ls-project-card__description","project-card__info":"ls-project-card__info","project-card__created-date":"ls-project-card__created-date","project-card_colored":"ls-project-card_colored"});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({"projects-page":"ls-projects-page","projects-page__loading":"ls-projects-page__loading","projects-page__list":"ls-projects-page__list","projects-page__link":"ls-projects-page__link","projects-page__pages":"ls-projects-page__pages","empty-projects-page":"ls-empty-projects-page","empty-projects-page__heidi":"ls-empty-projects-page__heidi","empty-projects-page__header":"ls-empty-projects-page__header","empty-projects-page__action":"ls-empty-projects-page__action","project-card":"ls-project-card","project-card__header":"ls-project-card__header","project-card__menu":"ls-project-card__menu","button":"ls-button","button__icon":"ls-button__icon","project-card__title":"ls-project-card__title","project-card__title-text":"ls-project-card__title-text","project-card__summary":"ls-project-card__summary","project-card__total":"ls-project-card__total","project-card__annotation":"ls-project-card__annotation","project-card__detail":"ls-project-card__detail","project-card__detail-item":"ls-project-card__detail-item","project-card__icon":"ls-project-card__icon","project-card__detail-item_type_completed":"ls-project-card__detail-item_type_completed","project-card__detail-item_type_rejected":"ls-project-card__detail-item_type_rejected","project-card__detail-item_type_predictions":"ls-project-card__detail-item_type_predictions","project-card__description":"ls-project-card__description","project-card__info":"ls-project-card__info","project-card__created-date":"ls-project-card__created-date","project-card_colored":"ls-project-card_colored"});
 
 /***/ }),
 
