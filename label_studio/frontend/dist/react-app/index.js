@@ -20884,7 +20884,7 @@ const APIConfig = {
     task: "/tasks/:taskID",
 
     /** List of tasks (samples) in the dataset */
-    tasks: "/views/:tabID/tasks",
+    tasks: "/tasks",
 
     /** Next task (labelstream, default sequential) */
     nextTask: "/tasks/next",
