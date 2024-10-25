@@ -3,7 +3,7 @@
   "flags": {
     "feat_all_dia_1310_interact_with_ner_predictions_from_prompts": {
       "key": "feat_all_dia_1310_interact_with_ner_predictions_from_prompts",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -25,7 +25,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 2,
+      "version": 3,
       "deleted": false
     },
     "feat_all_optic_71_dashboard_multiple_labeling_group_support_v1_01092023_short": {
@@ -138,7 +138,7 @@
     },
     "feat_front_dia_1138_prompter_error_handling_mvp": {
       "key": "feat_front_dia_1138_prompter_error_handling_mvp",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -160,7 +160,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 2,
+      "version": 3,
       "deleted": false
     },
     "feat_optic_1098_annotation_history_lead_time_charts": {
@@ -1569,7 +1569,7 @@
     },
     "fflag_feat_all_leap_1081_reviewer_flow_updates": {
       "key": "fflag_feat_all_leap_1081_reviewer_flow_updates",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -1591,7 +1591,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 5,
+      "version": 6,
       "deleted": false
     },
     "fflag_feat_all_leap_1181_bulk_annotation_short": {
@@ -1623,13 +1623,13 @@
     },
     "fflag_feat_all_leap_1429_flexible_reject_mode_250924_short": {
       "key": "fflag_feat_all_leap_1429_flexible_reject_mode_250924_short",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
       "rules": [],
       "fallthrough": {
-        "variation": 1
+        "variation": 0
       },
       "offVariation": 1,
       "variations": [
@@ -1645,12 +1645,12 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 3,
+      "version": 4,
       "deleted": false
     },
     "fflag_feat_all_leap_1430_per_field_comments_100924_short": {
       "key": "fflag_feat_all_leap_1430_per_field_comments_100924_short",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -1672,7 +1672,34 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 6,
+      "version": 7,
+      "deleted": false
+    },
+    "fflag_feat_all_leap_1534_custom_task_lock_timeout_short": {
+      "key": "fflag_feat_all_leap_1534_custom_task_lock_timeout_short",
+      "on": false,
+      "prerequisites": [],
+      "targets": [],
+      "contextTargets": [],
+      "rules": [],
+      "fallthrough": {
+        "variation": 0
+      },
+      "offVariation": 1,
+      "variations": [
+        true,
+        false
+      ],
+      "clientSideAvailability": {
+        "usingMobileKey": false,
+        "usingEnvironmentId": false
+      },
+      "clientSide": false,
+      "salt": "736e713d05a544a78e8ad1c9dbcc8376",
+      "trackEvents": false,
+      "trackEventsFallthrough": false,
+      "debugEventsUntilDate": null,
+      "version": 3,
       "deleted": false
     },
     "fflag_feat_all_leap_883_custom_script_270524_short": {
@@ -2366,7 +2393,7 @@
     },
     "fflag_feat_front_dia_916_model_creation_and_versioning_short": {
       "key": "fflag_feat_front_dia_916_model_creation_and_versioning_short",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -2388,7 +2415,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 3,
+      "version": 4,
       "deleted": false
     },
     "fflag_feat_front_leap_1173_disable_postpone_skip_short": {
@@ -4671,6 +4698,60 @@
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
       "version": 5,
+      "deleted": false
+    },
+    "fflag_fix_optic_1210_optimize_lse_projects_api_short": {
+      "key": "fflag_fix_optic_1210_optimize_lse_projects_api_short",
+      "on": false,
+      "prerequisites": [],
+      "targets": [],
+      "contextTargets": [],
+      "rules": [],
+      "fallthrough": {
+        "variation": 0
+      },
+      "offVariation": 1,
+      "variations": [
+        true,
+        false
+      ],
+      "clientSideAvailability": {
+        "usingMobileKey": false,
+        "usingEnvironmentId": false
+      },
+      "clientSide": false,
+      "salt": "30068b74b70c4e068c63fd4a2ee7cee9",
+      "trackEvents": false,
+      "trackEventsFallthrough": false,
+      "debugEventsUntilDate": null,
+      "version": 2,
+      "deleted": false
+    },
+    "fflag_fix_optic_1259_lse_projects_read_apis_use_replica_short": {
+      "key": "fflag_fix_optic_1259_lse_projects_read_apis_use_replica_short",
+      "on": false,
+      "prerequisites": [],
+      "targets": [],
+      "contextTargets": [],
+      "rules": [],
+      "fallthrough": {
+        "variation": 0
+      },
+      "offVariation": 1,
+      "variations": [
+        true,
+        false
+      ],
+      "clientSideAvailability": {
+        "usingMobileKey": false,
+        "usingEnvironmentId": false
+      },
+      "clientSide": false,
+      "salt": "380538fdddcb4899b65e93d8d6e99482",
+      "trackEvents": false,
+      "trackEventsFallthrough": false,
+      "debugEventsUntilDate": null,
+      "version": 2,
       "deleted": false
     },
     "fflag_fix_optic_214_extra_blank_dashboard_charts_short": {
