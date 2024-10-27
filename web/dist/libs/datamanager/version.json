@@ -1,6 +1,6 @@
 {
-  "message": "fix: LEAP-1579: LEAP-1576: LEAP-1582: Improve comment icons usability (#6546)",
-  "commit": "094e5d7ab9df76c443a970db887798b7a48e6db8",
-  "date": "2024-10-24T14:06:52.000Z",
+  "message": "docs: Add more about anchor point in Rectangles (#6561)",
+  "commit": "34931939c7770beb37b014c35e8a4919ade4e1da",
+  "date": "2024-10-27T00:47:57.000Z",
   "branch": "develop"
 }
