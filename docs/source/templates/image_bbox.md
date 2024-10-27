@@ -16,19 +16,29 @@ If you want to perform object detection, you need to create a labeled dataset. U
 
 <i>Figure 1: Object detection with bounding boxes.</i>
 
-## Rotation
+## Rotation and anchor point
 
 Note that when you rotate rectangles (bounding boxes), the anchor point is different depending on how you perform the rotation.
 
-**Bounding box rotation in Label Studio UI**
+### Bounding box rotation in Label Studio UI
 
-If you rotate a bounding box using your mouse in the labeling interface, the rotation anchor point is the center of the rectangle.
+If you rotate a bounding box using your mouse in the labeling interface, the rotation anchor point is the **center** of the rectangle.
 
 ![Diagram showing mouse rotation](../images/rectangle_ui_rotation.jpg)
 
-**Bounding box rotation in the Label Studio results**
+### Bounding box rotation in the Label Studio results
 
-If you rotate by directly editing the rotation angle under the **Info** panel of the labeling interface, the rotation anchor point is the top left. This is also how it is saved in the Label Studio results (regardless of how you performed the rotation).
+If you rotate by directly editing the rotation angle under the **Info** panel of the labeling interface, the rotation anchor point is the **top left** of the rectangle. This is also how it is saved in the Label Studio `annotation.result[]['value']` (regardless of how you performed the rotation): 
+
+```json
+ { 
+  "x": 50,  # top left corner of the bounding box from 0 to 100% of the image width
+  "y": 60,  # top left corner of the bounding box from 0 to 100% of the image height
+  "width": 10,  # width of the bounding box from 0 to 100% of the image width
+  "height": 20,  # height of the bounding box from 0 to 100% of the image height
+  "rotation": 45  # rotation angle in degrees around the top left corner of the bounding box
+}
+```
 
 ![Diagram showing result rotation](../images/rectangle_db_rotation.jpg)
 
@@ -39,6 +49,9 @@ As an annotator, you can create a rotated bounding box with the "three point cli
   - First point click - Starting point of the location to draw the bounding box.
   - Second point click - Define the rotation and width of the bounding box.
   - Third point click - Draw the height of the bounding box.
+
+!!! note
+    The three-point click action is only available when using the `<Rectangle>` tag. It is not available for `<RectangleLabels>`. 
 
 The origin anchor `0,0` is placed with the first click, similar to the basic bounding box. The second anchor will indicate the angle of the edge for `0,1` and the width of the bounding box. The third and final anchor `1,1` will determine the height or final dimension of the bounding box. Three clicks is required to create a rotated bounding box.
 

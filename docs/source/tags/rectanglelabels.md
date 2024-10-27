@@ -8,7 +8,8 @@ meta_description: Customize Label Studio with the RectangleLabels tag and add la
 
 The `RectangleLabels` tag creates labeled rectangles. Use to apply labels to bounding box semantic segmentation tasks.
 
-Use with the following data types: image.
+Use with the following data types: image. Annotation results store the left top corner of the bounding box,
+read more about it and rotation in the [Object Detection Template](/templates/image_bbox.html#Bounding-box-rotation-in-the-Label-Studio-results).
 
 ### Parameters
 
