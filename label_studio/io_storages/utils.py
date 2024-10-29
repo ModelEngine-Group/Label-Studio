@@ -78,7 +78,4 @@ def storage_can_resolve_bucket_url(storage, url) -> bool:
     if storage_bucket != uri.bucket:
         return False
 
-    if storage.prefix and not uri.path.startswith(storage.prefix):
-        return False
-
     return True
