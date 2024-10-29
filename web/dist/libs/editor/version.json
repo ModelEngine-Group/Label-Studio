@@ -1,6 +1,6 @@
 {
-  "message": "docs: Add more about anchor point in Rectangles (#6561)",
-  "commit": "34931939c7770beb37b014c35e8a4919ade4e1da",
-  "date": "2024-10-27T00:47:57.000Z",
+  "message": "feat: LEAP-1533: Make Quick View readonly by condition (#6539)",
+  "commit": "466a9005a22f3c20adb7773be39b573826e3767e",
+  "date": "2024-10-29T21:17:19.000Z",
   "branch": "develop"
 }
