@@ -355,6 +355,7 @@ export default types
           if (shouldDenyEmptyAnnotation && areResultsEmpty) return;
           if (annotationStore.viewingAll) return;
           if (isUpdateDisabled) return;
+          if (entity.isReadOnly()) return;
 
           entity?.submissionInProgress();
 
