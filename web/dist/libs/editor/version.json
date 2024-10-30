@@ -1,6 +1,6 @@
 {
-  "message": "feat: LEAP-1533: Make Quick View readonly by condition (#6539)",
-  "commit": "466a9005a22f3c20adb7773be39b573826e3767e",
-  "date": "2024-10-29T21:17:19.000Z",
+  "message": "feat: LEAP-1515: Hide PII by condition (#6544)",
+  "commit": "b8038e8bd9443e5f38f566dbed6022950c13ba14",
+  "date": "2024-10-30T10:37:42.000Z",
   "branch": "develop"
 }
