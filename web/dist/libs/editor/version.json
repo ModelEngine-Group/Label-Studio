@@ -1,6 +1,6 @@
 {
-  "message": "feat: LEAP-1515: Hide PII by condition (#6544)",
-  "commit": "b8038e8bd9443e5f38f566dbed6022950c13ba14",
-  "date": "2024-10-30T10:37:42.000Z",
+  "message": "refactor: OPTIC-1270: Remove Stale Feature Flag - fflag_feat_front_prod_309_choice_hint_080523_short (#6576)",
+  "commit": "5a90f673dd159b43881a2130c2593190eb2be82a",
+  "date": "2024-10-30T14:10:03.000Z",
   "branch": "develop"
 }
