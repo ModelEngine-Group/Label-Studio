@@ -229,11 +229,6 @@ export const FF_LSDV_4992 = "fflag_fix_front_lsdv_4992_hide_all_regions_04052023
 export const FF_LSDV_4998 = "fflag_fix_front_lsdv_4998_missed_dynamic_children_030523_short";
 
 /**
- * Add ability to show hints while hover over the choice
- */
-export const FF_PROD_309 = "fflag_feat_front_prod_309_choice_hint_080523_short";
-
-/**
  * Fix delay on double-click interactions in Image Segmentation
  * @link https://app.launchdarkly.com/default/production/features/fflag_fix_front_lsdv_5248_double_click_delay_280823_short
  */

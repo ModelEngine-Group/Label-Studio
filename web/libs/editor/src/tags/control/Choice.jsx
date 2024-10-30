@@ -12,7 +12,7 @@ import Tree from "../../core/Tree";
 import Types from "../../core/Types";
 import { AnnotationMixin } from "../../mixins/AnnotationMixin";
 import { TagParentMixin } from "../../mixins/TagParentMixin";
-import { FF_DEV_3391, FF_PROD_309, isFF } from "../../utils/feature-flags";
+import { FF_DEV_3391, isFF } from "../../utils/feature-flags";
 import { Block, Elem } from "../../utils/bem";
 import "./Choice/Choice.scss";
 import { LsChevron } from "../../assets/icons";
@@ -54,7 +54,7 @@ const TagAttrs = types.model({
   style: types.maybeNull(types.string),
   html: types.maybeNull(types.string),
   color: types.maybeNull(types.string),
-  ...(isFF(FF_PROD_309) ? { hint: types.maybeNull(types.string) } : {}),
+  hint: types.maybeNull(types.string),
 });
 
 const Model = types

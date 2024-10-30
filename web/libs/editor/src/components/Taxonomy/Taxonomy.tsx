@@ -5,7 +5,7 @@ import { LsChevron } from "../../assets/icons";
 import { Tooltip } from "../../common/Tooltip/Tooltip";
 import { useToggle } from "../../hooks/useToggle";
 import type { CNTagName } from "../../utils/bem";
-import { FF_DEV_4075, FF_PROD_309, isFF } from "../../utils/feature-flags";
+import { FF_DEV_4075, isFF } from "../../utils/feature-flags";
 import { isArraysEqual } from "../../utils/utilities";
 import TreeStructure from "../TreeStructure/TreeStructure";
 
@@ -160,8 +160,6 @@ type HintTooltipProps = {
 };
 
 export const HintTooltip: React.FC<HintTooltipProps> = ({ title, wrapper: Wrapper, children, ...rest }) => {
-  if (!isFF(FF_PROD_309)) return children;
-
   const content = Wrapper ? <Wrapper>{children}</Wrapper> : children;
 
   if (title) {
