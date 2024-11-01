@@ -8,6 +8,7 @@ ENV BUILD_NO_SERVER=true \
     BUILD_NO_CHUNKS=true \
     BUILD_MODULE=true \
     YARN_CACHE_FOLDER=/root/web/.yarn \
+    NX_CACHE_DIRECTORY=/root/web/.nx \
     NODE_ENV=production
 
 WORKDIR /label-studio/web
@@ -20,14 +21,23 @@ COPY web/package.json .
 COPY web/yarn.lock .
 COPY web/tools tools
 RUN --mount=type=cache,target=${YARN_CACHE_FOLDER},sharing=locked \
+    --mount=type=cache,target=${NX_CACHE_DIRECTORY},sharing=locked \
     yarn install --prefer-offline --no-progress --pure-lockfile --frozen-lockfile --ignore-engines --non-interactive --production=false
 
 COPY web .
 COPY pyproject.toml ../pyproject.toml
 RUN --mount=type=cache,target=${YARN_CACHE_FOLDER},sharing=locked \
-    --mount=type=bind,source=.git,target=../.git \
-    yarn run build && yarn version:libs
+    --mount=type=cache,target=${NX_CACHE_DIRECTORY},sharing=locked \
+    yarn run build
 
+################################ Stage: frontend-version-generator
+FROM frontend-builder AS frontend-version-generator
+RUN --mount=type=cache,target=${YARN_CACHE_FOLDER},sharing=locked \
+    --mount=type=cache,target=${NX_CACHE_DIRECTORY},sharing=locked \
+    --mount=type=bind,source=.git,target=../.git \
+    yarn version:libs
+
+################################### Stage: prod
 FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -87,6 +97,9 @@ COPY --chown=1001:0 label_studio label_studio
 COPY --chown=1001:0 deploy deploy
 
 COPY --chown=1001:0 --from=frontend-builder /label-studio/web/dist $LS_DIR/web/dist
+COPY --chown=1001:0 --from=frontend-version-generator /label-studio/web/dist/apps/labelstudio/version.json    $LS_DIR/web/dist/apps/labelstudio/version.json
+COPY --chown=1001:0 --from=frontend-version-generator /label-studio/web/dist/libs/editor/version.json         $LS_DIR/web/dist/libs/editor/version.json
+COPY --chown=1001:0 --from=frontend-version-generator /label-studio/web/dist/libs/datamanager/version.json    $LS_DIR/web/dist/libs/datamanager/version.json
 
 RUN python3 label_studio/manage.py collectstatic --no-input && \
     chown -R 1001:0 $LS_DIR && \
