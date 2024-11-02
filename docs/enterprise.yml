@@ -1,3 +1,5 @@
+url: https://docs.humansignal.com/
+
 theme_config:
   tier: enterprise
   root_domain: "heartex.com"
@@ -7,3 +9,7 @@ deploy:
   type: aws-s3
   region: us-east-1
   bucket: docs.heartex.com
+
+sitemap:
+  path:
+    - guide/sitemap-hsdocs.xml
