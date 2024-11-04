@@ -798,6 +798,7 @@ class TaskLock(models.Model):
         on_delete=models.CASCADE,
         help_text='User who locked this task',
     )
+    created_at = models.DateTimeField(_('created at'), auto_now_add=True, help_text='Creation time', null=True)
 
 
 class AnnotationDraft(models.Model):
