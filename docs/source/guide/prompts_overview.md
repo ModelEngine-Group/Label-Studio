@@ -13,7 +13,7 @@ date: 2024-05-15 14:30:14
 
 Use Prompts to evaluate and refine your LLM prompts and then generate predictions to automate your labeling process. 
 
-All you need to get started is an OpenAI API key and a project. 
+All you need to get started is an LLM deployment API key and a project. 
 
 With Prompts, you can:
 

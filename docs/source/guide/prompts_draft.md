@@ -18,12 +18,16 @@ With your [Prompt created](prompts_create), you can begin drafting your prompt c
 
 1. Select your base model. 
 
-    The models that appear depend on the [API keys](prompts_create#Model-provider-API-keys) that you have configured for your organization. If you have added an OpenAI key, then you will see all supported OpenAI models. If you have added Azure OpenAI keys, then you will see one model per each deployment that you have added. 
+    The models that appear depend on the [API keys](prompts_create#Model-provider-API-keys) that you have configured for your organization. If you have added an OpenAI key, then you will see all supported OpenAI models. If you have other API keys, then you will see one model per each deployment that you have added. 
     
     For a description of all OpenAI models, see [OpenAI's models overview](https://platform.openai.com/docs/models/models-overview).
 2. In the **Prompt** field, enter your prompt. Keep in mind the following:
-    * You must include the text class. (In the demo below, this is the `review` class.) Click the text class name to insert it into the prompt. 
+    * You must include the text variables. These appear directly above the prompt field. (In the demo below, this is the `review` variable.) Click the text variable name to insert it into the prompt. 
     * Although not strictly required, you should provide definitions for each class to ensure prediction accuracy and to help [add context](#Add-context). 
+
+    !!! info Tip
+        You can generate an initial draft by simply adding the text variables and then [clicking **Enhance Prompt**](#Enhance-prompt). 
+
 3. Select your baseline:
    * **All Project Tasks** - Generate predictions for all tasks in the project. Depending on the size of your project, this might take some time to process. This does not generate an accuracy score for the prompt. 
    
@@ -162,11 +166,36 @@ NER
 </td>
 <td>
 
-The cost to run the prompt evaluation based on the number of tokens required. 
+The cost to run the prompt based on the number of tokens required. 
 
 </td>
 </tr>
 </table>
+
+## Enhance prompt
+
+You can use **Enhance Prompt** to help you construct and auto-refine your prompts. 
+
+At minimum, you need to insert the text variable first. (Click the text variable name to insert it into the prompt. These appear above the prompts field). 
+
+From the **Enhance Prompt** window you will need to select the **Teacher Model** that you want to use to write your prompt. As you auto-refine your prompt, you'll get the following:
+
+* A new prompt displayed next to the previous prompt. 
+* An explanation of the changes made. 
+* The estimated cost spent auto-refining your prompt. 
+
+![Screenshot of enhance prompt modal](../images/prompts/enhance.png)
+
+**How it works** 
+
+The **Task Subset** is used as the context when auto-refining the prompt. If you have ground truth data available, that will serve as the task subset. Otherwise, a sample of up to to 10 project tasks are used. 
+
+Auto-refinement applies your initial prompt and the Teacher Model to generate predictions on the task subset (which will be ground truth tasks or a sample dataset). If applicable, predictions are then compared to the ground truth for accuracy. 
+
+Your Teacher Model evaluates the initial prompt’s predictions against the ground truth (or sample task output) and identifies areas for improvement. It then suggests a refined prompt, aimed at achieving closer alignment with the desired outcomes.
+
+
+
 
 ## Drafting effective prompts
 
@@ -174,7 +203,7 @@ For a comprehensive guide to drafting prompts, see [The Prompt Report: A Systema
 
 ### Text placement
 
-When you place your text class in the prompt (`review` in the demo above), this placeholder will be replaced by the actual text.
+When you place your text variable in the prompt (`review` in the demo above), this placeholder will be replaced by the actual text.
 
 Depending on the length and complexity of your text, inserting it into the middle of another sentence or thought could potentially confuse the LLM. 
 
