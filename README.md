@@ -17,7 +17,7 @@ Label Studio is an open source data labeling tool. It lets you label data types 
 - [Set up machine learning models with Label Studio](#set-up-machine-learning-models-with-Label-Studio)
 - [Integrate Label Studio with your existing tools](#integrate-label-studio-with-your-existing-tools)
 
-![Gif of Label Studio annotating different types of data](https://raw.githubusercontent.com/heartexlabs/label-studio/master/images/annotation_examples.gif)
+![Gif of Label Studio annotating different types of data](/images/annotation_examples.gif)
 
 Have a custom dataset? You can customize Label Studio to fit your needs. Read an [introductory blog post](https://towardsdatascience.com/introducing-label-studio-a-swiss-army-knife-of-data-labeling-140c1be92881) to learn more. 
 
@@ -190,7 +190,7 @@ DJANGO_DB=default DJANGO_SETTINGS_MODULE=core.settings.label_studio pytest -vv
  
 ## What you get from Label Studio
 
-![Screenshot of Label Studio data manager grid view with images](https://raw.githubusercontent.com/heartexlabs/label-studio/master/images/labelstudio-ui.gif)
+https://github.com/user-attachments/assets/525ad5ff-6904-4398-b507-7e8954268d69
 
 - **Multi-user labeling** sign up and login, when you create an annotation it's tied to your account.
 - **Multiple projects** to work on all your datasets in one instance.
@@ -205,7 +205,7 @@ DJANGO_DB=default DJANGO_SETTINGS_MODULE=core.settings.label_studio pytest -vv
 
 Label Studio includes a variety of templates to help you label your data, or you can create your own using specifically designed configuration language. The most common templates and use cases for labeling include the following cases:
 
-<img src="https://raw.githubusercontent.com/heartexlabs/label-studio/master/images/templates-categories.jpg" />
+<img src="/images/template-types.png" />
 
 ## Set up machine learning models with Label Studio
 
