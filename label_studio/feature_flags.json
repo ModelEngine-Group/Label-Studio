@@ -1378,6 +1378,33 @@
       "version": 2,
       "deleted": false
     },
+    "fflag_feat_all_dia_1576_prompts_easy_breezy_onboarding_long": {
+      "key": "fflag_feat_all_dia_1576_prompts_easy_breezy_onboarding_long",
+      "on": false,
+      "prerequisites": [],
+      "targets": [],
+      "contextTargets": [],
+      "rules": [],
+      "fallthrough": {
+        "variation": 0
+      },
+      "offVariation": 1,
+      "variations": [
+        true,
+        false
+      ],
+      "clientSideAvailability": {
+        "usingMobileKey": false,
+        "usingEnvironmentId": false
+      },
+      "clientSide": false,
+      "salt": "6fd7f4be8bda46e897631d662f980c06",
+      "trackEvents": false,
+      "trackEventsFallthrough": false,
+      "debugEventsUntilDate": null,
+      "version": 2,
+      "deleted": false
+    },
     "fflag_feat_all_dia_835_prompter_workflow_long": {
       "key": "fflag_feat_all_dia_835_prompter_workflow_long",
       "on": false,
