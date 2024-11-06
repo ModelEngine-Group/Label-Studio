@@ -358,6 +358,11 @@ class Task(TaskMixin, models.Model):
         num_locks = self.num_locks
         if num_locks < self.overlap:
             lock_ttl = settings.TASK_LOCK_TTL
+            if (
+                flag_set('fflag_feat_all_leap_1534_custom_task_lock_timeout_short', user=user)
+                and self.project.custom_task_lock_ttl
+            ):
+                lock_ttl = self.project.custom_task_lock_ttl
             expire_at = now() + datetime.timedelta(seconds=lock_ttl)
             try:
                 task_lock = TaskLock.objects.get(task=self, user=user)
