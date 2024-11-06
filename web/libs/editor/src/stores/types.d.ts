@@ -49,6 +49,8 @@ type MixinMSTRegion = {
   dynamic: boolean;
   origin: "prediction" | "prediction-changed" | "manual";
   item_index: number | null;
+  type: string;
+  isReadOnly: () => boolean;
 };
 
 type MixinMSTRegionVolatile = {
@@ -59,7 +61,22 @@ type MixinMSTRegionVolatile = {
   drawingTimeout: null;
 };
 
-type MSTRegion = MixinMSTArea & MixinMSTRegion & MixinMSTRegionVolatile;
+type MSTEditableRegionPropertyDefinition = {
+  property: string;
+  label: string;
+};
+
+type MSTEditableRegion = {
+  editorEnabled: boolean;
+  editableFields: MSTEditableRegionPropertyDefinition[];
+  hasEditableFields: boolean;
+  getProperty: (string) => any;
+  getPropertyType: (string) => any;
+  isPropertyEditable: (string) => boolean;
+  setProperty: (string, any) => void;
+};
+
+type MSTRegion = MixinMSTArea & MixinMSTRegion & MixinMSTRegionVolatile & MSTEditableRegion;
 
 type MSTAnnotation = {
   id: string;

@@ -81,12 +81,12 @@
     transform: translate3d(-100%, -50%, 0);
   }
 
-  &_timeline &__point:last-child {
+  &_timeline &__point_last {
     transform: translate3d(0, -50%, 0);
   }
 
   /** instant */
-  &_timeline &__point:first-child:last-child {
+  &_timeline &__lifespan_instant &__point {
     width: 6px;
     transform: translate3d(-50%, -50%, 0);
   }

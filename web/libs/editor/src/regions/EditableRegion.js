@@ -1,4 +1,4 @@
-import { types } from "mobx-state-tree";
+import { getType, types } from "mobx-state-tree";
 
 export const EditableRegion = types
   .model("EditableRegion")
@@ -15,6 +15,10 @@ export const EditableRegion = types
   .views((self) => ({
     getProperty(name) {
       return self[name];
+    },
+
+    getPropertyType(name) {
+      return getType(self).properties[name];
     },
 
     isPropertyEditable(name) {

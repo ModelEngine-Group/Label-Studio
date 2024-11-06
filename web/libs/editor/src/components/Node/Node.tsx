@@ -21,6 +21,7 @@ import {
   IconText,
   IconWarning,
 } from "../../assets/icons";
+import { IconTimelineRegion } from "../../assets/icons/timeline";
 import { NodeView } from "./NodeView";
 import { Tooltip } from "../../common/Tooltip/Tooltip";
 
@@ -113,6 +114,11 @@ const NodeViews = {
   TextAreaModel: NodeView({
     name: "Input",
     icon: MessageOutlined,
+  }),
+
+  TimelineRegionModel: NodeView({
+    name: "Timeline Span",
+    icon: IconTimelineRegion,
   }),
 };
 

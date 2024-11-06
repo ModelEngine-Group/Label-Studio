@@ -6,6 +6,7 @@ import NormalizationMixin from "../mixins/Normalization";
 import RegionsMixin from "../mixins/Regions";
 import { VideoModel } from "../tags/object/Video/Video";
 import { isDefined } from "../utils/utilities";
+import { EditableRegion } from "./EditableRegion";
 
 const TimelineRange = types.model("TimelineRange", {
   start: types.maybeNull(types.integer),
@@ -48,6 +49,10 @@ const Model = types
   })
   .volatile(() => ({
     hideable: true,
+    editableFields: [
+      { property: "start", label: "Start frame" },
+      { property: "end", label: "End frame" },
+    ],
   }))
   .views((self) => ({
     get parent() {
@@ -100,7 +105,14 @@ const Model = types
     },
   }));
 
-const TimelineRegionModel = types.compose("TimelineRegionModel", RegionsMixin, AreaMixin, NormalizationMixin, Model);
+const TimelineRegionModel = types.compose(
+  "TimelineRegionModel",
+  RegionsMixin,
+  AreaMixin,
+  NormalizationMixin,
+  EditableRegion,
+  Model,
+);
 
 Registry.addRegionType(TimelineRegionModel, "video");
 

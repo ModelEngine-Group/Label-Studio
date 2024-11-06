@@ -136,11 +136,11 @@ const LifespanItem: FC<LifespanItemProps> = memo(
     }, [left, right, finalWidth]);
 
     return (
-      <Elem name="lifespan" mod={{ hidden: !visible }} style={style}>
+      <Elem name="lifespan" mod={{ hidden: !visible, instant: !width }} style={style}>
         {points.map((frame, i) => {
           const left = (frame - start) * step;
 
-          return <Elem key={i} name="point" style={{ left }} />;
+          return <Elem key={i} name="point" style={{ left }} mod={{ last: !!left }} />;
         })}
       </Elem>
     );

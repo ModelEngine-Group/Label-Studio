@@ -26,3 +26,4 @@ export { ReactComponent as IconConfig } from "./config.svg";
 export { ReactComponent as IconSoundConfig } from "./sound.svg";
 export { ReactComponent as IconSoundMutedConfig } from "./sound_muted.svg";
 export { ReactComponent as IconInfoConfig } from "./info.svg";
+export { ReactComponent as IconTimelineRegion } from "./region.svg";
