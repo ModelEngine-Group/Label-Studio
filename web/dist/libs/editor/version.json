@@ -1,6 +1,6 @@
 {
-  "message": "refactor: OPTIC-915: Remove Stale Feature Flag - fflag_feat_front_lsdv_3025_outliner_filter_short (#6584)",
-  "commit": "e9ea423c3174940cea0d52f83834932ff73d37fa",
-  "date": "2024-10-31T20:34:16.000Z",
+  "message": "feat: LEAP-1599: Allow to edit TimelineRegion spans (#6577)",
+  "commit": "5ab2f79db0c6c0f2a36ac6de3e7012b23cad8f5b",
+  "date": "2024-11-06T11:43:23.000Z",
   "branch": "develop"
 }
