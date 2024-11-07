@@ -1297,6 +1297,33 @@
       "version": 2,
       "deleted": false
     },
+    "fflag__feature_develop__prompts__dia_1524_multiskill_partially_supported_projects": {
+      "key": "fflag__feature_develop__prompts__dia_1524_multiskill_partially_supported_projects",
+      "on": false,
+      "prerequisites": [],
+      "targets": [],
+      "contextTargets": [],
+      "rules": [],
+      "fallthrough": {
+        "variation": 0
+      },
+      "offVariation": 1,
+      "variations": [
+        true,
+        false
+      ],
+      "clientSideAvailability": {
+        "usingMobileKey": false,
+        "usingEnvironmentId": false
+      },
+      "clientSide": false,
+      "salt": "4359b8236ce445ddad89dea029a64440",
+      "trackEvents": false,
+      "trackEventsFallthrough": false,
+      "debugEventsUntilDate": null,
+      "version": 3,
+      "deleted": false
+    },
     "fflag_feat_all_dia_1312-i_create_an_ner_prompt_short": {
       "key": "fflag_feat_all_dia_1312-i_create_an_ner_prompt_short",
       "on": false,
@@ -4428,33 +4455,6 @@
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
       "version": 5,
-      "deleted": false
-    },
-    "fflag_fix_optic_1210_optimize_lse_projects_api_short": {
-      "key": "fflag_fix_optic_1210_optimize_lse_projects_api_short",
-      "on": false,
-      "prerequisites": [],
-      "targets": [],
-      "contextTargets": [],
-      "rules": [],
-      "fallthrough": {
-        "variation": 0
-      },
-      "offVariation": 1,
-      "variations": [
-        true,
-        false
-      ],
-      "clientSideAvailability": {
-        "usingMobileKey": false,
-        "usingEnvironmentId": false
-      },
-      "clientSide": false,
-      "salt": "30068b74b70c4e068c63fd4a2ee7cee9",
-      "trackEvents": false,
-      "trackEventsFallthrough": false,
-      "debugEventsUntilDate": null,
-      "version": 2,
       "deleted": false
     },
     "fflag_fix_optic_1259_lse_projects_read_apis_use_replica_short": {
