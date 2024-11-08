@@ -201,7 +201,7 @@ openai = "^1.10.0"
 django-migration-linter = "^5.1.0"
 
 # Humansignal repo dependencies
-label-studio-sdk = {url = "https://github.com/HumanSignal/label-studio-sdk/archive/91637159ca49586098d5b5f60fa451cfe980dc0d.zip"}
+label-studio-sdk = {url = "https://github.com/HumanSignal/label-studio-sdk/archive/ae9984e544732025caadf96d2d716c728dbbe014.zip"}
 
 [tool.poetry.group.test.dependencies]
 pytest = "7.2.2"

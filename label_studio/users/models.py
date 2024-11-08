@@ -178,6 +178,9 @@ class User(UserMixin, AbstractBaseUser, PermissionsMixin, UserLastActivityMixin)
         """Return the short name for the user."""
         return self.first_name
 
+    def get_token(self) -> Token:
+        return Token.objects.filter(user=self).first()
+
     def reset_token(self) -> Token:
         Token.objects.filter(user=self).delete()
         return Token.objects.create(user=self)
