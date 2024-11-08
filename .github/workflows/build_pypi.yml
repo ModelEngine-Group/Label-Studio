@@ -15,6 +15,7 @@ on:
         description: "Upload to PyPi"
         type: boolean
         required: false
+        default: false
       release-id:
         description: "Attach Artifact to Release"
         type: string
@@ -39,8 +40,8 @@ on:
       upload_to_pypi:
         description: "Upload to PyPi"
         type: boolean
-        default: false
         required: false
+        default: false
       release-id:
         description: "Attach Artifact to Release"
         type: string
@@ -138,11 +139,10 @@ jobs:
         run: poetry build
 
       - name: Upload to PYPI
-        if: inputs.upload_to_pypi
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_APIKEY }}
-        run: poetry run twine upload dist/*
+        run: poetry run twine upload ${{ inputs.upload_to_pypi == false && '--dry-run' || '' }} dist/*
 
       - name: Get PyPI package details
         id: pypi-package-details
