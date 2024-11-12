@@ -41,7 +41,7 @@ label-studio start --username <username> --password <password> [--user-token <to
 ## Invite users to Label Studio
 
 !!! info Tip
-    To invite collaborators, you only need a single Label Studio instance, and all your team members should have access to it. If you want to build a simple solution that exposes Label Studio outside of your local network, you can [try ngrock](https://labelstud.io/guide/start.html#Expose-a-local-Label-Studio-instance-outside-using-ngrok).
+    To invite collaborators, you only need a single Label Studio instance, and all your team members should have access to it. If you want to build a simple solution that exposes Label Studio outside of your local network, you can [try ngrok](https://labelstud.io/guide/start.html#Expose-a-local-Label-Studio-instance-outside-using-ngrok).
 
 Once the initial organization account is created, you can begin inviting users:
 
