@@ -14,22 +14,29 @@ all_permissions = AllPermissions()
 def cache_labels_job(project, queryset, **kwargs):
     request_data = kwargs['request_data']
     source = request_data.get('source', 'annotations').lower()
+    assert source in ['annotations', 'predictions'], 'Source must be annotations or predictions'
     source_class = Annotation if source == 'annotations' else Prediction
     control_tag = request_data.get('custom_control_tag') or request_data.get('control_tag')
     with_counters = request_data.get('with_counters', 'Yes').lower() == 'yes'
-    column_name = f'cache_{control_tag}'
+
+    if source == 'annotations':
+        column_name = 'cache'
+    else:
+        column_name = 'cache_predictions'
 
     # ALL is a special case, we will cache all labels from all control tags into one column
     if control_tag == 'ALL' or control_tag is None:
         control_tag = None
-        column_name = 'cache_all'
+        column_name = f'{column_name}_all'
+    else:
+        column_name = f'{column_name}_{control_tag}'
 
     tasks = list(queryset.only('data'))
     logger.info(f'Cache labels for {len(tasks)} tasks and control tag {control_tag}')
 
     for task in tasks:
         task_labels = []
-        annotations = source_class.objects.filter(task=task)
+        annotations = source_class.objects.filter(task=task).only('result')
         for annotation in annotations:
             labels = extract_labels(annotation, control_tag)
             task_labels.extend(labels)
@@ -76,6 +83,7 @@ def cache_labels(project, queryset, request, **kwargs):
         queryset,
         organization_id=project.organization_id,
         request_data=request.data,
+        job_timeout=60 * 60 * 5,  # max allowed duration is 5 hours
     )
     return {'response_code': 200}
 
