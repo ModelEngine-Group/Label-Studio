@@ -1,5 +1,19 @@
 # syntax=docker/dockerfile:1
 ARG NODE_VERSION=18
+ARG PYTHON_VERSION=3.11
+ARG POETRY_VERSION=1.8.4
+ARG UWSGI_VERSION=2.0.28
+ARG UWSGITOP_VERSION=0.12
+
+################################ Overview
+
+# This Dockerfile builds a Label Studio environment.
+# It consists of three main stages:
+# 1. "frontend-builder" - Compiles the frontend assets using Node.
+# 2. "base-image" - Prepares common env variables and installs Poetry.
+# 3. "frontend-version-generator" - Generates version files for frontend sources.
+# 4. "venv-builder" - Prepares the virtualenv environment.
+# 5. "prod" - Creates the final production image with the Label Studio Enterprise, Nginx, and other dependencies.
 
 ################################ Stage: frontend-builder (build frontend assets)
 FROM --platform=${BUILDPLATFORM} node:${NODE_VERSION} AS frontend-builder
@@ -30,6 +44,26 @@ RUN --mount=type=cache,target=${YARN_CACHE_FOLDER},sharing=locked \
     --mount=type=cache,target=${NX_CACHE_DIRECTORY},sharing=locked \
     yarn run build
 
+################################ Stage: base image
+# Creating a python base with shared environment variables
+FROM python:${PYTHON_VERSION}-slim AS python-base
+ARG POETRY_VERSION
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=off \
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    PIP_DEFAULT_TIMEOUT=100 \
+    PIP_CACHE_DIR="/.cache" \
+    POETRY_HOME="/opt/poetry" \
+    POETRY_CACHE_DIR="/.poetry-cache" \
+    POETRY_VIRTUALENVS_IN_PROJECT=true \
+    VENV_PATH="/label-studio/.venv"
+
+ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
+
+RUN --mount=type=cache,target=${PIP_CACHE_DIR},sharing=locked \
+    pip install poetry==${POETRY_VERSION}
+
 ################################ Stage: frontend-version-generator
 FROM frontend-builder AS frontend-version-generator
 RUN --mount=type=cache,target=${YARN_CACHE_FOLDER},sharing=locked \
@@ -37,79 +71,88 @@ RUN --mount=type=cache,target=${YARN_CACHE_FOLDER},sharing=locked \
     --mount=type=bind,source=.git,target=../.git \
     yarn version:libs
 
-################################### Stage: prod
-FROM ubuntu:22.04
+################################ Stage: venv-builder (prepare the virtualenv)
+FROM python-base AS venv-builder
+ARG PYTHON_VERSION
+ARG VENV_PATH
+ARG UWSGI_VERSION
+ARG UWSGITOP_VERSION
 
-ENV DEBIAN_FRONTEND=noninteractive \
-    LS_DIR=/label-studio \
-    PIP_CACHE_DIR=$HOME/.cache \
-    POETRY_CACHE_DIR=$HOME/.poetry-cache \
-    POETRY_VIRTUALENVS_CREATE=false \
+RUN --mount=type=cache,target="/var/cache/apt",sharing=locked \
+    --mount=type=cache,target="/var/lib/apt/lists",sharing=locked \
+    set -eux; \
+    apt-get update; \
+    apt-get install --no-install-recommends -y \
+            gcc python3-dev; \
+    apt-get autoremove -y
+
+WORKDIR /label-studio
+
+## Starting from this line all packages will be installed in $VENV_PATH
+
+# Copy dependency files
+COPY pyproject.toml poetry.lock README.md ./
+
+# Install dependencies without dev packages
+RUN --mount=type=cache,target=${POETRY_CACHE_DIR} \
+    poetry check --lock && poetry install --no-root --without test
+
+# Install middleware components
+RUN --mount=type=cache,target=${PIP_CACHE_DIR},sharing=locked \
+    pip install uwsgi==${UWSGI_VERSION} uwsgitop==${UWSGITOP_VERSION}
+
+################################### Stage: prod
+FROM python-base AS production
+
+ENV LS_DIR=/label-studio \
     DJANGO_SETTINGS_MODULE=core.settings.label_studio \
     LABEL_STUDIO_BASE_DATA_DIR=/label-studio/data \
     OPT_DIR=/opt/heartex/instance-data/etc \
-    SETUPTOOLS_USE_DISTUTILS=stdlib
+    HOME=$LS_DIR
 
 WORKDIR $LS_DIR
 
-# install packages
-RUN set -eux \
- && apt-get update \
- && apt-get install --no-install-recommends --no-install-suggests -y \
-    build-essential postgresql-client libmysqlclient-dev mysql-client python3-pip python3-dev \
-    git libxml2-dev libxslt-dev zlib1g-dev gnupg curl lsb-release libpq-dev dnsutils vim && \
-    apt-get purge --assume-yes --auto-remove --option APT::AutoRemove::RecommendsImportant=false \
-     --option APT::AutoRemove::SuggestsImportant=false && rm -rf /var/lib/apt/lists/* /tmp/*
-
-RUN --mount=type=cache,target=$PIP_CACHE_DIR,uid=1001,gid=0 \
-    pip3 install --upgrade pip setuptools && pip3 install poetry uwsgi uwsgitop
-
 # incapsulate nginx install & configure to a single layer
+RUN --mount=type=cache,target="/var/cache/apt",sharing=locked \
+    --mount=type=cache,target="/var/lib/apt/lists",sharing=locked \
+    set -eux; \
+    apt-get update; \
+    apt-get upgrade -y; \
+    apt-get install --no-install-recommends -y libexpat1 \
+        nginx curl; \
+    apt-get autoremove -y
+
 RUN set -eux; \
-    curl -sSL https://nginx.org/keys/nginx_signing.key | apt-key add - && \
-    echo "deb https://nginx.org/packages/mainline/ubuntu/ $(lsb_release -cs) nginx" >> /etc/apt/sources.list && \
-    apt-get update && apt-get install -y nginx && \
-    apt-get purge --assume-yes --auto-remove --option APT::AutoRemove::RecommendsImportant=false \
-     --option APT::AutoRemove::SuggestsImportant=false && rm -rf /var/lib/apt/lists/* /tmp/* && \
-    nginx -v
+    mkdir -p $LS_DIR $LABEL_STUDIO_BASE_DATA_DIR $OPT_DIR && \
+    chown -R 1001:0 $LS_DIR $LABEL_STUDIO_BASE_DATA_DIR $OPT_DIR /var/log/nginx /etc/nginx
 
 COPY --chown=1001:0 deploy/default.conf /etc/nginx/nginx.conf
-
-RUN set -eux; \
-    mkdir -p $OPT_DIR /var/log/nginx /var/cache/nginx /etc/nginx && \
-    chown -R 1001:0 $OPT_DIR /var/log/nginx /var/cache/nginx /etc/nginx
 
 # Copy essential files for installing Label Studio and its dependencies
 COPY --chown=1001:0 pyproject.toml .
 COPY --chown=1001:0 poetry.lock .
 COPY --chown=1001:0 README.md .
-COPY --chown=1001:0 label_studio/__init__.py ./label_studio/__init__.py
-
-# Ensure the poetry lockfile is up to date, then install all deps from it to
-# the system python. This includes label-studio itself. For caching purposes,
-# do this before copying the rest of the source code.
-RUN --mount=type=cache,target=$POETRY_CACHE_DIR \
-    poetry check --lock && poetry install
-
 COPY --chown=1001:0 LICENSE LICENSE
 COPY --chown=1001:0 licenses licenses
 COPY --chown=1001:0 label_studio label_studio
 COPY --chown=1001:0 deploy deploy
+# We need these files for security scanners
+COPY --chown=1001:0 web/yarn.lock $LS_DIR//web/yarn.lock
 
-COPY --chown=1001:0 --from=frontend-builder /label-studio/web/dist $LS_DIR/web/dist
+COPY --chown=1001:0 --from=venv-builder               ${VENV_PATH}                                            ${VENV_PATH}
+COPY --chown=1001:0 --from=frontend-builder           /label-studio/web/dist                                  $LS_DIR/web/dist
 COPY --chown=1001:0 --from=frontend-version-generator /label-studio/web/dist/apps/labelstudio/version.json    $LS_DIR/web/dist/apps/labelstudio/version.json
 COPY --chown=1001:0 --from=frontend-version-generator /label-studio/web/dist/libs/editor/version.json         $LS_DIR/web/dist/libs/editor/version.json
 COPY --chown=1001:0 --from=frontend-version-generator /label-studio/web/dist/libs/datamanager/version.json    $LS_DIR/web/dist/libs/datamanager/version.json
 
-RUN python3 label_studio/manage.py collectstatic --no-input && \
-    chown -R 1001:0 $LS_DIR && \
-    chmod -R g=u $LS_DIR
+USER 1001
 
-ENV HOME=$LS_DIR
+# Install LS
+RUN --mount=type=cache,target=$POETRY_CACHE_DIR \
+    poetry install --only-root && \
+    python3 label_studio/manage.py collectstatic --no-input
 
 EXPOSE 8080
-
-USER 1001
 
 ENTRYPOINT ["./deploy/docker-entrypoint.sh"]
 CMD ["label-studio"]
