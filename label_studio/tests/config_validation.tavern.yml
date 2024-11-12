@@ -1403,3 +1403,36 @@ stages:
     url: '{django_live_url}/api/projects/{pk}/import'
   response:
     status_code: 201
+
+---
+test_name: Validation should ignore xml comments
+strict: false
+marks:
+- usefixtures:
+  - django_live_url
+
+stages:
+- # Signup to the system
+  id: signup
+  type: ref
+- name: create project
+  request:
+    method: POST
+    url: '{django_live_url}/api/projects'
+    json:
+      label_config: <View> <Text name="text" value="$text"/><Taxonomy name="taxonomy" toName="text"><Choice value="A"><Choice value="A_1"/><Choice value="A_2"/></Choice><Choice value="B"/></Taxonomy></View>
+  response:
+    save:
+      json:
+        pk: id
+    status_code: 201
+- name: validate config will not throw config contains non-unique names error
+  request:
+    headers:
+      content-type: application/json
+    json:
+      label_config: '<View> <Text name="text" value="$text"/><Taxonomy name="taxonomy" toName="text"><Choice value="C"><Choice value="A_1"/><Choice value="A_2"/></Choice><Choice value="B"/></Taxonomy></View><!-- Custom script draft --><!-- const taxonomy = document.querySelector(`[name="taxonomy"]`);-->'
+    method: POST
+    url: '{django_live_url}/api/projects/{pk}/validate'
+  response:
+    status_code: 200
