@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 ARG NODE_VERSION=18
-ARG PYTHON_VERSION=3.11
+ARG PYTHON_VERSION=3.12
 ARG POETRY_VERSION=1.8.4
 ARG UWSGI_VERSION=2.0.28
 ARG UWSGITOP_VERSION=0.12
@@ -61,8 +61,8 @@ ENV PYTHONUNBUFFERED=1 \
 
 ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
 
-RUN --mount=type=cache,target=${PIP_CACHE_DIR},sharing=locked \
-    pip install poetry==${POETRY_VERSION}
+ADD https://install.python-poetry.org /tmp/install-poetry.py
+RUN python /tmp/install-poetry.py
 
 ################################ Stage: frontend-version-generator
 FROM frontend-builder AS frontend-version-generator
@@ -83,7 +83,7 @@ RUN --mount=type=cache,target="/var/cache/apt",sharing=locked \
     set -eux; \
     apt-get update; \
     apt-get install --no-install-recommends -y \
-            gcc python3-dev; \
+            python3-dev build-essential; \
     apt-get autoremove -y
 
 WORKDIR /label-studio
