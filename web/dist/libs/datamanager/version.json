@@ -1,6 +1,6 @@
 {
-  "message": "feat: OPTIC-1245: Add HeidiTips as a json file within source control (#6624)",
-  "commit": "479aa9fab770e83b67ca0e54bd8fc21a2d1cb66b",
-  "date": "2024-11-08T22:42:41.000Z",
+  "message": "fix: LEAP-1647: Fix comments when user uses OCR textarea (#6622)",
+  "commit": "2d82390dc4328c83f8c03ea3be0bf8f6730c0bf5",
+  "date": "2024-11-13T16:11:45.000Z",
   "branch": "develop"
 }
