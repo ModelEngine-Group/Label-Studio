@@ -12,6 +12,8 @@ export class DOMWatcher {
   }
 
   handleUpdate() {
+    if (!this.element) return;
+
     this.observer = new MutationObserver(this.onUpdate);
 
     this.observer.observe(this.element, { attributes: true });
