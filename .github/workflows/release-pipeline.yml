@@ -4,9 +4,19 @@ on:
   release:
     types:
       - released
+  workflow_dispatch:
+    inputs:
+      ref_name:
+        description: "Release version X.X.X.postX"
+        type: string
+        required: true
+      release_id:
+        description: "GitHub release ID"
+        type: string
+        required: true
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.event.pull_request.head.ref || github.ref }}
+  group: ${{ github.workflow }}-${{ inputs.ref_name || github.ref }}
   cancel-in-progress: true
 
 env:
@@ -20,7 +30,7 @@ jobs:
       checks: read
     uses: ./.github/workflows/docker-release-promote.yml
     with:
-      release_tag: ${{ github.ref_name }}
+      release_tag: ${{ inputs.ref_name || github.ref_name }}
     secrets: inherit
 
 #  build_ubi_docker_image:
@@ -37,10 +47,10 @@ jobs:
       - promote_docker_image
     uses: ./.github/workflows/docker-build-ontop.yml
     with:
-      base_docker_image_version: ${{ github.ref_name }}
-      tags: "hf-latest,hf-${{ github.ref_name }}"
+      base_docker_image_version: ${{ inputs.ref_name || github.ref_name }}
+      tags: "hf-latest,hf-${{ inputs.ref_name || github.ref_name }}"
       dockerfile_path: Dockerfile.hgface
-      ref: ${{ github.ref_name }}
+      ref: ${{ inputs.ref_name || github.ref_name }}
     secrets: inherit
 
   jira_set_fix_version:
@@ -65,7 +75,7 @@ jobs:
           jira_server: "${{ vars.JIRA_SERVER }}"
           jira_username: "${{ secrets.JIRA_USERNAME }}"
           jira_token: "${{ secrets.JIRA_TOKEN }}"
-          jira_fix_version: "LS OpenSource/${{ github.ref_name }}"
+          jira_fix_version: "LS OpenSource/${{ inputs.ref_name || github.ref_name }}"
           jira_fix_version_released: true
 
   build-pypi:
@@ -74,10 +84,10 @@ jobs:
       contents: write
     uses: ./.github/workflows/build_pypi.yml
     with:
-      version: ${{ github.ref_name }}
-      ref: ${{ github.ref_name }}
+      version: ${{ inputs.ref_name || github.ref_name }}
+      ref: ${{ inputs.ref_name || github.ref_name }}
       upload_to_pypi: true
-      release-id: ${{ github.event.release.id }}
+      release-id: ${{ inputs.release_id || github.event.release.id }}
     secrets: inherit
 
   delete-rc-assets:
@@ -91,7 +101,7 @@ jobs:
       - name: Delete Release Candidate Assets
         uses: actions/github-script@v7
         env:
-          RELEASE_ID: "${{ github.event.release.id }}"
+          RELEASE_ID: "${{ inputs.release_id || github.event.release.id }}"
         with:
           github-token: ${{ secrets.GIT_PAT }}
           script: |
@@ -135,7 +145,7 @@ jobs:
               event_type: 'upstream_formula_update',
               client_payload: {
                 formula: 'label-studio',
-                version: '${{ github.ref_name }}',
+                version: '${{ inputs.ref_name || github.ref_name }}',
                 actor: '${{ github.actor }}',
                 url: '${{ needs.build-pypi.outputs.pipy-artifact-url }}',
                 sha256: '${{ needs.build-pypi.outputs.pipy-artifact-digests-sha256 }}',
@@ -148,7 +158,7 @@ jobs:
       - promote_docker_image
     uses: ./.github/workflows/bump-helm-chart.yml
     with:
-      docker_image_version: ${{ github.ref_name }}
+      docker_image_version: ${{ inputs.ref_name || github.ref_name }}
     secrets: inherit
 
   notify_slack_on_failure:
