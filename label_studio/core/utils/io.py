@@ -1,6 +1,7 @@
 """This file and its contents are licensed under the Apache License 2.0. Please see the included NOTICE for copyright information and LICENSE for a copy of the license.
 """
 import glob
+import importlib
 import io
 import ipaddress
 import itertools
@@ -10,7 +11,6 @@ import socket
 from contextlib import contextmanager
 from tempfile import mkdtemp, mkstemp
 
-import pkg_resources
 import requests
 import ujson as json
 import yaml
@@ -31,7 +31,7 @@ def good_path(path):
 
 def find_node(package_name, node_path, node_type):
     assert node_type in ('dir', 'file', 'any')
-    basedir = pkg_resources.resource_filename(package_name, '')
+    basedir = importlib.resources.files(package_name).joinpath('')
     node_path = os.path.join(*node_path.split('/'))  # linux to windows compatibility
     search_by_path = '/' in node_path or '\\' in node_path
 
