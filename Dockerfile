@@ -2,8 +2,6 @@
 ARG NODE_VERSION=18
 ARG PYTHON_VERSION=3.12
 ARG POETRY_VERSION=1.8.4
-ARG UWSGI_VERSION=2.0.28
-ARG UWSGITOP_VERSION=0.12
 
 ################################ Overview
 
@@ -53,9 +51,6 @@ RUN --mount=type=cache,target=${YARN_CACHE_FOLDER},sharing=locked \
 ################################ Stage: venv-builder (prepare the virtualenv)
 FROM python:${PYTHON_VERSION}-slim AS venv-builder
 ARG POETRY_VERSION
-ARG PYTHON_VERSION
-ARG UWSGI_VERSION
-ARG UWSGITOP_VERSION
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
@@ -86,21 +81,17 @@ ENV PATH="$VENV_PATH/bin:$PATH"
 
 ## Starting from this line all packages will be installed in $VENV_PATH
 
-# Install middleware components
-RUN --mount=type=cache,target=${PIP_CACHE_DIR},sharing=locked \
-    pip install uwsgi==${UWSGI_VERSION} uwsgitop==${UWSGITOP_VERSION}
-
 # Copy dependency files
 COPY pyproject.toml poetry.lock README.md ./
 
 # Install dependencies without dev packages
 RUN --mount=type=cache,target=$POETRY_CACHE_DIR,sharing=locked \
-    poetry check --lock && poetry install --no-root --without test
+    poetry check --lock && poetry install --no-root --without test --extras "uwsgi"
 
 # Install LS
 COPY label_studio label_studio
 RUN --mount=type=cache,target=$POETRY_CACHE_DIR,sharing=locked \
-    poetry install --only-root && \
+    poetry install --only-root --extras "uwsgi" && \
     python3 label_studio/manage.py collectstatic --no-input
 
 ################################### Stage: prod

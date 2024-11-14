@@ -195,7 +195,8 @@ launchdarkly-server-sdk = "8.2.1"
 python-json-logger = "2.0.4"
 google-cloud-storage = "^2.13.0"
 google-cloud-logging = "^3.10.0"
-mysqlclient = {version = "*", optional = true}
+pyuwsgi = { version = "2.0.28.post1", optional = true }
+uwsgitop = { version = "0.12", optional = true }
 django-csp = "3.7"
 openai = "^1.10.0"
 django-migration-linter = "^5.1.0"
@@ -225,7 +226,7 @@ requests-mock = "1.12.1"
 twine = ">=4.0.2"
 
 [tool.poetry.extras]
-mysql = ["mysqlclient"]
+uwsgi = ["pyuwsgi","uwsgitop"]
 
 [build-system]
 requires = ["poetry-core"]
