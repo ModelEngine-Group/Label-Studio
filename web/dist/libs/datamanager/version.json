@@ -1,6 +1,6 @@
 {
-  "message": "fix: LEAP-1647: Fix comments when user uses OCR textarea (#6622)",
-  "commit": "2d82390dc4328c83f8c03ea3be0bf8f6730c0bf5",
-  "date": "2024-11-13T16:11:45.000Z",
+  "message": "docs: LEAP-1657: Add a note to Text tag about \\r\\n (#6645)",
+  "commit": "525dd190bcb54dc96dccabccc5449620d56c5107",
+  "date": "2024-11-14T01:54:34.000Z",
   "branch": "develop"
 }
