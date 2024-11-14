@@ -2,6 +2,8 @@
 ARG NODE_VERSION=18
 ARG PYTHON_VERSION=3.12
 ARG POETRY_VERSION=1.8.4
+ARG VERSION_OVERRIDE
+ARG BRANCH_OVERRIDE
 
 ################################ Overview
 
@@ -10,7 +12,8 @@ ARG POETRY_VERSION=1.8.4
 # 1. "frontend-builder" - Compiles the frontend assets using Node.
 # 2. "frontend-version-generator" - Generates version files for frontend sources.
 # 3. "venv-builder" - Prepares the virtualenv environment.
-# 4. "prod" - Creates the final production image with the Label Studio, Nginx, and other dependencies.
+# 4. "py-version-generator" - Generates version files for python sources.
+# 5. "prod" - Creates the final production image with the Label Studio, Nginx, and other dependencies.
 
 ################################ Stage: frontend-builder (build frontend assets)
 FROM --platform=${BUILDPLATFORM} node:${NODE_VERSION} AS frontend-builder
@@ -95,6 +98,15 @@ RUN --mount=type=cache,target=$POETRY_CACHE_DIR,sharing=locked \
     poetry install --only-root --extras uwsgi && \
     python3 label_studio/manage.py collectstatic --no-input
 
+################################ Stage: py-version-generator
+FROM venv-builder AS py-version-generator
+ARG VERSION_OVERRIDE
+ARG BRANCH_OVERRIDE
+
+# Create version_.py and ls-version_.py
+RUN --mount=type=bind,source=.git,target=./.git \
+    VERSION_OVERRIDE=${VERSION_OVERRIDE} BRANCH_OVERRIDE=${BRANCH_OVERRIDE} poetry run python label_studio/core/version.py
+
 ################################### Stage: prod
 FROM python:${PYTHON_VERSION}-slim AS production
 
@@ -136,11 +148,12 @@ COPY --chown=1001:0 deploy deploy
 COPY --chown=1001:0 web/yarn.lock $LS_DIR/web/yarn.lock
 
 # Copy files from build stages
-COPY --chown=1001:0 --from=venv-builder               $LS_DIR                                                 $LS_DIR
-COPY --chown=1001:0 --from=frontend-builder           /label-studio/web/dist                                  $LS_DIR/web/dist
-COPY --chown=1001:0 --from=frontend-version-generator /label-studio/web/dist/apps/labelstudio/version.json    $LS_DIR/web/dist/apps/labelstudio/version.json
-COPY --chown=1001:0 --from=frontend-version-generator /label-studio/web/dist/libs/editor/version.json         $LS_DIR/web/dist/libs/editor/version.json
-COPY --chown=1001:0 --from=frontend-version-generator /label-studio/web/dist/libs/datamanager/version.json    $LS_DIR/web/dist/libs/datamanager/version.json
+COPY --chown=1001:0 --from=venv-builder               $LS_DIR                                           $LS_DIR
+COPY --chown=1001:0 --from=py-version-generator       $LS_DIR/label_studio/core/version_.py             $LS_DIR/label_studio/core/version_.py
+COPY --chown=1001:0 --from=frontend-builder           $LS_DIR/web/dist                                  $LS_DIR/web/dist
+COPY --chown=1001:0 --from=frontend-version-generator $LS_DIR/web/dist/apps/labelstudio/version.json    $LS_DIR/web/dist/apps/labelstudio/version.json
+COPY --chown=1001:0 --from=frontend-version-generator $LS_DIR/web/dist/libs/editor/version.json         $LS_DIR/web/dist/libs/editor/version.json
+COPY --chown=1001:0 --from=frontend-version-generator $LS_DIR/web/dist/libs/datamanager/version.json    $LS_DIR/web/dist/libs/datamanager/version.json
 
 USER 1001
 
