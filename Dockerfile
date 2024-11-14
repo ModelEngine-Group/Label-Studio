@@ -86,12 +86,13 @@ COPY pyproject.toml poetry.lock README.md ./
 
 # Install dependencies without dev packages
 RUN --mount=type=cache,target=$POETRY_CACHE_DIR,sharing=locked \
-    poetry check --lock && poetry install --no-root --without test --extras "uwsgi"
+    poetry check --lock && poetry install --no-root --without test --extras uwsgi
 
 # Install LS
 COPY label_studio label_studio
 RUN --mount=type=cache,target=$POETRY_CACHE_DIR,sharing=locked \
-    poetry install --only-root --extras "uwsgi" && \
+    # `--extras uwsgi` is mandatory here due to poetry bug: https://github.com/python-poetry/poetry/issues/7302
+    poetry install --only-root --extras uwsgi && \
     python3 label_studio/manage.py collectstatic --no-input
 
 ################################### Stage: prod
