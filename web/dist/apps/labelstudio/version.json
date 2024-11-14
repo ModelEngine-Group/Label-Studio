@@ -1,6 +1,6 @@
 {
-  "message": "docs: LEAP-1657: Add a note to Text tag about \\r\\n (#6645)",
-  "commit": "525dd190bcb54dc96dccabccc5449620d56c5107",
-  "date": "2024-11-14T01:54:34.000Z",
+  "message": "feat: OPTIC-1245: Allow HeidiTips to pull content updates live (#6623)",
+  "commit": "9a7bfc0524b776232ea8e445cafe7fdb95b1f6bc",
+  "date": "2024-11-14T17:07:18.000Z",
   "branch": "develop"
 }
