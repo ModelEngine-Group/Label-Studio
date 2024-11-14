@@ -10,10 +10,9 @@ ARG UWSGITOP_VERSION=0.12
 # This Dockerfile builds a Label Studio environment.
 # It consists of three main stages:
 # 1. "frontend-builder" - Compiles the frontend assets using Node.
-# 2. "base-image" - Prepares common env variables and installs Poetry.
-# 3. "frontend-version-generator" - Generates version files for frontend sources.
-# 4. "venv-builder" - Prepares the virtualenv environment.
-# 5. "prod" - Creates the final production image with the Label Studio Enterprise, Nginx, and other dependencies.
+# 2. "frontend-version-generator" - Generates version files for frontend sources.
+# 3. "venv-builder" - Prepares the virtualenv environment.
+# 4. "prod" - Creates the final production image with the Label Studio, Nginx, and other dependencies.
 
 ################################ Stage: frontend-builder (build frontend assets)
 FROM --platform=${BUILDPLATFORM} node:${NODE_VERSION} AS frontend-builder
@@ -44,25 +43,6 @@ RUN --mount=type=cache,target=${YARN_CACHE_FOLDER},sharing=locked \
     --mount=type=cache,target=${NX_CACHE_DIRECTORY},sharing=locked \
     yarn run build
 
-################################ Stage: base image
-# Creating a python base with shared environment variables
-FROM python:${PYTHON_VERSION}-slim AS python-base
-ARG POETRY_VERSION
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PIP_NO_CACHE_DIR=off \
-    PIP_DISABLE_PIP_VERSION_CHECK=on \
-    PIP_DEFAULT_TIMEOUT=100 \
-    PIP_CACHE_DIR="/.cache" \
-    POETRY_HOME="/opt/poetry" \
-    POETRY_CACHE_DIR="/.poetry-cache" \
-    POETRY_VIRTUALENVS_IN_PROJECT=true
-
-ENV PATH="$POETRY_HOME/bin:$PATH"
-
-ADD https://install.python-poetry.org /tmp/install-poetry.py
-RUN python /tmp/install-poetry.py
-
 ################################ Stage: frontend-version-generator
 FROM frontend-builder AS frontend-version-generator
 RUN --mount=type=cache,target=${YARN_CACHE_FOLDER},sharing=locked \
@@ -71,10 +51,25 @@ RUN --mount=type=cache,target=${YARN_CACHE_FOLDER},sharing=locked \
     yarn version:libs
 
 ################################ Stage: venv-builder (prepare the virtualenv)
-FROM python-base AS venv-builder
+FROM python:${PYTHON_VERSION}-slim AS venv-builder
+ARG POETRY_VERSION
 ARG PYTHON_VERSION
 ARG UWSGI_VERSION
 ARG UWSGITOP_VERSION
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=off \
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    PIP_DEFAULT_TIMEOUT=100 \
+    PIP_CACHE_DIR="/.cache" \
+    POETRY_CACHE_DIR="/.poetry-cache" \
+    POETRY_HOME="/opt/poetry" \
+    POETRY_VIRTUALENVS_IN_PROJECT=true \
+    PATH="/opt/poetry/bin:$PATH"
+
+ADD https://install.python-poetry.org /tmp/install-poetry.py
+RUN python /tmp/install-poetry.py
 
 RUN --mount=type=cache,target="/var/cache/apt",sharing=locked \
     --mount=type=cache,target="/var/lib/apt/lists",sharing=locked \
