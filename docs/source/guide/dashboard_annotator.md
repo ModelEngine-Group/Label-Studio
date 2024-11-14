@@ -1,10 +1,10 @@
 ---
-title: Annotator performance dashboard - Beta 🧪
+title: Annotator performance dashboard
 short: Annotator dashboard
 tier: enterprise
 type: guide
 order: 0
-order_enterprise: 70
+order_enterprise: 72
 meta_title: Annotator dashboard
 meta_description: Use annotator dashboards to track annotator work and progress. 
 section: "Project Management"
@@ -28,9 +28,19 @@ The dashboard is available from the Organization page, meaning that your user ro
 
 From the organization members list, select the user you want to view. Annotator performance reports are available for users in all roles, not just the Annotator role. 
 
-With the user selected, click **Performance Report** on the right. 
+With the user selected, click **Annotator Performance Report** on the right. 
 
 ![Screenshot of Performance Report button](/images/project/user_report.png)
+
+## Export data
+
+You can use the **Export** drop-down to to export the following:
+
+* **Report** - Download the information in the dashboard as CSV or JSON. 
+
+* **Timeline** - Download a detailed timeline of all the user's annotation actions within the time frame, including when the began and submitted each annotation. 
+
+* **Comments Received** - Download a CSV file with all of the comments that other users have left on the user's annotations. 
 
 ## Metrics
 
@@ -47,15 +57,14 @@ The metrics are calculated from the following data:
 
 ### Performance summaries
 
-![Screenshot of annotator dashboard summaries](/images/project/annotator_dashboard_summary.png)
-
 | Metric | Calculation | Description | 
 | --- | --- | --- |
-| **Total Time** | Sum of `lead_times` | The total time spent annotating during the selected time frame. This is calculated based on annotations that meet the criteria for **Submitted Annotations** (see below). <br /><br />The total time does not include time spent on annotations that have not been submitted and/or updated. For example, it does not include time spent on drafts or time spent on skipped annotations. <br /><br />However, if they return to an annotation draft or a previously skipped annotation, then their earlier time spent on the annotation is included when calculating their total annotation time.  | 
+| **Total Time** | Sum of `lead_times` | The total time spent annotating during the selected time frame. This is calculated based on annotations that meet the criteria for **Submitted Annotations** (see below). <br /><br />All annotations have a `lead_time`. The lead time reflects how much time a user spent labeling from the moment the task was opened until they click **Submit** or **Update**. This includes idle time. <br /><br />The total time does not include time spent on annotations that have not been submitted and/or updated. For example, it does not include time spent on drafts or time spent on skipped annotations. <br /><br />However, if they return to an annotation draft or a previously skipped annotation, then their earlier time spent on the annotation is included when calculating their total annotation time.  | 
 | **Submitted Annotations** | Sum of `submitted_or_reviewed` | The total number of annotations the user submitted during the selected time frame. <br /><br />This includes annotations that have been submitted and updated. <br /><br />It does not include annotations that have been skipped. It also does not include annotations that were submitted and have since been rejected by a reviewer. However, if the annotator updates a rejected annotation and that fix is then accepted by a reviewer, the corrected annotation is included within their Submitted Annotation count. <br /><br />Note that each annotation is only included in their submitted count once. Label Studio does not count the same annotation twice based if it is later updated. | 
 | **Total Time (Median)** | Sum of `submitted_or_reviewed` * the median of `lead_times` | The number of submitted annotations multiplied by their median annotation time. | 
 | **Time per Annotation (Median)** | Median of `lead_times` | The median time they spent on each submitted annotation. | 
 | **Time per Annotation (Average)** | Average of `lead_times` | The average time they spent on each submitted annotation. | 
+| **Performance Score** | Calculated from reviewer actions | The Performance Score reflects the overall performance of annotators in terms of review actions (**Accept**, **Reject**, **Fix+Accept**). <br /><br />The calculation is as follows:<ul><li>Each annotation review action (**Accept**, **Reject**, **Fix+Accept**) contributes to the score.</li><li>The score is calculated by summing the scores of all review actions and dividing by the total number of review actions. For example: </li><ul><li>If an annotation is rejected twice and then accepted once, the Performance Score would be (0 + 0 + 1) / 3 = 33%.</li><li>If an annotation is rejected once and then fixed+accepted with a score of 42%, the Performance Score would be (0 + 0.42) / 2 = 21%.</li></ul></ul> | 
 
 ### Graphs
 
