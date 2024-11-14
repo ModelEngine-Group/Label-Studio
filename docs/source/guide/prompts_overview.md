@@ -26,7 +26,6 @@ With Prompts, you can:
 
 ## Use cases
 
-
 ### Auto-labeling with Prompts
  
 Prompts allows you to leverage LLMs to swiftly generate accurate predictions, enabling instant labeling of thousands of tasks. 
@@ -133,9 +132,10 @@ This feedback loop allows you to iteratively fine-tune your prompts, optimizing 
 | Feature | Support |
 | --- | --- |
 | **Supported data types** | Text |
-| **Supported model types** | Text Classification <br>Named Entity Recognition (NER) |
+| **Supported object tags** | `Text` <br>`HyperText` |
+| **Supported control tags** | `Choices` <br>`Labels` <br>`TextArea` <br>`Pairwise` |
 | **Class selection** | Multi-selection (the LLM can apply multiple labels per task)|
-| **Supported base models** | OpenAI gpt-3.5-turbo-16k <br>OpenAI gpt-3.5-turbo-instruct* <br>OpenAI gpt-4-turbo <br>OpenAI gpt-3.5-turbo <br>OpenAI gpt-4o <br>OpenAI gpt-4<br>[Azure OpenAI chat-based models](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models)<br>[Custom LLM](prompts_create#Add-OpenAI-Azure-OpenAI-or-a-custom-model) |
+| **Supported base models** | OpenAI gpt-3.5-turbo-16k* <br>OpenAI gpt-3.5-turbo* <br>OpenAI gpt-4 <br>OpenAI gpt-4-turbo <br>OpenAI gpt-4o <br>OpenAI gpt-4o-mini<br>[Azure OpenAI chat-based models](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models)<br>[Custom LLM](prompts_create#Add-OpenAI-Azure-OpenAI-or-a-custom-model)<br><br>**Note:** We recommend against using GPT 3.5 models, as these can sometimes be prone to rate limit errors.  |
 | **Text compatibility** | Task text must be utf-8 compatible |
 | **Task size** | Total size of each task can be no more than 1MB (approximately 200-500 pages of text) |
 | **Network access** | If you are using a firewall or restricting network access to your OpenAI models, you will need to allow the following IPs: <br>3.219.3.197 <br>34.237.73.3 <br>4.216.17.242 |

@@ -108,25 +108,18 @@ From the Prompts page, click **Create Prompt** in the upper right and then compl
 | --- | --- |
 | Name | Enter a name for the Prompt. |
 | Description | Enter a description for the Prompt.  |
-| Type | Select the Prompt model type: [Text Classification](#Text-classification) or [Named Entity Recognition](#Named-entity-recognition-NER)  |
-| Target Project| Select the project you want to use. If you don't have any eligible projects, you will see an error message. <br><br>See the note below.  |
-| Classes | This list is automatically generated from the labeling configuration of the target project. |
+| Target Project| Select the project you want to use. If you don't have any eligible projects, you will see an error message. <br>See the note below. <br><br>When you select a project, additional information about the labeling config appears. This includes the classes that will be used when applying the prompt.  |
 
 </div>
 
 !!! note Eligible projects
     Target projects must meet the following criteria:
-    * The labeling configuration for the project must be compatible with the **Type** you selected above:
-        * For text classification, this means that the labeling configuration for the project must use `Choice` tags. 
-        * For NER, this means that the labeling configuration for the project must use `Label` tags.  
-    * The project must have one output type (`Choice` or `Label`) and not a mix of both. 
-    * The project cannot include multiple `Choices` or `Labels` blocks in its labeling configuration. 
     * The project must include text data. While it can include other data types such as images or video, it must include `<Text>`.
     * You must have access to the project. If you are in the Manager role, you need to be added to the project to have access. 
     * The project cannot be located in your Personal Sandbox workspace. 
     * While projects connected to an ML backend will still appear in the list of eligible projects, we do not recommend using Prompts with an ML backend as this can interfere with how accuracy and score are calculated when evaluating the prompt. 
 
-## Types
+## Example project types
 
 ### Text classification  
 
@@ -154,3 +147,16 @@ Some examples include:
 * **Intelligence and Risk Analysis**: By extracting entities such as personal names, organizations, IP addresses, and financial transactions from suspicious activity reports or communications, organizations can better assess risks and detect fraud or criminal activity.
 * **Specialized Document Review**: Once trained, NER can help extract industry-specific key entities for better document review, searching, and classification. 
 * **Customer Feedback and Product Review**: Extract named entities like product names, companies, or services from customer feedback or reviews. This allows businesses to categorize and analyze feedback based on specific products, people, or regions, helping them make data-driven improvements.
+
+### Text summarization
+
+Text summarization involves condensing large amounts of information into concise, meaningful summaries. 
+
+Models can be trained or fine-tuned to recognize essential information within a document and generate summaries that retain the core ideas while omitting less critical details. This capability is especially valuable in today’s information-heavy landscape, where professionals across various fields are often overwhelmed by the sheer volume of text data.
+
+Some examples include:
+
+* **Customer Support and Feedback Analysis**: Companies receive vast volumes of customer support tickets, reviews, and feedback that are often repetitive or lengthy. Auto-labeling can help summarize these inputs, focusing on core issues or themes, such as “billing issues” or “technical support.” 
+* **News Aggregation and Media Monitoring**: News organizations and media monitoring platforms need to process and distribute news stories efficiently. Auto-labeling can summarize articles while tagging them with labels like “politics,” “economy,” or “health,” making it easier for users to find relevant stories.
+* **Document Summarization**: Professionals often need to quickly understand the key points in lengthy contracts, research papers, and files.
+* **Educational Content Summarization**: EEducators and e-learning platforms need to distill complex material into accessible summaries for students. Auto-labeling can summarize key topics and categorize them under labels like “concept,” “example,” or “important fact.”
