@@ -56,10 +56,9 @@ ENV PYTHONUNBUFFERED=1 \
     PIP_CACHE_DIR="/.cache" \
     POETRY_HOME="/opt/poetry" \
     POETRY_CACHE_DIR="/.poetry-cache" \
-    POETRY_VIRTUALENVS_IN_PROJECT=true \
-    VENV_PATH="/label-studio/.venv"
+    POETRY_VIRTUALENVS_IN_PROJECT=true
 
-ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
+ENV PATH="$POETRY_HOME/bin:$PATH"
 
 ADD https://install.python-poetry.org /tmp/install-poetry.py
 RUN python /tmp/install-poetry.py
@@ -74,7 +73,6 @@ RUN --mount=type=cache,target=${YARN_CACHE_FOLDER},sharing=locked \
 ################################ Stage: venv-builder (prepare the virtualenv)
 FROM python-base AS venv-builder
 ARG PYTHON_VERSION
-ARG VENV_PATH
 ARG UWSGI_VERSION
 ARG UWSGITOP_VERSION
 
@@ -88,18 +86,27 @@ RUN --mount=type=cache,target="/var/cache/apt",sharing=locked \
 
 WORKDIR /label-studio
 
+ENV VENV_PATH="/label-studio/.venv"
+ENV PATH="$VENV_PATH/bin:$PATH"
+
 ## Starting from this line all packages will be installed in $VENV_PATH
+
+# Install middleware components
+RUN --mount=type=cache,target=${PIP_CACHE_DIR},sharing=locked \
+    pip install uwsgi==${UWSGI_VERSION} uwsgitop==${UWSGITOP_VERSION}
 
 # Copy dependency files
 COPY pyproject.toml poetry.lock README.md ./
 
 # Install dependencies without dev packages
-RUN --mount=type=cache,target=${POETRY_CACHE_DIR} \
+RUN --mount=type=cache,target=$POETRY_CACHE_DIR,sharing=locked \
     poetry check --lock && poetry install --no-root --without test
 
-# Install middleware components
-RUN --mount=type=cache,target=${PIP_CACHE_DIR},sharing=locked \
-    pip install uwsgi==${UWSGI_VERSION} uwsgitop==${UWSGITOP_VERSION}
+# Install LS
+COPY label_studio label_studio
+RUN --mount=type=cache,target=$POETRY_CACHE_DIR,sharing=locked \
+    poetry install --only-root && \
+    python3 label_studio/manage.py collectstatic --no-input
 
 ################################### Stage: prod
 FROM python-base AS production
@@ -108,7 +115,8 @@ ENV LS_DIR=/label-studio \
     DJANGO_SETTINGS_MODULE=core.settings.label_studio \
     LABEL_STUDIO_BASE_DATA_DIR=/label-studio/data \
     OPT_DIR=/opt/heartex/instance-data/etc \
-    HOME=$LS_DIR
+    HOME=$LS_DIR \
+    PATH="/label-studio/.venv/bin:$PATH"
 
 WORKDIR $LS_DIR
 
@@ -134,23 +142,18 @@ COPY --chown=1001:0 poetry.lock .
 COPY --chown=1001:0 README.md .
 COPY --chown=1001:0 LICENSE LICENSE
 COPY --chown=1001:0 licenses licenses
-COPY --chown=1001:0 label_studio label_studio
 COPY --chown=1001:0 deploy deploy
 # We need these files for security scanners
-COPY --chown=1001:0 web/yarn.lock $LS_DIR//web/yarn.lock
+COPY --chown=1001:0 web/yarn.lock $LS_DIR/web/yarn.lock
 
-COPY --chown=1001:0 --from=venv-builder               ${VENV_PATH}                                            ${VENV_PATH}
+# Copy files from build stages
+COPY --chown=1001:0 --from=venv-builder               $LS_DIR                                                 $LS_DIR
 COPY --chown=1001:0 --from=frontend-builder           /label-studio/web/dist                                  $LS_DIR/web/dist
 COPY --chown=1001:0 --from=frontend-version-generator /label-studio/web/dist/apps/labelstudio/version.json    $LS_DIR/web/dist/apps/labelstudio/version.json
 COPY --chown=1001:0 --from=frontend-version-generator /label-studio/web/dist/libs/editor/version.json         $LS_DIR/web/dist/libs/editor/version.json
 COPY --chown=1001:0 --from=frontend-version-generator /label-studio/web/dist/libs/datamanager/version.json    $LS_DIR/web/dist/libs/datamanager/version.json
 
 USER 1001
-
-# Install LS
-RUN --mount=type=cache,target=$POETRY_CACHE_DIR \
-    poetry install --only-root && \
-    python3 label_studio/manage.py collectstatic --no-input
 
 EXPOSE 8080
 

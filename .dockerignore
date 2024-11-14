@@ -8,7 +8,9 @@
 !deploy/uwsgi.ini
 !deploy/default.conf
 !label_studio/**
+# Re-ignore pyc files and frontend
 label_studio/frontend
+label_studio/**/*.pyc
 
 # FRONTEND
 !web
