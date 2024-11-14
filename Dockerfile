@@ -98,11 +98,11 @@ RUN --mount=type=cache,target=$POETRY_CACHE_DIR,sharing=locked \
 FROM python:${PYTHON_VERSION}-slim AS production
 
 ENV LS_DIR=/label-studio \
-    DJANGO_SETTINGS_MODULE=core.settings.label_studio \
+    HOME=/label-studio \
     LABEL_STUDIO_BASE_DATA_DIR=/label-studio/data \
     OPT_DIR=/opt/heartex/instance-data/etc \
-    HOME=$LS_DIR \
     PATH="/label-studio/.venv/bin:$PATH" \
+    DJANGO_SETTINGS_MODULE=core.settings.label_studio \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
 
