@@ -103,6 +103,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('django-rq/', include('django_rq.urls')),
     path('feature-flags/', views.feature_flags, name='feature_flags'),
+    path('heidi-tips/', views.heidi_tips, name='heidi_tips'),
     re_path(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
 

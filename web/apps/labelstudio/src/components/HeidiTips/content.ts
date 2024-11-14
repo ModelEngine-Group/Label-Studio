@@ -1,6 +1,6 @@
-import type { Tip } from "./types";
+import type { TipsCollection } from "./types";
 
-export const TipsCollection: Record<string, Tip[]> = {
+export const defaultTipsCollection: TipsCollection = {
   projectCreation: [
     {
       title: "Did you know?",

@@ -1,5 +1,3 @@
-import type { TipsCollection } from "./content";
-
 export type Tip = {
   title: string;
   content: string;
@@ -11,8 +9,12 @@ export type Tip = {
   };
 };
 
+export type TipCollectionKey = "projectCreation" | "organizationPage" | "projectSettings";
+
+export type TipsCollection = Record<TipCollectionKey, Tip[]>;
+
 export type HeidiTipsProps = {
-  collection: keyof typeof TipsCollection;
+  collection: keyof TipsCollection;
 };
 
 export type HeidiTipProps = {

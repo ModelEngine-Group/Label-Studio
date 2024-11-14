@@ -1704,6 +1704,12 @@
         "decorators": ""
     },
     {
+        "url": "/heidi-tips/",
+        "module": "core.views.heidi_tips",
+        "name": "heidi_tips",
+        "decorators": ""
+    },
+    {
         "url": "/api-auth/login/",
         "module": "django.contrib.auth.views.LoginView",
         "name": "rest_framework:login",
