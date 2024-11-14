@@ -109,14 +109,16 @@ RUN --mount=type=cache,target=$POETRY_CACHE_DIR,sharing=locked \
     python3 label_studio/manage.py collectstatic --no-input
 
 ################################### Stage: prod
-FROM python-base AS production
+FROM python:${PYTHON_VERSION}-slim AS production
 
 ENV LS_DIR=/label-studio \
     DJANGO_SETTINGS_MODULE=core.settings.label_studio \
     LABEL_STUDIO_BASE_DATA_DIR=/label-studio/data \
     OPT_DIR=/opt/heartex/instance-data/etc \
     HOME=$LS_DIR \
-    PATH="/label-studio/.venv/bin:$PATH"
+    PATH="/label-studio/.venv/bin:$PATH" \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
 
 WORKDIR $LS_DIR
 
