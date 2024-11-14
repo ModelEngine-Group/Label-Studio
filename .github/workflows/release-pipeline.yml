@@ -33,14 +33,6 @@ jobs:
       release_tag: ${{ inputs.ref_name || github.ref_name }}
     secrets: inherit
 
-#  build_ubi_docker_image:
-#    name: "Build UBI docker image"
-#    uses: ./.github/workflows/docker-build-ubi.yml
-#    with:
-#      sha: ${{ github.ref_name }}
-#      version: ${{ github.ref_name }}
-#    secrets: inherit
-
   build_hugging_face_docker_image:
     name: "Build Hugging Face docker image"
     needs:
