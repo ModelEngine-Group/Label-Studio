@@ -149,9 +149,7 @@ def apply_ordering(queryset, ordering, project, request, view_data=None):
             and view_data['columnsDisplayType'][unsigned_field_name] == 'Number'
         ):
             numeric_ordering = True
-        field_name, ascending = preprocess_field_name(
-            raw_field_name, only_undefined_field=project.only_undefined_field
-        )
+        field_name, ascending = preprocess_field_name(raw_field_name, project=project)
 
         if field_name.startswith('data__'):
             # annotate task with data field for float/int/bool ordering support
@@ -275,7 +273,7 @@ def apply_filters(queryset, filters, project, request):
 
         # django orm loop expression attached to column name
         preprocess_field_name = load_func(settings.PREPROCESS_FIELD_NAME)
-        field_name, _ = preprocess_field_name(_filter.filter, project.only_undefined_field)
+        field_name, _ = preprocess_field_name(_filter.filter, project)
 
         # filter pre-processing, value type conversion, etc..
         preprocess_filter = load_func(settings.DATA_MANAGER_PREPROCESS_FILTER)

@@ -40,13 +40,21 @@ def make_queryset_from_iterable(tasks_list):
 def recalculate_created_annotations_and_labels_from_scratch(
     project: 'Project', summary: 'ProjectSummary', organization_id: int
 ) -> None:
-    """Recalculate created_labels, created_annotations and created_labels_drafts from scratch
+    """Recalculate from scratch:
+     task columns
+     created_labels
+     created_annotations
+     created_labels_drafts
 
     :param project: Project
     :param summary: ProjectSummary
     :param organization_id: Organization.id, it is required for django-rq displaying on admin page
     """
     logger.info(f'Reset cache started for project {project.id} and organization {organization_id}')
+
+    summary.all_data_columns = {}
+    summary.common_data_columns = []
+    summary.update_data_columns(project.tasks.only('data'))
 
     summary.created_labels, summary.created_annotations = {}, {}
     summary.update_created_annotations_and_labels(project.annotations.all())
