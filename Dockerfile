@@ -74,7 +74,7 @@ RUN --mount=type=cache,target="/var/cache/apt",sharing=locked \
     set -eux; \
     apt-get update; \
     apt-get install --no-install-recommends -y \
-            python3-dev build-essential git; \
+            build-essential git; \
     apt-get autoremove -y
 
 WORKDIR /label-studio
