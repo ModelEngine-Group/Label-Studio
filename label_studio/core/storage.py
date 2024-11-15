@@ -6,7 +6,6 @@ import threading
 from urllib.parse import unquote, urlsplit, urlunsplit
 
 import google.auth
-from core.feature_flags import flag_set
 from django.conf import settings
 from django.contrib.staticfiles.storage import ManifestStaticFilesStorage
 from storages.backends.azure_storage import AzureStorage
@@ -61,12 +60,9 @@ class SkipMissedManifestStaticFilesStorage(ManifestStaticFilesStorage):
 
 class StorageProxyMixin:
     def url(self, name, storage_url=False, *args, **kwargs):
-        if flag_set('ff_back_dev_2915_storage_nginx_proxy_26092022_short'):
-            if storage_url is True:
-                return super().url(name, *args, **kwargs)
-            return f'{settings.HOSTNAME}/storage-data/uploaded/?filepath={name}'
-        else:
+        if storage_url is True:
             return super().url(name, *args, **kwargs)
+        return f'{settings.HOSTNAME}/storage-data/uploaded/?filepath={name}'
 
 
 class CustomS3Boto3Storage(StorageProxyMixin, S3Boto3Storage):
