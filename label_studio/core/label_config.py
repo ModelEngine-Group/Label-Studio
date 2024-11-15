@@ -261,16 +261,17 @@ def generate_sample_task_without_check(label_config, mode='upload', secure_mode=
     # make examples pretty
     examples = data_examples(mode=mode)
 
-    # iterate over xml tree and find values with '$'
+    # iterate over xml tree and find elements with 'value' or 'valueList' attributes
     task = {}
-    parent = xml.findall('.//*[@value]')  # take all tags with value attribute
+    # Include both 'value' and 'valueList' attributes in the search
+    parent = xml.findall('.//*[@value]') + xml.findall('.//*[@valueList]')
     for p in parent:
-
-        # Make sure it is a real object tag, extract data placeholder key
-        value = p.get('value')
+        # Extract data placeholder key
+        value = p.get('value') or p.get('valueList')
         if not value or not value.startswith('$'):
             continue
         value = value[1:]
+        is_value_list = 'valueList' in p.attrib  # Check if the attribute is 'valueList'
 
         # detect secured mode - objects served as URLs
         value_type = p.get('valueType') or p.get('valuetype')
@@ -278,8 +279,8 @@ def generate_sample_task_without_check(label_config, mode='upload', secure_mode=
 
         example_from_field_name = examples.get('$' + value)
         if example_from_field_name:
-            # try to get example by variable name
-            task[value] = example_from_field_name
+            # Get example by variable name
+            task[value] = [example_from_field_name] if is_value_list else example_from_field_name
 
         elif value == 'video' and p.tag == 'HyperText':
             task[value] = examples.get('$videoHack')
@@ -297,7 +298,6 @@ def generate_sample_task_without_check(label_config, mode='upload', secure_mode=
                 task[value] = []
                 for item in examples[p.tag]:
                     task[value].append({name_key: item['author'], text_key: item['text']})
-
         elif p.tag == 'TimeSeries':
             # TimeSeries special case - generate signals on-the-fly
             time_column = p.get('timeColumn')
@@ -334,10 +334,11 @@ def generate_sample_task_without_check(label_config, mode='upload', secure_mode=
             else:
                 task[value] = examples['Choices']
         else:
-            # patch for valueType="url"
+            # Patch for valueType="url"
             examples['Text'] = examples['TextUrl'] if only_urls else examples['TextRaw']
-            # not found by name, try get example by type
-            task[value] = examples.get(p.tag, 'Something')
+            # Not found by name, try to get example by type
+            example_value = examples.get(p.tag, 'Something')
+            task[value] = [example_value] if is_value_list else example_value
 
         # support for Repeater tag
         if '[' in value:

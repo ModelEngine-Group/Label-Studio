@@ -64,3 +64,33 @@ stages:
       dialogue: /samples/paragraphs.json?nameKey=speaker&textKey=phrase
     status_code: 200
 
+---
+test_name: get_image_sample_task_with_value_list
+strict: false
+marks:
+  - usefixtures:
+      - django_live_url
+stages:
+  - id: signup
+    type: ref
+  - name: stage
+    request:
+      data:
+        label_config: |
+          <View>
+            <Image name="image" valueList="$images"/>
+            <RectangleLabels name="labels" toName="image">
+                <Label value="Label1"/>
+                <Label value="Label2"/>
+                <Label value="Label3"/>
+            </RectangleLabels>
+          </View>
+      headers:
+        content-type: application/x-www-form-urlencoded
+      method: POST
+      url: '{django_live_url}/projects/upload-example'
+    response:
+      json:
+        images:
+          - "/static/samples/sample.jpg"
+      status_code: 200
