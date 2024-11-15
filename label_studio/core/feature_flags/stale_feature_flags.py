@@ -24,7 +24,6 @@ STALE_FEATURE_FLAGS = {
     'fflag_feat_front_lsdv_4661_full_uri_resolve_15032023_short': True,
     'fflag_fix_back_LSDV_4748_annotate_task_number_14032023_short': True,
     'fflag_feat_front_lsdv_4659_skipduplicates_060323_short': True,
-    'fflag_fix_back_LSDV_961_project_list_09022023_short': True,
     'fflag_fix_font_lsdv_1148_hotkeys_namespaces_01022023_short': True,
     'fflag_fix_back_lsdv_1044_check_annotations_24012023_short': False,
     'fflag_feat_front_dev_4081_magic_wand_tool': True,
