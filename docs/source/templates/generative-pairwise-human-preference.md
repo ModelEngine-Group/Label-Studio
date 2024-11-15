@@ -15,7 +15,7 @@ This project will help you to get up your LLM to the ChatGPT quality level throu
 
 Through ranking multiple responses based on quality, you can train a reward model that effectively captures human preferences. This reward model plays a crucial role in Reinforcement Learning, optimizing the performance of the fine-tuned foundational model.
 
-### Further Reading and Resources
+#### Further Reading and Resources
 
 - [Gathering Human Feedback Tutorial](https://github.com/heartexlabs/RLHF/blob/master/tutorials/RLHF_with_Custom_Datasets.ipynb) A Jupyter Notebook tutorial that will guide you through the step-by-step process of collecting comparison data, establishing human preferences, and incorporating this feedback into the reward model training.
 - [RLHF Resources](https://github.com/heartexlabs/RLHF): A collection of links, tutorials and best practices on how collect data and build an end-to-end Reinforcement Learning from Human Feedback (RLHF) system to fine-tune Generative AI models.
