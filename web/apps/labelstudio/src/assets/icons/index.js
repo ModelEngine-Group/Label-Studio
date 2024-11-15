@@ -5,7 +5,6 @@ export { ReactComponent as LsBulb } from "./bulb.svg";
 export { ReactComponent as LsCheck } from "./check.svg";
 export { ReactComponent as LsChevronLeft } from "./chevron-left.svg";
 export { ReactComponent as LsChevronRight } from "./chevron-right.svg";
-export { ReactComponent as LsCross } from "./cross.svg";
 export { ReactComponent as LsDoor } from "./door.svg";
 export { ReactComponent as LsEllipsis } from "./ellipsis.svg";
 export { ReactComponent as IconEmptyFolder } from "./folder-empty.svg";

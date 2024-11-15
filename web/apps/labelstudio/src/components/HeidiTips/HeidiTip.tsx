@@ -1,6 +1,6 @@
 import { type FC, type MouseEvent, useCallback, useMemo } from "react";
 import { Block, Elem } from "../../utils/bem";
-import { LsCross } from "../../assets/icons";
+import { IconCross } from "@humansignal/ui";
 import "./HeidiTip.scss";
 import { Button } from "../Button/Button";
 import { HeidiSpeaking } from "../../assets/images";
@@ -41,7 +41,7 @@ export const HeidiTip: FC<HeidiTipProps> = ({ tip, onDismiss }) => {
             <Tooltip title="Don't show">
               {/* @ts-ignore-next-line */}
               <Elem name="dismiss" tag={Button} type="text" onClick={handleClick}>
-                <LsCross />
+                <IconCross />
               </Elem>
             </Tooltip>
           )}

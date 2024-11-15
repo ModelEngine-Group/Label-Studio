@@ -1,7 +1,9 @@
 import { Menubar } from "../components/Menubar/Menubar";
 import { ProjectRoutes } from "../routes/ProjectRoutes";
+import { useOrgValidation } from "../hooks/useOrgValidation";
 
 export const RootPage = ({ content }) => {
+  useOrgValidation();
   const pinned = localStorage.getItem("sidebar-pinned") === "true";
   const opened = pinned && localStorage.getItem("sidebar-opened") === "true";
 

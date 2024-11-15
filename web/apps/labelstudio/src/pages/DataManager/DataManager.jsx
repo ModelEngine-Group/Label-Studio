@@ -14,7 +14,7 @@ import { isDefined } from "../../utils/helpers";
 import { ImportModal } from "../CreateProject/Import/ImportModal";
 import { ExportPage } from "../ExportPage/ExportPage";
 import { APIConfig } from "./api-config";
-import { ToastContext } from "../../components/Toast/Toast";
+import { ToastContext } from "@humansignal/ui";
 import { FF_OPTIC_2, isFF } from "../../utils/feature-flags";
 
 import "./DataManager.scss";

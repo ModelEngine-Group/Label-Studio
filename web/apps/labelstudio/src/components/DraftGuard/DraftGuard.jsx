@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { ToastContext } from "../Toast/Toast";
+import { ToastContext } from "@humansignal/ui";
 import { FF_OPTIC_2, isFF } from "../../utils/feature-flags";
 
 export const DRAFT_GUARD_KEY = "DRAFT_GUARD";

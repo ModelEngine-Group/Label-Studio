@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from "react";
 import { createPortal } from "react-dom";
-import { LsCross } from "../../assets/icons";
+import { IconCross } from "@humansignal/ui";
 import { BemWithSpecifiContext, cn } from "../../utils/bem";
 import { aroundTransition } from "../../utils/transition";
 import { Button } from "../Button/Button";
@@ -97,7 +97,9 @@ export class Modal extends React.Component {
               {!bare && (
                 <Modal.Header>
                   <Elem name="title">{this.state.title}</Elem>
-                  {this.props.allowClose !== false && <Elem tag={Button} name="close" type="text" icon={<LsCross />} />}
+                  {this.props.allowClose !== false && (
+                    <Elem tag={Button} name="close" type="text" icon={<IconCross />} />
+                  )}
                 </Modal.Header>
               )}
               <Elem name="body" mod={{ bare }}>
