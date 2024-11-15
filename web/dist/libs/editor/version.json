@@ -1,6 +1,6 @@
 {
-  "message": "feat: OPTIC-1245: Allow HeidiTips to pull content updates live (#6623)",
-  "commit": "9a7bfc0524b776232ea8e445cafe7fdb95b1f6bc",
-  "date": "2024-11-14T17:07:18.000Z",
+  "message": "chore: OPTIC-1313: Reducing Toast usage in django templates to get rid of toast.min.js (#6604)",
+  "commit": "ed1980f3f9f0d300111af743adcb2172b7228831",
+  "date": "2024-11-15T16:45:13.000Z",
   "branch": "develop"
 }
