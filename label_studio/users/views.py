@@ -75,6 +75,8 @@ def user_signup(request):
                 'organization_form': organization_form,
                 'next': next_page,
                 'token': token,
+                'found_us_options': forms.FOUND_US_OPTIONS,
+                'elaborate': forms.FOUND_US_ELABORATE,
             },
         )
 

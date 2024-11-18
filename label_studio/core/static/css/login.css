@@ -181,7 +181,8 @@ html, body {
   font-size: .875rem;
 }
 .login_page_new_ui form input,
-.login_page_new_ui form button {
+.login_page_new_ui form button,
+.login_page_new_ui form select {
   width: 100%;
   font-family: 'Hellix', sans-serif;
 }

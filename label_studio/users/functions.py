@@ -74,7 +74,11 @@ def save_user(request, next_page, user_form):
         'allow_newsletters': user.allow_newsletters,
         'update-notifications': 1,
         'new-user': 1,
+        'how_find_us': user_form.cleaned_data.get('how_find_us', ''),
     }
+    if user_form.cleaned_data.get('how_find_us', '') == 'Other':
+        request.advanced_json['elaborate'] = user_form.cleaned_data.get('elaborate', '')
+
     redirect_url = next_page if next_page else reverse('projects:project-index')
     login(request, user, backend='django.contrib.auth.backends.ModelBackend')
     return redirect(redirect_url)

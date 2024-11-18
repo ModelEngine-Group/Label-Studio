@@ -17,6 +17,16 @@ DISPLAY_NAME_LENGTH_ERR = 'Please enter a display name 100 characters or fewer i
 PASS_LENGTH_ERR = 'Please enter a password 8-12 characters in length'
 INVALID_USER_ERROR = "The email and password you entered don't match."
 
+FOUND_US_ELABORATE = 'Other'
+FOUND_US_OPTIONS = (
+    ('Gi', 'Github'),
+    ('Em', 'Email or newsletter'),
+    ('Se', 'Search engine'),
+    ('Fr', 'Friend or coworker'),
+    ('Ad', 'Ad'),
+    ('Ot', FOUND_US_ELABORATE),
+)
+
 logger = logging.getLogger(__name__)
 
 
@@ -57,6 +67,8 @@ class UserSignupForm(forms.Form):
         widget=forms.TextInput(attrs={'type': 'password'}),
     )
     allow_newsletters = forms.BooleanField(required=False)
+    how_find_us = forms.CharField(required=False)
+    elaborate = forms.CharField(required=False)
 
     def clean_password(self):
         password = self.cleaned_data['password']
@@ -85,8 +97,14 @@ class UserSignupForm(forms.Form):
         password = cleaned['password']
         email = cleaned['email'].lower()
         allow_newsletters = None
+        how_find_us = None
         if 'allow_newsletters' in cleaned:
             allow_newsletters = cleaned['allow_newsletters']
+        if 'how_find_us' in cleaned:
+            how_find_us = cleaned['how_find_us']
+        if 'elaborate' in cleaned and how_find_us == FOUND_US_ELABORATE:
+            cleaned['elaborate']
+
         user = User.objects.create_user(email, password, allow_newsletters=allow_newsletters)
         return user
 
