@@ -1,6 +1,6 @@
 {
-  "message": "fix: OPTIC-1243: Version history will navigate to a LabelStudio owned url (#6659)",
-  "commit": "1381748f67a704ca9a7ac3f2796548c80307eb6e",
-  "date": "2024-11-18T16:20:25.000Z",
+  "message": "ci: LEAP-1564: Update `@sentry-react` to secure version (#6676)",
+  "commit": "52907e346c9d8182e0e82b5e2b368e8655c9f5f8",
+  "date": "2024-11-18T22:31:29.000Z",
   "branch": "develop"
 }
