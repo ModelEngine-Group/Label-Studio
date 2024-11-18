@@ -1,6 +1,6 @@
 {
-  "message": "chore: OPTIC-1313: Reducing Toast usage in django templates to get rid of toast.min.js (#6604)",
-  "commit": "ed1980f3f9f0d300111af743adcb2172b7228831",
-  "date": "2024-11-15T16:45:13.000Z",
+  "message": "fix: OPTIC-1243: Version history will navigate to a LabelStudio owned url (#6659)",
+  "commit": "1381748f67a704ca9a7ac3f2796548c80307eb6e",
+  "date": "2024-11-18T16:20:25.000Z",
   "branch": "develop"
 }
