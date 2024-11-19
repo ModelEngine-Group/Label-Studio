@@ -1,6 +1,6 @@
 {
-  "message": "fix: LEAP-1615: LEAP-456: Fix tool unselect (#6630)",
-  "commit": "7a1ea23bb7f3cb7605c4d648a231da8d98bb3586",
-  "date": "2024-11-19T02:50:27.000Z",
+  "message": "fix: Text for import dialog about uploads (#6682)",
+  "commit": "08d3299e753ba9240d26c46624cdf8267fefa969",
+  "date": "2024-11-19T03:16:48.000Z",
   "branch": "develop"
 }
