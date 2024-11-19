@@ -572,6 +572,7 @@ INTERACTIVE_DATA_SERIALIZER = 'data_export.serializers.BaseExportDataSerializerF
 STORAGE_PERMISSION = 'io_storages.permissions.StoragePermission'
 PROJECT_IMPORT_PERMISSION = 'projects.permissions.ProjectImportPermission'
 DELETE_TASKS_ANNOTATIONS_POSTPROCESS = None
+FEATURE_FLAGS_GET_USER_REPR = 'core.feature_flags.utils.get_user_repr'
 
 
 def project_delete(project):

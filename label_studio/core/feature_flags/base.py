@@ -8,12 +8,15 @@ from ldclient.feature_store import CacheConfig
 from ldclient.integrations import Files, Redis
 
 from label_studio.core.current_request import get_current_request
+from label_studio.core.utils.common import load_func
 from label_studio.core.utils.io import find_node
 from label_studio.core.utils.params import get_all_env_with_prefix, get_bool_env
 
 from .stale_feature_flags import STALE_FEATURE_FLAGS
 
 logger = logging.getLogger(__name__)
+
+get_user_repr = load_func(settings.FEATURE_FLAGS_GET_USER_REPR)
 
 
 def get_feature_file_path():
@@ -66,19 +69,6 @@ else:
     client = ldclient.get()
 
 
-def _get_user_repr(user):
-    """Turn user object into dict with required properties"""
-    if user.is_anonymous:
-        return {'key': str(user), 'custom': {'organization': None}}
-    user_data = {'email': user.email}
-    user_data['key'] = user_data['email']
-    if user.active_organization is not None:
-        user_data['custom'] = {'organization': user.active_organization.created_by.email}
-    else:
-        user_data['custom'] = {'organization': None}
-    return user_data
-
-
 def flag_set(feature_flag, user=None, override_system_default=None):
     """Use this method to check whether this flag is set ON to the current user, to split the logic on backend
     For example,
@@ -114,7 +104,7 @@ def flag_set(feature_flag, user=None, override_system_default=None):
         system_default = override_system_default
     else:
         system_default = settings.FEATURE_FLAGS_DEFAULT_VALUE
-    user_dict = _get_user_repr(user)
+    user_dict = get_user_repr(user)
     return client.variation(feature_flag, user_dict, system_default)
 
 
@@ -123,7 +113,7 @@ def all_flags(user):
     More on https://docs.launchdarkly.com/sdk/features/bootstrapping#javascript
     stale_feature_flags will override any client configuration
     """
-    user_dict = _get_user_repr(user)
+    user_dict = get_user_repr(user)
     logger.debug(f'Resolve all flags state for user {user_dict}')
     state = client.all_flags_state(user_dict)
     flags = state.to_json_dict()
