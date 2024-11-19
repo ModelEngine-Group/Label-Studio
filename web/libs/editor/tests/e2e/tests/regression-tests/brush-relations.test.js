@@ -82,8 +82,8 @@ Scenario("Brush relations shouldn't crash everything", async ({ I, LabelStudio, 
     AtImageView.waitForImage();
     // Check that relation still exist
     AtSidebar.seeRelations(1);
-    // switch to the move tool for easy region selecting
-    I.pressKey("v");
+    // move tool is already selected and stored so we don't need to select it again
+    // I.pressKey("v");
     // select the third region
     AtImageView.clickAt(regionsCentralPoints[2].x, regionsCentralPoints[2].y);
     // create relation to the fourth region

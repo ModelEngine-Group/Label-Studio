@@ -1,26 +1,38 @@
+import { observer } from "mobx-react";
 import { types } from "mobx-state-tree";
 
-import BaseTool from "./Base";
-import ToolMixin from "../mixins/Tool";
-import { AnnotationMixin } from "../mixins/AnnotationMixin";
 import { IconMoveTool } from "../assets/icons";
+import { Tool } from "../components/Toolbar/Tool";
+import { AnnotationMixin } from "../mixins/AnnotationMixin";
+import ToolMixin from "../mixins/Tool";
 import { FF_LSDV_4930, isFF } from "../utils/feature-flags";
+import BaseTool from "./Base";
+
+const ToolView = observer(({ item }) => {
+  return (
+    <Tool
+      ariaLabel="move-tool"
+      active={item.selected}
+      icon={<IconMoveTool />}
+      label="Move"
+      shortcut={item.shortcut}
+      extraShortcuts={item.extraShortcuts}
+      onClick={() => {
+        item.manager.selectTool(item, !item.selected);
+      }}
+    />
+  );
+});
 
 const _Tool = types
   .model("SelectionTool", {
     shortcut: "V",
     group: "control",
   })
-  .views(() => {
+  .views((self) => {
     return {
-      get isSeparated() {
-        return true;
-      },
-      get viewTooltip() {
-        return "Move";
-      },
-      get iconComponent() {
-        return IconMoveTool;
+      get viewClass() {
+        return () => <ToolView item={self} />;
       },
       get useTransformer() {
         return true;

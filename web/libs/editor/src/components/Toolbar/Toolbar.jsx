@@ -1,13 +1,15 @@
 import { useMemo, useState } from "react";
-import { Block, Elem } from "../../utils/bem";
-import "./Toolbar.scss";
-import "./Tool.scss";
-import "./FlyoutMenu.scss";
-import { useWindowSize } from "../../common/Utils/useWindowSize";
-import { isDefined } from "../../utils/utilities";
 import { inject, observer } from "mobx-react";
-import { ToolbarProvider } from "./ToolbarContext";
+
+import { useWindowSize } from "../../common/Utils/useWindowSize";
+import { Block, cn, Elem } from "../../utils/bem";
+import { isDefined } from "../../utils/utilities";
 import { Tool } from "./Tool";
+import { ToolbarProvider } from "./ToolbarContext";
+
+import "./FlyoutMenu.scss";
+import "./Tool.scss";
+import "./Toolbar.scss";
 
 export const Toolbar = inject("store")(
   observer(({ store, tools, expanded }) => {
@@ -110,8 +112,12 @@ const SmartTools = observer(({ tools }) => {
             ) : null
           }
           controls={selected.controls}
-          onClick={() => {
+          onClick={(e) => {
             let nextIndex = selectedIndex + 1;
+
+            // if that's a smart button in extra block, it's already selected
+            // if it's a hotkey handler, there are no `e` event
+            if (e?.target?.closest(`.${cn("tool").elem("extra")}`)) return;
 
             if (!hasSelected) nextIndex = 0;
             else if (nextIndex >= tools.length) nextIndex = 0;
