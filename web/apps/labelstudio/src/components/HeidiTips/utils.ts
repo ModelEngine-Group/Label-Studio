@@ -64,7 +64,7 @@ export const loadLiveTipsCollection = () => {
 export function getRandomTip(collection: keyof TipsCollection): Tip | null {
   const tipsCollection = loadLiveTipsCollection();
 
-  if (isTipDismissed(collection)) return null;
+  if (!tipsCollection[collection] || isTipDismissed(collection)) return null;
 
   const tips = tipsCollection[collection];
 
