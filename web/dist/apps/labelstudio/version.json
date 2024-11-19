@@ -1,6 +1,6 @@
 {
-  "message": "ci: LEAP-1564: Update `@sentry-react` to secure version (#6676)",
-  "commit": "52907e346c9d8182e0e82b5e2b368e8655c9f5f8",
-  "date": "2024-11-18T22:31:29.000Z",
+  "message": "fix: LEAP-1615: LEAP-456: Fix tool unselect (#6630)",
+  "commit": "7a1ea23bb7f3cb7605c4d648a231da8d98bb3586",
+  "date": "2024-11-19T02:50:27.000Z",
   "branch": "develop"
 }
