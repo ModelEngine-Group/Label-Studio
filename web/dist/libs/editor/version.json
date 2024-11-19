@@ -1,6 +1,6 @@
 {
-  "message": "fix: LEAP-1508: Prevent editing non-owned draft annotations (#6662)",
-  "commit": "a18e5448f8117326b813aca16c862e4719ef15ad",
-  "date": "2024-11-19T14:07:10.000Z",
+  "message": "fix: OPTIC-1353: Make HeidiTips live for auth pages (#6665)",
+  "commit": "f86f208ad53b2b2ed7cbc8c8feec4a069f433650",
+  "date": "2024-11-19T14:43:26.000Z",
   "branch": "develop"
 }
