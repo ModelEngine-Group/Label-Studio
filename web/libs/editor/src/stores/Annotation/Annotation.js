@@ -308,8 +308,22 @@ const _Annotation = types
       });
     },
 
+    get isNonEditableDraft() {
+      const isKnownUsers = !!self.user && !!self.store.user;
+      // If we do not know what user created draft
+      // and who we are, then, we shouldn't prevent the ability to edit annotation
+      // because we can't predict is it our draft or not.
+      // It most probably could be relevant for standalone `lsf`
+      if (!isKnownUsers) return false;
+
+      // If there is no `pk` than there  is no annotation in DataBase
+      const isDraft = self.pk === null;
+      const isNonEditable = self.user.id !== self.store.user.id;
+      return isDraft && isNonEditable;
+    },
+
     isReadOnly() {
-      return self.readonly || !self.editable;
+      return self.isNonEditableDraft || self.readonly || !self.editable;
     },
   }))
   .volatile(() => ({
