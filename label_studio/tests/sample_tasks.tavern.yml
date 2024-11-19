@@ -24,15 +24,15 @@ stages:
   response:
     json:
       dialogue:
-      - phrase: Hi, Bob.
+      - phrase: 'Sample: Text #1'
         speaker: Alice
-      - phrase: Hello, Alice!
+      - phrase: 'Sample: Text #2'
         speaker: Bob
-      - phrase: What's up?
+      - phrase: 'Sample: Text #3'
         speaker: Alice
-      - phrase: Good. Ciao!
+      - phrase: 'Sample: Text #4'
         speaker: Bob
-      - phrase: Bye, Bob.
+      - phrase: 'Sample: Text #5'
         speaker: Alice
     status_code: 200
 
