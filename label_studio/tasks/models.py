@@ -750,7 +750,14 @@ class Annotation(AnnotationMixin, models.Model):
             self.updated_by = request.user
             if update_fields is not None:
                 update_fields = {'updated_by'}.union(update_fields)
+
+        unique_list = {result.get('id') for result in (self.result or [])}
+
+        self.result_count = len(unique_list)
+        if update_fields is not None:
+            update_fields = {'result_count'}.union(update_fields)
         result = super().save(*args, update_fields=update_fields, **kwargs)
+
         self.update_task()
         return result
 
