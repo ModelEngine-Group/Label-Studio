@@ -43,7 +43,9 @@ export class Template {
 
   initRoot() {
     const tags = this.flatten(this.$root);
-    this.objects = tags.filter(($tag) => $tag.tagName in OBJECTS && $tag.getAttribute("value"));
+    this.objects = tags.filter(
+      ($tag) => $tag.tagName in OBJECTS && ($tag.getAttribute("value") || $tag.getAttribute("valueList")),
+    );
     const names = this.objects.map(($tag) => $tag.getAttribute("name"));
     this.controls = tags.filter(($tag) => names.includes($tag.getAttribute("toName")));
 

@@ -225,7 +225,8 @@ const ConfigureSettings = ({ template }) => {
 
 // configure value source for `obj` object tag
 const ConfigureColumn = ({ template, obj, columns }) => {
-  const value = obj.getAttribute("value")?.replace(/^\$/, "");
+  const valueAttr = obj.hasAttribute("valueList") ? "valueList" : "value";
+  const value = obj.getAttribute(valueAttr)?.replace(/^\$/, "");
   // if there is a value set already and it's not in the columns
   // or data was not uploaded yet
   const [isManual, setIsManual] = useState(!!value && !columns?.includes(value));
@@ -239,7 +240,7 @@ const ConfigureColumn = ({ template, obj, columns }) => {
   const updateValue = (value) => {
     const newValue = value.replace(/^\$/, "");
 
-    obj.setAttribute("value", `$${newValue}`);
+    obj.setAttribute(valueAttr, `$${newValue}`);
     template.render();
   };
 
