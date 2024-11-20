@@ -1,6 +1,6 @@
 {
-  "message": "fix: OPTIC-1353: Make HeidiTips live for auth pages (#6665)",
-  "commit": "f86f208ad53b2b2ed7cbc8c8feec4a069f433650",
-  "date": "2024-11-19T14:43:26.000Z",
+  "message": "fix: LEAP-1662: Add handling \"valueList\" attribute in visual config editor (#6683)",
+  "commit": "5f54d26bc4159e81b0fc22b2c6ddca16e4d6bcee",
+  "date": "2024-11-20T16:35:55.000Z",
   "branch": "develop"
 }
