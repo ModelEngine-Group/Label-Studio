@@ -14,19 +14,6 @@
       }
     },
     {
-      "title": "Unlock faster access provisioning",
-      "content": "Streamline assigning staff to multiple projects by assigning them to workspaces in Label Studio Enterprise.",
-      "closable": true,
-      "link": {
-        "label": "Learn more",
-        "url": "https://docs.humansignal.com/guide/manage_projects#Add-or-remove-members-to-a-workspace",
-        "params": {
-          "experiment": "project_creation_tip",
-          "treatment": "faster_provisioning"
-        }
-      }
-    },
-    {
       "title": "Did you know?",
       "content": "In the Enterprise platform, admins can view annotator performance dashboards to optimize resource allocation, improve team management, and inform compensation.",
       "closable": true,
@@ -49,19 +36,6 @@
         "params": {
           "experiment": "project_creation_tip",
           "treatment": "access_to_projects"
-        }
-      }
-    },
-    {
-      "title": "Did you know?",
-      "content": "You can use or modify dozens or templates to configure your labeling UI, or create a custom configuration from scratch using simple XML-like tag.",
-      "closable": true,
-      "link": {
-        "label": "Learn more",
-        "url": "https://labelstud.io/guide/setup",
-        "params": {
-          "experiment": "project_creation_tip",
-          "treatment": "templates"
         }
       }
     },
@@ -103,19 +77,6 @@
         "params": {
           "experiment": "organization_page_tip",
           "treatment": "enable_sso"
-        }
-      }
-    },
-    {
-      "title": "Source data faster",
-      "content": "Use semantic search, similarity search, and filters to curate optimal datasets and automatically assign labeling tasks in the Enterprise platform.",
-      "closable": true,
-      "link": {
-        "label": "Learn more",
-        "url": "https://docs.humansignal.com/guide/dataset_overview",
-        "params": {
-          "experiment": "organization_page_tip",
-          "treatment": "data_discovery"
         }
       }
     },
@@ -196,19 +157,6 @@
         "params": {
           "experiment": "project_settings_tip",
           "treatment": "evals"
-        }
-      }
-    },
-    {
-      "title": "Did you know?",
-      "content": "You can save time managing infrastructure and upgrades, plus access more features for automation, quality, and team management, by using the Enterprise cloud service.",
-      "closable": true,
-      "link": {
-        "label": "Learn more",
-        "url": "https://humansignal.com/platform/",
-        "params": {
-          "experiment": "project_settings_tip",
-          "treatment": "infrastructure_and_upgrades"
         }
       }
     },
