@@ -63,6 +63,50 @@ Select how you want to distribute tasks to annotators for labeling.
 
 </dd>
 
+<dt id="lock-tasks">Task Reservation</dt>
+
+<dd>
+
+Control how long tasks are reserved for annotators. 
+
+Task reservation ensures that the tasks an annotator starts working on are temporarily reserved by them, preventing other annotators from accessing the same tasks until the reservation expires. This helps manage task allocation and keeps project progress efficient. 
+
+!!! note
+
+    Task reservation takes the [**Annotations per task minimum**](#overlap) into consideration. For example, if your overlap is `2`, then two annotators can reserve a task simultaneously. 
+
+    When [**Distribute Labeling Tasks**](#distribute-tasks) is set to **Manual**, the Task Reservation setting is hidden because it does not apply. 
+
+A task reservation is put in place as soon as an annotator opens the task. The reservation remains until one of the following happens (whichever happens first):
+
+* The task reservation time expires. 
+* The annotator submits the task. 
+* The annotator skips the task, and the project **Skip Queue** setting is either **Requeue skipped tasks to others** or **Ignore skipped**.
+
+**Recommended reservation time** 
+
+By default, the task reservation time is 1440 minutes (1 day). This is the maximum time allowed for task reservations.
+
+When setting a reservation time, you should aim to allow a little above the max amount of time it should take to complete a task. 
+
+* **Notes about allowing too much time**
+
+    If you allow too much time for task reservation, you could risk some users becoming blocked. 
+
+    For example, say you have multiple annotators working on a project. Your minimum annotation overlap is set to `2`. 
+
+    If some of your annotators move through their labeling queue looking for the easiest tasks to complete, they could inadvertently leave a large number of tasks locked. Depending on the size of the project and how many annotators you have working, this could result in some annotators unable to continue their work until the task reservation time expires. 
+
+* **Notes about allowing too little time**
+
+    If you set the reservation time too low, you may find that you have many tasks that exceed your minimum overlap setting. 
+
+    For example, say you have multiple annotators working on a project. Your minimum annotation overlap is set to `2`. 
+    
+    Two annotators begin working on a task and it takes them both 15 minutes to complete, but your reservation time is 10 minutes. This means that after 10 minutes, another annotator can also begin working on that task - resulting in 3 annotations on the task rather than 2 (your minimum annotator overlap).
+
+</dd>
+
 <dt>Skip Queue</dt>
 
 <dd>
