@@ -233,10 +233,6 @@
       <table>
         <tr><td style="{% if user.allow_newsletters is None %}border: 1px red solid; border-radius: 5px{% endif %}">
 
-          <input name="email" type="hidden" value="{{ user.email }}">
-          <input name="first_name" type="hidden" value="{{ user.first_name }}">
-          <input name="last_name" type="hidden" value="{{ user.last_name }}">
-
           <input name="allow_newsletters" type="hidden"
                  value="{% if user.allow_newsletters is None %}true{% else %}{{ user.allow_newsletters|yesno:"false,true" }}{% endif %}">
 
