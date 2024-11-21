@@ -50,4 +50,6 @@ STALE_FEATURE_FLAGS = {
     'fflag_feat_optic_198_multi_select_users_short': True,
     'fflag_fix_back_lsdv_5410_temporary_disable_auto_inference_jobs_short': True,
     'fflag_feat_front_prod_292_archive_workspaces_short': True,
+    'fflag_feat_all_lsdv_4915_async_task_import_13042023_short': True,
+    'fflag_fix_all_lsdv_4971_async_reimport_09052023_short': True,
 }
