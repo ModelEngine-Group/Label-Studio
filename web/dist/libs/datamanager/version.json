@@ -1,6 +1,6 @@
 {
-  "message": "fix: LEAP-1662: Add handling \"valueList\" attribute in visual config editor (#6683)",
-  "commit": "5f54d26bc4159e81b0fc22b2c6ddca16e4d6bcee",
-  "date": "2024-11-20T16:35:55.000Z",
+  "message": "chore: OPTIC-1244: Tidy up CTAs (#6653)",
+  "commit": "53fcb79823352ff001c5398bbc48085f8b7510d6",
+  "date": "2024-11-21T17:07:24.000Z",
   "branch": "develop"
 }
