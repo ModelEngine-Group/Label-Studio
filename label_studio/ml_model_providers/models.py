@@ -120,5 +120,6 @@ class ModelProviderConnection(models.Model):
 
     def update_budget_total_spent_from_predictions_meta(self, predictions_meta: List[PredictionMeta]):
         total_cost = sum(meta.total_cost or 0 for meta in predictions_meta)
-        self.budget_total_spent += total_cost
+        # opting for the goofy "self.budget_total_spent or 0" to avoid a db migration
+        self.budget_total_spent = (self.budget_total_spent or 0) + total_cost
         self.save(update_fields=['budget_total_spent'])
