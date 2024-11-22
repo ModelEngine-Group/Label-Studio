@@ -1,6 +1,6 @@
 {
-  "message": "chore: OPTIC-1244: Tidy up CTAs (#6653)",
-  "commit": "53fcb79823352ff001c5398bbc48085f8b7510d6",
-  "date": "2024-11-21T17:07:24.000Z",
+  "message": "fix: OPTIC-972: Hover effect over selected filter element is not applied (#6697)",
+  "commit": "b02fc7ef0cd16cadab0c44892d3455b24aebf501",
+  "date": "2024-11-22T11:14:19.000Z",
   "branch": "develop"
 }
