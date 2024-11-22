@@ -5,19 +5,13 @@ from tasks.models import Annotation, Prediction, Task
 
 
 def annotate_task_number(queryset):
-    if flag_set('fflag_fix_back_LSDV_4748_annotate_task_number_14032023_short', user='auto'):
-        tasks = Task.objects.filter(project=OuterRef('id')).values_list('id')
-        return queryset.annotate(task_number=SQCount(tasks))
-    else:
-        return queryset.annotate(task_number=Count('tasks', distinct=True))
+    tasks = Task.objects.filter(project=OuterRef('id')).values_list('id')
+    return queryset.annotate(task_number=SQCount(tasks))
 
 
 def annotate_finished_task_number(queryset):
-    if flag_set('fflag_fix_back_LSDV_4748_annotate_task_number_14032023_short', user='auto'):
-        tasks = Task.objects.filter(project=OuterRef('id'), is_labeled=True).values_list('id')
-        return queryset.annotate(finished_task_number=SQCount(tasks))
-    else:
-        return queryset.annotate(finished_task_number=Count('tasks', distinct=True, filter=Q(tasks__is_labeled=True)))
+    tasks = Task.objects.filter(project=OuterRef('id'), is_labeled=True).values_list('id')
+    return queryset.annotate(finished_task_number=SQCount(tasks))
 
 
 def annotate_total_predictions_number(queryset):
