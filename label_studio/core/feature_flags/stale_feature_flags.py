@@ -26,7 +26,6 @@ STALE_FEATURE_FLAGS = {
     'fflag_feat_front_lsdv_4659_skipduplicates_060323_short': True,
     'fflag_fix_font_lsdv_1148_hotkeys_namespaces_01022023_short': True,
     'fflag_fix_back_lsdv_1044_check_annotations_24012023_short': False,
-    'fflag_feat_front_dev_4081_magic_wand_tool': True,
     'fflag_fix_front_dev_4075_taxonomy_overlap_281222_short': True,
     'fflag_fix_front_dev_3730_shortcuts_initial_input_22122022_short': True,
     'ff_back_dev_3865_filters_anno_171222_short': True,

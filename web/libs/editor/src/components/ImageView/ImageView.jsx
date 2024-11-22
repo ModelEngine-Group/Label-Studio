@@ -25,7 +25,6 @@ import {
   FF_DEV_1442,
   FF_DEV_3077,
   FF_DEV_3793,
-  FF_DEV_4081,
   FF_LSDV_4583_6,
   FF_LSDV_4711,
   FF_LSDV_4930,
@@ -451,7 +450,7 @@ const Crosshair = memo(
  * of the image to support Magic Wand tool
  */
 const CanvasOverlay = observer(({ item }) => {
-  return isFF(FF_DEV_4081) ? (
+  return (
     <canvas
       className={styles.overlay}
       ref={(ref) => {
@@ -459,7 +458,7 @@ const CanvasOverlay = observer(({ item }) => {
       }}
       style={item.imageTransform}
     />
-  ) : null;
+  );
 });
 
 export default observer(

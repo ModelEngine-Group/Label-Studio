@@ -98,9 +98,6 @@ export const FF_DEV_3793 = "fflag_fix_front_dev_3793_relative_coords_short";
  */
 export const FF_DEV_4075 = "fflag_fix_front_dev_4075_taxonomy_overlap_281222_short";
 
-// Enable a Magic Wand to be used for quickly thresholding images with segmentation labels.
-export const FF_DEV_4081 = "fflag_feat_front_dev_4081_magic_wand_tool";
-
 /**
  * Label stream ablation experiment for solving overlap issue
  * @link https://app.launchdarkly.com/default/production/features/fflag_fix_back_dev_4174_overlap_issue_experiments_10012023_short

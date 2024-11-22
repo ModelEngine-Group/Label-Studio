@@ -68,10 +68,6 @@ Scenario(
       annotations: [annotationEmpty],
     };
 
-    LabelStudio.setFeatureFlags({
-      fflag_feat_front_dev_4081_magic_wand_tool: true,
-    });
-
     I.amOnPage("/");
 
     I.executeScript(initLabelStudio, params);

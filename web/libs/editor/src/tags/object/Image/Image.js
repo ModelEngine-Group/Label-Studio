@@ -18,7 +18,6 @@ import {
   FF_DEV_3377,
   FF_DEV_3666,
   FF_DEV_3793,
-  FF_DEV_4081,
   FF_LSDV_4583,
   FF_LSDV_4583_6,
   FF_LSDV_4711,
@@ -292,9 +291,6 @@ const Model = types
 
       if (isFF(FF_LSDV_4711) && (!value || value === "none")) return "anonymous";
 
-      if (!isFF(FF_DEV_4081)) {
-        return null;
-      }
       if (!value || value === "none") {
         return null;
       }
