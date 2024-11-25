@@ -1,6 +1,6 @@
 {
-  "message": "chore(deps): bump cross-spawn from 7.0.3 to 7.0.6 in /web/libs/editor/tests/e2e (#6712)",
-  "commit": "cffdabb0e61b649a2ede14f9f9dd6dba6a86b086",
-  "date": "2024-11-25T11:57:16.000Z",
+  "message": "fix: LEAP-1335: Visually disable MIG navigation in View All (#6702)",
+  "commit": "d0084d26138857e27e4545e42d7c0e5c1f4707e8",
+  "date": "2024-11-25T15:50:36.000Z",
   "branch": "develop"
 }
