@@ -1,6 +1,6 @@
 {
-  "message": "fix: OPTIC-972: Hover effect over selected filter element is not applied (#6697)",
-  "commit": "b02fc7ef0cd16cadab0c44892d3455b24aebf501",
-  "date": "2024-11-22T11:14:19.000Z",
+  "message": "chore(deps): bump cross-spawn from 7.0.3 to 7.0.6 in /web/libs/editor/tests/e2e (#6712)",
+  "commit": "cffdabb0e61b649a2ede14f9f9dd6dba6a86b086",
+  "date": "2024-11-25T11:57:16.000Z",
   "branch": "develop"
 }
