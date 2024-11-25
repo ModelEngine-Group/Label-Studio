@@ -925,11 +925,15 @@ export default observer(
       const [toolsReady, stageLoading] = isFF(FF_LSDV_4583_6) ? [true, false] : [item.hasTools, item.stageWidth <= 1];
 
       const imageIsLoaded = item.imageIsLoaded || !isFF(FF_LSDV_4583_6);
+      const isViewingAll = store.annotationStore.viewingAll;
 
       return (
         <ObjectTag item={item} className={wrapperClasses.join(" ")}>
           {paginationEnabled ? (
-            <div className={styles.pagination}>
+            <div
+              className={styles.pagination}
+              title={isViewingAll ? "Pagination is not supported in View All Annotations" : undefined}
+            >
               <Pagination
                 size="small"
                 outline={false}
@@ -943,6 +947,7 @@ export default observer(
                 totalPages={item.parsedValueList.length}
                 onChange={(n) => item.setCurrentImage(n - 1)}
                 pageSizeSelectable={false}
+                disabled={isViewingAll}
               />
             </div>
           ) : null}

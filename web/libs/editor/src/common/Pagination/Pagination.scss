@@ -190,6 +190,14 @@
     }
   }
 
+  &_disabled &__page-indicator {
+    opacity: 0.4;
+
+    span {
+      opacity: 1;
+    }
+  }
+
   &__page-size {
     min-width: 170px;
     border: 1px solid var(--sand_300);

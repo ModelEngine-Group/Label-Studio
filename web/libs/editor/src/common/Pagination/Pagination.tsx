@@ -18,6 +18,7 @@ interface PaginationProps {
     prev?: string;
     next?: string;
   };
+  disabled?: boolean;
   onChange?: (pageNumber: number, maxPerPage?: number | string) => void;
 }
 
@@ -44,6 +45,7 @@ export const Pagination: FC<PaginationProps> = forwardRef<any, PaginationProps>(
       noPadding = false,
       pageSizeSelectable = true,
       hotkey,
+      disabled,
       onChange,
     },
     _ref,
@@ -65,13 +67,13 @@ export const Pagination: FC<PaginationProps> = forwardRef<any, PaginationProps>(
     };
 
     return (
-      <Block name="pagination" mod={{ size, outline, align, noPadding }}>
+      <Block name="pagination" mod={{ size, outline, align, noPadding, disabled }}>
         <Elem name="navigation">
           <>
             <NavigationButton
               mod={["arrow-left", "arrow-left-double"]}
               onClick={() => onChange?.(1)}
-              disabled={currentPage === 1}
+              disabled={currentPage === 1 || disabled}
             />
             <Elem name="divider" />
           </>
@@ -79,7 +81,7 @@ export const Pagination: FC<PaginationProps> = forwardRef<any, PaginationProps>(
             mod={["arrow-left"]}
             onClick={() => onChange?.(currentPage - 1)}
             hotkey={hotkey?.prev}
-            disabled={currentPage === 1}
+            disabled={currentPage === 1 || disabled}
           />
           <Elem name="input">
             {inputMode ? (
@@ -133,7 +135,7 @@ export const Pagination: FC<PaginationProps> = forwardRef<any, PaginationProps>(
           <NavigationButton
             mod={["arrow-right"]}
             onClick={() => onChange?.(currentPage + 1)}
-            disabled={currentPage === totalPages}
+            disabled={currentPage === totalPages || disabled}
             hotkey={hotkey?.next}
           />
           <>
@@ -141,7 +143,7 @@ export const Pagination: FC<PaginationProps> = forwardRef<any, PaginationProps>(
             <NavigationButton
               mod={["arrow-right", "arrow-right-double"]}
               onClick={() => onChange?.(totalPages)}
-              disabled={currentPage === totalPages}
+              disabled={currentPage === totalPages || disabled}
             />
           </>
         </Elem>

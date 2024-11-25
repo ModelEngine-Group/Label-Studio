@@ -184,6 +184,55 @@ Scenario("Image list with hotkey navigation", async ({ I, AtImageView, LabelStud
   I.see("1 of 4");
 });
 
+Scenario("View All disables MIG pagination", async ({ I, AtImageView, LabelStudio }) => {
+  const params = {
+    config: rectConfig,
+    data,
+    annotations: [
+      { id: 1, result: [] },
+      { id: 2, result: [] },
+    ],
+    additionalInterfaces: ["annotations:view-all"],
+  };
+
+  const prevSelector = ".lsf-pagination__btn_arrow-left";
+  const nextSelector = ".lsf-pagination__btn_arrow-right";
+
+  // FFs for a proper interface with View All button
+  LabelStudio.setFeatureFlags({
+    ff_front_1170_outliner_030222_short: true,
+    fflag_feat_front_dev_3873_labeling_ui_improvements_short: true,
+  });
+
+  I.amOnPage("/");
+  await LabelStudio.init(params);
+
+  await AtImageView.waitForImage();
+  await AtImageView.lookForStage();
+
+  I.say("Move to next page to have a changed state");
+  I.click(locate(nextSelector));
+  I.seeElement(`img[src="${data.images[1]}"]`);
+  I.see("2 of 4");
+
+  I.say("Enable View All mode");
+  I.click('[aria-label="View All"]');
+
+  I.say("Navigation buttons should be disabled");
+  I.seeElement(locate(`${nextSelector}[class$=disabled]`));
+  I.seeElement(locate(`${prevSelector}[class$=disabled]`));
+  I.see("2 of 4");
+
+  I.say("Hotkeys for navigation should not work");
+  await AtImageView.multiImageGoForwardWithHotkey();
+  I.seeElement(`img[src="${data.images[1]}"]`);
+  I.see("2 of 4");
+
+  await AtImageView.multiImageGoBackwardWithHotkey();
+  I.seeElement(`img[src="${data.images[1]}"]`);
+  I.see("2 of 4");
+});
+
 Scenario(
   "Ensure that results are the same when exporting existing regions",
   async ({ I, AtImageView, LabelStudio }) => {
