@@ -62,7 +62,7 @@ jobs:
         with:
           ref: ${{ inputs.release_tag }}
 
-      - name: Check is latest tag needs to be updated
+      - name: Check if the latest tag needs to be updated
         uses: actions/github-script@v7
         id: generate-tags
         with:
@@ -70,8 +70,6 @@ jobs:
           script: |
             const {repo, owner} = context.repo;
             const newTag = '${{ inputs.release_tag }}';
-            const dockerHubImageName = '${{ env.IMAGE_NAME }}';
-            const redHatImageName = 'quay.io/redhat-isv-containers/${{ secrets.REDHAT_MARKETPLACE_LS_PROJECT_ID }}';
             const regexp = '^[v]?([0-9]+)\.([0-9]+)\.([0-9]+)(\.post([0-9]+))?$';
 
             function compareVersions(a, b) {
@@ -109,36 +107,22 @@ jobs:
             console.log(`Newest tag: ${newestVersion[0]}`)
 
             let dockerHubUbuntuRawTags = [newTag];
-            let dockerHubUbiRawTags = [`ubi_${newTag}`];
-            let redHatUbiRawTags = [newTag];
-
 
             if (compareVersions(newTag.match(regexp), newestVersion) >= 0) {
               console.log(`new tag ${newTag} is higher that all existing tags`)
               console.log(dockerHubUbuntuRawTags)
               dockerHubUbuntuRawTags.push('latest')
-              dockerHubUbiRawTags.push('ubi_latest')
-              redHatUbiRawTags.push('latest')
               core.setOutput("latest", true);
             } else {
               console.log('not latest')
               core.setOutput("latest", false);
             }
 
-            const ubuntuTags = dockerHubUbuntuRawTags.map(e => `${dockerHubImageName}:${e}`)
-            const redHatTags = redHatUbiRawTags.map(e => `${redHatImageName}:${e}`)
-            const ubiTags = redHatTags.concat(
-              dockerHubUbiRawTags.map(e => `${dockerHubImageName}:${e}`)
-            )
-
+            const ubuntuTags = dockerHubUbuntuRawTags.join("\n");
             console.log('Ubuntu tags:')
             console.log(ubuntuTags)
-            console.log('Ubi tags:')
-            console.log(ubiTags)
 
-            core.setOutput("ubuntu-tags", ubuntuTags.join(','));
-            core.setOutput("redhat-tags", redHatTags.join(','));
-            core.setOutput("ubi-tags", ubiTags.join(','));
+            core.setOutput("ubuntu-tags", ubuntuTags);
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -178,13 +162,6 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Login to RedHat Registry
-        uses: docker/login-action@v3.3.0
-        with:
-          registry: quay.io
-          username: ${{ secrets.REDHAT_REGISTRY_LOGIN }}
-          password: ${{ secrets.REDHAT_REGISTRY_PASSWORD }}
-
       - name: Prepare Release Dockerfile
         id: release_dockerfile
         env:
@@ -207,6 +184,16 @@ jobs:
           COPY --chown=54546:0 ${{ env.LAUNCHDARKLY_DOWNLOAD_PATH }} /label-studio/label_studio/feature_flags.json
           EOF
 
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_NAME }}
+          labels: |
+            org.opencontainers.image.revision=${{ steps.get_info.outputs.sha }}
+          tags: |
+            ${{ steps.generate-tags.outputs.ubuntu-tags }}
+
       - name: Build and Push Release Ubuntu Docker image
         uses: docker/build-push-action@v6.9.0
         id: docker_build
@@ -214,7 +201,10 @@ jobs:
           context: ${{ steps.release_dockerfile.outputs.release_dir }}
           file: ${{ steps.release_dockerfile.outputs.release_dir }}/${{ env.RELEASE_DOCKERFILE }}
           push: true
-          tags: ${{ steps.generate-tags.outputs.ubuntu-tags }}
+          sbom: true
+          provenance: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64,linux/arm64
@@ -231,7 +221,7 @@ jobs:
         continue-on-error: true
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_ORG: ${{ vars.SENTRY_ORG }}
         with:
           version: label-studio@${{ inputs.release_tag }}
           projects: opensource-v1-backend
@@ -241,7 +231,7 @@ jobs:
         continue-on-error: true
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_ORG: ${{ vars.SENTRY_ORG }}
         with:
           version: label-studio@${{ inputs.release_tag }}
           projects: opensource-v1-frontend
