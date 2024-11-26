@@ -1,6 +1,6 @@
 {
-  "message": "fix: LEAP-1335: Visually disable MIG navigation in View All (#6702)",
-  "commit": "d0084d26138857e27e4545e42d7c0e5c1f4707e8",
-  "date": "2024-11-25T15:50:36.000Z",
+  "message": "docs: Restore LSF.init.md doc from LSF (#6717)",
+  "commit": "2fc315f8e76ce2035a8ebda23ab7970cf5336e0f",
+  "date": "2024-11-26T22:15:13.000Z",
   "branch": "develop"
 }
