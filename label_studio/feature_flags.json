@@ -1243,6 +1243,33 @@
       "version": 3,
       "deleted": false
     },
+    "fflag__feature_develop__prompts__dia_1417_image_data_support": {
+      "key": "fflag__feature_develop__prompts__dia_1417_image_data_support",
+      "on": false,
+      "prerequisites": [],
+      "targets": [],
+      "contextTargets": [],
+      "rules": [],
+      "fallthrough": {
+        "variation": 0
+      },
+      "offVariation": 1,
+      "variations": [
+        true,
+        false
+      ],
+      "clientSideAvailability": {
+        "usingMobileKey": false,
+        "usingEnvironmentId": false
+      },
+      "clientSide": false,
+      "salt": "9bd8f52420f94ef1abb14475c7629895",
+      "trackEvents": false,
+      "trackEventsFallthrough": false,
+      "debugEventsUntilDate": null,
+      "version": 3,
+      "deleted": false
+    },
     "fflag__feature_develop__prompts__dia_14444_prompt_cost_estimate": {
       "key": "fflag__feature_develop__prompts__dia_14444_prompt_cost_estimate",
       "on": false,
@@ -1822,6 +1849,33 @@
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
       "version": 6,
+      "deleted": false
+    },
+    "fflag_feat_all_optic_1178_reduce_memory_leak_short": {
+      "key": "fflag_feat_all_optic_1178_reduce_memory_leak_short",
+      "on": false,
+      "prerequisites": [],
+      "targets": [],
+      "contextTargets": [],
+      "rules": [],
+      "fallthrough": {
+        "variation": 0
+      },
+      "offVariation": 1,
+      "variations": [
+        true,
+        false
+      ],
+      "clientSideAvailability": {
+        "usingMobileKey": false,
+        "usingEnvironmentId": false
+      },
+      "clientSide": false,
+      "salt": "0ccfe8ad9ac14a69b65ce25641afa41f",
+      "trackEvents": false,
+      "trackEventsFallthrough": false,
+      "debugEventsUntilDate": null,
+      "version": 2,
       "deleted": false
     },
     "fflag_feat_all_optic_1181_membership_performance": {
