@@ -40,7 +40,6 @@ STALE_FEATURE_FLAGS = {
     'ff_front_dev_2431_delete_polygon_points_080622_short': True,
     'ff_front_dev_2290_draft_in_annotation_history_short': True,
     'ff_dev_2128_html_in_labels_150422_short': True,
-    'ff_back_2070_inner_id_12052022_short': True,
     'ff_dev_2007_rework_choices_280322_short': True,
     'ff_front_dev_1495_avatar_mess_210122_short': True,
     'ff_front_1170_outliner_030222_short': True,

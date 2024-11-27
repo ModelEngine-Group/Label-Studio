@@ -28,7 +28,6 @@ from core.utils.params import get_env
 from data_import.models import FileUpload
 from data_manager.managers import PreparedTaskManager, TaskManager
 from django.conf import settings
-from django.contrib.auth.models import AnonymousUser
 from django.db import OperationalError, models, transaction
 from django.db.models import CheckConstraint, JSONField, Q
 from django.db.models.signals import post_delete, post_save, pre_delete, pre_save
@@ -517,17 +516,16 @@ class Task(TaskMixin, models.Model):
         self.annotations.exclude(id=annotation_id).update(ground_truth=False)
 
     def save(self, *args, update_fields=None, **kwargs):
-        if flag_set('ff_back_2070_inner_id_12052022_short', AnonymousUser):
-            if self.inner_id == 0:
-                task = Task.objects.filter(project=self.project).order_by('-inner_id').first()
-                max_inner_id = 1
-                if task:
-                    max_inner_id = task.inner_id
+        if self.inner_id == 0:
+            task = Task.objects.filter(project=self.project).order_by('-inner_id').first()
+            max_inner_id = 1
+            if task:
+                max_inner_id = task.inner_id
 
-                # max_inner_id might be None in the old projects
-                self.inner_id = None if max_inner_id is None else (max_inner_id + 1)
-                if update_fields is not None:
-                    update_fields = {'inner_id'}.union(update_fields)
+            # max_inner_id might be None in the old projects
+            self.inner_id = None if max_inner_id is None else (max_inner_id + 1)
+            if update_fields is not None:
+                update_fields = {'inner_id'}.union(update_fields)
 
         super().save(*args, update_fields=update_fields, **kwargs)
 

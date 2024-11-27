@@ -90,18 +90,17 @@ def get_all_columns(project, *_):
         }
     ]
 
-    if flag_set('ff_back_2070_inner_id_12052022_short', user=project.organization.created_by):
-        result['columns'] += [
-            {
-                'id': 'inner_id',
-                'title': 'Inner ID',
-                'type': 'Number',
-                'help': 'Internal task ID starting from 1 for the current project',
-                'target': 'tasks',
-                'visibility_defaults': {'explore': False, 'labeling': False},
-                'project_defined': False,
-            }
-        ]
+    result['columns'] += [
+        {
+            'id': 'inner_id',
+            'title': 'Inner ID',
+            'type': 'Number',
+            'help': 'Internal task ID starting from 1 for the current project',
+            'target': 'tasks',
+            'visibility_defaults': {'explore': False, 'labeling': False},
+            'project_defined': False,
+        }
+    ]
 
     if flag_set('fflag_fix_back_lsdv_4648_annotator_filter_29052023_short', user=project.organization.created_by):
         project_members = project.all_members.values_list('id', flat=True)
