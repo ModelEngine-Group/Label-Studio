@@ -1,6 +1,6 @@
 {
-  "message": "docs: Restore LSF.init.md doc from LSF (#6717)",
-  "commit": "2fc315f8e76ce2035a8ebda23ab7970cf5336e0f",
-  "date": "2024-11-26T22:15:13.000Z",
+  "message": "feat: OPTIC-1337: Collect usage metrics internally (#6719)",
+  "commit": "cf2193f2b9d954a7f64793e495d3fda626c9353a",
+  "date": "2024-11-28T17:08:56.000Z",
   "branch": "develop"
 }
