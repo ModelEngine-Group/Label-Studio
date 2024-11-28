@@ -1710,6 +1710,12 @@
         "decorators": ""
     },
     {
+        "url": "/__lsa/",
+        "module": "core.views.collect_metrics",
+        "name": "collect_metrics",
+        "decorators": ""
+    },
+    {
         "url": "/api-auth/login/",
         "module": "django.contrib.auth.views.LoginView",
         "name": "rest_framework:login",

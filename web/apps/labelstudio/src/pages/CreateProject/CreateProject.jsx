@@ -78,7 +78,7 @@ const ProjectName = ({ name, setName, onSaveName, onSubmit, error, description, 
   );
 
 export const CreateProject = ({ onClose }) => {
-  const [step, setStep] = React.useState("name"); // name | import | config
+  const [step, _setStep] = React.useState("name"); // name | import | config
   const [waiting, setWaitingStatus] = React.useState(false);
 
   const project = useDraftProject();
@@ -89,6 +89,15 @@ export const CreateProject = ({ onClose }) => {
   const [error, setError] = React.useState();
   const [description, setDescription] = React.useState("");
   const [config, setConfig] = React.useState("<View></View>");
+  const setStep = React.useCallback((step) => {
+    _setStep(step);
+    const eventNameMap = {
+      name: "project_name",
+      import: "data_import",
+      config: "labeling_setup",
+    };
+    __lsa(`create_project.tab.${eventNameMap[step]}`);
+  }, []);
 
   React.useEffect(() => {
     setError(null);

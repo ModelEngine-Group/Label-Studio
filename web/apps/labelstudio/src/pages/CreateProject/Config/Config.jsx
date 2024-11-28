@@ -23,6 +23,7 @@ import "./config-hint";
 import tags from "./schema.json";
 import { UnsavedChanges } from "./UnsavedChanges";
 import { Checkbox } from "@humansignal/ui";
+import { toSnakeCase } from "strman";
 
 const wizardClass = cn("wizard");
 const configClass = cn("configure");
@@ -558,10 +559,18 @@ export const ConfigPage = ({
 }) => {
   const [config, _setConfig] = React.useState("");
   const [mode, setMode] = React.useState("list"); // view | list
-  const [selectedGroup, setSelectedGroup] = React.useState(null);
+  const [selectedGroup, _setSelectedGroup] = React.useState(null);
   const [selectedRecipe, setSelectedRecipe] = React.useState(null);
   const [template, setCurrentTemplate] = React.useState(null);
   const api = useAPI();
+
+  const setSelectedGroup = React.useCallback(
+    (group) => {
+      _setSelectedGroup(group);
+      __lsa(`labeling_setup.list.${toSnakeCase(group)}`);
+    },
+    [_setSelectedGroup],
+  );
 
   const setConfig = React.useCallback(
     (config) => {
@@ -608,17 +617,25 @@ export const ConfigPage = ({
     if (!recipe) {
       setSelectedRecipe(null);
       setMode("list");
+      __lsa("labeling_setup.view.empty");
       return;
     }
     setTemplate(recipe.config);
     setSelectedRecipe(recipe);
     setMode("view");
+    __lsa(`labeling_setup.view.${toSnakeCase(recipe.group)}.${toSnakeCase(recipe.title)}`);
   });
 
   const onCustomTemplate = React.useCallback(() => {
     setTemplate(EMPTY_CONFIG);
     setMode("view");
+    __lsa("labeling_setup.view.custom");
   });
+
+  const onBrowse = React.useCallback(() => {
+    setMode("list");
+    __lsa("labeling_setup.list.browse");
+  }, []);
 
   React.useEffect(() => {
     if (initialConfig) {
@@ -650,7 +667,7 @@ export const ConfigPage = ({
           selectedRecipe={selectedRecipe}
           template={template}
           setTemplate={setTemplate}
-          onBrowse={setMode.bind(null, "list")}
+          onBrowse={onBrowse}
           onValidate={onValidate}
           disableSaveButton={disableSaveButton}
           onSaveClick={onSaveClick}

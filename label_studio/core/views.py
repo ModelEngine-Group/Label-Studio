@@ -30,6 +30,8 @@ from django.http import (
 from django.shortcuts import redirect, reverse
 from django.template import loader
 from django.utils._os import safe_join
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 from drf_yasg.utils import swagger_auto_schema
 from io_storages.localfiles.models import LocalFilesImportStorage
 from ranged_fileresponse import RangedFileResponse
@@ -272,3 +274,10 @@ def feature_flags(request):
     }
 
     return HttpResponse('<pre>' + json.dumps(flags, indent=4) + '</pre>', status=200)
+
+
+@csrf_exempt
+@require_http_methods(['POST', 'GET'])
+def collect_metrics(request):
+    """Lightweight endpoint to collect usage metrics from the frontend only when COLLECT_ANALYTICS is enabled"""
+    return HttpResponse(status=204)

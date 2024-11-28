@@ -1,5 +1,6 @@
 """This file and its contents are licensed under the Apache License 2.0. Please see the included NOTICE for copyright information and LICENSE for a copy of the license.
 """
+
 import calendar
 import io
 import json
@@ -245,8 +246,36 @@ class ContextLog(object):
         elif hasattr(request, 'user') and hasattr(request.user, 'advanced_json'):
             advanced_json = request.user.advanced_json
 
+        url = request.build_absolute_uri()
+        view_name = request.resolver_match.view_name if request.resolver_match else None
+        metrics_payload = request.GET.get('__')
+        is_metrics_payload = view_name == 'collect_metrics' and metrics_payload is not None
+
+        if is_metrics_payload:
+            values = json.loads(metrics_payload)
+        else:
+            values = request.GET.dict()
+
+        # If the values contains url use it as the url, otherwise use the absolute uri
+        if is_metrics_payload and 'url' in values:
+            url = values.pop('url')
+
+        # If this is a metrics payload, we will add the namespace and view name
+        # to describe the payload as an event payload
+        if is_metrics_payload:
+            namespace = 'collect_metrics'
+            view_name = f'event:{values.pop("event")}'
+            status_code = 200
+            content_type = None
+            response_content = None
+        else:
+            namespace = request.resolver_match.namespace if request.resolver_match else None
+            status_code = response.status_code
+            content_type = response.content_type
+            response_content = self._get_response_content(response)
+
         payload = {
-            'url': request.build_absolute_uri(),
+            'url': url,
             'server_id': self.server_id,
             'user_id': user_id,
             'user_email': user_email,
@@ -256,20 +285,20 @@ class ContextLog(object):
             'is_docker': self._is_docker(),
             'python': str(sys.version_info[0]) + '.' + str(sys.version_info[1]),
             'version': self.version,
-            'view_name': request.resolver_match.view_name if request.resolver_match else None,
-            'namespace': request.resolver_match.namespace if request.resolver_match else None,
+            'view_name': view_name,
+            'namespace': namespace,
             'scheme': request.scheme,
             'method': request.method,
-            'values': request.GET.dict(),
+            'values': values,
             'json': body,
             'advanced_json': advanced_json,
             'language': request.LANGUAGE_CODE,
-            'content_type': request.content_type,
-            'content_length': int(request.environ.get('CONTENT_LENGTH'))
-            if request.environ.get('CONTENT_LENGTH')
-            else None,
-            'status_code': response.status_code,
-            'response': self._get_response_content(response),
+            'content_type': content_type,
+            'content_length': (
+                int(request.environ.get('CONTENT_LENGTH')) if request.environ.get('CONTENT_LENGTH') else None
+            ),
+            'status_code': status_code,
+            'response': response_content,
         }
         if self.browser_exists(request):
             payload.update(
