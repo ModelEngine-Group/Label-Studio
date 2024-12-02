@@ -1,6 +1,6 @@
 {
-  "message": "feat: OPTIC-1337: Collect usage metrics internally (#6719)",
-  "commit": "cf2193f2b9d954a7f64793e495d3fda626c9353a",
-  "date": "2024-11-28T17:08:56.000Z",
+  "message": "refactor: LEAP-1314: Remove Stale Feature Flag - fflag_feat_front_dev… (#6732)",
+  "commit": "ca2cd86e9096e29415470e66dece52d8e78a0d04",
+  "date": "2024-12-02T20:39:09.000Z",
   "branch": "develop"
 }
