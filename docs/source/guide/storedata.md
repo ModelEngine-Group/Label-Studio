@@ -55,7 +55,7 @@ MinIO is a blob storage solution that is compatible with Amazon S3. You can use 
 
 ### Starting the containers
 For local development, you can host a local MinIO server to emulate an S3-based production environment more closely. 
-An example docker-compose file for this is available in the [Label Studio repository](https://github.com/heartexlabs/label-studio).
+An example docker-compose file for this is available in the [Label Studio repository](https://github.com/HumanSignal/label-studio).
 
 To run MinIO alongside your Label Studio instance, use the following command:
 ````bash
@@ -110,7 +110,7 @@ docker run -it -p 8080:8080 -v <yourvolume>:/label-studio/data heartexlabs/label
 !!! attention "important"
     As this is a non-root container, the mounted files and directories must have the proper permissions for the `UID 1001`.
 
-If you're using Docker Compose with the [config included in the Label Studio repository](https://github.com/heartexlabs/label-studio/blob/master/docker-compose.yml), you can set up Docker volumes in the `docker-compose.yml` file for Label Studio:
+If you're using Docker Compose with the [config included in the Label Studio repository](https://github.com/HumanSignal/label-studio/blob/develop/docker-compose.yml), you can set up Docker volumes in the `docker-compose.yml` file for Label Studio:
 ```
 version: "3.3"
 services:

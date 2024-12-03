@@ -35,7 +35,7 @@
   const githubstarsContainer = document.querySelector(".github-stars-count");
 
   if (githubstarsContainer) {
-    fetch("https://api.github.com/repos/heartexlabs/label-studio")
+    fetch("https://api.github.com/repos/humansignal/label-studio")
       .then((response) =>
         response.json().then((data) => {
           let stars = "";

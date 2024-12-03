@@ -20,7 +20,7 @@ This enables the following use cases:
 1. Categorize the LLM responses by different types: relevant, irrelevant, biased, offensive, etc.
 2. Compare and rank the quality of the responses from different models.
 3. Rank contextual items for retrieval-augmented generation based chat bots and in-context learning.
-4. Build [the preference model for RLHF](https://github.com/heartexlabs/RLHF)
+4. Build [the preference model for RLHF](https://github.com/HumanSignal/RLHF)
 5. Evaluate results of semantic search
 6. [LLM routing](https://betterprogramming.pub/unifying-llm-powered-qa-techniques-with-routing-abstractions-438e2499a0d0)
 

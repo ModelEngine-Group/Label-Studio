@@ -14,11 +14,11 @@ section: "Integrate & Extend"
 !!! attention
     As of [Label Studio 1.11.0](https://github.com/HumanSignal/label-studio/releases/tag/1.11.0), the Label Studio frontend has been deprecated as a separate library and is no longer supported as a standalone distribution. For information about using the frontend library within Label Studio, see [the README](https://github.com/HumanSignal/label-studio/blob/develop/web/libs/editor/README.md). 
 
-The [Label Studio Frontend](https://github.com/heartexlabs/label-studio-frontend) (LSF) is the main labeling interface distributed within Label Studio and as a separate package via NPM and Unpkg. You can integrate the LSF into your projects without Label Studio to provide data labeling capabilities to your users.
+The [Label Studio Frontend](https://github.com/HumanSignal/label-studio-frontend) (LSF) is the main labeling interface distributed within Label Studio and as a separate package via NPM and Unpkg. You can integrate the LSF into your projects without Label Studio to provide data labeling capabilities to your users.
 
 LSF can be customized and extended to fit your needs, and you can use a custom version of LSF standalone or in your LS installation. For more information see [Custom LSF + LS integration](#custom-lsf-in-label-studio).
 
-LSF is located as a separate GitHub repository: https://github.com/heartexlabs/label-studio-frontend
+LSF is located as a separate GitHub repository: https://github.com/HumanSignal/label-studio-frontend
 
 <br>
 <img src="/images/frontend/lsf-in-ls.jpg" class="gif-border">
@@ -243,13 +243,13 @@ Refer to the [Frontend Reference](frontend_reference.html) when developing with 
 
 ### Manual builds
 
-If you want to build a new tag or change the behaviour of default components inside of LSF, then you need to go into the LSF repo and review the [Development part](https://github.com/heartexlabs/label-studio-frontend#development) of the README file. Making any changes requires that you have a good knowledge of React and Javascript.build.js `<branch-name-from-official-lsf-repo>`
+If you want to build a new tag or change the behaviour of default components inside of LSF, then you need to go into the LSF repo and review the [Development part](https://github.com/HumanSignal/label-studio-frontend#development) of the README file. Making any changes requires that you have a good knowledge of React and Javascript.build.js `<branch-name-from-official-lsf-repo>`
 
 ### GitHub Artifacts
 
 Use GitHub Artifacts to download a zip-formatted archive with LSF builds. Branches from the official LSF repo are built automatically and hosted on GitHub Artifacts.
 
-See the [GitHub Actions for the LSF repository](https://github.com/heartexlabs/label-studio-frontend/actions) to access them.
+See the [GitHub Actions for the LSF repository](https://github.com/HumanSignal/label-studio-frontend/actions) to access them.
 
 You can also configure a GitHub token to obtain artifacts automatically:
 ```
@@ -263,14 +263,14 @@ yarn download:lsf <branch-name-from-official-lsf-repo>
 
 ## Custom LSF in Label Studio
 
-LS Frontend (LSF) with Backend (LSB) integration is similar what is described in the [Frontend integration guide](#Frontend-integration-guide). The JavaScript integration script is placed in [lsf-sdk.js](https://github.com/heartexlabs/label-studio/blob/master/label_studio/static/js/lsf-sdk.js) in the Label Studio Backend. The main idea of this integration based on LSF callbacks.
+LS Frontend (LSF) with Backend (LSB) integration is similar what is described in the [Frontend integration guide](#Frontend-integration-guide). The JavaScript integration script is placed in [lsf-sdk.js](https://github.com/HumanSignal/label-studio/blob/develop/label_studio/static/js/lsf-sdk.js) in the Label Studio Backend. The main idea of this integration based on LSF callbacks.
 
 Check out a quick guide on how to use custom LSF in Label Studio.
 
 <iframe width="800" height="500" src="https://www.youtube.com/embed/QSGgiXie2SE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ### Prepare a custom LSF build
-1. Make your custom LSF build by following these [instructions](https://github.com/heartexlabs/label-studio-frontend#development).
+1. Make your custom LSF build by following these [instructions](https://github.com/HumanSignal/label-studio-frontend#development).
 2. Finalize your development with `npm run build:module` to generate `main.css` and `main.js` files.
 3. Confirm files appearance in the `build/static` folder.
 

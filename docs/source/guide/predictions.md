@@ -687,7 +687,7 @@ You can sort the prediction scores for each labeled region using the **Regions**
 
 ## Import brush segmentation pre-annotations in RLE format
 
-If you want to import pre-annotations for brush mask image segmentation using the [BrushLabels tag](/tags/brushlabels.html), you must convert the masks to RLE format first. The [Label Studio Converter](https://github.com/heartexlabs/label-studio-converter) package has some helper functions for this. See the following for common conversion cases and guidance.
+If you want to import pre-annotations for brush mask image segmentation using the [BrushLabels tag](/tags/brushlabels.html), you must convert the masks to RLE format first. The [Label Studio Converter](https://github.com/HumanSignal/label-studio-converter) package has some helper functions for this. See the following for common conversion cases and guidance.
 
 Install Label Studio Converter:
 ```
@@ -707,15 +707,15 @@ from label_studio_converter import brush
     ```
   
 - To convert OpenCV contours, use 
-[`brush.contour2rle(contours, contour_id, img_width, img_height)`](https://github.com/heartexlabs/label-studio-converter/blob/master/label_studio_converter/brush.py#L310).
+[`brush.contour2rle(contours, contour_id, img_width, img_height)`](https://github.com/HumanSignal/label-studio-converter/blob/master/label_studio_converter/brush.py#L310).
 
 - To convert an image from path (jpg, png. bmp), use 
-[`brush.image2rle(path)`](https://github.com/heartexlabs/label-studio-converter/blob/master/label_studio_converter/brush.py#L343).
+[`brush.image2rle(path)`](https://github.com/HumanSignal/label-studio-converter/blob/master/label_studio_converter/brush.py#L343).
 
 - To prepare the pre-annotation, use 
-[`brush.image2annotation(path, label_name, from_name, to_name, ground_truth=False, model_version=None, score=None)`](https://github.com/heartexlabs/label-studio-converter/blob/master/label_studio_converter/brush.py#L361)
+[`brush.image2annotation(path, label_name, from_name, to_name, ground_truth=False, model_version=None, score=None)`](https://github.com/HumanSignal/label-studio-converter/blob/master/label_studio_converter/brush.py#L361)
 
-For more assistance, review this [example code creating a Label Studio task with pre-annotations](https://github.com/heartexlabs/label-studio-converter/blob/master/tests/test_brush.py#L11) for brush labels.
+For more assistance, review this [example code creating a Label Studio task with pre-annotations](https://github.com/HumanSignal/label-studio-converter/blob/master/tests/test_brush.py#L11) for brush labels.
 
 ## Import OCR pre-annotations 
 

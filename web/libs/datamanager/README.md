@@ -108,7 +108,7 @@ apiEndpoints: {
 - [Backend API][api_docs]
 - [Architecture][dm_architecture]
 
-<img src="https://github.com/heartexlabs/label-studio/blob/master/images/opossum_looking.png?raw=true" title="Hey everyone!" height="140" width="140" />
+<img src="https://github.com/HumanSignal/label-studio/blob/develop/images/opossum_looking.png?raw=true" title="Hey everyone!" height="140" width="140" />
 
 [api_docs]: docs/api_reference.md
 [dm_architecture]: docs/dm_architecture_diagram.pdf

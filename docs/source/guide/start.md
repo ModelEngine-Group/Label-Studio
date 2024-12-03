@@ -115,7 +115,7 @@ docker run -it -p 9001:8080 -v $(pwd)/mydata:/label-studio/data heartexlabs/labe
 !!! attention "important"
     As this is a non-root container, the mounted files and directories must have the proper permissions for the `UID 1001`.
 
-Or, if you're using Docker Compose, update the `docker-compose.yml` file that you're using to expose a different port for the NGINX server used to proxy the connection to Label Studio. For example, this portion of the [`docker-compose.yml`](https://github.com/heartexlabs/label-studio/blob/master/docker-compose.yml) file exposes port 9001 instead of port 80 for proxying Label Studio:
+Or, if you're using Docker Compose, update the `docker-compose.yml` file that you're using to expose a different port for the NGINX server used to proxy the connection to Label Studio. For example, this portion of the [`docker-compose.yml`](https://github.com/HumanSignal/label-studio/blob/develop/docker-compose.yml) file exposes port 9001 instead of port 80 for proxying Label Studio:
 ```
 ...
 nginx:
@@ -214,7 +214,7 @@ Then you can specify the required environment variables for a PostgreSQL connect
 Our Heroku manifest uses [postgresql addon](https://elements.heroku.com/addons/heroku-postgresql) out of the box.
 Please notice that the storage capacity is limited.
 
-[<img src="https://www.herokucdn.com/deploy/button.svg" height="30px">](https://heroku.com/deploy?template=https://github.com/heartexlabs/label-studio/tree/master)
+[<img src="https://www.herokucdn.com/deploy/button.svg" height="30px">](https://heroku.com/deploy?template=https://github.com/HumanSignal/label-studio/tree/master)
 
 Please notice that all uploaded data via import will be lost after a dyno replace since [filesystem is ephemeral](https://devcenter.heroku.com/articles/dynos#ephemeral-filesystem).
 Using S3 storage is recommended.

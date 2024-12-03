@@ -116,4 +116,4 @@ Now we're done. We can now open the page `/some_root/my_page_path` in the browse
 * `routes` – set of raw routes
 * `exact` – if true, lookup exact path rather than a subscring
 
-<img src="https://github.com/heartexlabs/label-studio/blob/master/images/opossum_looking.png?raw=true" title="Hey everyone!" height="140" width="140" />
+<img src="https://github.com/HumanSignal/label-studio/blob/develop/images/opossum_looking.png?raw=true" title="Hey everyone!" height="140" width="140" />

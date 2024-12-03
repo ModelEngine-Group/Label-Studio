@@ -4,10 +4,10 @@ Thank you for investing your time in contributing to our project! Any contributi
 
 ## Before you start
 
-We value input from each member of the community, and we ask that you follow our [code of conduct](https://github.com/heartexlabs/label-studio/blob/master/CODE_OF_CONDUCT.md). We are a small team, but we try to respond to issues and pull requests within 2 business days. 
+We value input from each member of the community, and we ask that you follow our [code of conduct](https://github.com/HumanSignal/label-studio/blob/develop/CODE_OF_CONDUCT.md). We are a small team, but we try to respond to issues and pull requests within 2 business days. 
 
 For changes that you contribute to any of the Label Studio repositories, please do the following:
-- Review the general [contributor guidelines](https://github.com/heartexlabs/label-studio/blob/master/CONTRIBUTING.md).
+- Review the general [contributor guidelines](https://github.com/HumanSignal/label-studio/blob/develop/CONTRIBUTING.md).
 - Create issues for any major changes and enhancements that you want to make. 
 - Keep pull requests specific to one issue. Shorter pull requests are preferred and are easier to review. 
 

@@ -8,7 +8,7 @@ if [ -z $1 ]; then
 fi
 
 VERSION=$1
-COMPANY="heartexlabs"
+COMPANY="humansignal"
 REPO="datamanager"
 
 # Colors for colored output

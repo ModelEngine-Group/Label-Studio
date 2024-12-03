@@ -51,7 +51,7 @@ It is advised to use non-root containers for the following reasons:
 
 - Platform limitations: Some Kubernetes distributions such as [OpenShift](https://www.openshift.com/), execute containers with random UUIDs. This method is incompatible with root containers, which must always run using the root user's UUID. In these situations, only non-root container images will operate, making them a necessity.
 
-Our [Dockerfile](https://github.com/heartexlabs/label-studio/blob/develop/Dockerfile) contains the line `USER 1001` which assigns a non-root user UID to the image, enabling the container to run as an unprivileged user. This implementation applies the security enhancements and other restrictions mentioned above to the container.
+Our [Dockerfile](https://github.com/HumanSignal/label-studio/blob/develop/Dockerfile) contains the line `USER 1001` which assigns a non-root user UID to the image, enabling the container to run as an unprivileged user. This implementation applies the security enhancements and other restrictions mentioned above to the container.
 
 ### File permissions for non-root user
 

@@ -176,7 +176,7 @@
             <% if(!isEnterpriseTheme) {%>
               <%- partial("component/text", {text: "Contribute to the docs", tag: "h3", size: "Eyebrow"}) %>
               <%- partial("component/text", {text: "Our docs are open source. See something that could be improved? Submit a pull request.", tag: "h3", size: "Small"}) %>
-              <%- partial("component/button", { url: "https://github.com/heartexlabs/label-studio", label: "Make a contribution", }) %>
+              <%- partial("component/button", { url: "https://github.com/HumanSignal/label-studio", label: "Make a contribution", }) %>
             <% } %>
           </div>
           <div>
@@ -185,7 +185,7 @@
               <%- partial("component/button", { url: "https://support.humansignal.com", label: "Contact Support", }) %>
             <% } else { %>
               <div class="content-footer-button-group">
-                <%- partial("component/button", { url: "https://github.com/heartexlabs/label-studio/issues", label: "Submit a GitHub Issue", }) %>
+                <%- partial("component/button", { url: "https://github.com/HumanSignal/label-studio/issues", label: "Submit a GitHub Issue", }) %>
                 <%- partial("component/button", { url: "https://slack.labelstud.io/?source=docs-footer", label: "Join Slack Community", theme: "Secondary", icon: "Slack"}) %>
               </div>
             <% } %>

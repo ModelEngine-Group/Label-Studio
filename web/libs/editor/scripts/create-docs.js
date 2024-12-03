@@ -30,7 +30,7 @@ const supertags = ["TimeSeries"];
 // glob pattern to check all possible extensions
 const EXT = "{js,jsx,ts,tsx}";
 
-const currentTagsUrl = "https://api.github.com/repos/heartexlabs/label-studio/contents/docs/source/tags";
+const currentTagsUrl = "https://api.github.com/repos/humansignal/label-studio/contents/docs/source/tags";
 
 /**
  * Convert jsdoc parser type to simple actual type or list of possible values

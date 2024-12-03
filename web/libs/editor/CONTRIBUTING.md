@@ -10,4 +10,4 @@ This part of the documentation gives you a basic overview of how to help with th
 
 ## Code of conduct
 
-We value input from each member of the community, however we urge you to abide by [code of conduct](https://github.com/heartexlabs/label-studio/blob/master/CODE_OF_CONDUCT.md).
+We value input from each member of the community, however we urge you to abide by [code of conduct](https://github.com/HumanSignal/label-studio/blob/develop/CODE_OF_CONDUCT.md).

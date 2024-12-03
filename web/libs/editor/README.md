@@ -21,4 +21,4 @@ _Important Note: These scripts must be executed within the web folder or its sub
 - **`yarn lsf:unit`: Run unit tests on LSF**
   - Essential for maintaining code quality and reliability, especially in collaborative development.
 
-<img src="https://github.com/heartexlabs/label-studio/blob/master/images/opossum_looking.png?raw=true" title="Hey everyone!" height="140" width="140" />
+<img src="https://github.com/HumanSignal/label-studio/blob/develop/images/opossum_looking.png?raw=true" title="Hey everyone!" height="140" width="140" />

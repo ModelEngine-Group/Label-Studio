@@ -116,7 +116,7 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
 ]
-homepage = "https://github.com/heartexlabs/label-studio"
+homepage = "https://github.com/HumanSignal/label-studio"
 packages = [
     { include = "label_studio" },
 ]

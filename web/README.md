@@ -11,7 +11,7 @@ Label Studio Frontend, developed with React and mobx-state-tree, is a robust fro
 ## [Library - Datamanager (`libs/datamanager`)][dm]
 Datamanager is an advanced tool specifically for data exploration within Label Studio. Key features include:
 
-<img align="right" height="180" src="https://github.com/heartexlabs/label-studio/blob/master/images/heartex_icon_opossum_green@2x.png?raw=true" />
+<img align="right" height="180" src="https://github.com/HumanSignal/label-studio/blob/develop/images/heartex_icon_opossum_green@2x.png?raw=true" />
 
 ## Installation Instructions
 
@@ -88,10 +88,10 @@ If for any reason you need to format or lint using the same `pre-commit` hooks d
 
 This software is licensed under the [Apache 2.0 LICENSE](../LICENSE) © [HumanSignal](https://www.humansignal.com/). 2020
 
-<img src="https://github.com/heartexlabs/label-studio/blob/master/images/opossum_looking.png?raw=true" title="Hey everyone!" height="140" width="140" />
+<img src="https://github.com/HumanSignal/label-studio/blob/develop/images/opossum_looking.png?raw=true" title="Hey everyone!" height="140" width="140" />
 
-[lsc]: https://github.com/heartexlabs/label-studio-converter
-[lst]: https://github.com/heartexlabs/label-studio-transformers
+[lsc]: https://github.com/HumanSignal/label-studio-converter
+[lst]: https://github.com/HumanSignal/label-studio-transformers
 
 [lsf]: libs/editor/README.md
 [dm]: libs/datamanager/README.md
