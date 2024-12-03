@@ -27,7 +27,6 @@ STALE_FEATURE_FLAGS = {
     'fflag_fix_back_lsdv_1044_check_annotations_24012023_short': False,
     'fflag_fix_front_dev_4075_taxonomy_overlap_281222_short': True,
     'fflag_fix_front_dev_3730_shortcuts_initial_input_22122022_short': True,
-    'ff_back_dev_3865_filters_anno_171222_short': True,
     'fflag_feat_front_dev_3873_labeling_ui_improvements_short': True,
     'fflag_feat_back_dev_3756_queue_enrollment_min_short': False,
     'fflag_fix_front_dev_3666_max_usages_on_region_creation_171122_short': True,
