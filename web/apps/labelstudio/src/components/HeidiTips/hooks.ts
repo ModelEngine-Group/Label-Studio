@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { dismissTip, getRandomTip } from "./utils";
+import { dismissTip, getRandomTip, getTipEvent, getTipMetadata } from "./utils";
 import type { Tip, TipsCollection } from "./types";
 
 export const useRandomTip = (collection: keyof TipsCollection) => {
@@ -9,5 +9,11 @@ export const useRandomTip = (collection: keyof TipsCollection) => {
     setTip(null);
   }, []);
 
-  return [tip, dismiss] as const;
+  const onLinkClick = useCallback(() => {
+    if (tip) {
+      __lsa(getTipEvent(collection, tip, "click"), getTipMetadata(tip));
+    }
+  }, [tip]);
+
+  return [tip, dismiss, onLinkClick] as const;
 };

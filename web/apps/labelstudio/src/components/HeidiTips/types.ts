@@ -1,11 +1,17 @@
+export type TipLinkParams = Record<string, string> & {
+  experiment?: string;
+  treatment?: string;
+};
+
 export type Tip = {
   title: string;
   content: string;
+  description?: string;
   closable?: boolean;
   link: {
     url: string;
     label: string;
-    params?: Record<string, string>;
+    params?: TipLinkParams;
   };
 };
 
@@ -20,4 +26,5 @@ export type HeidiTipsProps = {
 export type HeidiTipProps = {
   tip: Tip;
   onDismiss: () => void;
+  onLinkClick: () => void;
 };

@@ -1,9 +1,9 @@
 type LogEventFn = (eventName: string, metadata?: Record<string, unknown>) => void;
-
 declare global {
   interface Window {
     __lsa: LogEventFn;
   }
+  const __lsa: LogEventFn;
 }
 
 const logEvent: LogEventFn = (eventName, metadata = {}) => {

@@ -2,6 +2,7 @@ import { defaultTipsCollection } from "./content";
 import type { Tip, TipsCollection } from "./types";
 
 const STORE_KEY = "heidi_ignored_tips";
+const EVENT_NAMESPACE_KEY = "heidi_tips";
 const CACHE_KEY = "heidi_live_tips_collection";
 const CACHE_FETCHED_AT_KEY = "heidi_live_tips_collection_fetched_at";
 const CACHE_STALE_TIME = 1000 * 60 * 60; // 1 hour
@@ -9,6 +10,36 @@ const MAX_TIMEOUT = 5000; // 5 seconds
 
 function getKey(collection: string) {
   return `${STORE_KEY}:${collection}`;
+}
+
+export function getTipCollectionEvent(collection: string, event: string) {
+  return `${EVENT_NAMESPACE_KEY}.${collection}.${event}`;
+}
+
+export function getTipEvent(collection: string, tip: Tip, event: string) {
+  if (tip.link.params?.experiment && tip.link.params?.treatment) {
+    return `${EVENT_NAMESPACE_KEY}.${collection}.${tip.link.params?.experiment}.${tip.link.params?.treatment}.${event}`;
+  }
+  if (tip.link.params?.experiment) {
+    return `${EVENT_NAMESPACE_KEY}.${collection}.${tip.link.params?.experiment}.${event}`;
+  }
+  if (tip.link.params?.treatment) {
+    return `${EVENT_NAMESPACE_KEY}.${collection}.${tip.link.params?.treatment}.${event}`;
+  }
+
+  return getTipCollectionEvent(collection, event);
+}
+
+export function getTipMetadata(tip: Tip) {
+  // Everything except the experiment and treatment params as those are part of the event name
+  const { experiment, treatment, ...rest } = tip.link.params ?? {};
+  return {
+    ...rest,
+    content: tip.description ?? tip.content ?? "",
+    title: tip.title,
+    href: tip.link.url,
+    label: tip.link.label,
+  };
 }
 
 export const loadLiveTipsCollection = () => {
@@ -89,8 +120,11 @@ export function dismissTip(collection: string) {
   const cookieExpiry = `expires=${cookieExpiryDate.toUTCString()}`;
   const cookiePath = "path=/";
   const cookieString = [cookieValue, cookieExpiry, cookiePath].join("; ");
-
   document.cookie = cookieString;
+
+  __lsa(getTipCollectionEvent(collection, "dismiss"), {
+    expires: cookieExpiryDate.getTime(),
+  });
 }
 
 export function isTipDismissed(collection: string) {

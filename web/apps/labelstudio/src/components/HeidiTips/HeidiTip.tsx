@@ -8,7 +8,7 @@ import type { HeidiTipProps, Tip } from "./types";
 import { Tooltip } from "../Tooltip/Tooltip";
 import { createURL } from "./utils";
 
-const HeidiLink: FC<{ link: Tip["link"] }> = ({ link }) => {
+const HeidiLink: FC<{ link: Tip["link"]; onClick: () => void }> = ({ link, onClick }) => {
   const url = useMemo(() => {
     const params = link.params ?? {};
     /* if needed, add server ID here */
@@ -18,13 +18,13 @@ const HeidiLink: FC<{ link: Tip["link"] }> = ({ link }) => {
 
   return (
     /* @ts-ignore-next-line */
-    <Elem name="link" tag="a" href={url} target="_blank">
+    <Elem name="link" tag="a" href={url} target="_blank" onClick={onClick}>
       {link.label}
     </Elem>
   );
 };
 
-export const HeidiTip: FC<HeidiTipProps> = ({ tip, onDismiss }) => {
+export const HeidiTip: FC<HeidiTipProps> = ({ tip, onDismiss, onLinkClick }) => {
   const handleClick = useCallback((event: MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
@@ -48,7 +48,7 @@ export const HeidiTip: FC<HeidiTipProps> = ({ tip, onDismiss }) => {
         </Elem>
         <Elem name="text">
           {tip.content}
-          <HeidiLink link={tip.link} />
+          <HeidiLink link={tip.link} onClick={onLinkClick} />
         </Elem>
       </Elem>
       <Elem name="heidi">
