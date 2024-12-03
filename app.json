@@ -7,7 +7,7 @@
   ],
   "website": "https://labelstud.io",
   "repository": "https://github.com/HumanSignal/label-studio",
-  "logo": "https://labelstud.io/images/opossum/heartex_icon_opossum_green.svg",
+  "logo": "https://raw.githubusercontent.com/HumanSignal/label-studio/refs/heads/develop/images/heartex_icon_opossum_green.svg",
   "stack": "container",
   "env": {
     "DISABLE_SIGNUP_WITHOUT_LINK": {
