@@ -1,6 +1,6 @@
 {
-  "message": "refactor: LEAP-1314: Remove Stale Feature Flag - fflag_feat_front_dev… (#6732)",
-  "commit": "ca2cd86e9096e29415470e66dece52d8e78a0d04",
-  "date": "2024-12-02T20:39:09.000Z",
+  "message": "chore: OPTIC-1413: Add internal tracking of Heidi Tips (#6742)",
+  "commit": "3b6f2795589186c9d8031b75d27f07cfcb5f8a7e",
+  "date": "2024-12-03T00:15:40.000Z",
   "branch": "develop"
 }
