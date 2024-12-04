@@ -14,6 +14,7 @@ from organizations.models import Organization, OrganizationMember
 from organizations.serializers import (
     OrganizationIdSerializer,
     OrganizationInviteSerializer,
+    OrganizationMemberSerializer,
     OrganizationMemberUserSerializer,
     OrganizationSerializer,
     OrganizationsParamsSerializer,
@@ -25,6 +26,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.settings import api_settings
 from rest_framework.views import APIView
 from users.models import User
 
@@ -136,6 +138,25 @@ class OrganizationMemberListAPI(generics.ListAPIView):
 
 
 @method_decorator(
+    name='get',
+    decorator=swagger_auto_schema(
+        tags=['Organizations'],
+        x_fern_sdk_group_name=['organizations', 'members'],
+        x_fern_sdk_method_name='get',
+        operation_summary='Get organization member details',
+        operation_description='Get organization member details by user ID.',
+        manual_parameters=[
+            openapi.Parameter(
+                name='user_pk',
+                type=openapi.TYPE_INTEGER,
+                in_=openapi.IN_PATH,
+                description='A unique integer value identifying the user to get organization details for.',
+            ),
+        ],
+        responses={200: OrganizationMemberSerializer()},
+    ),
+)
+@method_decorator(
     name='delete',
     decorator=swagger_auto_schema(
         tags=['Organizations'],
@@ -160,13 +181,36 @@ class OrganizationMemberListAPI(generics.ListAPIView):
 )
 class OrganizationMemberDetailAPI(GetParentObjectMixin, generics.RetrieveDestroyAPIView):
     permission_required = ViewClassPermission(
+        GET=all_permissions.organizations_view,
         DELETE=all_permissions.organizations_change,
     )
     parent_queryset = Organization.objects.all()
     parser_classes = (JSONParser, FormParser, MultiPartParser)
-    permission_classes = (IsAuthenticated, HasObjectPermission)
-    serializer_class = OrganizationMemberUserSerializer  # Assuming this is the right serializer
-    http_method_names = ['delete']
+    serializer_class = OrganizationMemberSerializer
+    http_method_names = ['delete', 'get']
+
+    @property
+    def permission_classes(self):
+        if self.request.method == 'DELETE':
+            return [IsAuthenticated, HasObjectPermission]
+        return api_settings.DEFAULT_PERMISSION_CLASSES
+
+    def get_queryset(self):
+        return OrganizationMember.objects.filter(organization=self.get_parent_object())
+
+    def get_serializer_context(self):
+        return {
+            **super().get_serializer_context(),
+            'organization': self.get_parent_object(),
+        }
+
+    def get(self, request, pk, user_pk):
+        queryset = self.get_queryset()
+        user = get_object_or_404(User, pk=user_pk)
+        member = get_object_or_404(queryset, user=user)
+        self.check_object_permissions(request, member)
+        serializer = self.get_serializer(member)
+        return Response(serializer.data)
 
     def delete(self, request, pk=None, user_pk=None):
         org = self.get_parent_object()
