@@ -1,6 +1,6 @@
 {
-  "message": "docs: rename github org",
-  "commit": "ca8611b063fbb1015cb79d9f3b754ae251297e14",
-  "date": "2024-12-03T11:44:20.000Z",
+  "message": "feat: LEAP-1351: LSF customization for bulk annotation  (#6203)",
+  "commit": "970da3a995d6f8d31ef0c8d2fb8aede2ac4b34a7",
+  "date": "2024-12-04T11:00:56.000Z",
   "branch": "develop"
 }
