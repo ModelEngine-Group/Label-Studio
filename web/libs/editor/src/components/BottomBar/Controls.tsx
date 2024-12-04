@@ -5,14 +5,13 @@
  */
 
 import { observer } from "mobx-react";
-import type { Instance } from "mobx-state-tree";
 import type React from "react";
 import { useCallback, useState } from "react";
 
 import { IconBan, LsChevron } from "../../assets/icons";
 import { Button } from "../../common/Button/Button";
 import { Dropdown } from "../../common/Dropdown/Dropdown";
-import type { CustomButton } from "../../stores/CustomButton";
+import type { CustomButtonType } from "../../stores/CustomButton";
 import { Block, cn, Elem } from "../../utils/bem";
 import { FF_REVIEWER_FLOW, isFF } from "../../utils/feature-flags";
 import { isDefined, toArray } from "../../utils/utilities";
@@ -27,7 +26,6 @@ import {
 
 import "./Controls.scss";
 
-type CustomButtonType = Instance<typeof CustomButton>;
 // these buttons can be reused inside custom buttons or can be replaces with custom buttons
 type SupportedInternalButtons = "accept" | "reject";
 // special places for custom buttons — before, after or instead of internal buttons
@@ -132,7 +130,7 @@ export const Controls = controlsInjector<{ annotation: MSTAnnotation }>(
               key={customButton.name}
               disabled={disabled}
               button={customButton}
-              onClick={() => store.handleCustomButton?.(customButton.name)}
+              onClick={() => store.handleCustomButton?.(customButton)}
             />,
           );
         }
@@ -151,9 +149,7 @@ export const Controls = controlsInjector<{ annotation: MSTAnnotation }>(
         : [originalRejectButton];
 
       rejectButtons.forEach((button) => {
-        const action = hasCustomReject
-          ? () => store.handleCustomButton?.(button.name)
-          : () => store.rejectAnnotation({});
+        const action = hasCustomReject ? () => store.handleCustomButton?.(button) : () => store.rejectAnnotation({});
 
         const onReject = async (e: React.MouseEvent) => {
           const selected = store.annotationStore?.selected;

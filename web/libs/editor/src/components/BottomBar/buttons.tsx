@@ -6,7 +6,7 @@
 
 import { inject, observer } from "mobx-react";
 import type React from "react";
-import { memo, type ReactNode } from "react";
+import { memo, type ReactElement } from "react";
 import { Button } from "../../common/Button/Button";
 import { Tooltip } from "../../common/Tooltip/Tooltip";
 
@@ -15,7 +15,7 @@ type MixedInParams = {
   history: any;
 };
 
-export function controlsInjector<T extends {}>(fn: (props: T & MixedInParams) => ReactNode) {
+export function controlsInjector<T extends {}>(fn: (props: T & MixedInParams) => ReactElement) {
   const wrapped = inject(({ store }) => {
     return {
       store,
@@ -23,7 +23,7 @@ export function controlsInjector<T extends {}>(fn: (props: T & MixedInParams) =>
     };
   })(fn);
   // inject type doesn't handle the injected props, so we have to force cast it
-  return wrapped as unknown as (props: T) => ReactNode;
+  return wrapped as unknown as (props: T) => ReactElement;
 }
 
 const TOOLTIP_DELAY = 0.8;

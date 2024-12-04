@@ -153,7 +153,7 @@ type MSTCommentStore = {
 };
 
 type MSTStore = {
-  customButtons: CustomControlProps.button[];
+  customButtons: CustomButtonsField;
   settings: Record<string, boolean>;
   isSubmitting: boolean;
   // @todo WHAT IS THIS?
@@ -166,7 +166,7 @@ type MSTStore = {
   commentStore: MSTCommentStore;
 
   hasInterface: (name: string) => boolean;
-  handleCustomButton?: (name: string) => void;
+  handleCustomButton?: (button: CustomButtonType) => void;
   submitAnnotation: (options?: any) => void;
   updateAnnotation: (options?: any) => void;
   rejectAnnotation: (options?: any) => void;

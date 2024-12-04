@@ -4,7 +4,7 @@ import { IconViewAll, LsPlus } from "../../assets/icons";
 import { Button } from "../../common/Button/Button";
 import { Tooltip } from "../../common/Tooltip/Tooltip";
 import { Block, Elem } from "../../utils/bem";
-import { FF_DEV_3873, isFF } from "../../utils/feature-flags";
+import { FF_BULK_ANNOTATION, FF_DEV_3873, isFF } from "../../utils/feature-flags";
 import { AnnotationsCarousel } from "../AnnotationsCarousel/AnnotationsCarousel";
 import { DynamicPreannotationsToggle } from "../AnnotationTab/DynamicPreannotationsToggle";
 import { Actions } from "./Actions";
@@ -20,6 +20,9 @@ export const TopBar = observer(({ store }) => {
   const isPrediction = entity?.type === "prediction";
 
   const isViewAll = annotationStore?.viewingAll === true;
+  const isBulkMode = isFF(FF_BULK_ANNOTATION) && store.hasInterface("annotation:bulk");
+
+  if (isFF(FF_DEV_3873) && isBulkMode) return null;
 
   return store ? (
     <Block name="topbar" mod={{ newLabelingUI: isFF(FF_DEV_3873) }}>
@@ -50,7 +53,7 @@ export const TopBar = observer(({ store }) => {
                 icon={<LsPlus />}
                 className={"topbar__button"}
                 type="text"
-                aria-label="View All"
+                aria-label="Create an annotation"
                 onClick={(event) => {
                   event.preventDefault();
                   const created = store.annotationStore.createAnnotation();
@@ -77,8 +80,8 @@ export const TopBar = observer(({ store }) => {
       ) : (
         <>
           <Elem name="group">
-            <CurrentTask store={store} />
-            {!isViewAll && (
+            {!isBulkMode && <CurrentTask store={store} />}
+            {!isViewAll && !isBulkMode && (
               <Annotations store={store} annotationStore={store.annotationStore} commentStore={store.commentStore} />
             )}
             <Actions store={store} />

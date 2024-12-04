@@ -707,6 +707,7 @@ export default types
 
     function handleCustomButton(button) {
       if (self.isSubmitting) return;
+      const buttonName = button.name;
 
       handleSubmittingFlag(async () => {
         const entity = self.annotationStore.selected;
@@ -717,7 +718,7 @@ export default types
 
         const isDirty = entity.history.canUndo;
 
-        await getEnv(self).events.invoke("customButton", self, button, { isDirty, entity });
+        await getEnv(self).events.invoke("customButton", self, buttonName, { isDirty, entity, button });
         self.incrementQueuePosition();
         entity.dropDraft();
       }, `Error during handling ${button} button, try again`);
@@ -905,7 +906,7 @@ export default types
           self.annotationStore.selected.setSuggestions(dataParser(response));
           self.setFlags({ awaitingSuggestions: false });
         }
-      } catch (e) {
+      } catch (_e) {
         self.setFlags({ awaitingSuggestions: false });
         // @todo handle errors + situation when task is changed
       }
@@ -939,7 +940,7 @@ export default types
       }
     }
 
-    function prevTask(e, shouldGoBack = false) {
+    function prevTask(_e, shouldGoBack = false) {
       const length = shouldGoBack
         ? self.taskHistory.length - 1
         : self.taskHistory.findIndex((x) => x.taskId === self.task.id) - 1;
