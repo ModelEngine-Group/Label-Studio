@@ -3309,6 +3309,33 @@
       "version": 3,
       "deleted": false
     },
+    "fflag_feature_all_optic_1421_cold_start_v1": {
+      "key": "fflag_feature_all_optic_1421_cold_start_v1",
+      "on": false,
+      "prerequisites": [],
+      "targets": [],
+      "contextTargets": [],
+      "rules": [],
+      "fallthrough": {
+        "variation": 0
+      },
+      "offVariation": 1,
+      "variations": [
+        true,
+        false
+      ],
+      "clientSideAvailability": {
+        "usingMobileKey": false,
+        "usingEnvironmentId": false
+      },
+      "clientSide": false,
+      "salt": "42b521e332cd4b4488e675559d73cd8a",
+      "trackEvents": false,
+      "trackEventsFallthrough": false,
+      "debugEventsUntilDate": null,
+      "version": 2,
+      "deleted": false
+    },
     "fflag_feature_develop__prompts__dia_1488_select_virtualized": {
       "key": "fflag_feature_develop__prompts__dia_1488_select_virtualized",
       "on": false,
