@@ -1,6 +1,6 @@
 {
-  "message": "fix: LEAP-1651: Properly update meta text for regions (#6726)",
-  "commit": "07f91015ebeb68e15ff2339d7546212500dbc276",
-  "date": "2024-12-06T11:10:29.000Z",
+  "message": "ci: LEAP-1676: LEAP-1677: LEAP-1674: LEAP-1673: Upgrade cross-spawn version (#6761)",
+  "commit": "bf050c617f45db3f733b13dd248a8dc18d4edb3c",
+  "date": "2024-12-06T18:47:02.000Z",
   "branch": "develop"
 }
