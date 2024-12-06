@@ -319,19 +319,10 @@ const Result = types
         }
       }
 
-      const contolMeta = self.from_name.metaValue;
-
-      if (contolMeta) {
-        data.meta = { ...data.meta, ...contolMeta };
-      }
-      const areaMeta = self.area.meta;
-
-      if (areaMeta && Object.keys(areaMeta).length) {
-        data.meta = { ...data.meta, ...areaMeta };
-      }
-
-      if (meta) {
-        data.meta = { ...data.meta, ...meta };
+      if (meta || (self.area.meta && Object.keys(self.area.meta).length)) {
+        // `meta` is used for lead_time which is stored in one result, while area's `meta` is used for meta text,
+        // and this text is duplicated in every connected result, so we should prefer area's `meta` for actual value.
+        data.meta = { ...meta, ...self.area.meta };
       }
 
       if (self.area.parentID) {

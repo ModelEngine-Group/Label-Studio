@@ -1,3 +1,7 @@
+/**
+ * @deprecated It was only used in old interface without FF_1170 and FF_3873
+ */
+
 import React, { Fragment } from "react";
 import { observer } from "mobx-react";
 import { Badge, Form, Input } from "antd";
@@ -212,6 +216,7 @@ export default observer(({ store, annotation }) => {
         <Form
           style={{ marginTop: "0.5em", marginBottom: "0.5em" }}
           onFinish={() => {
+            // `normInput` is undefined, but this component is not used in the new interface anyway
             node.setMetaText(node.normInput);
             setEditMode(false);
           }}
@@ -221,7 +226,7 @@ export default observer(({ store, annotation }) => {
             onChange={(ev) => {
               const { value } = ev.target;
 
-              node.setNormInput(value);
+              node.setMetaText(value);
             }}
             style={{ marginBottom: "0.5em" }}
             placeholder="Meta Information"

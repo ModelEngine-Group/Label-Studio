@@ -138,11 +138,13 @@ const Model = types
       return true;
     },
 
+    // @todo not used?
     get serializableValue() {
       if (!self.regions.length) return null;
       return { text: self.selectedValues() };
     },
 
+    // Main and only method to update value in actual result produced by TextArea
     selectedValues() {
       return self.regions.map((r) => r._value);
     },
@@ -170,6 +172,7 @@ const Model = types
     };
 
     return {
+      // @todo not used?
       getSerializableValue() {
         const texts = self.regions.map((s) => s._value);
 
