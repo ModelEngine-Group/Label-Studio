@@ -29,7 +29,8 @@ from data_import.models import FileUpload
 from data_manager.managers import PreparedTaskManager, TaskManager
 from django.conf import settings
 from django.db import OperationalError, models, transaction
-from django.db.models import CheckConstraint, JSONField, Q
+from django.db.models import CheckConstraint, F, JSONField, Q
+from django.db.models.lookups import GreaterThanOrEqual
 from django.db.models.signals import post_delete, post_save, pre_delete, pre_save
 from django.dispatch import Signal, receiver
 from django.urls import reverse
@@ -1397,10 +1398,15 @@ def bulk_update_stats_project_tasks(tasks, project=None):
         maximum_annotations = project.maximum_annotations
         # update filters if we can use overlap
         if use_overlap:
-            # finished tasks
-            finished_tasks = tasks.filter(
-                Q(total_annotations__gte=maximum_annotations) | Q(total_annotations__gte=1, overlap=1)
+            # following definition of `completed_annotations` above, count cancelled annotations
+            # as completed if project is in IGNORE_SKIPPED mode
+            completed_annotations_f_expr = F('total_annotations')
+            if project.skip_queue == project.SkipQueue.IGNORE_SKIPPED:
+                completed_annotations_f_expr += F('cancelled_annotations')
+            finished_q = Q(GreaterThanOrEqual(completed_annotations_f_expr, maximum_annotations)) | Q(
+                GreaterThanOrEqual(completed_annotations_f_expr, 1), overlap=1
             )
+            finished_tasks = tasks.filter(finished_q)
             finished_tasks_ids = finished_tasks.values_list('id', flat=True)
             tasks.update(is_labeled=Q(id__in=finished_tasks_ids))
 
