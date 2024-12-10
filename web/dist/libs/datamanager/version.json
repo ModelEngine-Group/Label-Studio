@@ -1,6 +1,6 @@
 {
-  "message": "chore(deps): bump nanoid from 3.1.30 to 3.3.8 in /web/libs/editor/tests/e2e (#6773)",
-  "commit": "dd04f567f87b77002fa423450915c763f0bd497d",
-  "date": "2024-12-10T10:27:23.000Z",
+  "message": "ci: LEAP-1567: Upgrade cookie version (#6770)",
+  "commit": "e5cc4aab337503a7f3f81066bb67f5724ea68b17",
+  "date": "2024-12-10T14:33:37.000Z",
   "branch": "develop"
 }
