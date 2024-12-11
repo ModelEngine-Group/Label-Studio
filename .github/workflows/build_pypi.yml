@@ -166,7 +166,7 @@ jobs:
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ inputs.upload_to_pypi && secrets.PYPI_APIKEY || secrets.PYPI_APIKEY_TEST }}
-          TWINE_REPOSITORY_URL: ${{ inputs.upload_to_pypi && 'https://upload.pypi.org/legacy/ ' || 'https://test.pypi.org/legacy/' }}
+          TWINE_REPOSITORY_URL: ${{ inputs.upload_to_pypi && 'https://upload.pypi.org/legacy/' || 'https://test.pypi.org/legacy/' }}
         run: poetry run twine upload dist/*
 
       - name: Get PyPI package details
