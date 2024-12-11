@@ -1,6 +1,6 @@
 {
-  "message": "ci: LEAP-1567: Upgrade cookie version (#6770)",
-  "commit": "e5cc4aab337503a7f3f81066bb67f5724ea68b17",
-  "date": "2024-12-10T14:33:37.000Z",
+  "message": "chore: OPTIC-1337: Update tooltips (#6737)",
+  "commit": "1747ab0387b57ca5eb91e31288f25e69ff905630",
+  "date": "2024-12-11T13:08:10.000Z",
   "branch": "develop"
 }
