@@ -189,26 +189,50 @@
   ],
   "authPage": [
     {
-      "title": "Did you know?",
-      "description": "You can sync data from all popular cloud storage providers to collect new items for labeling as they are uploaded, and return the annotation results to train and continuously improve models.",
+      "title": "Auto-labeling with Prompts",
+      "description": "Prompts allows you to leverage LLMs to swiftly generate accurate predictions, enabling instant labeling of thousands of tasks.",
       "link": {
         "label": "Learn more",
-        "url": "https://labelstud.io/guide/storage",
+        "url": "https://docs.humansignal.com/guide/prompts_overview",
         "params": {
           "experiment": "login_revamp",
-          "treatment": "sync_cloud_data"
+          "treatment": "prompts_auto_labeling"
+        }
+      }
+    },
+    {
+      "title": "Prompt Engineering",
+      "description": "Manage, evaluate, and iterate on LLM prompts against human-labelled golden datasets.",
+      "link": {
+        "label": "Learn more",
+        "url": "https://docs.humansignal.com/guide/prompts_overview#Prompt-evaluation-and-fine-tuning",
+        "params": {
+          "experiment": "login_revamp",
+          "treatment": "prompt_engineering"
+        }
+      }
+    },
+    {
+      "title": "New Feature!",
+      "description": "You can now label multi-page documents like PDFs.",
+      "link": {
+        "label": "Learn more",
+        "url": "https://labelstud.io/templates/multi-page-document-annotation",
+        "params": {
+          "experiment": "login_revamp",
+          "treatment": "multi_image"
         }
       }
     },
     {
       "title": "Did you know?",
-      "description": "You can enable webhooks to trigger machine learning model training or perform active learning after a certain number of tasks have been annotated.",
+      "description": "Label Studio now has a Starter Cloud offering optimized for small teams and projects.",
       "link": {
-        "label": "See use cases",
-        "url": "https://labelstud.io/guide/webhooks#What-to-use-Label-Studio-webhooks-for",
+        "label": "Learn more",
+        "url": "https://humansignal.com/pricing/",
         "params": {
           "experiment": "login_revamp",
-          "treatment": "enable_webhooks"
+          "treatment": "starter_cloud"
         }
       }
     },
@@ -221,18 +245,6 @@
         "params": {
           "experiment": "login_revamp",
           "treatment": "enterprise_platform"
-        }
-      }
-    },
-    {
-      "title": "Did you know?",
-      "description": "Label Studio has dozens of pre-built templates for all data types you can use to configure your labeling UI, from image classification to sentiment analysis to supervised LLM fine-tuning. ",
-      "link": {
-        "label": "See all templates",
-        "url": "https://labelstud.io/templates",
-        "params": {
-          "experiment": "login_revamp",
-          "treatment": "templates"
         }
       }
     }
