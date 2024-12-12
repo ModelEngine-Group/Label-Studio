@@ -231,7 +231,7 @@ You can use Label Studio as an independent part of your machine learning workflo
 | label-studio | Server, distributed as a pip package |
 | [Frontend library](web/libs/editor/) | The Label Studio frontend library. This uses React to build the UI and mobx-state-tree for state management. |  
 | [Data Manager library](web/libs/datamanager/) | A library for the Data Manager, our data exploration tool. | 
-| [label-studio-converter](https://github.com/HumanSignal/label-studio-converter) | Encode labels in the format of your favorite machine learning library | 
+| [label-studio-converter](https://github.com/HumanSignal/label-studio-sdk/tree/master/src/label_studio_sdk/converter) | Encode labels in the format of your favorite machine learning library |
 | [label-studio-transformers](https://github.com/HumanSignal/label-studio-transformers) | Transformers library connected and configured for use with Label Studio |
 
 ## Citation
