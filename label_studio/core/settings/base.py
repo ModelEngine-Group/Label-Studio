@@ -411,7 +411,14 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
-STATICFILES_STORAGE = 'core.storage.SkipMissedManifestStaticFilesStorage'
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'core.storage.SkipMissedManifestStaticFilesStorage',
+    },
+}
 
 # Sessions and CSRF
 SESSION_COOKIE_SECURE = bool(int(get_env('SESSION_COOKIE_SECURE', False)))
@@ -648,7 +655,7 @@ USE_NGINX_FOR_EXPORT_DOWNLOADS = get_bool_env('USE_NGINX_FOR_EXPORT_DOWNLOADS', 
 
 if get_env('MINIO_STORAGE_ENDPOINT') and not get_bool_env('MINIO_SKIP', False):
     CLOUD_FILE_STORAGE_ENABLED = True
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    STORAGES['default']['BACKEND'] = 'storages.backends.s3boto3.S3Boto3Storage'
     AWS_STORAGE_BUCKET_NAME = get_env('MINIO_STORAGE_BUCKET_NAME')
     AWS_ACCESS_KEY_ID = get_env('MINIO_STORAGE_ACCESS_KEY')
     AWS_SECRET_ACCESS_KEY = get_env('MINIO_STORAGE_SECRET_KEY')
@@ -661,7 +668,7 @@ if get_env('MINIO_STORAGE_ENDPOINT') and not get_bool_env('MINIO_SKIP', False):
 
 if get_env('STORAGE_TYPE') == 's3':
     CLOUD_FILE_STORAGE_ENABLED = True
-    DEFAULT_FILE_STORAGE = 'core.storage.CustomS3Boto3Storage'
+    STORAGES['default']['BACKEND'] = 'core.storage.CustomS3Boto3Storage'
     if get_env('STORAGE_AWS_ACCESS_KEY_ID'):
         AWS_ACCESS_KEY_ID = get_env('STORAGE_AWS_ACCESS_KEY_ID')
     if get_env('STORAGE_AWS_SECRET_ACCESS_KEY'):
@@ -681,7 +688,7 @@ if get_env('STORAGE_TYPE') == 's3':
 
 if get_env('STORAGE_TYPE') == 'azure':
     CLOUD_FILE_STORAGE_ENABLED = True
-    DEFAULT_FILE_STORAGE = 'core.storage.CustomAzureStorage'
+    STORAGES['default']['BACKEND'] = 'core.storage.CustomAzureStorage'
     AZURE_ACCOUNT_NAME = get_env('STORAGE_AZURE_ACCOUNT_NAME')
     AZURE_ACCOUNT_KEY = get_env('STORAGE_AZURE_ACCOUNT_KEY')
     AZURE_CONTAINER = get_env('STORAGE_AZURE_CONTAINER_NAME')
@@ -690,8 +697,7 @@ if get_env('STORAGE_TYPE') == 'azure':
 
 if get_env('STORAGE_TYPE') == 'gcs':
     CLOUD_FILE_STORAGE_ENABLED = True
-    # DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-    DEFAULT_FILE_STORAGE = 'core.storage.AlternativeGoogleCloudStorage'
+    STORAGES['default']['BACKEND'] = 'core.storage.AlternativeGoogleCloudStorage'
     GS_PROJECT_ID = get_env('STORAGE_GCS_PROJECT_ID')
     GS_BUCKET_NAME = get_env('STORAGE_GCS_BUCKET_NAME')
     GS_EXPIRATION = timedelta(seconds=int(get_env('STORAGE_GCS_EXPIRATION_SECS', '86400')))
