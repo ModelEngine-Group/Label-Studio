@@ -1260,7 +1260,7 @@ ul {
 
 .toc-enterprise-cta {
   margin-top: 2em;
-  padding: 1.5em 2em;
+  padding: 1.5em 1em;
   color: var(--color-gray-900);
   background: url("/images/design/gradient.svg");
   background-size: cover;

@@ -24,8 +24,13 @@
       </div>
     <% } %>
     <div class="toc-enterprise-cta">
-      <span class="toc-enterprise-cta-copy">Unlock more with Enterprise</span>
-      <%- partial("component/button", { url: "https://humansignal.com/contact-sales", label: "Get a Demo", theme: "Tertiary" }) %>
+      <% if(isEnterpriseTheme) { %>
+        <span class="toc-enterprise-cta-copy">Designed for teams of all sizes</span>
+        <%- partial("component/button", { url: "https://humansignal.com/contact-sales", label: "Contact Sales", theme: "Tertiary" }) %>
+      <% } else { %>
+        <span class="toc-enterprise-cta-copy">Designed for teams of all sizes</span>
+        <%- partial("component/button", { url: "https://humansignal.com/pricing", label: "Compare Versions", theme: "Tertiary" }) %>
+      <% } %>
     </div>
   </div>
 </div>
