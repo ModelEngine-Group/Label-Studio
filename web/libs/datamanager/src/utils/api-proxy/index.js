@@ -155,12 +155,25 @@ export class APIProxy {
       let responseMeta;
       const alwaysExpectJSON = options?.alwaysExpectJSON === undefined ? true : options.alwaysExpectJSON;
 
+      let shouldUseQueryCache = false;
       try {
         const finalParams = {
           ...(methodSettings.params ?? {}),
           ...(urlParams ?? {}),
           ...(this.sharedParams ?? {}),
         };
+
+        if (finalParams.__useQueryCache && methodSettings.queryCache) {
+          shouldUseQueryCache = true;
+
+          const cachedData = methodSettings.queryCache(finalParams);
+
+          if (cachedData) {
+            return cachedData;
+          }
+
+          delete finalParams.__useQueryCache;
+        }
 
         const { method, url: apiCallURL } = this.createUrl(
           methodSettings.path,
@@ -247,7 +260,13 @@ export class APIProxy {
                 : { ok: true };
 
             if (methodSettings.convert instanceof Function) {
-              return await methodSettings.convert(responseData);
+              const convertedData = await methodSettings.convert(responseData);
+
+              if (shouldUseQueryCache) {
+                methodSettings.queryCache(finalParams, convertedData);
+              }
+
+              return convertedData;
             }
 
             responseResult = responseData;
@@ -267,6 +286,10 @@ export class APIProxy {
         enumerable: false,
         writable: false,
       });
+
+      if (shouldUseQueryCache) {
+        methodSettings.queryCache(finalParams, responseResult);
+      }
 
       return responseResult;
     };
