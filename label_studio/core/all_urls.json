@@ -150,6 +150,12 @@
         "decorators": ""
     },
     {
+        "url": "/api/projects/counts/",
+        "module": "projects.api.ProjectCountsListAPI",
+        "name": "projects:api:project-counts-list",
+        "decorators": ""
+    },
+    {
         "url": "/api/projects/<int:pk>/next/",
         "module": "projects.api.ProjectNextTaskAPI",
         "name": "projects:api:project-next",

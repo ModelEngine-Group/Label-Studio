@@ -297,6 +297,22 @@ class ProjectSerializer(FlexFieldsModelSerializer):
         return result
 
 
+class ProjectCountsSerializer(ProjectSerializer):
+    class Meta:
+        model = Project
+        fields = [
+            'id',
+            'task_number',
+            'finished_task_number',
+            'total_predictions_number',
+            'total_annotations_number',
+            'num_tasks_with_annotations',
+            'useful_annotation_number',
+            'ground_truth_number',
+            'skipped_annotations_number',
+        ]
+
+
 class ProjectOnboardingSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectOnboarding
