@@ -1,6 +1,6 @@
 {
-  "message": "chore: OPTIC-1337: Update tooltips (#6737)",
-  "commit": "1747ab0387b57ca5eb91e31288f25e69ff905630",
-  "date": "2024-12-11T13:08:10.000Z",
+  "message": "fix: OPTIC-1418: Improve Organization Membership API usage to reduce latency (#6780)",
+  "commit": "ca1da7a2dc34dfd512d3d1dd71bf722ef4019f66",
+  "date": "2024-12-16T15:03:14.000Z",
   "branch": "develop"
 }
