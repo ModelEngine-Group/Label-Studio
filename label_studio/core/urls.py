@@ -64,7 +64,13 @@ urlpatterns = [
     ),
     re_path(r'^dm/(?P<path>.*)$', serve, kwargs={'document_root': settings.DM_ROOT, 'show_indexes': True}),
     re_path(
-        r'^react-app/(?P<path>.*)$', serve, kwargs={'document_root': settings.REACT_APP_ROOT, 'show_indexes': True}
+        r'^react-app/(?P<path>.*)$',
+        serve,
+        kwargs={
+            'document_root': settings.REACT_APP_ROOT,
+            'show_indexes': True,
+            'manifest_asset_prefix': 'react-app',
+        },
     ),
     re_path(
         r'^static/fonts/roboto/roboto.css$',

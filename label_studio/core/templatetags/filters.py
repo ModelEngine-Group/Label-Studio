@@ -1,14 +1,26 @@
 """This file and its contents are licensed under the Apache License 2.0. Please see the included NOTICE for copyright information and LICENSE for a copy of the license.
 """
+
 import json
 import re
 from datetime import datetime
 
+from core.utils.manifest_assets import get_manifest_asset
 from django import template
 from django.conf import settings
 from django.utils.html import format_html
 
 register = template.Library()
+
+
+@register.simple_tag
+def manifest_asset(path):
+    """Maps a path to its hashed filename using manifest.json, or falls back to /react-app/ prefix
+
+    Usage in template:
+    {% manifest_asset 'main.js' %}
+    """
+    return get_manifest_asset(path)
 
 
 @register.filter

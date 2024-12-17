@@ -2,10 +2,12 @@
 Views and functions for serving static files. These are only to be used
 during development, and SHOULD NOT be used in a production setting.
 """
+
 import mimetypes
 import posixpath
 from pathlib import Path
 
+from core.utils.manifest_assets import get_manifest_asset
 from django.http import (
     Http404,
     HttpResponseNotModified,
@@ -17,7 +19,7 @@ from django.views.static import was_modified_since
 from ranged_fileresponse import RangedFileResponse
 
 
-def serve(request, path, document_root=None, show_indexes=False):
+def serve(request, path, document_root=None, show_indexes=False, manifest_asset_prefix=None):
     """
     Serve static files below a given point in the directory structure.
 
@@ -32,11 +34,29 @@ def serve(request, path, document_root=None, show_indexes=False):
     of the directory.  This index view will use the template hardcoded below,
     but if you'd like to override it, you can create a template called
     ``static/directory_index.html``.
+
+    If manifest_asset_prefix is provided, we will try to serve the file from the manifest.json
+    if the file is not found in the document_root.
+
+    Example:
+        path = "main.js"
+        document_root = "/dist/apps/labelstudio/"
+        manifest_asset_prefix = "react-app"
+        manifest_json = {"main.js": "/react-app/main.123456.js"}
+        fullpath = Path(safe_join(document_root, "main.123456.js"))
     """
     path = posixpath.normpath(path).lstrip('/')
     fullpath = Path(safe_join(document_root, path))
     if fullpath.is_dir():
         raise Http404(_('Directory indexes are not allowed here.'))
+    if manifest_asset_prefix and not fullpath.exists():
+        possible_asset = get_manifest_asset(path)
+        manifest_asset_prefix = (
+            f'/{manifest_asset_prefix}' if not manifest_asset_prefix.startswith('/') else manifest_asset_prefix
+        )
+        if possible_asset.startswith(manifest_asset_prefix):
+            possible_asset = possible_asset[len(manifest_asset_prefix) :]
+        fullpath = Path(safe_join(document_root, possible_asset))
     if not fullpath.exists():
         raise Http404(_('“%(path)s” does not exist') % {'path': fullpath})
     # Respect the If-Modified-Since header.
