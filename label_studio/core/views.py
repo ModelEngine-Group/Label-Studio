@@ -72,7 +72,7 @@ def version_page(request):
     # html / json response
     if request.path == '/version/':
         # other settings from backend
-        if request.user.is_superuser:
+        if not getattr(settings, 'CLOUD_INSTANCE', False) and request.user.is_superuser:
             result['settings'] = {
                 key: str(getattr(settings, key))
                 for key in dir(settings)
