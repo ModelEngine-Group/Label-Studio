@@ -1,6 +1,6 @@
 {
-  "message": "fix: OPTIC-1418: Improve Organization Membership API usage to reduce latency (#6780)",
-  "commit": "ca1da7a2dc34dfd512d3d1dd71bf722ef4019f66",
-  "date": "2024-12-16T15:03:14.000Z",
+  "message": "fix: OPTIC-1178: Possible LS Memory Leak (#6704)",
+  "commit": "3818a9c386220d194869d608348ba4afd6794b64",
+  "date": "2024-12-18T11:21:53.000Z",
   "branch": "develop"
 }
