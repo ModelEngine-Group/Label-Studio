@@ -6,6 +6,7 @@ import ujson as json
 from core.feature_flags import flag_set
 from core.label_config import replace_task_data_undefined_with_config_field
 from core.utils.common import load_func, retry_database_locked
+from core.utils.db import fast_first
 from django.conf import settings
 from django.db import IntegrityError, transaction
 from drf_yasg import openapi
@@ -533,10 +534,13 @@ class BaseTaskSerializerBulk(serializers.ListSerializer):
         db_tasks = []
         max_overlap = self.project.maximum_annotations
 
-        # identify max inner id
-        tasks = Task.objects.filter(project=self.project)
-        prev_inner_id = tasks.order_by('-inner_id')[0].inner_id if tasks else 0
+        # Acquire a lock on the project to ensure atomicity when calculating inner_id
+        project = Project.objects.select_for_update().get(id=self.project.id)
+
+        last_task = fast_first(Task.objects.filter(project=project).order_by('-inner_id'))
+        prev_inner_id = last_task.inner_id if last_task else 0
         max_inner_id = (prev_inner_id + 1) if prev_inner_id else 1
+
         for i, task in enumerate(validated_tasks):
             cancelled_annotations = len([ann for ann in task_annotations[i] if ann.get('was_cancelled', False)])
             total_annotations = len(task_annotations[i]) - cancelled_annotations
