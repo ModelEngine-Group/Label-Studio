@@ -1,4 +1,5 @@
-import { Block, Elem } from "../../../utils/bem";
+import clsx from "clsx";
+import { cn } from "../../../utils/bem";
 import { isDefined } from "../../../utils/utils";
 import "./Agreement.scss";
 
@@ -19,12 +20,14 @@ const formatNumber = (num) => {
 };
 
 export const Agreement = (column) => {
+  const agreementCN = cn("agreement");
+  const scoreElem = agreementCN.elem("score");
   return (
-    <Block name="agreement">
-      <Elem name="score" mod={{ [agreement(column.value)]: true }}>
+    <div className={agreementCN.toString()}>
+      <span className={clsx(scoreElem.toString(), scoreElem.mod({ [agreement(column.value)]: true }).toString())}>
         {isDefined(column.value) ? `${formatNumber(column.value)}%` : ""}
-      </Elem>
-    </Block>
+      </span>
+    </div>
   );
 };
 

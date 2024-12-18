@@ -11,6 +11,7 @@ import {
   type ReactSVG,
   useContext,
 } from "react";
+import { FF_MEMORY_LEAK_FIX, isFF } from "./feature-flags";
 
 interface CNMod {
   [key: string]: unknown;
@@ -166,16 +167,18 @@ export const cn = (block: string, options: CNOptions = {}): CN => {
     },
   };
 
-  Object.defineProperty(classNameBuilder, "Block", { value: Block });
-  Object.defineProperty(classNameBuilder, "Elem", { value: Elem });
-  Object.defineProperty(classNameBuilder, "__class", {
-    value: {
-      block,
-      elem,
-      mix,
-      mod,
-    },
-  });
+  if (!isFF(FF_MEMORY_LEAK_FIX)) {
+    Object.defineProperty(classNameBuilder, "Block", { value: Block });
+    Object.defineProperty(classNameBuilder, "Elem", { value: Elem });
+    Object.defineProperty(classNameBuilder, "__class", {
+      value: {
+        block,
+        elem,
+        mix,
+        mod,
+      },
+    });
+  }
 
   return classNameBuilder;
 };

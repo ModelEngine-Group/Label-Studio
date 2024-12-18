@@ -122,7 +122,7 @@ export const Controls = controlsInjector<{ annotation: MSTAnnotation }>(
           if (customButton === "accept") {
             // just an example of internal button usage
             // @todo move buttons to separate components
-            buttons.push(<AcceptButton disabled={disabled} history={history} store={store} />);
+            buttons.push(<AcceptButton key={customButton} disabled={disabled} history={history} store={store} />);
           }
         } else {
           buttons.push(
@@ -163,23 +163,23 @@ export const Controls = controlsInjector<{ annotation: MSTAnnotation }>(
           }
         };
 
-        buttons.push(<ControlButton button={button} disabled={disabled} onClick={onReject} />);
+        buttons.push(<ControlButton key={button.name} button={button} disabled={disabled} onClick={onReject} />);
       });
-      buttons.push(<AcceptButton disabled={disabled} history={history} store={store} />);
+      buttons.push(<AcceptButton key="review-accept" disabled={disabled} history={history} store={store} />);
     } else if (annotation.skipped) {
       buttons.push(
         <Elem name="skipped-info" key="skipped">
           <IconBan color="#d00" /> Was skipped
         </Elem>,
       );
-      buttons.push(<UnskipButton disabled={disabled} store={store} />);
+      buttons.push(<UnskipButton key="unskip" disabled={disabled} store={store} />);
     } else {
       if (store.hasInterface("skip")) {
         const onSkipWithComment = (e: React.MouseEvent, action: () => any) => {
           handleActionWithComments(e, action, "Please enter a comment before skipping");
         };
 
-        buttons.push(<SkipButton disabled={disabled} store={store} onSkipWithComment={onSkipWithComment} />);
+        buttons.push(<SkipButton key="skip" disabled={disabled} store={store} onSkipWithComment={onSkipWithComment} />);
       }
 
       const isDisabled = disabled || submitDisabled;

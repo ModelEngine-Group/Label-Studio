@@ -1,7 +1,8 @@
 import { observer, Provider } from "mobx-react";
 import React from "react";
+import clsx from "clsx";
 import { SDKProvider } from "../../providers/SDKProvider";
-import { Block, Elem } from "../../utils/bem";
+import { cn } from "../../utils/bem";
 import { Spinner } from "../Common/Spinner";
 import { DataManager } from "../DataManager/DataManager";
 import { Labeling } from "../Label/Label";
@@ -26,27 +27,32 @@ class ErrorBoundary extends React.Component {
  * @param {{app: import("../../stores/AppStore").AppStore} param0
  */
 const AppComponent = ({ app }) => {
+  const rootCN = cn("root");
+  const rootClassName = rootCN.mod({ mode: app.SDK.mode }).toString();
+  const crashCN = cn("crash");
   return (
     <ErrorBoundary>
       <Provider store={app}>
         <SDKProvider sdk={app.SDK}>
-          <Block name="root" mod={{ mode: app.SDK.mode }}>
+          <div className={rootClassName}>
             {app.crashed ? (
-              <Block name="crash">
-                <Elem name="header">Oops...</Elem>
-                <Elem name="description">Project has been deleted or not yet created.</Elem>
-              </Block>
+              <div className={clsx(rootCN.toString(), rootClassName)}>
+                <span className={rootCN.elem("header").toString()}>Oops...</span>
+                <span className={rootCN.elem("description").toString()}>
+                  Project has been deleted or not yet created.
+                </span>
+              </div>
             ) : app.loading ? (
-              <Block name="app-loader">
+              <div className={cn("app-loader").toString()}>
                 <Spinner size="large" />
-              </Block>
+              </div>
             ) : app.isLabeling ? (
               <Labeling />
             ) : (
               <DataManager />
             )}
-            <Block name={"offscreen"} />
-          </Block>
+            <div className={cn("offscreen").toString()} />
+          </div>
         </SDKProvider>
       </Provider>
     </ErrorBoundary>

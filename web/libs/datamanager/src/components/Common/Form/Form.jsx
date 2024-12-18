@@ -474,8 +474,9 @@ Form.Builder = forwardRef(
     };
 
     const renderColumns = (columns) => {
+      const columnClassName = cn("form-dm").elem("column").toString();
       return columns.map((col, index) => (
-        <div className={cn("form-dm").elem("column")} key={index} style={{ width: col.width }}>
+        <div className={columnClassName} key={index} style={{ width: col.width }}>
           {renderFields(col.fields)}
         </div>
       ));

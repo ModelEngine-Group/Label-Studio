@@ -1,11 +1,11 @@
 import { observer } from "mobx-react";
 import React from "react";
-import { Block } from "../../../../utils/bem";
+import { cn } from "../../../../utils/bem";
 import { FF_LOPS_E_3, isFF } from "../../../../utils/feature-flags";
 import { normalizeCellAlias } from "../../../CellViews";
 import { SkeletonLoader } from "../../SkeletonLoader";
 import "./TableRow.scss";
-import { TableContext, TableElem } from "../TableContext";
+import { TableContext, tableCN } from "../TableContext";
 import { getProperty, getStyle } from "../utils";
 
 const CellRenderer = observer(({ col: colInput, data, decoration, cellViews }) => {
@@ -15,9 +15,9 @@ const CellRenderer = observer(({ col: colInput, data, decoration, cellViews }) =
     const { headerClassName: _, cellClassName, ...rest } = col;
 
     return (
-      <TableElem {...rest} name="cell" key={id} mix={cellClassName}>
+      <span className={tableCN.elem("cell").mix(cellClassName).toString()} {...rest} key={id}>
         <Cell data={data} />
-      </TableElem>
+      </span>
     );
   }
 
@@ -32,7 +32,7 @@ const CellRenderer = observer(({ col: colInput, data, decoration, cellViews }) =
   const cellIsLoading = isFF(FF_LOPS_E_3) && data.loading === colInput.alias;
 
   return (
-    <TableElem name="cell">
+    <div className={tableCN.elem("cell").toString()}>
       <div
         style={{
           ...(style ?? {}),
@@ -43,13 +43,14 @@ const CellRenderer = observer(({ col: colInput, data, decoration, cellViews }) =
       >
         {cellIsLoading ? <SkeletonLoader /> : Renderer ? <Renderer {...renderProps} /> : value}
       </div>
-    </TableElem>
+    </div>
   );
 });
 
 export const TableRow = observer(({ data, even, style, wrapperStyle, onClick, stopInteractions, decoration }) => {
   const { columns, cellViews } = React.useContext(TableContext);
-
+  const rowWrapperCN = tableCN.elem("row-wrapper");
+  const tableRowCN = cn("table-row");
   const mods = {
     even,
     selected: data.isSelected,
@@ -59,12 +60,12 @@ export const TableRow = observer(({ data, even, style, wrapperStyle, onClick, st
   };
 
   return (
-    <TableElem name="row-wrapper" mod={mods} style={wrapperStyle} onClick={(e) => onClick?.(data, e)}>
-      <Block name="table-row" style={style}>
+    <div className={rowWrapperCN.mod(mods).toString()} style={wrapperStyle} onClick={(e) => onClick?.(data, e)}>
+      <div className={tableRowCN.toString()} style={style}>
         {columns.map((col) => {
           return <CellRenderer key={col.id} col={col} data={data} cellViews={cellViews} decoration={decoration} />;
         })}
-      </Block>
-    </TableElem>
+      </div>
+    </div>
   );
 });

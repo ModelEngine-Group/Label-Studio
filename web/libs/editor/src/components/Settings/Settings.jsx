@@ -227,7 +227,7 @@ export default observer(({ store }) => {
   return (
     <Block
       tag={Modal}
-      visible={store.showingSettings}
+      open={store.showingSettings}
       onCancel={store.toggleSettings}
       footer=""
       {...DEFAULT_MODAL_SETTINGS}

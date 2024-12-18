@@ -1,7 +1,8 @@
 import { inject } from "mobx-react";
+import clsx from "clsx";
 import { LsCheckAlt, LsCrossAlt } from "../../../assets/icons";
 import { useSDK } from "../../../providers/SDKProvider";
-import { Block, Elem } from "../../../utils/bem";
+import { cn } from "../../../utils/bem";
 import { isDefined } from "../../../utils/utils";
 import { Space } from "../../Common/Space/Space";
 import { Tooltip } from "../../Common/Tooltip/Tooltip";
@@ -16,10 +17,12 @@ export const Annotators = (cell) => {
   const userList = Array.from(value);
   const renderable = userList.slice(0, 10);
   const extra = userList.length - renderable.length;
+  const userPickBadge = cn("userpic-badge");
+  const annotatorsCN = cn("annotators");
 
   return (
-    <Block name="annotators">
-      {renderable.map((item) => {
+    <div className={annotatorsCN.toString()}>
+      {renderable.map((item, index) => {
         const user = item.user ?? item;
         const { annotated, reviewed, review } = item;
 
@@ -28,9 +31,9 @@ export const Annotators = (cell) => {
         const suppressStats = column.alias === "comment_authors";
 
         return (
-          <Elem
-            key={`user-${user.id}`}
-            name="item"
+          <div
+            key={`user-${user.id}-${index}`}
+            className={annotatorsCN.elem("item").toString()}
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -43,19 +46,19 @@ export const Annotators = (cell) => {
                 faded={userpicIsFaded}
                 badge={{
                   bottomRight: review && (
-                    <Block name="userpic-badge" mod={{ [review]: true }}>
+                    <div className={clsx(userPickBadge.toString(), userPickBadge.mod({ [review]: true }).toString())}>
                       {review === "rejected" ? <LsCrossAlt /> : <LsCheckAlt />}
-                    </Block>
+                    </div>
                   ),
                 }}
               />
             </Tooltip>
-          </Elem>
+          </div>
         );
       })}
       {extra > 0 && (
-        <Elem
-          name="item"
+        <div
+          className={annotatorsCN.elem("item").toString()}
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -63,9 +66,9 @@ export const Annotators = (cell) => {
           }}
         >
           <Userpic username={`+${extra}`} />
-        </Elem>
+        </div>
       )}
-    </Block>
+    </div>
   );
 };
 

@@ -167,17 +167,12 @@ export class LSFWrapper {
       interfaces = this.interfacesModifier(interfaces, this.labelStream);
     }
 
-    console.group("Interfaces");
-    console.log([...interfaces]);
-
     if (!this.shouldLoadNext()) {
       interfaces = interfaces.filter((item) => {
         return !["topbar:prevnext", "skip"].includes(item);
       });
     }
 
-    console.log([...interfaces]);
-    console.groupEnd();
     const queueTotal = dm.store.project.reviewer_queue_total || dm.store.project.queue_total;
     const queueDone = dm.store.project.queue_done;
     const queueLeft = dm.store.project.queue_left;

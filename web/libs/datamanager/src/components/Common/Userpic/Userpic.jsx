@@ -1,5 +1,5 @@
 import { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Block, Elem } from "../../../utils/bem";
+import { cn } from "../../../utils/bem";
 import { Tooltip } from "../Tooltip/Tooltip";
 import "./Userpic.scss";
 
@@ -13,6 +13,7 @@ export const Userpic = forwardRef(
     const [finalSrc, setFinalSrc] = useState(user?.avatar ?? src);
     const [imgVisible, setImgVisible] = useState(false);
     const [nameVisible, setNameVisible] = useState(true);
+    const userPicCN = cn("userpic-dm");
 
     if (size) {
       style = Object.assign({ width: size, height: size, fontSize: size * 0.4 }, style);
@@ -45,33 +46,35 @@ export const Userpic = forwardRef(
     }, [finalSrc]);
 
     const userpic = (
-      <Block ref={ref} name="userpic-dm" mix={className} mod={{ faded }} style={style} {...rest}>
-        <Elem
-          tag="img"
-          name="avatar"
+      <div ref={ref} className={userPicCN.mix(className).mod({ faded }).toString()} style={style} {...rest}>
+        <img
+          className={userPicCN.elem("avatar").mod({ faded }).toString()}
           ref={imgRef}
           src={finalSrc}
           alt={(finalUsername ?? "").toUpperCase()}
           style={{ opacity: imgVisible ? (faded ? 0.3 : 1) : 0 }}
           onLoad={onImageLoaded}
           onError={() => setFinalSrc(FALLBACK_IMAGE)}
-          mod={{ faded }}
         />
         {nameVisible && (
-          <Elem tag="span" name="username">
-            {(finalUsername ?? "").toUpperCase()}
-          </Elem>
+          <span className={userPicCN.elem("username").toString()}>{(finalUsername ?? "").toUpperCase()}</span>
         )}
 
         {badge &&
           Object.entries(badge).map(([align, content], i) => {
             return (
-              <Elem key={`badge-${i}`} name="badge" mod={{ [align]: true }}>
+              <span
+                key={`badge-${i}`}
+                className={userPicCN
+                  .elem("badge")
+                  .mod({ [align]: true })
+                  .toString()}
+              >
                 {content}
-              </Elem>
+              </span>
             );
           })}
-      </Block>
+      </div>
     );
 
     const userFullName = useMemo(() => {

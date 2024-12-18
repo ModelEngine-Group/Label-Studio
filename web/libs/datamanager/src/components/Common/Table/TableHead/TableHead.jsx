@@ -2,7 +2,6 @@ import { observer, useLocalStore } from "mobx-react";
 import { toJS } from "mobx";
 import React, { forwardRef, useCallback, useEffect, useRef } from "react";
 import { ViewColumnType, ViewColumnTypeName, ViewColumnTypeShort } from "../../../../stores/Tabs/tab_column";
-import { BemWithSpecifiContext } from "../../../../utils/bem";
 import { Button } from "../../Button/Button";
 import { Dropdown } from "../../Dropdown/Dropdown";
 import { Menu } from "../../Menu/Menu";
@@ -10,13 +9,14 @@ import { Resizer } from "../../Resizer/Resizer";
 import { Space } from "../../Space/Space";
 import { Tag } from "../../Tag/Tag";
 import { TableCell, TableCellContent } from "../TableCell/TableCell";
-import { TableContext, TableElem } from "../TableContext";
+import { TableContext, tableCN } from "../TableContext";
+import { cn } from "../../../../utils/bem";
 import { getStyle } from "../utils";
 import "./TableHead.scss";
 import { FF_DEV_3873, isFF } from "../../../../utils/feature-flags";
 import { getRoot } from "mobx-state-tree";
 
-const { Block, Elem } = BemWithSpecifiContext();
+const tableHeadCN = cn("table-head");
 
 const DropdownWrapper = observer(({ column, cellViews, children, onChange }) => {
   const types = ViewColumnType._types
@@ -93,9 +93,9 @@ const ColumnRenderer = observer(
       const { cellClassName: _, headerClassName, ...rest } = column;
 
       return (
-        <TableElem {...rest} name="cell" key={id} mix={["th", headerClassName]}>
+        <div {...rest} className={tableCN.elem("cell").mix(["th", headerClassName]).toString()} key={id}>
           <Header />
-        </TableElem>
+        </div>
       );
     }
 
@@ -113,7 +113,7 @@ const ColumnRenderer = observer(
           {content}
         </TableCellContent>
 
-        {extra && <Elem name="column-extra">{extra}</Elem>}
+        {extra && <span className={tableHeadCN.elem("column-extra").toString()}>{extra}</span>}
       </>
     );
 
@@ -218,15 +218,13 @@ export const TableHead = observer(
       }, []);
 
       return (
-        <Block
-          name="table-head"
+        <div
+          className={tableHeadCN.mod({ droppable: true }).mix("horizontal-shadow").toString()}
           ref={ref}
           style={{
             ...style,
             height: isFF(FF_DEV_3873) && 42,
           }}
-          mod={{ droppable: true }}
-          mix="horizontal-shadow"
           onDragOver={useCallback(
             (e) => {
               const draggedCol = states.getDraggedCol();
@@ -239,8 +237,8 @@ export const TableHead = observer(
         >
           {columns.map((col) => {
             return (
-              <Elem
-                name="draggable"
+              <span
+                className={tableHeadCN.elem("draggable").toString()}
                 draggable={true}
                 ref={(ele) => (colRefs.current[col.id] = ele)}
                 key={col.id}
@@ -288,11 +286,11 @@ export const TableHead = observer(
                   onResize={onResize}
                   onReset={onReset}
                 />
-              </Elem>
+              </span>
             );
           })}
-          <Elem name="extra">{extra}</Elem>
-        </Block>
+          <span className={tableHeadCN.elem("extra").toString()}>{extra}</span>
+        </div>
       );
     },
   ),

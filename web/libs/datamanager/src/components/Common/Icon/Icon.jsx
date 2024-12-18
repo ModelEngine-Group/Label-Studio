@@ -1,11 +1,11 @@
 import React from "react";
-import { Block } from "../../../utils/bem";
+import { cn } from "../../../utils/bem";
 import "./Icon.scss";
 
 export const Icon = React.forwardRef(({ icon, ...props }, ref) => {
   return (
-    <Block tag="span" name="icon" ref={ref}>
+    <span className={cn("icon").toString()} ref={ref}>
       {React.createElement(icon, props)}
-    </Block>
+    </span>
   );
 });

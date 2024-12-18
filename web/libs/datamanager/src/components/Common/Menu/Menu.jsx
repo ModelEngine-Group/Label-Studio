@@ -1,9 +1,12 @@
 import React, { useCallback, useMemo } from "react";
-import { Block, cn } from "../../../utils/bem";
+import clsx from "clsx";
+import { cn } from "../../../utils/bem";
 import { useDropdown } from "../Dropdown/DropdownTrigger";
 import "./Menu.scss";
 import { MenuContext } from "./MenuContext";
 import { MenuItem } from "./MenuItem";
+
+const menuCN = cn("menu-dm");
 
 export const Menu = React.forwardRef(
   ({ children, className, style, size, selectedKeys, closeDropdownOnItemClick }, ref) => {
@@ -15,7 +18,7 @@ export const Menu = React.forwardRef(
 
     const clickHandler = useCallback(
       (e) => {
-        const elem = cn("menu-dm").elem("item").closest(e.target);
+        const elem = menuCN.elem("item").closest(e.target);
 
         if (dropdown && elem && closeDropdownOnItemClick !== false) {
           dropdown.close();
@@ -30,17 +33,14 @@ export const Menu = React.forwardRef(
 
     return (
       <MenuContext.Provider value={{ selected }}>
-        <Block
+        <ul
           ref={ref}
-          tag="ul"
-          name="menu-dm"
-          mod={{ size, collapsed }}
-          mix={className}
+          className={clsx(menuCN.toString(), menuCN.mod({ size, collapsed }).toString(), className)}
           style={style}
           onClick={clickHandler}
         >
           {children}
-        </Block>
+        </ul>
       </MenuContext.Provider>
     );
   },

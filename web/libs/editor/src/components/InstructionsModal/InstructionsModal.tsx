@@ -19,7 +19,7 @@ export const InstructionsModal = ({
     <>
       <Modal
         title=""
-        visible={visible}
+        open={visible}
         maskClosable
         footer={null}
         closable={true}

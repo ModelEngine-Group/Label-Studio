@@ -2,7 +2,7 @@ import { inject, observer } from "mobx-react";
 import { useCallback } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { LSPlus } from "../../assets/icons";
-import { Block, Elem } from "../../utils/bem";
+import { cn } from "../../utils/bem";
 import { Interface } from "../Common/Interface";
 import { Space } from "../Common/Space/Space";
 import { Spinner } from "../Common/Spinner";
@@ -11,6 +11,8 @@ import { FiltersSidebar } from "../Filters/FiltersSidebar/FilterSidebar";
 import { DataView } from "../MainView";
 import "./DataManager.scss";
 import { Toolbar } from "./Toolbar/Toolbar";
+
+const tabContentCN = cn("tabs-dm-content");
 
 const injector = inject(({ store }) => {
   const { sidebarEnabled, sidebarVisible } = store.viewsStore ?? {};
@@ -88,8 +90,8 @@ const TabsSwitch = switchInjector(
         {tabs.map((tab, index) => (
           <Draggable key={tab.key} draggableId={tab.key} index={index}>
             {(provided, snapshot) => (
-              <Elem
-                name={"draggable"}
+              <div
+                className={tabContentCN.elem("draggable").toString()}
                 ref={provided.innerRef}
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
@@ -114,7 +116,7 @@ const TabsSwitch = switchInjector(
                   deletable={tab.deletable}
                   virtual={tab.virtual}
                 />
-              </Elem>
+              </div>
             )}
           </Draggable>
         ))}
@@ -125,8 +127,8 @@ const TabsSwitch = switchInjector(
 
 export const DataManager = injector(({ shrinkWidth }) => {
   return (
-    <Block name="tabs-dm-content">
-      <Elem name="tab" mod={{ shrink: shrinkWidth }}>
+    <div className={tabContentCN.toString()}>
+      <div className={tabContentCN.elem("tab").mod({ shrink: shrinkWidth }).toString()}>
         <Interface name="tabs">
           <TabsSwitch />
         </Interface>
@@ -136,8 +138,8 @@ export const DataManager = injector(({ shrinkWidth }) => {
         </Interface>
 
         <DataView />
-      </Elem>
+      </div>
       <FiltersSidebar />
-    </Block>
+    </div>
   );
 });

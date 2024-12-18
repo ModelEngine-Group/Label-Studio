@@ -204,7 +204,7 @@ export const AppStore = types
 
       if (!isDefined(taskID)) return;
 
-      self.loadingData = true;
+      self.setLoadingData(true);
 
       if (self.mode === "labelstream") {
         yield self.taskStore.loadNextTask({
@@ -217,18 +217,24 @@ export const AppStore = types
       } else {
         self.taskStore.setSelected(taskID);
 
-        yield self.taskStore.loadTask(taskID, {
+        const taskPromise = self.taskStore.loadTask(taskID, {
           select: !!taskID && !!annotationID,
         });
 
-        const annotation = self.LSF?.currentAnnotation;
-        const id = annotation?.pk ?? annotation?.id;
+        taskPromise.then(() => {
+          const annotation = self.LSF?.currentAnnotation;
+          const id = annotation?.pk ?? annotation?.id;
 
-        self.LSF?.setLSFTask(self.taskStore.selected, id);
+          self.LSF?.setLSFTask(self.taskStore.selected, id);
 
-        self.loadingData = false;
+          self.setLoadingData(false);
+        });
       }
     }),
+
+    setLoadingData(value) {
+      self.loadingData = value;
+    },
 
     unsetTask(options) {
       try {
@@ -296,7 +302,7 @@ export const AppStore = types
       const nextAction = () => {
         self.SDK.setMode("labeling");
 
-        if (item && !item.isSelected) {
+        if (item?.id && !item.isSelected) {
           const labelingParams = {
             pushState: options?.pushState,
           };

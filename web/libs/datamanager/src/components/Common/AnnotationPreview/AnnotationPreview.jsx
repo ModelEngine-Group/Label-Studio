@@ -1,7 +1,7 @@
 import { inject, observer } from "mobx-react";
 import React from "react";
 import { taskToLSFormat } from "../../../sdk/lsf-utils";
-import { Block } from "../../../utils/bem";
+import { cn } from "../../../utils/bem";
 import { FF_LSDV_4711, isFF } from "../../../utils/feature-flags";
 import { Spinner } from "../Spinner";
 import "./AnnotationPreview.scss";
@@ -135,7 +135,7 @@ export const AnnotationPreview = injector(
         height={props.height}
       />
     ) : (
-      <Block name="annotation-preview" width={props.width} height={props.height}>
+      <div className={cn("annotation-preview").toString()} width={props.width} height={props.height}>
         <Spinner
           size={props.size ?? "default"}
           style={{
@@ -153,7 +153,7 @@ export const AnnotationPreview = injector(
           width={props.width}
           height={props.height}
         />
-      </Block>
+      </div>
     );
   }),
 );
