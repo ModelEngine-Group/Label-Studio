@@ -1,6 +1,6 @@
 {
-  "message": "fix: OPTIC-1178: Possible LS Memory Leak (#6704)",
-  "commit": "3818a9c386220d194869d608348ba4afd6794b64",
-  "date": "2024-12-18T11:21:53.000Z",
+  "message": "feat: LEAP-1424: LEAP-1370: Allow to zoom and pan the image in preview modal (#6781)",
+  "commit": "e5d54c75dd883b8b672ed515d77f7c037edccb19",
+  "date": "2024-12-18T13:42:03.000Z",
   "branch": "develop"
 }
