@@ -3063,7 +3063,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 3,
+      "version": 2,
       "deleted": false
     },
     "fflag_feat_front_optic_1419_backend_csv_comments_export_short": {
@@ -4805,7 +4805,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 3,
+      "version": 2,
       "deleted": false
     },
     "fflag_fix_leap_246_multi_object_hotkeys_160124_short": {
