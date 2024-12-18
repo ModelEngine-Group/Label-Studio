@@ -1,5 +1,5 @@
 import { observer } from "mobx-react";
-import React from "react";
+import { useCallback, useContext, useMemo } from "react";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeGrid } from "react-window";
 import InfiniteLoader from "react-window-infinite-loader";
@@ -8,9 +8,10 @@ import { Checkbox } from "@humansignal/ui";
 import { Space } from "../../Common/Space/Space";
 import { getProperty, prepareColumns } from "../../Common/Table/utils";
 import * as DataGroups from "../../DataGroups";
-import "./GridView.scss";
-import { FF_LOPS_E_3, isFF } from "../../../utils/feature-flags";
+import { FF_GRID_PREVIEW, FF_LOPS_E_3, isFF } from "../../../utils/feature-flags";
 import { SkeletonLoader } from "../../Common/SkeletonLoader";
+import { GridViewContext, GridViewProvider } from "./GridPreview";
+import "./GridView.scss";
 
 const GridHeader = observer(({ row, selected }) => {
   const isSelected = selected.isSelected(row.id);
@@ -60,11 +61,24 @@ const GridDataGroup = observer(({ type, value, field, row }) => {
 });
 
 const GridCell = observer(({ view, selected, row, fields, onClick, ...props }) => {
+  const { setCurrentTaskId, imageField } = useContext(GridViewContext);
+
+  const handleBodyClick = useCallback(
+    (e) => {
+      if (!isFF(FF_GRID_PREVIEW) || !imageField) return;
+      e.stopPropagation();
+      setCurrentTaskId(row.id);
+    },
+    [imageField, row.id],
+  );
+
   return (
     <Elem {...props} name="cell" onClick={onClick} mod={{ selected: selected.isSelected(row.id) }}>
       <Elem name="cell-content">
         <GridHeader view={view} row={row} fields={fields} selected={view.selected} />
-        <GridBody view={view} row={row} fields={fields} />
+        <Elem name="cell-body" onClick={handleBodyClick}>
+          <GridBody view={view} row={row} fields={fields} />
+        </Elem>
       </Elem>
     </Elem>
   );
@@ -75,7 +89,7 @@ export const GridView = observer(({ data, view, loadMore, fields, onChange, hidd
 
   const getCellIndex = (row, column) => columnCount * row + column;
 
-  const fieldsData = React.useMemo(() => {
+  const fieldsData = useMemo(() => {
     return prepareColumns(fields, hiddenFields);
   }, [fields, hiddenFields]);
 
@@ -87,7 +101,7 @@ export const GridView = observer(({ data, view, loadMore, fields, onChange, hidd
       return res + height;
     }, 16);
 
-  const renderItem = React.useCallback(
+  const renderItem = useCallback(
     ({ style, rowIndex, columnIndex }) => {
       const index = getCellIndex(rowIndex, columnIndex);
       const row = data?.[index];
@@ -127,7 +141,7 @@ export const GridView = observer(({ data, view, loadMore, fields, onChange, hidd
 
   const itemCount = Math.ceil(data.length / columnCount);
 
-  const isItemLoaded = React.useCallback(
+  const isItemLoaded = useCallback(
     (index) => {
       const rowIndex = index * columnCount;
       const rowFullfilled = data.slice(rowIndex, columnCount).length === columnCount;
@@ -138,37 +152,39 @@ export const GridView = observer(({ data, view, loadMore, fields, onChange, hidd
   );
 
   return (
-    <Block name="grid-view" mod={{ columnCount }}>
-      <Elem tag={AutoSizer} name="resize">
-        {({ width, height }) => (
-          <InfiniteLoader
-            itemCount={itemCount}
-            isItemLoaded={isItemLoaded}
-            loadMoreItems={loadMore}
-            threshold={Math.floor(view.dataStore.pageSize / 2)}
-            minimumBatchSize={view.dataStore.pageSize}
-          >
-            {({ onItemsRendered, ref }) => (
-              <Elem
-                tag={FixedSizeGrid}
-                ref={ref}
-                width={width}
-                height={height}
-                name="list"
-                rowHeight={rowHeight + 42}
-                overscanRowCount={view.dataStore.pageSize}
-                columnCount={columnCount}
-                columnWidth={width / columnCount - 9.5}
-                rowCount={itemCount}
-                onItemsRendered={onItemsRenderedWrap(onItemsRendered)}
-                style={{ overflowX: "hidden" }}
-              >
-                {renderItem}
-              </Elem>
-            )}
-          </InfiniteLoader>
-        )}
-      </Elem>
-    </Block>
+    <GridViewProvider data={data} view={view} fields={fieldsData}>
+      <Block name="grid-view" mod={{ columnCount }}>
+        <Elem tag={AutoSizer} name="resize">
+          {({ width, height }) => (
+            <InfiniteLoader
+              itemCount={itemCount}
+              isItemLoaded={isItemLoaded}
+              loadMoreItems={loadMore}
+              threshold={Math.floor(view.dataStore.pageSize / 2)}
+              minimumBatchSize={view.dataStore.pageSize}
+            >
+              {({ onItemsRendered, ref }) => (
+                <Elem
+                  tag={FixedSizeGrid}
+                  ref={ref}
+                  width={width}
+                  height={height}
+                  name="list"
+                  rowHeight={rowHeight + 42}
+                  overscanRowCount={view.dataStore.pageSize}
+                  columnCount={columnCount}
+                  columnWidth={width / columnCount - 9.5}
+                  rowCount={itemCount}
+                  onItemsRendered={onItemsRenderedWrap(onItemsRendered)}
+                  style={{ overflowX: "hidden" }}
+                >
+                  {renderItem}
+                </Elem>
+              )}
+            </InfiniteLoader>
+          )}
+        </Elem>
+      </Block>
+    </GridViewProvider>
   );
 });
