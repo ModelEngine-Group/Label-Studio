@@ -21,7 +21,7 @@ To more easily [manage access to Label Studio Enterprise](manage_users.html), yo
 
 ## Set up SAML SSO
 
-The organization owner for Label Studio Enterprise can set up SSO & SAML for the instance. Label Studio Enterprise supports the following IdPs:
+The organization Owner or Administrator for Label Studio Enterprise can set up SSO & SAML for the instance. Label Studio Enterprise supports the following IdPs:
 - [Okta](https://www.youtube.com/watch?v=Dr-_hyWIw4M)
 - [Google SAML](google_saml.html)
 - [Ping Federate and Ping Identity SAML SSO Setup Example](pingone.html)
