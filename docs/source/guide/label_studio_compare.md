@@ -1,270 +1,333 @@
 ---
-title: Compare Community and Enterprise Features
-short: Open Source vs Enterprise
+title: Compare Label Studio Editions
+short: Compare editions
 type: guide
 tier: all
 order: 28
 order_enterprise: 28
 section: "Discover & Learn"
 meta_title: Label Studio Community and Enterprise Features
-meta_description: Compare the features of Label Studio Community Edition with the paid Label Studio Enterprise Edition so that you can choose the best option for your data labeling and annotation projects.
+meta_description: Compare the features of Label Studio Community Edition with the paid versions so that you can choose the best option for your data labeling and annotation projects.
 ---
 
-Label Studio is available as open source software as well as an [Enterprise cloud service](https://humansignal.com/). The Enterprise version offers enhanced security (SSO, RBAC, SOC2), team management, analytics and reporting, and uptime and support SLAs. A [free trial is available](https://humansignal.com/free-trial) to get started quickly and explore the enterprise cloud product.
+Label Studio is available to everyone as open source software (Label Studio Community Edition). There are also two paid editions: Starter Cloud and Enterprise. 
 
-<a class="Button" href="https://humansignal.com/goenterprise/" target="_blank" style="margin-bottom: 2em;">Learn About Enterprise</a>
+<a class="Button" href="#Feature-comparison" target="_blank" style="margin-bottom: 2em;">See full feature comparison</a>
+
+## At-a-glance
+
+![ls compare](../images/ls_compare.png)
+
+<a class="Button" href="https://humansignal.com/" target="_blank" style="margin-bottom: 2em;">Learn about Enterprise</a>
+
+## Feature comparison
 
 <table>
 <thead>
   <tr>
     <th>Functionality</th>
     <th>Community</th>
+    <th>Starter Cloud</th>
     <th>Enterprise</th>
   </tr>
   </thead>
-
-<tr>
-    <td colspan="3"><b>Data Management</b></td>
-  </tr>
   <tr>
-    <td><a href="manage_data.html">View and manage datasets and tasks in a project through the Data Manager view.</a></td>
-    <td style="text-align:center">✔️</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-  <tr>
-    <td><a href="tasks.html">Provide reference to data stored in your database, cloud storage buckets, or local storage and label it in the browser.</a></td>
-    <td style="text-align:center">✔️</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-  <tr>
-    <td><a href="export.html">Export annotations as common formats like JSON, COCO, Pascal VOC and others.</a></td>
-    <td style="text-align:center">✔️</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-  <tr>
-    <td><a href="storage.html">Synchronize new and labeled data between projects and your external data storage.</a></td>
-    <td style="text-align:center">✔️</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-  <tr>
-    <td colspan="3"><b>Project Management</b></td>
-  </tr>
-  <tr>
-    <td><a href="setup_project.html">Projects to manage data labeling activities.</a></td>
-    <td style="text-align:center">✔️</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-  <tr>
-    <td><a href="setup.html">Templates to set up data labeling projects faster.</a></td>
-    <td style="text-align:center">✔️</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-    <tr>
-    <td><a href = "https://labelstud.io/guide/api.html"> APIs for programmatically accessing Label Studio.</a></td>
-    <td style="text-align:center">✔️</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-  <tr>
-    <td>Dashboards for monitoring progress of projects and annotator performance statistics.</td>
-    <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-   <tr>
-    <td><a href="https://docs.humansignal.com/guide/comments_notifications.html">Team collaboration features like comments and notifications on annotation tasks.</a></td>
-    <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-
-<tr>
-    <td colspan="3"><b>Data Labeling Workflows</b></td>
-  </tr>
-   <tr>
-    <td><a href="https://labelstud.io/playground/"> Label any data type from text, images, audio, time series data to multimodality.</a></td>
-    <td style="text-align:center">✔️</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-  <tr>
-    <td><a href="manage_data.html#Assign-annotators-to-tasks">Assign tasks to certain annotators or reviewers.</a></td>
-    <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-  <tr>
-    <td><a href="https://docs.humansignal.com/guide/setup_project.html#Set-up-annotation-settings-for-your-project">Set rules and automate how tasks are distributed to annotators.</a></td>
-    <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-  <tr>
-    <td>Annotator-specific labeling view that only shows assigned tasks.</td>
-    <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-  <tr>
-    <td><a href="https://docs.humansignal.com/guide/scripts">Use JavaScript to customize your labeling interface.</a></td>
-    <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-
-  <tr>
-    <td colspan="3"><b>Data Discovery (Beta)</b></td>
-  </tr>
-   <tr>
-    <td><a href="https://docs.humansignal.com/guide/dataset_create">Connect, manage, and index datasets from GCP, AWS, and Azure.</a></td>
-    <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-  <tr>
-    <td><a href="https://docs.humansignal.com/guide/dataset_search">Visualize and explore all your unstructured image or text data in a visual grid or list view.</a></td>
-    <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-  <tr>
-    <td><a href="https://docs.humansignal.com/guide/dataset_search#Embeddings">Automatically generate embeddings and reference embeddings to uncover similarities between data points and measure confidence levels.</a></td>
-    <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-  <tr>
-    <td><a href="https://docs.humansignal.com/guide/dataset_search#Natural-language-searching">Find relevant data using natural language, such as one or more phrases or keywords.</a></td>
-    <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-  <tr>
-    <td><a href="https://docs.humansignal.com/guide/dataset_search#Similarity-searches">Uncover similar data points by selecting one or more records (data points) as reference.</a></td>
-    <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-  <tr>
-    <td><a href="https://docs.humansignal.com/guide/dataset_search#Search-results-and-refining-by-similarity">Sort your dataset based on similarity to your selections.</a></td>
-    <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-  <tr>
-    <td><a href="https://docs.humansignal.com/guide/dataset_manage#Create-project-tasks-from-a-dataset">Send data subsets as tasks to new or existing Label Studio Enterprise projects for human or AI processing (annotation or review).</a></td>
-    <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-
-  <tr>
-    <td colspan="3"><b>Prompts (Beta)</b></td>
-  </tr>
-   <tr>
-    <td><a href="https://docs.humansignal.com/guide/prompts_overview">Fully automated data labeling using GenAI.</a></td>
-    <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-  <tr>
-    <td><a href="https://docs.humansignal.com/guide/prompts_draft">Evaluate and fine-tune LLM prompts against a ground truth dataset.</a></td>
-    <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-  <tr>
-    <td><a href="https://docs.humansignal.com/guide/prompts_predictions">Bootstrap your labeling project using auto-generated predictions.</a></td>
-    <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-
-  <tr>
-    <td colspan="4"><b>User Management</b></td>
+    <td colspan="4" style="text-align:center"><b>User Management</b></td>
   </tr>
   
   <tr>
-    <td><a href="https://docs.humansignal.com/guide/manage_users.html#Roles-in-Label-Studio-Enterprise">Role-based automated workflows for annotators and reviewers.</a></td>
+    <td><b>Role-based workflows</b><br/><a href="https://docs.humansignal.com/guide/project_settings_lse#Annotation">Role-based automated workflows for annotators and reviewers.</a></td>
     <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
   </tr>
-   <tr>
-    <td><a href="https://docs.humansignal.com/guide/manage_users.html#Roles-and-workspaces">Role-based access control into workspaces and projects.</a></td>
+  <tr>
+    <td><b>Role-based access control</b><br/><a href="https://docs.humansignal.com/guide/admin_roles">Role-based access control into workspaces and projects: Admin, Manager, Reviewer, and Annotator.</a></td>
     <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td colspan="4" style="text-align:center"><b>Data Management</b></td>
+  </tr>
+  <tr>
+    <td><b>Data management view</b><br/><a href="manage_data.html">View and manage datasets and tasks in a project through the Data Manager view.</a></td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td><b>Multiple data formats</b><br/><a href="https://labelstud.io/playground/"> Label any data type from text, images, audio, video, time series data to multimodality.</a></td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td><b>Import data</b><br/><a href="tasks.html">Reference data stored in your database, cloud storage buckets, or local storage and label it in the browser.</a></td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td><b>Import pre-annotated data</b><br/><a href="predictions.html">Import pre-annotated data (predictions) into Label Studio for further refinement and assessment.</a></td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td><b>Export data</b><br/><a href="export.html">Export annotations as common formats like JSON, COCO, Pascal VOC and others.</a></td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td><b>Sync data</b><br/><a href="storage.html">Synchronize new and labeled data between projects and your external data storage.</a></td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td colspan="4" style="text-align:center"><b>Project Management</b></td>
+  </tr>
+  <tr>
+    <td><b>Organize data in projects</b><br/><a href="setup_project.html">Projects to manage data labeling activities.</a></td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td><b>Organize projects in workspaces</b><br/><a href="https://docs.humansignal.com/guide/workspaces">Organizes related projects by team, department, or product. Users can only access workspaces they associated with. </a></td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td><b>Personal sandbox workspace</b><br/><a href="https://docs.humansignal.com/guide/workspaces">Personal sandbox workspace for project testing and experimentation. </a></td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td><b>Templates</b><br/><a href="/templates">Templates to set up data labeling projects faster.</a></td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td><b>Project membership</b><br/><a href="https://docs.humansignal.com/guide/project_settings_lse#Members">Only users who are added as members to a project can view it. </a></td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td><b>Project-level roles</b><br/><a href="https://docs.humansignal.com/guide/project_settings_lse#Members">Annotator and Reviewer can be assigned to Annotator/Reviewer roles at a per-project level. </a></td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td><b>Project-level user settings</b><br/><a href="https://docs.humansignal.com/guide/project_settings_lse#Annotation">Multiple configuration options for how Annotators and Reviewers interact with tasks and what information they can see.</a></td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
   </tr>
 
-  <tr>
-    <td colspan="3"><b>Machine Learning</b></td>
+<tr>
+    <td colspan="4" style="text-align:center"><b>Data Labeling Workflows</b></td>
   </tr>
   <tr>
-    <td><a href="ml_create.html">Connect a machine learning model to the backend of a project.</a></td>
-    <td style="text-align:center">✔️</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-  <tr>
-    <td><a href="https://docs.humansignal.com/guide/active_learning.html">Accelerate labeling with active learning loops.</a></td>
+    <td><b>Assign tasks</b><br/><a href="https://docs.humansignal.com/guide/manage_data#Assign-annotators-to-tasks">Assign tasks to certain annotators or reviewers.</a></td>
     <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
   </tr>
   <tr>
-    <td><a href="https://docs.humansignal.com/guide/active_learning.html#Set-up-task-sampling-with-prediction-scores">Automatically label and sort tasks by prediction score with the ML model backend.</a></td>
+    <td><b>Automatically assign tasks</b><br/><a href="https://docs.humansignal.com/guide/setup_project#Configure-high-impact-settings">Set rules and automate how tasks are distributed to annotators.</a></td>
     <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
   </tr>
   <tr>
-    <td colspan="3"><b>Analytics and Reporting</b></td>
-  </tr>
-  <tr>
-    <td>Project management dashboards displaying analytics and activity history.</td>
+    <td><b>Simplified interface for Annotators</b><br/>Annotator-specific labeling view that only shows assigned tasks.</td>
     <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+   <tr>
+    <td colspan="4" style="text-align:center"><b>Customization & Development</b></td>
   </tr>
   <tr>
-    <td>Activity logs for auditing annotation activity by project.</td>
+    <td><b>Tag library</b><br/><a href="/tags">Use our tag library to customize the labeling interface by modifying pre-built templates or by building your own templates.</a></td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td><b>White labeling</b><br/>Use your company colors and logo to give your team a consistent experience. (Additional cost)</td>
     <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-  <tr>
-    <td><a href = "https://labelstud.io/guide/api.html"> APIs for generating custom reports across projects or labeling activity.</a></td>
-    <td style="text-align:center">✔️</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-  <tr>
-    <td colspan="3"><b>Annotator Performance</b></td>
-  </tr>
-  <tr>
-    <td><a href="https://docs.humansignal.com/guide/stats.html">Annotator agreement metrics to monitor and improve label quality.</a></td>
     <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
+    <td style="text-align:center">✅</td>
   </tr>
   <tr>
-    <td><a href="https://docs.humansignal.com/guide/ml.html">Compare ML model predictions with annotations to identify low quality data.</a></td>
+    <td><b>Custom scripts</b><br/><a href="https://docs.humansignal.com/guide/scripts">Use JavaScript to further enhance and customize your labeling interface.</a></td>
     <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-  <tr>
-    <td><a href="https://docs.humansignal.com/guide/quality.html">Assign reviewers to review, fix and update annotations.</a></td>
     <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
+    <td style="text-align:center">✅</td>
   </tr>
   <tr>
-    <td colspan="3"><b>Security and Support </b></td>
+    <td><b>API/SDK & webhooks</b><br/><a href = "https://labelstud.io/guide/api.html"> APIs, SDK, and webhooks for programmatically accessing and managing Label Studio.</a></td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
   </tr>
   <tr>
-    <td><a href="https://docs.humansignal.com/guide/auth_setup.html">Secure access and authentication of users via SAML SSO or LDAP.</a></td>
+    <td colspan="4" style="text-align:center"><b>Prompts</b></td>
+  </tr>
+   <tr>
+    <td><b>Automated labeling</b><br/><a href="https://docs.humansignal.com/guide/prompts_overview">Fully automated data labeling using GenAI.</a></td>
     <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td><b>LLM fine-tuning and evaluation</b><br/><a href="https://docs.humansignal.com/guide/prompts_draft">Evaluate and fine-tune LLM prompts against a ground truth dataset.</a></td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td><b>Bootstrap projects</b><br/><a href="https://docs.humansignal.com/guide/prompts_predictions">Bootstrap your labeling project using auto-generated predictions.</a></td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td colspan="4" style="text-align:center"><b>Machine Learning</b></td>
+  </tr>
+  <tr>
+    <td><b>Custom ML backends</b><br/><a href="ml.html">Connect a machine learning model to the backend of a project.</a></td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td><b>Active learning loops</b><br/><a href="https://docs.humansignal.com/guide/active_learning.html">Accelerate labeling with active learning loops.</a></td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td><b>Predictions from connected models</b><br/><a href="ml.html#Pre-annotations-predictions">Automatically label and sort tasks by prediction score with the ML model backend.</a></td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td colspan="4" style="text-align:center"><b>Analytics and Reporting</b></td>
+  </tr>
+  <tr>
+    <td><b>Project dashboards</b><br/><a href="https://docs.humansignal.com/guide/dashboard_project">Dashboards for monitoring project progress.</a></td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td><b>Annotator performance dashboards</b><br/><a href="https://docs.humansignal.com/guide/dashboard_annotator">Dashboards to review and monitor individual annotator performance.</a></td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td><b>Activity logs</b><br/><a href="https://docs.humansignal.com/guide/admin_logs">Activity logs for auditing annotation activity by project.</a></td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td colspan="4" style="text-align:center"><b>Quality Workflows</b></td>
+  </tr>
+  <tr>
+    <td><b>Assign reviewers</b><br/><a href="https://docs.humansignal.com/guide/quality.html">Assign reviewers to review, fix and update annotations.</a></td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td><b>Automatic task reassignment</b><br/><a href="https://docs.humansignal.com/guide/quality.html">Reassign tasks with low agreement scores to new annotators.</a></td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td><b>Agreement metrics</b><br/><a href="https://docs.humansignal.com/guide/stats.html">Define how annotator consensus is calculated. You can choose from pre-defined metrics or customize your own.</a></td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td><b>Comments and notifications</b><br/><a href="https://docs.humansignal.com/guide/comments_notifications.html">Team collaboration features like comments and notifications on annotation tasks.</a></td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td><b>Identify ground truths</b><br/><a href="https://docs.humansignal.com/guide/quality.html">Mark which annotations should be included in a Ground Truth dataset.</a></td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td><b>Overlap configuration</b><br/><a href="https://docs.humansignal.com/guide/project_settings_lse#Quality">Set how many annotators must label each sample.</a></td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td><b>Annotator consensus matrices</b><br/><a href="https://docs.humansignal.com/guide/quality#Review-annotator-agreement-matrix">Matrices used to compare labeling results by different annotators.</a></td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td><b>Label distribution charts</b><br/><a href="hhttps://docs.humansignal.com/guide/dashboard_project#Label-distribution">Identify possible problems with your dataset distribution, such as an unbalanced dataset.</a></td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td colspan="4" style="text-align:center"><b>Security and Support </b></td>
+  </tr>
+  <tr>
+    <td><b>SSO</b><br/><a href="https://docs.humansignal.com/guide/auth_setup.html">Secure access and authentication of users via SAML SSO or LDAP.</a></td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">✅</td>
    </tr>
   <tr>
-    <td><a href ="https://heartex.com/security"> SOC2-compliant hosted cloud service or on-premise availability</a></td>
+    <td><b>SOC2</b><br/><a href ="https://heartex.com/security"> SOC2-compliant hosted cloud service or on-premise availability</a></td>
     <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">✅</td>
   </tr>
   <tr>
-    <td>Dedicated enterprise support team with service level agreements (SLAs).</td>
+    <td><b>Support portal</b><br/>Access to a dedicated support portal.</td>
     <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
   </tr>
   <tr>
-    <td colspan="3"><b>Managed Cloud Service</b></td>
+    <td><b>Uptime SLA</b><br/>99.9% uptime SLA</td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">✅</td>
   </tr>
   <tr>
-    <td>SOC2-certified cloud platform</td>
+    <td><b>Customer Success Manager</b><br/>Dedicated customer success manager to support onboarding, education, and escalations.</td>
     <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
-   </tr>
-  <tr>
-    <td>99.9% uptime SLA</td>
     <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
-  </tr>
-  <tr>
-    <td>Customer success & technical support SLA</td>
-    <td style="text-align:center">❌</td>
-    <td style="text-align:center">✔️</td>
+    <td style="text-align:center">✅</td>
   </tr>
 </table>
+
+
+  
