@@ -166,6 +166,15 @@ The cost to run the prompt based on the number of tokens required.
 </tr>
 </table>
 
+### Classification reports
+
+Click **Expand** to view classification reports for the Prompt. Thee reports tell you how many times each class was identified. This is available for the following tags:
+
+`Choices`  
+`Labels`  
+`Pairwise`  
+`Rating`
+
 ## Enhance prompt
 
 You can use **Enhance Prompt** to help you construct and auto-refine your prompts. 

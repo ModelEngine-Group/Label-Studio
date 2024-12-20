@@ -114,49 +114,7 @@ From the Prompts page, click **Create Prompt** in the upper right and then compl
 
 !!! note Eligible projects
     Target projects must meet the following criteria:
-    * The project must include text data. While it can include other data types such as images or video, it must include `<Text>`.
     * You must have access to the project. If you are in the Manager role, you need to be added to the project to have access. 
     * The project cannot be located in your Personal Sandbox workspace. 
     * While projects connected to an ML backend will still appear in the list of eligible projects, we do not recommend using Prompts with an ML backend as this can interfere with how accuracy and score are calculated when evaluating the prompt. 
-
-## Example project types
-
-### Text classification  
-
-Text classification is the process of assigning predefined categories or labels to segments of text based on their content. This involves analyzing the text and determining which category or label best describes its subject, sentiment, or purpose. The goal is to organize and categorize textual data in a way that makes it easier to analyze, search, and utilize. 
-
-Text classification labeling tasks are fundamental in many applications, enabling efficient data organization, improving searchability, and providing valuable insights through data analysis. Some examples include:
-
-* **Spam Detection**: Classifying emails as "spam" or "ham" (not spam). 
-* **Sentiment Analysis**: Categorizing user reviews as "positive," "negative," or "neutral."
-* **Topic Categorization**: Assigning articles to categories like "politics," "sports," "technology," etc.
-* **Support Ticket Classification**: Labeling customer support tickets based on the issue type, such as "billing," "technical support," or "account management."
-* **Content Moderation**: Identifying and labeling inappropriate content on social media platforms, such as "offensive language," "hate speech," or "harassment."
-
-### Named entity recognition (NER)
-
-A Named Entity Recognition (NER) labeling task involves identifying and classifying named entities within text. For example, people, organizations, locations, dates, and other proper nouns. The goal is to label these entities with predefined categories that make the text easier to analyze and understand. NER is commonly used in tasks like information extraction, text summarization, and content classification.
-
-For example, in the sentence "Heidi Opossum goes grocery shopping at Aldi in Miami" the NER task would involve identifying "Aldi" as a place or organization, "Heidi Opossum" as a person (even though, to be precise, she is an iconic opossum), and "Miami" as a location. Once labeled, this structured data can be used for various purposes such as improving search functionality, organizing information, or training machine learning models for more complex natural language processing tasks.
-
-NER labeling is crucial for industries such as finance, healthcare, and legal services, where accurate entity identification helps in extracting key information from large amounts of text, improving decision-making, and automating workflows.
-
-Some examples include:
-
-* **News and Media Monitoring**: Media organizations use NER to automatically tag and categorize entities such as people, organizations, and locations in news articles. This helps in organizing news content, enabling efficient search and retrieval, and generating summaries or reports. 
-* **Intelligence and Risk Analysis**: By extracting entities such as personal names, organizations, IP addresses, and financial transactions from suspicious activity reports or communications, organizations can better assess risks and detect fraud or criminal activity.
-* **Specialized Document Review**: Once trained, NER can help extract industry-specific key entities for better document review, searching, and classification. 
-* **Customer Feedback and Product Review**: Extract named entities like product names, companies, or services from customer feedback or reviews. This allows businesses to categorize and analyze feedback based on specific products, people, or regions, helping them make data-driven improvements.
-
-### Text summarization
-
-Text summarization involves condensing large amounts of information into concise, meaningful summaries. 
-
-Models can be trained or fine-tuned to recognize essential information within a document and generate summaries that retain the core ideas while omitting less critical details. This capability is especially valuable in today’s information-heavy landscape, where professionals across various fields are often overwhelmed by the sheer volume of text data.
-
-Some examples include:
-
-* **Customer Support and Feedback Analysis**: Companies receive vast volumes of customer support tickets, reviews, and feedback that are often repetitive or lengthy. Auto-labeling can help summarize these inputs, focusing on core issues or themes, such as “billing issues” or “technical support.” 
-* **News Aggregation and Media Monitoring**: News organizations and media monitoring platforms need to process and distribute news stories efficiently. Auto-labeling can summarize articles while tagging them with labels like “politics,” “economy,” or “health,” making it easier for users to find relevant stories.
-* **Document Summarization**: Professionals often need to quickly understand the key points in lengthy contracts, research papers, and files.
-* **Educational Content Summarization**: EEducators and e-learning platforms need to distill complex material into accessible summaries for students. Auto-labeling can summarize key topics and categorize them under labels like “concept,” “example,” or “important fact.”
+  
