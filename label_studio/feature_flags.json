@@ -2202,6 +2202,33 @@
       "version": 4,
       "deleted": false
     },
+    "fflag_feat_dia_1661_improve_prompts_discovery_and_conversion": {
+      "key": "fflag_feat_dia_1661_improve_prompts_discovery_and_conversion",
+      "on": false,
+      "prerequisites": [],
+      "targets": [],
+      "contextTargets": [],
+      "rules": [],
+      "fallthrough": {
+        "variation": 0
+      },
+      "offVariation": 1,
+      "variations": [
+        true,
+        false
+      ],
+      "clientSideAvailability": {
+        "usingMobileKey": false,
+        "usingEnvironmentId": false
+      },
+      "clientSide": false,
+      "salt": "dd91c724ccc84009874e458acc785d1f",
+      "trackEvents": false,
+      "trackEventsFallthrough": false,
+      "debugEventsUntilDate": null,
+      "version": 2,
+      "deleted": false
+    },
     "fflag_feat_dia_1697_product_tour_short": {
       "key": "fflag_feat_dia_1697_product_tour_short",
       "on": false,
@@ -3095,7 +3122,7 @@
     },
     "fflag_feat_front_optic_1419_backend_csv_comments_export_short": {
       "key": "fflag_feat_front_optic_1419_backend_csv_comments_export_short",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -3117,7 +3144,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 3,
+      "version": 4,
       "deleted": false
     },
     "fflag_feat_front_optic_66_lazy_chart_evaluation_19092023_short": {
