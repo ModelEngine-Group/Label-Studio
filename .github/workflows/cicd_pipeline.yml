@@ -200,12 +200,12 @@ jobs:
       - uses: actions/github-script@v7
         env:
           DOCKER_IMAGE_VERSION: ${{ needs.build-docker.outputs.image_version }}
-          APP_NAME: ${{ startsWith(github.ref_name, 'ls-release/') && 'ls-release' || 'ls-develop' }}
+          RELEASE_NAME: ${{ startsWith(github.ref_name, 'ls-release/') && 'ls-release' || 'ls-develop' }}
         with:
           github-token: ${{ secrets.GIT_PAT }}
           script: |
             const docker_image_version = process.env.DOCKER_IMAGE_VERSION;
-            const app_name = process.env.APP_NAME;
+            const release_name = process.env.RELEASE_NAME;
             github.rest.actions.createWorkflowDispatch({
               owner: "HumanSignal",
               repo: "label-studio-enterprise",
@@ -213,7 +213,7 @@ jobs:
               ref: "develop",
               inputs: {
                 docker_image_version: docker_image_version,
-                app_name: app_name,
+                release_name: release_name,
                 template_name: "lso",
               }
             });
