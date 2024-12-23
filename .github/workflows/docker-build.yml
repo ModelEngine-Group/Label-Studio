@@ -66,8 +66,8 @@ jobs:
           sha="$(git rev-parse HEAD)"
           echo "sha=$sha" >> $GITHUB_OUTPUT
            
-          pretty_branch_name="$(echo -n "${BRANCH_NAME#refs/heads/}" | sed 's#/#-#g' | sed 's#_#-#g'| sed 's#\.#-#g' | tr '[:upper:]' '[:lower:]')"
-          echo "pretty_branch_name=$pretty_branch_name" >> $GITHUB_OUTPUT
+          pretty_branch_name="$(echo -n "${BRANCH_NAME#refs/heads/}" | sed -E 's#[/_\.-]+#-#g' | tr '[:upper:]' '[:lower:]' | cut -c1-25 | sed -E 's#-$##g')"
+          echo "pretty_branch_name=${pretty_branch_name}" >> "${GITHUB_OUTPUT}"
 
           regexp='^ls-release\/(.*)$';
           if [[ "$BRANCH_NAME" =~ $regexp ]]; then
