@@ -2202,6 +2202,33 @@
       "version": 4,
       "deleted": false
     },
+    "fflag_feat_dia_1528_gemini_models_support_vertex_ai_support_short": {
+      "key": "fflag_feat_dia_1528_gemini_models_support_vertex_ai_support_short",
+      "on": false,
+      "prerequisites": [],
+      "targets": [],
+      "contextTargets": [],
+      "rules": [],
+      "fallthrough": {
+        "variation": 0
+      },
+      "offVariation": 1,
+      "variations": [
+        true,
+        false
+      ],
+      "clientSideAvailability": {
+        "usingMobileKey": false,
+        "usingEnvironmentId": false
+      },
+      "clientSide": false,
+      "salt": "ca9de1fc67254ad695559d73292c7ae9",
+      "trackEvents": false,
+      "trackEventsFallthrough": false,
+      "debugEventsUntilDate": null,
+      "version": 2,
+      "deleted": false
+    },
     "fflag_feat_dia_1661_improve_prompts_discovery_and_conversion": {
       "key": "fflag_feat_dia_1661_improve_prompts_discovery_and_conversion",
       "on": false,
