@@ -196,12 +196,12 @@ class OrganizationMemberDetailAPI(GetParentObjectMixin, generics.RetrieveDestroy
         return api_settings.DEFAULT_PERMISSION_CLASSES
 
     def get_queryset(self):
-        return OrganizationMember.objects.filter(organization=self.get_parent_object())
+        return OrganizationMember.objects.filter(organization=self.parent_object)
 
     def get_serializer_context(self):
         return {
             **super().get_serializer_context(),
-            'organization': self.get_parent_object(),
+            'organization': self.parent_object,
         }
 
     def get(self, request, pk, user_pk):
@@ -213,7 +213,7 @@ class OrganizationMemberDetailAPI(GetParentObjectMixin, generics.RetrieveDestroy
         return Response(serializer.data)
 
     def delete(self, request, pk=None, user_pk=None):
-        org = self.get_parent_object()
+        org = self.parent_object
         if org != request.user.active_organization:
             raise PermissionDenied('You can delete members only for your current active organization')
 

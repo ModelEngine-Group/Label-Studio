@@ -14,6 +14,7 @@ except:  # noqa: E722
 
 from django.conf import settings
 from django.db import models
+from django.utils.functional import cached_property
 from rest_framework.exceptions import ValidationError
 
 logger = logging.getLogger(__name__)
@@ -36,7 +37,7 @@ class FileUpload(models.Model):
         user.project = self.project  # link for activity log
         return self.project.has_permission(user)
 
-    @property
+    @cached_property
     def filepath(self):
         return self.file.name
 
@@ -49,10 +50,9 @@ class FileUpload(models.Model):
 
     @property
     def format(self):
-        filepath = self.file.name
         file_format = None
         try:
-            file_format = os.path.splitext(filepath)[-1]
+            file_format = os.path.splitext(self.filepath)[-1]
         except:  # noqa: E722
             pass
         finally:
@@ -70,7 +70,7 @@ class FileUpload(models.Model):
         return body
 
     def read_tasks_list_from_csv(self, sep=','):
-        logger.debug('Read tasks list from CSV file {}'.format(self.file.name))
+        logger.debug('Read tasks list from CSV file {}'.format(self.filepath))
         tasks = pd.read_csv(self.file.open(), sep=sep).fillna('').to_dict('records')
         tasks = [{'data': task} for task in tasks]
         return tasks
@@ -79,13 +79,13 @@ class FileUpload(models.Model):
         return self.read_tasks_list_from_csv('\t')
 
     def read_tasks_list_from_txt(self):
-        logger.debug('Read tasks list from text file {}'.format(self.file.name))
+        logger.debug('Read tasks list from text file {}'.format(self.filepath))
         lines = self.content.splitlines()
         tasks = [{'data': {settings.DATA_UNDEFINED_NAME: line}} for line in lines]
         return tasks
 
     def read_tasks_list_from_json(self):
-        logger.debug('Read tasks list from JSON file {}'.format(self.file.name))
+        logger.debug('Read tasks list from JSON file {}'.format(self.filepath))
 
         raw_data = self.content
         # Python 3.5 compatibility fix https://docs.python.org/3/whatsnew/3.6.html#json
@@ -105,15 +105,15 @@ class FileUpload(models.Model):
         return tasks_formatted
 
     def read_task_from_hypertext_body(self):
-        logger.debug('Read 1 task from hypertext file {}'.format(self.file.name))
+        logger.debug('Read 1 task from hypertext file {}'.format(self.filepath))
         body = self.content
         tasks = [{'data': {settings.DATA_UNDEFINED_NAME: body}}]
         return tasks
 
     def read_task_from_uploaded_file(self):
-        logger.debug('Read 1 task from uploaded file {}'.format(self.file.name))
+        logger.debug('Read 1 task from uploaded file {}'.format(self.filepath))
         if settings.CLOUD_FILE_STORAGE_ENABLED:
-            tasks = [{'data': {settings.DATA_UNDEFINED_NAME: self.file.name}}]
+            tasks = [{'data': {settings.DATA_UNDEFINED_NAME: self.filepath}}]
         else:
             tasks = [{'data': {settings.DATA_UNDEFINED_NAME: self.url}}]
         return tasks
@@ -149,7 +149,7 @@ class FileUpload(models.Model):
                 tasks = self.read_task_from_uploaded_file()
 
         except Exception as exc:
-            raise ValidationError('Failed to parse input file ' + self.file.name + ': ' + str(exc))
+            raise ValidationError('Failed to parse input file ' + self.filepath + ': ' + str(exc))
         return tasks
 
     @classmethod

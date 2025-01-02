@@ -1,5 +1,8 @@
+from django.utils.functional import cached_property
+
+
 class OrganizationMixin:
-    @property
+    @cached_property
     def active_members(self):
         return self.members
 

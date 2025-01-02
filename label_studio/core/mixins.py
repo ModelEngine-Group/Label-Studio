@@ -3,6 +3,7 @@
 import logging
 
 from django.db.models.query import QuerySet
+from django.utils.functional import cached_property
 from rest_framework.generics import get_object_or_404
 
 logger = logging.getLogger(__name__)
@@ -16,7 +17,11 @@ class DummyModelMixin:
 class GetParentObjectMixin:
     parent_queryset = None
 
-    def get_parent_object(self):
+    @cached_property
+    def parent_object(self):
+        return self._get_parent_object()
+
+    def _get_parent_object(self):
         """
         The same as get_object method from DRF, but for the parent object
         For example if you want to get project inside /api/projects/ID/tasks handler

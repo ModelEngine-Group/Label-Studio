@@ -539,7 +539,7 @@ class AnnotationsListAPI(GetParentObjectMixin, generics.ListCreateAPIView):
             pass
 
     def perform_create(self, ser):
-        task = self.get_parent_object()
+        task = self.parent_object
         # annotator has write access only to annotations and it can't be checked it after serializer.save()
         user = self.request.user
 

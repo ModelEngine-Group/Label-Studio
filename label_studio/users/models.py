@@ -12,6 +12,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
+from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from organizations.models import Organization
 from rest_framework.authtoken.models import Token
@@ -130,7 +131,7 @@ class User(UserMixin, AbstractBaseUser, PermissionsMixin, UserLastActivityMixin)
             models.Index(fields=['date_joined']),
         ]
 
-    @property
+    @cached_property
     def avatar_url(self):
         if self.avatar:
             if settings.CLOUD_FILE_STORAGE_ENABLED:
@@ -148,11 +149,11 @@ class User(UserMixin, AbstractBaseUser, PermissionsMixin, UserLastActivityMixin)
         annotations = self.active_organization_annotations()
         return annotations.values_list('project').distinct().count()
 
-    @property
+    @cached_property
     def own_organization(self) -> Optional[Organization]:
         return fast_first(Organization.objects.filter(created_by=self))
 
-    @property
+    @cached_property
     def has_organization(self):
         return Organization.objects.filter(created_by=self).exists()
 

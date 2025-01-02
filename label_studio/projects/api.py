@@ -620,7 +620,7 @@ class ProjectSummaryResetAPI(GetParentObjectMixin, generics.CreateAPIView):
 
     @swagger_auto_schema(auto_schema=None)
     def post(self, *args, **kwargs):
-        project = self.get_parent_object()
+        project = self.parent_object
         summary = project.summary
         start_job_async_or_sync(
             recalculate_created_annotations_and_labels_from_scratch,
@@ -776,11 +776,11 @@ class ProjectTaskListAPI(GetParentObjectMixin, generics.ListCreateAPIView, gener
 
     def get_serializer_context(self):
         context = super(ProjectTaskListAPI, self).get_serializer_context()
-        context['project'] = self.get_parent_object()
+        context['project'] = self.parent_object
         return context
 
     def perform_create(self, serializer):
-        project = self.get_parent_object()
+        project = self.parent_object
         instance = serializer.save(project=project)
         emit_webhooks_for_instance(
             self.request.user.active_organization, project, WebhookAction.TASKS_CREATED, [instance]
