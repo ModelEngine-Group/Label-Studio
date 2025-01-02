@@ -236,6 +236,8 @@ You can use Label Studio as an independent part of your machine learning workflo
 
 ## Citation
 
+Include a citation for Label Studio in the **References** section of your articles:
+
 ```tex
 @misc{Label Studio,
   title={{Label Studio}: Data labeling software},
