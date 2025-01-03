@@ -1,7 +1,7 @@
 import { inject, observer } from "mobx-react";
 import { useEffect } from "react";
 import { Space } from "../../common/Space/Space";
-import Toggle from "../../common/Toggle/Toggle";
+import { Toggle } from "@humansignal/ui";
 import ToolsManager from "../../tools/Manager";
 import { Block, Elem } from "../../utils/bem";
 import "./DynamicPreannotationsToggle.scss";
@@ -30,7 +30,6 @@ export const DynamicPreannotationsToggle = inject("store")(
                 }
               }}
               label="Auto-Annotation"
-              style={{ color: "#7F64FF" }}
             />
           </Space>
         </Elem>

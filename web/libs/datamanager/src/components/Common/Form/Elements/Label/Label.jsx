@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
 import { Block, Elem } from "../../../../../utils/bem";
 import "./Label.scss";
-
+/** @deprecated - needs to be replaced with @humansignal/ui Label - visualizes differently currently */
 const Label = forwardRef(
   ({ text, children, required, placement, description, size, large, style, simple, flat }, ref) => {
     const tagName = simple ? "div" : "label";

@@ -12,7 +12,7 @@ import { triggerResizeEvent } from "../../utils/utilities";
 import EditorSettings from "../../core/settings/editorsettings";
 import * as TagSettings from "./TagSettings";
 import { LsClose } from "../../assets/icons";
-import Toggle from "../../common/Toggle/Toggle";
+import { Toggle } from "@humansignal/ui";
 import { FF_DEV_3873, isFF } from "../../utils/feature-flags";
 
 const HotkeysDescription = () => {

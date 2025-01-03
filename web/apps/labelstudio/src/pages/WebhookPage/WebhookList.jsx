@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { LsPencil } from "../../assets/icons";
 import { IconCross } from "@humansignal/ui";
 import { Button } from "../../components";
-import { Toggle } from "../../components/Form";
+import { Toggle } from "@humansignal/ui";
 import { Block, Elem } from "../../utils/bem";
 import "./WebhookPage.scss";
 import { format } from "date-fns";

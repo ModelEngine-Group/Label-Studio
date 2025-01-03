@@ -12,6 +12,7 @@ import { Space } from "../Common/Space/Space";
 import { DataView } from "../MainView";
 import "./Label.scss";
 
+// Todo: consider renaming this file to something like LabelingWrapper as it is not a Label component
 const LabelingHeader = ({ SDK, onClick, isExplorerMode }) => {
   return (
     <Elem name="header" mod={{ labelStream: !isExplorerMode }}>

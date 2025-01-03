@@ -1,8 +1,7 @@
 import { forwardRef, useEffect, useMemo, useState } from "react";
-import { cn } from "../../../../../utils/bem";
+import { Toggle as UiToggle } from "@humansignal/ui";
 import { FormField } from "../../FormField";
 import { default as Label } from "../Label/Label";
-import "./Toggle.scss";
 
 const Toggle = forwardRef(
   (
@@ -21,21 +20,12 @@ const Toggle = forwardRef(
     },
     ref,
   ) => {
-    const rootClass = cn("toggle-dm");
     const initialChecked = useMemo(() => defaultChecked ?? checked ?? false, [defaultChecked, checked]);
     const [isChecked, setIsChecked] = useState(defaultChecked ?? checked ?? false);
-
-    const classList = [rootClass];
-    const mods = {};
 
     useEffect(() => {
       setIsChecked(initialChecked);
     }, [initialChecked]);
-
-    if (isChecked) mods.checked = isChecked;
-    mods.disabled = props.disabled;
-
-    classList.push(rootClass.mod(mods), className);
 
     const formField = (
       <FormField
@@ -49,20 +39,15 @@ const Toggle = forwardRef(
         {...props}
       >
         {({ ref }) => (
-          <div className={classList.join(" ")}>
-            <input
-              ref={ref}
-              {...props}
-              className={rootClass.elem("input")}
-              type="checkbox"
-              checked={isChecked}
-              onChange={(e) => {
-                setIsChecked(e.target.checked);
-                onChange?.(e);
-              }}
-            />
-            <span className={rootClass.elem("indicator")} />
-          </div>
+          <UiToggle
+            ref={ref}
+            {...props}
+            checked={isChecked}
+            onChange={(e) => {
+              setIsChecked(e.target.checked);
+              onChange?.(e);
+            }}
+          />
         )}
       </FormField>
     );

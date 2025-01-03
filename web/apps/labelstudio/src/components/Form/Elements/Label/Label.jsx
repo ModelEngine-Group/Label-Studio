@@ -1,7 +1,7 @@
 import { createElement } from "react";
 import { cn } from "../../../../utils/bem";
 import "./Label.scss";
-
+/** @deprecated - needs to be replaced with @humansignal/ui Label - visualizes differently currently */
 const Label = ({ text, children, required, placement, description, size, large, style, simple, flat }) => {
   const rootClass = cn("label-ls");
   const classList = [rootClass];

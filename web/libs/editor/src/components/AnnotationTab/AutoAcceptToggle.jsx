@@ -4,7 +4,7 @@ import { IconCheck, IconCross } from "../../assets/icons";
 import { Button } from "../../common/Button/Button";
 import { Block, Elem } from "../../utils/bem";
 import { Space } from "../../common/Space/Space";
-import Toggle from "../../common/Toggle/Toggle";
+import { Toggle } from "@humansignal/ui";
 
 import "./AutoAcceptToggle.scss";
 
@@ -59,7 +59,6 @@ export const AutoAcceptToggle = injector(
                   checked={store.autoAcceptSuggestions}
                   onChange={(e) => store.setAutoAcceptSuggestions(e.target.checked)}
                   label="Auto-Accept Suggestions"
-                  style={{ color: "#7F64FF" }}
                 />
               )}
             </Space>
