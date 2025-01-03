@@ -18,24 +18,6 @@ Get data into Label Studio by importing files, referencing URLs, or syncing with
 - If your data is stored locally, [import it into Label Studio](#Import-data-from-a-local-directory).
 - If your data contains predictions or pre-annotations, see [Import pre-annotated data into Label Studio](predictions.html).
 
-<div class="enterprise-only">
-
-!!! info Tip
-    If your data is stored in Google Cloud, AWS, or Azure, you can [import your unstructured data as a dataset in Label Studio Enterprise](dataset_create). 
-    
-    From here, you can use semantic search and similarity search to curate data for labeling, which can then be added to different projects as tasks. For more information, see [Data Discovery overview](dataset_overview).
-
-</div>
-
-<div class="opensource-only">
-
-!!! error Enterprise
-    If your data is stored in Google Cloud, AWS, or Azure, you can [import your unstructured data as a dataset in Label Studio Enterprise](https://docs.humansignal.com/guide/dataset_create). 
-    
-    From here, you can use semantic search and similarity search to curate data for labeling, which can then be added to different projects as tasks. For more information, see [Data Discovery overview](https://docs.humansignal.com/guide/dataset_overview).
-
-</div>
-
 ## General guidelines for importing data
 
 * It’s best to keep about 100k tasks / 100k annotations per project for optimal performance.

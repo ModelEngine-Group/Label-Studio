@@ -103,13 +103,6 @@ When you're done, click **Save**.
 
 </div>
 
-<div class="enterprise-only">
-
-!!! info Tip
-    Rather than importing data directly into the project, you can [create a dataset](dataset_create). From here, you can use an AI-powered search to refine your data, which can then be added to different projects as tasks. For more information, see [Data Discovery overview](dataset_overview).
-
-</div>
-
 
 <div class="opensource-only">
 
