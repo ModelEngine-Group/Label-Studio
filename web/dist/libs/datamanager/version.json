@@ -1,6 +1,6 @@
 {
-  "message": "chore: OPTIC-1121: Removing Vite dependencies as they are unused (#6814)",
-  "commit": "c2de35e89944400e6897bb5046d7938e884e80e9",
-  "date": "2024-12-20T15:53:26.000Z",
+  "message": "feat: OPTIC-1332: componetize Toggle and Label components (#6723)",
+  "commit": "281ef778e277bdf3d6cd06b1a75985acc51f2c8c",
+  "date": "2025-01-03T13:35:43.000Z",
   "branch": "develop"
 }
