@@ -1638,6 +1638,12 @@
         "decorators": ""
     },
     {
+        "url": "/django-rq/queues/<queue_index>/failed/clear/",
+        "module": "django_rq.views.delete_failed_jobs",
+        "name": "rq_delete_failed_jobs",
+        "decorators": ""
+    },
+    {
         "url": "/django-rq/queues/<queue_index>/scheduled/",
         "module": "django_rq.views.scheduled_jobs",
         "name": "rq_scheduled_jobs",
@@ -1701,6 +1707,18 @@
         "url": "/django-rq/queues/<queue_index>/<job_id>/enqueue/",
         "module": "django_rq.views.enqueue_job",
         "name": "rq_enqueue_job",
+        "decorators": ""
+    },
+    {
+        "url": "/django-rq/queues/<queue_index>/<job_id>/stop/",
+        "module": "django_rq.views.stop_job",
+        "name": "rq_stop_job",
+        "decorators": ""
+    },
+    {
+        "url": "/django-rq/schedulers/<scheduler_index>/",
+        "module": "django_rq.views.scheduler_jobs",
+        "name": "rq_scheduler_jobs",
         "decorators": ""
     },
     {
