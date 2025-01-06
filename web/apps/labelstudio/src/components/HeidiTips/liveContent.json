@@ -9,20 +9,19 @@
         "url": "https://docs.humansignal.com/guide/manage_projects#Create-workspaces-to-organize-projects",
         "params": {
           "experiment": "project_creation_tip",
-          "treatment": "find_and_manage_projects"
+          "treatment": "find_and_manage_projects_live"
         }
       }
     },
     {
       "title": "Did you know?",
-      "content": "In the Enterprise platform, admins can view annotator performance dashboards to optimize resource allocation, improve team management, and inform compensation.",
-      "closable": true,
+      "description": "Label Studio now has a Starter Cloud offering optimized for small teams and projects.",
       "link": {
         "label": "Learn more",
-        "url": "https://docs.humansignal.com/guide/dashboard_annotator",
+        "url": "https://humansignal.com/pricing/",
         "params": {
           "experiment": "project_creation_tip",
-          "treatment": "annotator_dashboard"
+          "treatment": "starter_cloud_live"
         }
       }
     },
@@ -35,7 +34,7 @@
         "url": "https://docs.humansignal.com/guide/manage_users#Roles-in-Label-Studio-Enterprise",
         "params": {
           "experiment": "project_creation_tip",
-          "treatment": "access_to_projects"
+          "treatment": "access_to_projects_live"
         }
       }
     },
@@ -48,7 +47,7 @@
         "url": "https://labelstud.io/templates/gallery_generative_ai",
         "params": {
           "experiment": "project_creation_tip",
-          "treatment": "genai_templates"
+          "treatment": "genai_templates_live"
         }
       }
     }
@@ -63,7 +62,7 @@
         "url": "https://docs.humansignal.com/guide/manage_users#Roles-in-Label-Studio-Enterprise",
         "params": {
           "experiment": "organization_page_tip",
-          "treatment": "team_growing"
+          "treatment": "team_growing_live"
         }
       }
     },
@@ -76,20 +75,19 @@
         "url": "https://docs.humansignal.com/guide/auth_setup",
         "params": {
           "experiment": "organization_page_tip",
-          "treatment": "enable_sso"
+          "treatment": "enable_sso_live"
         }
       }
     },
     {
-      "title": "Want to automate task distribution?",
-      "content": "Create rules, automate how tasks are distributed to annotators, and only show tasks assigned to each annotator in their view.and control task visibility for each annotator.",
-      "closable": true,
+      "title": "Did you know?",
+      "description": "Label Studio now has a Starter Cloud offering optimized for small teams and projects.",
       "link": {
         "label": "Learn more",
-        "url": "https://docs.humansignal.com/guide/setup_project#Set-up-annotation-settings-for-your-project",
+        "url": "https://humansignal.com/pricing/",
         "params": {
           "experiment": "organization_page_tip",
-          "treatment": "automate_distribution"
+          "treatment": "starter_cloud_live"
         }
       }
     },
@@ -102,7 +100,7 @@
         "url": "https://label-studio.slack.com",
         "params": {
           "experiment": "organization_page_tip",
-          "treatment": "share_knowledge"
+          "treatment": "share_knowledge_live"
         }
       }
     },
@@ -115,7 +113,7 @@
         "url": "https://labelstud.io/integrations/",
         "params": {
           "experiment": "organization_page_tip",
-          "treatment": "integration_points"
+          "treatment": "integration_points_live"
         }
       }
     }
@@ -130,20 +128,19 @@
         "url": "https://docs.humansignal.com/guide/prompts_overview#Auto-labeling-with-Prompts",
         "params": {
           "experiment": "project_settings_tip",
-          "treatment": "auto_labeling"
+          "treatment": "auto_labeling_live"
         }
       }
     },
     {
       "title": "Did you know?",
-      "content": "You can increase the quality of your labeled data with reviewer workflows and task agreement scores using Label Studio Enterprise.",
-      "closable": true,
+      "description": "Label Studio now has a Starter Cloud offering optimized for small teams and projects.",
       "link": {
         "label": "Learn more",
-        "url": "https://docs.humansignal.com/guide/quality",
+        "url": "https://humansignal.com/pricing/",
         "params": {
           "experiment": "project_settings_tip",
-          "treatment": "quality_and_agreement"
+          "treatment": "starter_cloud_live"
         }
       }
     },
@@ -156,7 +153,7 @@
         "url": "https://humansignal.com/evals/",
         "params": {
           "experiment": "project_settings_tip",
-          "treatment": "evals"
+          "treatment": "evals_live"
         }
       }
     },
@@ -169,7 +166,7 @@
         "url": "https://labelstud.io/guide/ml",
         "params": {
           "experiment": "project_settings_tip",
-          "treatment": "connect_ml_models"
+          "treatment": "connect_ml_models_live"
         }
       }
     },
@@ -182,7 +179,7 @@
         "url": "https://labelstud.io/guide/labeling#Faster-image-labeling",
         "params": {
           "experiment": "project_settings_tip",
-          "treatment": "two_clicks"
+          "treatment": "two_clicks_live"
         }
       }
     }
@@ -190,13 +187,13 @@
   "authPage": [
     {
       "title": "Auto-labeling with Prompts",
-      "description": "Prompts allows you to leverage LLMs to swiftly generate accurate predictions, enabling instant labeling of thousands of tasks.",
+      "description": "Use LLMs to instantly pre-label thousands of tasks with accurate predictions.",
       "link": {
         "label": "Learn more",
         "url": "https://docs.humansignal.com/guide/prompts_overview",
         "params": {
           "experiment": "login_revamp",
-          "treatment": "prompts_auto_labeling"
+          "treatment": "prompts_auto_labeling_live"
         }
       }
     },
@@ -208,7 +205,7 @@
         "url": "https://docs.humansignal.com/guide/prompts_overview#Prompt-evaluation-and-fine-tuning",
         "params": {
           "experiment": "login_revamp",
-          "treatment": "prompt_engineering"
+          "treatment": "prompt_engineering_live"
         }
       }
     },
@@ -220,7 +217,7 @@
         "url": "https://labelstud.io/templates/multi-page-document-annotation",
         "params": {
           "experiment": "login_revamp",
-          "treatment": "multi_image"
+          "treatment": "multi_image_live"
         }
       }
     },
@@ -232,7 +229,7 @@
         "url": "https://humansignal.com/pricing/",
         "params": {
           "experiment": "login_revamp",
-          "treatment": "starter_cloud"
+          "treatment": "starter_cloud_live"
         }
       }
     },
@@ -244,7 +241,7 @@
         "url": "https://humansignal.com/goenterprise/",
         "params": {
           "experiment": "login_revamp",
-          "treatment": "enterprise_platform"
+          "treatment": "enterprise_platform_live"
         }
       }
     }
