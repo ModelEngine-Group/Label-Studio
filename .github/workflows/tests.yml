@@ -209,7 +209,7 @@ jobs:
           ref: ${{ inputs.head_sha }}
 
       - name: "Install poetry"
-        run: pipx install poetry
+        run: pipx install "poetry<2.0.0"
 
       - name: "Set up Python ${{ matrix.python-version }}"
         id: setup_python
