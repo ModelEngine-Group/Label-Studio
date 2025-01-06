@@ -1,6 +1,7 @@
 """This file and its contents are licensed under the Apache License 2.0. Please see the included NOTICE for copyright information and LICENSE for a copy of the license.
 """
 import logging
+from urllib.parse import quote
 
 from core.feature_flags import flag_set
 from core.middleware import enforce_csrf_checks
@@ -73,7 +74,7 @@ def user_signup(request):
             {
                 'user_form': user_form,
                 'organization_form': organization_form,
-                'next': next_page,
+                'next': quote(next_page),
                 'token': token,
                 'found_us_options': forms.FOUND_US_OPTIONS,
                 'elaborate': forms.FOUND_US_ELABORATE,
@@ -86,7 +87,7 @@ def user_signup(request):
         {
             'user_form': user_form,
             'organization_form': organization_form,
-            'next': next_page,
+            'next': quote(next_page),
             'token': token,
         },
     )
@@ -125,9 +126,9 @@ def user_login(request):
             return redirect(next_page)
 
     if flag_set('fflag_feat_front_lsdv_e_297_increase_oss_to_enterprise_adoption_short'):
-        return render(request, 'users/new-ui/user_login.html', {'form': form, 'next': next_page})
+        return render(request, 'users/new-ui/user_login.html', {'form': form, 'next': quote(next_page)})
 
-    return render(request, 'users/user_login.html', {'form': form, 'next': next_page})
+    return render(request, 'users/user_login.html', {'form': form, 'next': quote(next_page)})
 
 
 @login_required

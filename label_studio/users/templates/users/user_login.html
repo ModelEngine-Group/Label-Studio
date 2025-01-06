@@ -1,7 +1,7 @@
 {% extends 'users/user_base.html' %}
 
 {% block user_content %}
-  <form id="login-form" action="{% url 'user-login' %}{% if next %}?next={{ next }}{% endif %}" method="post">
+  <form id="login-form" action="{% url 'user-login' %}?next={{ next }}" method="post">
     {% csrf_token %}
     <p><input type="text" class="lsf-input-ls" name="email" id="email" placeholder="Email" value="{{ form.data.email }}"></p>
     <p><input type="password" class="lsf-input-ls" name="password" id="password" placeholder="Password"></p>

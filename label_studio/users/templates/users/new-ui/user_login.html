@@ -3,7 +3,7 @@
 {% block user_content %}
   <div class="form-wrapper">
     <h2>Log in</h2>
-    <form id="login-form" action="{% url 'user-login' %}{% if next %}?next={{ next }}{% endif %}" method="post">
+    <form id="login-form" action="{% url 'user-login' %}?next={{ next }}" method="post">
       {% csrf_token %}
       <div class="input-wrapper">
         <label>Email Address</label>
@@ -30,7 +30,7 @@
   {% if not settings.DISABLE_SIGNUP_WITHOUT_LINK %}
   <div class="text-wrapper">
     <p class="">Don't have an account?</p>
-    <a href="{{ settings.HOSTNAME }}/user/signup">Sign up</a>
+    <a href="{% url 'user-signup' %}{% querystring %}">Sign up</a>
   </div>
   {% endif %}
 {% endblock %}

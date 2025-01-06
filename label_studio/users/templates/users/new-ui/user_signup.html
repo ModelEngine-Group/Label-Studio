@@ -5,7 +5,7 @@
   <div class="form-wrapper">
     <h2>Sign Up</h2>
     <form id="signup-form"
-        action="{% url 'user-signup' %}?{% if next %}&next={{ next }}{% endif %}{% if token %}&token={{ token }}{% endif %}"
+        action="{% url 'user-signup' %}?next={{ next }}{% if token %}&token={{ token }}{% endif %}"
         method="post"
     >
     {% csrf_token %}
@@ -69,7 +69,7 @@
   </div>
   <div class="text-wrapper">
     <p class="">Already have an account?</p>
-    <a href="{{ settings.HOSTNAME }}/user/login">Log in</a>
+    <a href="{% url 'user-login' %}{% querystring %}">Log in</a>
   </div>
   <script>
     document.querySelector("#how_find_us").addEventListener('change', function(e) {

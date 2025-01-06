@@ -4,7 +4,7 @@
 {% block user_content %}
 
   <form id="signup-form"
-        action="{% url 'user-signup' %}?{% if next %}&next={{ next }}{% endif %}{% if token %}&token={{ token }}{% endif %}"
+        action="{% url 'user-signup' %}?next={{ next }}{% if token %}&token={{ token }}{% endif %}"
         method="post"
   >
     {% csrf_token %}
