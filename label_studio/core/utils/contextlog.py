@@ -271,7 +271,7 @@ class ContextLog(object):
         else:
             namespace = request.resolver_match.namespace if request.resolver_match else None
             status_code = response.status_code
-            content_type = response.content_type
+            content_type = getattr(response, 'content_type', None)
             response_content = self._get_response_content(response)
 
         payload = {
