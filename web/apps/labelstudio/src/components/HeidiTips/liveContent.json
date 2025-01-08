@@ -15,7 +15,7 @@
     },
     {
       "title": "Did you know?",
-      "description": "Label Studio now has a Starter Cloud offering optimized for small teams and projects.",
+      "content": "Label Studio now has a Starter Cloud offering optimized for small teams and projects.",
       "link": {
         "label": "Learn more",
         "url": "https://humansignal.com/pricing/",
