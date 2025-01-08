@@ -9,7 +9,7 @@
   height: var(--height);
   border-radius: var(--radius);
   padding: var(--padding);
-  background: linear-gradient(0deg, var(--black_5), var(--black_5)), #FFF;
+  background: var(--sand_100);
   box-shadow: inset 0 1px 0 var(--black_5), inset 0 0 0 1px var(--black_5);
 
   &__buttons {
@@ -42,6 +42,10 @@
     &_disabled {
       opacity: 0.3;
       cursor: not-allowed;
+    }
+
+    & input{
+      cursor: pointer;
     }
   }
 
