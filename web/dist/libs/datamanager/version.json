@@ -1,6 +1,6 @@
 {
-  "message": "refactor: LEAP-1320: Remove Stale Feature Flag - ff_front_dev_2290_draft_in_annotation_history_short (#6877)",
-  "commit": "92e7b389ceda99f0a0c333b16b45bab201636cc0",
-  "date": "2025-01-09T14:20:48.000Z",
+  "message": "refactor: OPTIC-1501: remove a collection of ff (#6879)",
+  "commit": "c68421b75521820df55abf508f26894d402e3f1c",
+  "date": "2025-01-09T15:20:23.000Z",
   "branch": "develop"
 }
