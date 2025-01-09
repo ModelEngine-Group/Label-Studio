@@ -32,6 +32,17 @@ In both options, the following tags are required:
     <Taxonomy name="taxonomy" toName="text">
     ```
 
+## Taxonomy as a labeling tool
+
+Typically, the `<Taxonomy>` tag is used to perform classification tasks. However, if you set `labeling="true"`, you can apply your taxonomy choices to regions within text. This can be especially useful for NER projects. 
+
+Note that the `labeling` parameter is only supported when using `<Text> `or `<HyperText>` object tags. 
+
+![Screenshot of taxonomy as NER](/images/templates-misc/taxonomy_ner.png)
+
+!!! info Tip
+    You can use the `color` parameter on your taxonomy [`<Choice>`](/tags/choice) to color-code selected regions within the text. 
+
 ## Taxonomies defined using nested `Choice` tags
 
 Use the [`Choice`](/tags/choice.html) tag to specify the taxonomy. Nest choices under [`Choice`](/tags/choice.html) tags to create layers in the taxonomy.
