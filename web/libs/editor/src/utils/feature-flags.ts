@@ -42,13 +42,6 @@ export const FF_DEV_3034 = "fflag-feat-dev-3034-comments-with-drafts-short";
 export const FF_DEV_3077 = "fflag_feat_front_dev_3077_repeater_tag_loading_performance_short";
 
 /**
- * Disallow drawing regions outside of the video canvas
- * Also disables offscreen zooming and panning
- * @link https://app.launchdarkly.com/default/production/features/fflag_fix_front_dev_3350_restrict_drawing_area_short
- */
-export const FF_DEV_3350 = "fflag_fix_front_dev_3350_restrict_drawing_area_short";
-
-/**
  * Correction of image and stage size. It also affects the zoom position restrictions.
  * @link https://app.launchdarkly.com/default/production/features/fflag_fix_front_dev_3377_image_regions_shift_on_resize_280922_short
  */

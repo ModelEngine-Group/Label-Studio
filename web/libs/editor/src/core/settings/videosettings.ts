@@ -1,4 +1,3 @@
-import { FF_DEV_3350 } from "../../utils/feature-flags";
 import type { SettingsProperties } from "./types";
 
 export default {
@@ -6,7 +5,6 @@ export default {
     description: "Allow drawing outside of video boundaries",
     defaultValue: false,
     type: "boolean",
-    ff: FF_DEV_3350,
   },
   videoHopSize: {
     description: "Video hop size",
