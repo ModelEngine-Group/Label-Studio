@@ -1,6 +1,6 @@
 {
-  "message": "chore: Update liveContent.json (#6874)",
-  "commit": "40f095ad8fefbdd93cc334c7c8c8d9593a5bf764",
-  "date": "2025-01-08T14:42:22.000Z",
+  "message": "refactor: LEAP-1320: Remove Stale Feature Flag - ff_front_dev_2290_draft_in_annotation_history_short (#6877)",
+  "commit": "92e7b389ceda99f0a0c333b16b45bab201636cc0",
+  "date": "2025-01-09T14:20:48.000Z",
   "branch": "develop"
 }
