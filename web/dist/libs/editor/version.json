@@ -1,6 +1,6 @@
 {
-  "message": "refactor: OPTIC-1501: remove a collection of ff (#6879)",
-  "commit": "c68421b75521820df55abf508f26894d402e3f1c",
-  "date": "2025-01-09T15:20:23.000Z",
+  "message": "docs: DOC-272: Labeling param for Taxonomy (#6876)",
+  "commit": "ebe101c595f1e0ad2ec0d9b40b9571d706108533",
+  "date": "2025-01-09T16:45:07.000Z",
   "branch": "develop"
 }
