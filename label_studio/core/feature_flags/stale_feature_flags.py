@@ -36,7 +36,6 @@ STALE_FEATURE_FLAGS = {
     'ff_front_dev_2432_auto_save_polygon_draft_210622_short': True,
     'ff_front_dev_2575_projects_list_performance_280622_short': True,
     'ff_front_dev_2431_delete_polygon_points_080622_short': True,
-    'ff_front_dev_2290_draft_in_annotation_history_short': True,
     'ff_dev_2128_html_in_labels_150422_short': True,
     'ff_front_dev_1495_avatar_mess_210122_short': True,
     'ff_front_1170_outliner_030222_short': True,

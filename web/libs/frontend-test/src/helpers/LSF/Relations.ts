@@ -35,7 +35,9 @@ export const Relations = {
     return this.overlay.find("g");
   },
   hasRelations(count: number) {
-    cy.get(".lsf-details__section-head").should("have.text", `Relations (${count})`);
+    cy.get(".lsf-details__section-head")
+      .filter((index, element) => Cypress.$(element).next(".lsf-relation-controls").length > 0)
+      .should("have.text", `Relations (${count})`);
   },
   hasRelation(from: string, to: string) {
     cy.get(".lsf-relations").contains(from).closest(".lsf-relations").contains(to);

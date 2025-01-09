@@ -1,8 +1,6 @@
 import { inject, observer } from "mobx-react";
 import { Space } from "../../common/Space/Space";
 import { Block, Elem } from "../../utils/bem";
-import { FF_DEV_2290, isFF } from "../../utils/feature-flags";
-import { DraftPanel } from "../DraftPanel/DraftPanel";
 import { AnnotationHistory } from "./AnnotationHistory.tsx";
 import { useRegionsCopyPaste } from "../../hooks/useRegionsCopyPaste";
 import "./CurrentEntity.scss";
@@ -11,8 +9,6 @@ const injector = inject("store");
 
 export const CurrentEntity = injector(
   observer(({ entity, showHistory = true }) => {
-    const showDraftInHistory = isFF(FF_DEV_2290);
-
     useRegionsCopyPaste(entity);
 
     return entity ? (
@@ -48,8 +44,6 @@ export const CurrentEntity = injector(
         {/* </Space>
       </Elem> */}
 
-        {!showDraftInHistory && <DraftPanel item={entity} />}
-
         {/* {showHistory && !entity.userGenerate && ( */}
         {showHistory && (
           <Elem tag={Space} spread name="title">
@@ -57,7 +51,7 @@ export const CurrentEntity = injector(
             <Elem name="id">#{entity.pk ?? entity.id}</Elem>
           </Elem>
         )}
-        <AnnotationHistory enabled={showHistory} showDraft={showDraftInHistory} />
+        <AnnotationHistory enabled={showHistory} />
       </Block>
     ) : null;
   }),

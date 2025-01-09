@@ -1,7 +1,6 @@
 import { inject, observer } from "mobx-react";
 import type { FC } from "react";
 import { Block, Elem } from "../../../utils/bem";
-import { FF_DEV_2290, isFF } from "../../../utils/feature-flags";
 import { Comments as CommentsComponent } from "../../Comments/Comments";
 import { AnnotationHistory } from "../../CurrentEntity/AnnotationHistory";
 import { PanelBase, type PanelProps } from "../PanelBase";
@@ -11,7 +10,6 @@ import { RegionItem } from "./RegionItem";
 import { Relations as RelationsComponent } from "./Relations";
 // eslint-disable-next-line
 // @ts-ignore
-import { DraftPanel } from "../../DraftPanel/DraftPanel";
 import { RelationsControls } from "./RelationsControls";
 
 interface DetailsPanelProps extends PanelProps {
@@ -90,24 +88,19 @@ const RelationsTab: FC<any> = inject("store")(
 const HistoryTab: FC<any> = inject("store")(
   observer(({ store, currentEntity }) => {
     const showAnnotationHistory = store.hasInterface("annotations:history");
-    const showDraftInHistory = isFF(FF_DEV_2290);
 
     return (
       <>
         <Block name="history">
-          {!showDraftInHistory ? (
-            <DraftPanel item={currentEntity} />
-          ) : (
-            <Elem name="section-tab">
-              <Elem name="section-head">
-                Annotation History
-                <span>#{currentEntity.pk ?? currentEntity.id}</span>
-              </Elem>
-              <Elem name="section-content">
-                <AnnotationHistory inline showDraft={showDraftInHistory} enabled={showAnnotationHistory} />
-              </Elem>
+          <Elem name="section-tab">
+            <Elem name="section-head">
+              Annotation History
+              <span>#{currentEntity.pk ?? currentEntity.id}</span>
             </Elem>
-          )}
+            <Elem name="section-content">
+              <AnnotationHistory inline enabled={showAnnotationHistory} />
+            </Elem>
+          </Elem>
         </Block>
       </>
     );
@@ -133,23 +126,17 @@ const GeneralPanel: FC<any> = inject("store")(
   observer(({ store, currentEntity }) => {
     const { relationStore } = currentEntity;
     const showAnnotationHistory = store.hasInterface("annotations:history");
-    const showDraftInHistory = isFF(FF_DEV_2290);
-
     return (
       <>
-        {!showDraftInHistory ? (
-          <DraftPanel item={currentEntity} />
-        ) : (
-          <Elem name="section">
-            <Elem name="section-head">
-              Annotation History
-              <span>#{currentEntity.pk ?? currentEntity.id}</span>
-            </Elem>
-            <Elem name="section-content">
-              <AnnotationHistory inline showDraft={showDraftInHistory} enabled={showAnnotationHistory} />
-            </Elem>
+        <Elem name="section">
+          <Elem name="section-head">
+            Annotation History
+            <span>#{currentEntity.pk ?? currentEntity.id}</span>
           </Elem>
-        )}
+          <Elem name="section-content">
+            <AnnotationHistory inline enabled={showAnnotationHistory} />
+          </Elem>
+        </Elem>
         <Elem name="section">
           <Elem name="view-control">
             <Elem name="section-head">Relations ({relationStore.size})</Elem>
