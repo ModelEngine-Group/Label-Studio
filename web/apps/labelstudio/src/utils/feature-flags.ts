@@ -10,8 +10,6 @@ export const FF_DEV_1495 = "ff_front_dev_1495_avatar_mess_210122_short";
 export const FF_DEV_1658 = "ff_front_dev_1658_notification_center_170222_short";
 // Model version selector per model backend
 export const FF_DEV_1682 = "ff_front_dev_1682_model_version_dropdown_070622_short";
-// Project list performance improvements
-export const FF_DEV_2575 = "ff_front_dev_2575_projects_list_performance_280622_short";
 
 /**
  * Addresses the memory leak issue in Taxonomy with Repeater

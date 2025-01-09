@@ -21,7 +21,6 @@ const params = { annotations: [{ id: "test", result: annotations }], config, dat
 
 Scenario("Play/pause of multiple synced audio stay in sync", async ({ I, LabelStudio, AtAudioView }) => {
   LabelStudio.setFeatureFlags({
-    fflag_feat_front_dev_2461_audio_paragraphs_seek_chunk_position_short: true,
     ff_front_dev_2715_audio_3_280722_short: true,
   });
 
@@ -69,7 +68,6 @@ Scenario("Play/pause of multiple synced audio stay in sync", async ({ I, LabelSt
 
 Scenario("Looping of multiple synced audio stay in sync", async ({ I, LabelStudio, AtAudioView }) => {
   LabelStudio.setFeatureFlags({
-    fflag_feat_front_dev_2461_audio_paragraphs_seek_chunk_position_short: true,
     ff_front_dev_2715_audio_3_280722_short: true,
   });
 
@@ -143,7 +141,6 @@ Scenario("Looping of multiple synced audio stay in sync", async ({ I, LabelStudi
 
 Scenario("Seeking of multiple synced audio stay in sync", async ({ I, LabelStudio, AtAudioView }) => {
   LabelStudio.setFeatureFlags({
-    fflag_feat_front_dev_2461_audio_paragraphs_seek_chunk_position_short: true,
     ff_front_dev_2715_audio_3_280722_short: true,
   });
 

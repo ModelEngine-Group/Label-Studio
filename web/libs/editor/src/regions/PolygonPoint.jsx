@@ -5,7 +5,7 @@ import { getParent, getRoot, hasParent, types } from "mobx-state-tree";
 
 import { guidGenerator } from "../core/Helpers";
 import { useRegionStyles } from "../hooks/useRegionColor";
-import { FF_DEV_2431, FF_DEV_3793, isFF } from "../utils/feature-flags";
+import { FF_DEV_3793, isFF } from "../utils/feature-flags";
 import { RELATIVE_STAGE_HEIGHT, RELATIVE_STAGE_WIDTH } from "../components/ImageView/Image";
 
 const PolygonPointAbsoluteCoordsDEV3793 = types
@@ -309,7 +309,7 @@ const PolygonPointView = observer(({ item, name }) => {
           item.parent.deletePoint(item);
         }}
         onClick={(ev) => {
-          if (isFF(FF_DEV_2431) && ev.evt.altKey) return item.parent.deletePoint(item);
+          if (ev.evt.altKey) return item.parent.deletePoint(item);
           if (item.parent.isDrawing && item.parent.points.length === 1) return;
           // don't unselect polygon on point click
           ev.evt.preventDefault();

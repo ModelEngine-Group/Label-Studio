@@ -15,11 +15,6 @@ export const FF_DEV_1536 = "ff_front_dev_1536_taxonomy_user_labels_150222_long";
 // New Audio 2.0 UI
 export const FF_DEV_1713 = "ff_front_DEV_1713_audio_ui_150222_short";
 
-// Allow to use html inside <Label/> tags
-export const FF_DEV_2128 = "ff_dev_2128_html_in_labels_150422_short";
-
-export const FF_DEV_2431 = "ff_front_dev_2431_delete_polygon_points_080622_short";
-
 export const FF_DEV_2432 = "ff_front_dev_2432_auto_save_polygon_draft_210622_short";
 
 export const FF_DEV_2669 = "ff_front_dev_2669_paragraph_author_filter_210622_short";
@@ -73,12 +68,6 @@ export const FF_DEV_3617 = "fflag_fix_front_dev_3617_taxonomy_memory_leaks_fix";
  * @link https://app.launchdarkly.com/default/test/features/fflag_fix_front_dev_3666_max_usages_on_region_creation_171122_short
  */
 export const FF_DEV_3666 = "fflag_fix_front_dev_3666_max_usages_on_region_creation_171122_short";
-
-/**
- * Allow shourtcuts button to work with visible main textarea when there is no focus
- * @link https://app.launchdarkly.com/default/production/features/fflag_fix_front_dev_3730_shortcuts_initial_input_22122022_short
- */
-export const FF_DEV_3730 = "fflag_fix_front_dev_3730_shortcuts_initial_input_22122022_short";
 
 // Use only relative coords internally to improve performance and reduce bugs
 export const FF_DEV_3793 = "fflag_fix_front_dev_3793_relative_coords_short";

@@ -235,7 +235,6 @@ Data(configParams).Scenario("Should work with existent regions.", async ({ I, La
     I.amOnPage("/");
     LabelStudio.setFeatureFlags({
       ff_front_1170_outliner_030222_short: true,
-      fflag_fix_front_dev_3730_shortcuts_initial_input_22122022_short: true,
     });
 
     LabelStudio.init({
