@@ -1,6 +1,6 @@
 {
-  "message": "refactor: OPTIC-1506: Remove Stale Feature Flag - fflag_fix_front_dev_3350_restrict_drawing_area_short (#6878)",
-  "commit": "a38cd76ecf6df705f452615fe9a22e77ba0ceb86",
-  "date": "2025-01-09T19:28:27.000Z",
+  "message": "feat: LEAP-1753: Add shortcut for toggling bulk sidebar minimization (#6857)",
+  "commit": "3fef4105ab3a30bdbd9e2328d835e524a9b3612d",
+  "date": "2025-01-10T14:25:19.000Z",
   "branch": "develop"
 }
