@@ -15,6 +15,10 @@ export const keymap = {
     title: "Focus previous task",
     shortcut: "shift+right",
   },
+  "dm.toggle-bulk-sidebar-minimization": {
+    title: "Toggle bulk sidebar minimization",
+    shortcut: "shift+.",
+  },
   "lsf.save-annotation": {
     title: "Save results",
     macos: "cmd+enter",
