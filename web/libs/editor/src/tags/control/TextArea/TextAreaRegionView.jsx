@@ -11,7 +11,6 @@ import styles from "../../../components/HtxTextBox/HtxTextBox.module.scss";
 import Registry from "../../../core/Registry";
 import { PER_REGION_MODES } from "../../../mixins/PerRegion";
 import { Block, Elem } from "../../../utils/bem";
-import { FF_LSDV_4712, isFF } from "../../../utils/feature-flags";
 
 import "./TextArea.scss";
 
@@ -23,29 +22,23 @@ const HtxTextAreaResultLine = forwardRef(
     const isTextarea = rows > 1;
     const [stateValue, setStateValue] = useState(value ?? "");
 
-    if (isFF(FF_LSDV_4712)) {
-      useEffect(() => {
-        if (value !== stateValue) {
-          setStateValue(value);
-        }
-      }, [value]);
-    }
+    useEffect(() => {
+      if (value !== stateValue) {
+        setStateValue(value);
+      }
+    }, [value]);
 
     const displayValue = useMemo(() => {
       if (collapsed) {
         return (value ?? "").split(/\n/)[0] ?? "";
       }
 
-      return isFF(FF_LSDV_4712) ? stateValue : value;
-    }, [value, collapsed, ...(isFF(FF_LSDV_4712) ? [stateValue] : [])]);
+      return stateValue;
+    }, [value, collapsed, stateValue]);
 
-    const changeHandler = isFF(FF_LSDV_4712)
-      ? useCallback((e) => {
-          setStateValue(e.target.value);
-        }, [])
-      : (e) => {
-          if (!collapsed) onChange(idx, e.target.value);
-        };
+    const changeHandler = useCallback((e) => {
+      setStateValue(e.target.value);
+    }, []);
 
     const blurHandler = useCallback(
       (e) => {
@@ -69,19 +62,15 @@ const HtxTextAreaResultLine = forwardRef(
       onFocus,
     };
 
-    if (isFF(FF_LSDV_4712)) {
-      inputProps.onBlur = blurHandler;
-    }
+    inputProps.onBlur = blurHandler;
 
-    if (isFF(FF_LSDV_4712) || isTextarea) {
-      inputProps.onKeyDown = (e) => {
-        if ((e.key === "Enter" && !e.shiftKey) || e.key === "Escape") {
-          e.preventDefault();
-          e.stopPropagation();
-          e.target?.blur?.();
-        }
-      };
-    }
+    inputProps.onKeyDown = (e) => {
+      if ((e.key === "Enter" && !e.shiftKey) || e.key === "Escape") {
+        e.preventDefault();
+        e.stopPropagation();
+        e.target?.blur?.();
+      }
+    };
 
     return (
       <Elem name="item">
@@ -143,7 +132,7 @@ const HtxTextAreaResult = observer(({ item, control, firstResultInputRef, onFocu
         ref={idx === 0 ? firstResultInputRef : null}
         onFocus={onFocus}
         collapsed={collapsed}
-        validate={isFF(FF_LSDV_4712) ? item.from_name.validateText : null}
+        validate={item.from_name.validateText}
       />
     );
   });

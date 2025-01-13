@@ -17,7 +17,7 @@ import ProcessAttrsMixin from "../../../mixins/ProcessAttrs";
 import { ReadOnlyControlMixin } from "../../../mixins/ReadOnlyMixin";
 import RequiredMixin from "../../../mixins/Required";
 import { HtxTextAreaRegion, TextAreaRegionModel } from "../../../regions/TextAreaRegion";
-import { FF_LEAD_TIME, FF_LSDV_4583, FF_LSDV_4659, isFF } from "../../../utils/feature-flags";
+import { FF_LEAD_TIME, FF_LSDV_4583, isFF } from "../../../utils/feature-flags";
 import ControlBase from "../Base";
 import ClassificationBase from "../ClassificationBase";
 import "./TextAreaRegionView";
@@ -87,11 +87,7 @@ const TagAttrs = types.model({
   maxsubmissions: types.maybeNull(types.string),
   editable: types.optional(types.boolean, false),
   transcription: false,
-  ...(isFF(FF_LSDV_4659)
-    ? {
-        skipduplicates: types.optional(types.boolean, false),
-      }
-    : {}),
+  skipduplicates: types.optional(types.boolean, false),
 });
 
 const Model = types
@@ -236,7 +232,7 @@ const Model = types
       },
 
       validateText(text) {
-        if (isFF(FF_LSDV_4659) && self.skipduplicates && self.hasResult(text)) {
+        if (self.skipduplicates && self.hasResult(text)) {
           self.uniqueModal();
           return false;
         }

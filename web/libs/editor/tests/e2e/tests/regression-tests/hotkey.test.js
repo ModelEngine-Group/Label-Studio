@@ -19,7 +19,6 @@ Scenario("Hotkeys on re-initing lsf", async ({ I, LabelStudio, AtAudioView, AtSi
 
   LabelStudio.setFeatureFlags({
     ff_front_dev_2715_audio_3_280722_short: true,
-    fflag_fix_font_lsdv_1148_hotkeys_namespaces_01022023_short: true,
   });
   I.amOnPage("/");
 

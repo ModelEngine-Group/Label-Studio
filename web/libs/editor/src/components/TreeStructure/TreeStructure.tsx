@@ -1,7 +1,6 @@
 import type React from "react";
 import { type RefObject, useCallback, useEffect, useRef, useState } from "react";
 import { VariableSizeList } from "react-window";
-import { FF_DEV_4075, isFF } from "../../utils/feature-flags";
 
 type ExtendedData = Readonly<{
   id: string;
@@ -170,7 +169,7 @@ const TreeStructure = ({
       (rowRef) => {
         const key = `${index}`;
         const scrollbarWidth = scrollableElement?.offsetWidth - scrollableElement?.clientWidth || 0;
-        const itemWidth = (isFF(FF_DEV_4075) ? rowRef.scrollWidth : rowRef.offsetWidth) + scrollbarWidth + 5;
+        const itemWidth = rowRef.scrollWidth + scrollbarWidth + 5;
         const itemHeight = rowRef.scrollHeight;
 
         if (width < itemWidth) {

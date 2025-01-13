@@ -5,7 +5,7 @@ import { createElement, Fragment } from "react";
 import { Tooltip } from "../common/Tooltip/Tooltip";
 import Hint from "../components/Hint/Hint";
 import { Block, Elem } from "../utils/bem";
-import { FF_LSDV_1148, FF_MULTI_OBJECT_HOTKEYS, isFF } from "../utils/feature-flags";
+import { FF_MULTI_OBJECT_HOTKEYS, isFF } from "../utils/feature-flags";
 import { isDefined, isMacOS } from "../utils/utilities";
 import defaultKeymap from "./settings/keymap.json";
 
@@ -170,13 +170,9 @@ export const Hotkey = (namespace = "global", description = "Hotkeys") => {
         const keys = getKeys(key);
 
         for (const key of keys) {
-          if (isFF(FF_LSDV_1148)) {
-            removeKeyHandlerRef(scope, key);
-            keymaster.unbind(key, scope);
-            rebindKeyHandlers(scope, key);
-          } else {
-            keymaster.unbind(key, scope);
-          }
+          removeKeyHandlerRef(scope, key);
+          keymaster.unbind(key, scope);
+          rebindKeyHandlers(scope, key);
           delete _hotkeys_desc[key];
         }
       }
@@ -229,9 +225,7 @@ export const Hotkey = (namespace = "global", description = "Hotkeys") => {
             func(...args);
           };
 
-          if (isFF(FF_LSDV_1148)) {
-            addKeyHandlerRef(scope, keyName, handler);
-          }
+          addKeyHandlerRef(scope, keyName, handler);
           keymaster(keyName, scope, handler);
         });
     },
@@ -264,13 +258,9 @@ export const Hotkey = (namespace = "global", description = "Hotkeys") => {
           .map((s) => s.trim())
           .filter(Boolean)
           .forEach((scope) => {
-            if (isFF(FF_LSDV_1148)) {
-              removeKeyHandlerRef(scope, key);
-              keymaster.unbind(keyName, scope);
-              rebindKeyHandlers(scope, key);
-            } else {
-              keymaster.unbind(keyName, scope);
-            }
+            removeKeyHandlerRef(scope, key);
+            keymaster.unbind(keyName, scope);
+            rebindKeyHandlers(scope, key);
           });
 
         delete _hotkeys_map[keyName];

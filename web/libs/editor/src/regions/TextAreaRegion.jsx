@@ -9,7 +9,6 @@ import { guidGenerator } from "../core/Helpers";
 
 import styles from "./TextAreaRegion/TextAreaRegion.scss";
 import { HtxTextBox } from "../components/HtxTextBox/HtxTextBox";
-import { FF_LSDV_4712, isFF } from "../utils/feature-flags";
 import { cn } from "../utils/bem";
 
 const Model = types
@@ -40,7 +39,7 @@ const Model = types
   }))
   .actions((self) => ({
     setValue(val) {
-      if (isFF(FF_LSDV_4712) && (self._value === val || !self.parent.validateText(val))) return;
+      if (self._value === val || !self.parent.validateText(val)) return;
 
       self._value = val;
       self.parent.onChange();
