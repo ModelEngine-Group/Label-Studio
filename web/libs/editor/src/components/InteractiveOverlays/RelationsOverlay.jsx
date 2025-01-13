@@ -8,6 +8,8 @@ import { FF_DEV_3391, isFF } from "../../utils/feature-flags";
 import { isDefined } from "../../utils/utilities";
 import NodesConnector from "./NodesConnector";
 
+import styles from "./RelationsOverlay.module.scss";
+
 const ArrowMarker = ({ id, color }) => {
   return (
     <marker
@@ -110,8 +112,14 @@ const RelationItem = ({ id, startNode, endNode, direction, rootRef, highlight, d
     return () => relation.destroy();
   }, []);
   if (start.width < 1 || start.height < 1 || end.width < 1 || end.height < 1) return null;
+
+  const itemStyles = [styles.relationItem];
+  if (highlight) {
+    itemStyles.push(styles._highlighted);
+  }
+
   return (
-    <g opacity={dimm && !highlight ? 0.5 : 1} visibility={hideConnection ? "hidden" : "visible"}>
+    <g id={id} className={itemStyles.join(" ")} visibility={hideConnection ? "hidden" : "visible"}>
       <RelationItemRect {...start} />
       <RelationItemRect {...end} />
       <RelationConnector
@@ -202,12 +210,26 @@ class RelationsOverlay extends PureComponent {
       zIndex: 100,
     };
 
+    const containerStyles = ["relations-overlay", styles.container];
+    if (hasHighlight) {
+      containerStyles.push(styles._highlighting);
+    }
+
     return (
       <AutoSizer onResize={this.onResize}>
         {() => (
-          <svg className="relations-overlay" ref={this.rootNode} xmlns="http://www.w3.org/2000/svg" style={style}>
+          <svg
+            className={containerStyles.join(" ")}
+            ref={this.rootNode}
+            xmlns="http://www.w3.org/2000/svg"
+            style={style}
+          >
             <title>{this.state.shouldRender ? "Arrow Marker" : ""}</title>
             {this.state.shouldRender && this.renderRelations(relations, visible, hasHighlight, highlighted)}
+            {
+              // moving a highlighted relation into the foreground
+              highlighted ? <use xlinkHref={`#${highlighted.id}`} /> : null
+            }
           </svg>
         )}
       </AutoSizer>
