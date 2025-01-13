@@ -1,6 +1,6 @@
 {
-  "message": "refactor: OPTIC-1510: remove a batch of ff (#6882)",
-  "commit": "3bd121028831a45d48daf12bed944d025053ba08",
-  "date": "2025-01-13T14:39:07.000Z",
+  "message": "refactor: OPTIC-1518: remove a batch of ff (#6892)",
+  "commit": "3c03818a813dfcd19fd5a0600a8933c84405507a",
+  "date": "2025-01-13T17:05:01.000Z",
   "branch": "develop"
 }
