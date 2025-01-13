@@ -25,7 +25,6 @@ import {
   FF_LSDV_4583,
   FF_TAXONOMY_ASYNC,
   FF_TAXONOMY_LABELING,
-  FF_TAXONOMY_SELECTED,
   isFF,
 } from "../../../utils/feature-flags";
 import ControlBase from "../Base";
@@ -364,14 +363,10 @@ const Model = types
       const children = ChildrenSnapshots.get(self.name) ?? [];
 
       if (isFF(FF_DEV_3617) && self.store && children.length !== self.children.length) {
-        if (isFF(FF_TAXONOMY_SELECTED)) {
-          // we have to update it during config parsing to let other code work
-          // with correctly added children.
-          // looks like there are no obstacles to do it in the same tick
-          self.updateChildren();
-        } else {
-          setTimeout(() => self.updateChildren());
-        }
+        // we have to update it during config parsing to let other code work
+        // with correctly added children.
+        // looks like there are no obstacles to do it in the same tick
+        self.updateChildren();
       } else {
         self.loading = false;
       }

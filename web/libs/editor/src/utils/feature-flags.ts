@@ -141,13 +141,6 @@ export const FF_OUTLINER_OPTIM = "fflag_feat_front_lsdv_4620_outliner_optimizati
  */
 export const FF_LSDV_4711 = "fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short";
 
-/**
- * Fixing issue with missed steps in timeseries with optimized data and zoom
- *
- * @link https://app.launchdarkly.com/default/production/features/fflag_fix_front_lsdv_4881_timeseties_points_missing_140423_short
- */
-export const FF_LSDV_4881 = "fflag_fix_front_lsdv_4881_timeseries_points_missing_140423_short";
-
 /** Fix "No Label" for Dynamic Labels by switching off missing labels removal */
 export const FF_LSDV_4988 = "fflag_fix_front_lsdv_4988_dynamic_no_label_120523_short";
 
@@ -172,12 +165,6 @@ export const FF_LSDV_4992 = "fflag_fix_front_lsdv_4992_hide_all_regions_04052023
 export const FF_LSDV_4998 = "fflag_fix_front_lsdv_4998_missed_dynamic_children_030523_short";
 
 /**
- * Fix delay on double-click interactions in Image Segmentation
- * @link https://app.launchdarkly.com/default/production/features/fflag_fix_front_lsdv_5248_double_click_delay_280823_short
- */
-export const FF_DBLCLICK_DELAY = "fflag_fix_front_lsdv_5248_double_click_delay_280823_short";
-
-/**
  * Allow to load Taxonomy from remote API
  * @link https://app.launchdarkly.com/default/production/features/fflag_feat_front_lsdv_5451_async_taxonomy_110823_short
  */
@@ -197,12 +184,6 @@ export const FF_TAXONOMY_LABELING = "fflag_feat_front_lsdv_5452_taxonomy_labelin
  */
 
 export const FF_TASK_COUNT_FIX = "fflag_fix_all_optic_79_task_count_is_wrong_short";
-
-/** Fix taxonomy items init with DEV-3617 FF on; this allows to correctly preselect items on init */
-export const FF_TAXONOMY_SELECTED = "fflag_fix_front_leap_149_taxonomy_selected_true_short";
-
-/** Skip video to region start when it's selected in the outliner */
-export const FF_LEAP_187 = "fflag_feat_front_leap_187_video_seek_on_select_short";
 
 /** Select annotation only once during store init and trigger the rest from this select */
 export const FF_SIMPLE_INIT = "fflag_fix_front_leap_443_select_annotation_once";

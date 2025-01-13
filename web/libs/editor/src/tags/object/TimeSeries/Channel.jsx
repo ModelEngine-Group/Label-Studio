@@ -10,7 +10,7 @@ import { checkD3EventLoop, getOptimalWidth, getRegionColor, sparseValues } from 
 import { markerSymbol } from "./symbols";
 import { errorBuilder } from "../../../core/DataValidator/ConfigValidator";
 import { TagParentMixin } from "../../../mixins/TagParentMixin";
-import { FF_DEV_3391, FF_LSDV_4881, isFF } from "../../../utils/feature-flags";
+import { FF_DEV_3391, isFF } from "../../../utils/feature-flags";
 import { fixMobxObserve } from "../../../utils/utilities";
 
 /**
@@ -532,17 +532,12 @@ class ChannelD3 extends React.Component {
 
     this.useOptimizedData = series.length > optimizedWidthWithZoom;
 
-    let originalSeries;
-    let originalTimes;
-
-    if (isFF(FF_LSDV_4881)) {
-      originalSeries = series.filter((x) => {
-        return x[column] !== null;
-      });
-      originalTimes = originalSeries.map((x) => {
-        return x[time];
-      });
-    }
+    const originalSeries = series.filter((x) => {
+      return x[column] !== null;
+    });
+    const originalTimes = originalSeries.map((x) => {
+      return x[time];
+    });
 
     if (this.useOptimizedData) {
       this.optimizedSeries = sparseValues(series, optimizedWidthWithZoom);
@@ -608,11 +603,11 @@ class ChannelD3 extends React.Component {
 
     const stick = (screenX) => {
       const dataX = x.invert(screenX);
-      const stickTimes = isFF(FF_LSDV_4881) ? originalTimes : times;
+      const stickTimes = originalTimes;
       let i = d3.bisectRight(stickTimes, dataX, 0, stickTimes.length - 1);
 
       if (stickTimes[i] - dataX > dataX - stickTimes[i - 1]) i--;
-      return [stickTimes[i], isFF(FF_LSDV_4881) ? originalSeries[i][column] : values[i]];
+      return [stickTimes[i], originalSeries[i][column]];
     };
 
     this.x = x;

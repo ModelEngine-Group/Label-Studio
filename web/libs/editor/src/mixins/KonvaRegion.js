@@ -1,5 +1,5 @@
 import { types } from "mobx-state-tree";
-import { FF_DBLCLICK_DELAY, FF_DEV_3793, FF_ZOOM_OPTIM, isFF } from "../utils/feature-flags";
+import { FF_DEV_3793, FF_ZOOM_OPTIM, isFF } from "../utils/feature-flags";
 export const KonvaRegionMixin = types
   .model({})
   .views((self) => {
@@ -116,13 +116,11 @@ export const KonvaRegionMixin = types
 
         if (e) e.cancelBubble = true;
 
-        if (isFF(FF_DBLCLICK_DELAY)) {
-          const isDoubleClick = ev.detail === 2;
+        const isDoubleClick = ev.detail === 2;
 
-          if (isDoubleClick) {
-            self.onDoubleClickRegion();
-            return;
-          }
+        if (isDoubleClick) {
+          self.onDoubleClickRegion();
+          return;
         }
 
         const selectAction = () => {
@@ -135,24 +133,7 @@ export const KonvaRegionMixin = types
           annotation.stopLinkingMode();
           annotation.regionStore.unselectAll();
         } else {
-          if (isFF(FF_DBLCLICK_DELAY)) {
-            self._selectArea(additiveMode);
-          } else {
-            // Skip double click emulation when there is nothing to focus
-            if (!self.perRegionFocusTarget) {
-              selectAction();
-              return;
-            }
-            // Double click emulation
-            if (deferredSelectId) {
-              clearTimeout(deferredSelectId);
-              self.requestPerRegionFocus();
-              deferredSelectId = null;
-              annotation.selectArea(self);
-            } else {
-              deferredSelectId = setTimeout(selectAction, 300);
-            }
-          }
+          self._selectArea(additiveMode);
         }
       },
       onDoubleClickRegion() {

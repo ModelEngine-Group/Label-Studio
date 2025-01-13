@@ -21,7 +21,6 @@ import { debounce } from "../../utils/debounce";
 import Constants from "../../core/Constants";
 import { fixRectToFit } from "../../utils/image";
 import {
-  FF_DBLCLICK_DELAY,
   FF_DEV_1442,
   FF_DEV_3077,
   FF_DEV_3793,
@@ -64,12 +63,7 @@ const splitRegions = (regions) => {
 };
 
 const Region = memo(({ region, showSelected = false }) => {
-  if (isFF(FF_DBLCLICK_DELAY)) {
-    return useObserver(() => Tree.renderItem(region, region.annotation, true));
-  }
-  return useObserver(() =>
-    region.inSelection !== showSelected ? null : Tree.renderItem(region, region.annotation, false),
-  );
+  return useObserver(() => Tree.renderItem(region, region.annotation, true));
 });
 
 const RegionsLayer = memo(({ regions, name, useLayers, showSelected = false }) => {
@@ -363,11 +357,7 @@ const Selection = observer(({ item, ...triggeredOnResize }) => {
 
   return (
     <>
-      {isFF(FF_DBLCLICK_DELAY) ? (
-        <Layer name="selection-regions-layer" />
-      ) : (
-        <SelectedRegions item={item} selectedRegions={item.selectedRegions} {...triggeredOnResize} />
-      )}
+      <Layer name="selection-regions-layer" />
       <SelectionLayer item={item} selectionArea={selectionArea} />
     </>
   );
@@ -579,7 +569,7 @@ export default observer(
             // segmentation is specific for Brushes
             // but click interaction on the region covers the case of the same MoveTool interaction here,
             // so it should ignore move tool interaction to prevent conflicts
-            if ((!isFF(FF_DBLCLICK_DELAY) || !isMoveTool) && "segmentation" === el?.attrs?.name) {
+            if (!isMoveTool && "segmentation" === el?.attrs?.name) {
               return true;
             }
           }
