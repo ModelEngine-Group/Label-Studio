@@ -1,6 +1,6 @@
 {
-  "message": "fix: LEAP-1708: improve styling for relation overlay (#6875)",
-  "commit": "5660f90c7f6b7ad646ab409ae16b659857406ddf",
-  "date": "2025-01-13T13:53:28.000Z",
+  "message": "refactor: OPTIC-1510: remove a batch of ff (#6882)",
+  "commit": "3bd121028831a45d48daf12bed944d025053ba08",
+  "date": "2025-01-13T14:39:07.000Z",
   "branch": "develop"
 }
