@@ -46,6 +46,7 @@ from projects.functions import (
     annotate_useful_annotation_number,
 )
 from projects.functions.utils import make_queryset_from_iterable
+from projects.signals import ProjectSignals
 from tasks.models import (
     Annotation,
     AnnotationDraft,
@@ -659,6 +660,10 @@ class Project(ProjectMixin, models.Model):
     def _label_config_has_changed(self):
         return self.label_config != self.__original_label_config
 
+    @property
+    def label_config_is_not_default(self):
+        return self.label_config != Project._meta.get_field('label_config').default
+
     def should_none_model_version(self, model_version):
         """
         Returns True if the model version provided matches the object's model version,
@@ -728,7 +733,12 @@ class Project(ProjectMixin, models.Model):
         exists = True if self.pk else False
         project_with_config_just_created = not exists and self.label_config
 
-        if self._label_config_has_changed() or project_with_config_just_created:
+        label_config_has_changed = self._label_config_has_changed()
+        logger.debug(
+            f'Label config has changed: {label_config_has_changed}, original: {self.__original_label_config}, new: {self.label_config}'
+        )
+
+        if label_config_has_changed or project_with_config_just_created:
             self.data_types = extract_data_types(self.label_config)
             self.parsed_label_config = parse_config(self.label_config)
             self.label_config_hash = hash(str(self.parsed_label_config))
@@ -740,10 +750,19 @@ class Project(ProjectMixin, models.Model):
             if update_fields is not None:
                 update_fields = {'control_weights'}.union(update_fields)
 
-        if self._label_config_has_changed():
-            self.__original_label_config = self.label_config
-
         super(Project, self).save(*args, update_fields=update_fields, **kwargs)
+
+        if label_config_has_changed:
+            # save the new label config for future comparison
+            self.__original_label_config = self.label_config
+            # if tasks are already imported, emit signal that project is configured and ready for labeling
+            if self.num_tasks > 0:
+                logger.debug(f'Sending post_label_config_and_import_tasks signal for project {self.id}')
+                ProjectSignals.post_label_config_and_import_tasks.send(sender=Project, project=self)
+            else:
+                logger.debug(
+                    f'No tasks imported for project {self.id}, skipping post_label_config_and_import_tasks signal'
+                )
 
         if not exists:
             steps = ProjectOnboardingSteps.objects.all()

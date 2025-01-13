@@ -392,6 +392,7 @@ class BaseTaskSerializerBulk(serializers.ListSerializer):
 
         self.post_process_annotations(user, db_annotations, 'imported')
         self.post_process_tasks(self.project.id, [t.id for t in self.db_tasks])
+        self.post_process_custom_callback(self.project.id, user)
 
         if flag_set('fflag_feat_back_lsdv_5307_import_reviews_drafts_29062023_short', user=ff_user):
             with transaction.atomic():
@@ -589,6 +590,10 @@ class BaseTaskSerializerBulk(serializers.ListSerializer):
     @staticmethod
     def add_annotation_fields(body, user, action):
         return body
+
+    @staticmethod
+    def post_process_custom_callback(project_id, user):
+        pass
 
     class Meta:
         model = Task

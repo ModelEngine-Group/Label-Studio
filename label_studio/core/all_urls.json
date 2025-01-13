@@ -528,6 +528,12 @@
         "decorators": ""
     },
     {
+        "url": "/api/current-user/product-tour",
+        "module": "users.product_tours.api.ProductTourAPI",
+        "name": "product-tour",
+        "decorators": ""
+    },
+    {
         "url": "/data/avatars/<path>",
         "module": "django.views.static.serve",
         "name": "",

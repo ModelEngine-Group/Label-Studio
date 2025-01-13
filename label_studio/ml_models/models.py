@@ -115,6 +115,13 @@ class ThirdPartyModelVersion(ModelVersion):
         'organizations.Organization', on_delete=models.CASCADE, related_name='third_party_model_versions', null=True
     )
 
+    @property
+    def project(self):
+        # TODO: can it be just a property of the model version?
+        if self.parent_model and self.parent_model.associated_projects.exists():
+            return self.parent_model.associated_projects.first()
+        return None
+
     def has_permission(self, user):
         return user.active_organization == self.organization
 
