@@ -1,6 +1,6 @@
 {
-  "message": "feat: LEAP-1753: Add shortcut for toggling bulk sidebar minimization (#6857)",
-  "commit": "3fef4105ab3a30bdbd9e2328d835e524a9b3612d",
-  "date": "2025-01-10T14:25:19.000Z",
+  "message": "fix: LEAP-1708: improve styling for relation overlay (#6875)",
+  "commit": "5660f90c7f6b7ad646ab409ae16b659857406ddf",
+  "date": "2025-01-13T13:53:28.000Z",
   "branch": "develop"
 }
