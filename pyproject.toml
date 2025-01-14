@@ -229,5 +229,5 @@ twine = ">=4.0.2"
 uwsgi = ["pyuwsgi","uwsgitop"]
 
 [build-system]
-requires = ["poetry-core<2.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
