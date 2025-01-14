@@ -1,6 +1,6 @@
 {
-  "message": "refactor: OPTIC-1518: remove a batch of ff (#6892)",
-  "commit": "3c03818a813dfcd19fd5a0600a8933c84405507a",
-  "date": "2025-01-13T17:05:01.000Z",
+  "message": "feat: OPTIC-1417: Improve projects list API usage with frontend query cache. (#6844)",
+  "commit": "62e08b0f79eb7ff27712b4031e09e1c2a796b3b4",
+  "date": "2025-01-14T13:56:44.000Z",
   "branch": "develop"
 }
