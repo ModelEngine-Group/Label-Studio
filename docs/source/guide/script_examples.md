@@ -471,3 +471,130 @@ This is an example of a "hard" block, meaning that the user must resolve the iss
 * [RectangleLabels](/tags/rectanglelabels.html)
 * [TextArea](/tags/textarea.html)
 * [Labels](/tags/labels.html)
+
+## Sync videos with frame offset
+
+This labeling configuration arranges three video players vertically, making it easier to view and annotate each video frame. 
+
+The script ensures the videos are synced, with one player showing one frame forward, and another player the previous frame. 
+
+![Screenshot of JSON error message](/images/project/video_sync.png)
+
+#### Script
+
+```javascript
+// Wait for the Label Studio Interface to be ready
+await LSI;
+
+// Get references to the video objects by their names
+var videoMinus1 = LSI.annotation.names.get('videoMinus1');
+var video0 = LSI.annotation.names.get('video0');
+var videoPlus1 = LSI.annotation.names.get('videoPlus1');
+
+if (!videoMinus1 || !video0 || !videoPlus1) return;
+
+// Convert frameRate to a number and ensure it's valid
+var frameRate = Number.parseFloat(video0.framerate) || 24;
+var frameDuration = 1 / frameRate;
+
+// Function to adjust video sync with offset and guard against endless loops
+function adjustVideoSync(video, offsetFrames) {
+  video.isSyncing = false;
+  
+  ["seek", "play", "pause"].forEach(event => {
+    video.syncHandlers.set(event, function(data) {
+      if (video.isSyncing) return;
+      
+      video.isSyncing = true;
+
+      if (!video.ref.current || video === video0) {
+        video.isSyncing = false;
+        return;
+      }
+	  
+      const videoElem = video.ref.current;
+      
+      adjustedTime = (video0.ref.current.currentFrame + offsetFrames) * frameDuration;
+      adjustedTime = Math.max(0, Math.min(adjustedTime, video.ref.current.duration));
+      
+      if (data.playing) {
+        if (!videoElem.playing) videoElem.play();
+      } else {
+        if (videoElem.playing) videoElem.pause();
+      }
+
+      if (data.speed) {
+        video.speed = data.speed;
+      }
+
+      videoElem.currentTime = adjustedTime;
+      if (Math.abs(videoElem.currentTime - adjustedTime) > frameDuration/2) {
+        videoElem.currentTime = adjustedTime;
+      }
+
+      video.isSyncing = false;
+    });
+  });
+}
+
+// Adjust offsets for each video
+adjustVideoSync(videoMinus1, -1);
+adjustVideoSync(videoPlus1, 1);
+adjustVideoSync(video0, 0);
+```
+
+**Related LSI instance methods:**
+
+* [annotation](scripts#LSI-annotation)
+
+#### Labeling config
+
+Each video is wrapped in a `<View>` tag with a width of 100% to ensure they stack on top of each other. The `Header` tag provides a title for 
+each video, indicating which frame is being displayed. 
+
+The `Video` tags are used to load the video content, with the `name` attribute uniquely identifying each video player. 
+
+The `TimelineLabels` tag is connected to the second video (`video0`), allowing annotators to label specific segments of that video. The labels `class1` and `class2` can be used to categorize the content of the video, enhancing the  annotation process. 
+
+```xml
+<View>
+  <View style="display: flex">
+  <View style="width: 100%">
+    <Header value="Video -1 Frame"/>
+    <Video name="videoMinus1" value="$video_url" 
+           height="200" sync="lag" frameRate="29.97"/>
+  </View>
+  <View style="width: 100%">
+    <Header value="Video +1 Frame"/>
+    <Video name="videoPlus1" value="$video_url" 
+           height="200" sync="lag" frameRate="29.97"/>
+  </View>
+  </View>
+  <View style="width: 100%; margin-bottom: 1em;">
+    <Header value="Video 0 Frame"/>
+    <Video name="video0" value="$video_url"
+           height="400" sync="lag" frameRate="29.97"/>
+  </View>
+  <TimelineLabels name="timelinelabels" toName="video0">
+    <Label value="class1"/>
+    <Label value="class2"/>
+  </TimelineLabels>
+</View>
+```
+
+**Related tags:**
+
+* [View](/tags/view.html)
+* [Video](/tags/video.html)
+* [TimelineLabels](/tags/timelinelabels.html)
+* [Label](/tags/label.html)
+
+#### Data
+
+```json
+{
+  "data": {
+    "video_url": "https://example.com/path/to/video.mp4"
+  }
+}
+```
