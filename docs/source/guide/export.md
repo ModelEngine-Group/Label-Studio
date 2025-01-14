@@ -20,8 +20,7 @@ Image annotations exported in JSON format use percentages of overall image size,
 !!! note
     Some export formats export only the annotations and not the data from the task. For more information, see the [export formats supported by Label Studio](#Export-formats-supported-by-Label-Studio).
 
-
-<!-- md annotation_ids.md -->
+{% insertmd includes/annotation_ids.md %}
 
 <div class="opensource-only">
 
@@ -192,12 +191,9 @@ Results are stored in a tab-separated tabular file with column names specified b
 
 Export object detection annotations in the YOLOv3 and YOLOv4 format. Supports object detection labeling projects that use the `RectangleLabels` tag. 
 
-
 {% insertmd includes/task_format.md %}
 
-
-<!-- md image_units.md -->
-
+{% insertmd includes/image_units.md %}
 
 ## Manually convert JSON annotations to another format
 You can run the [Label Studio converter tool](https://github.com/HumanSignal/label-studio-converter) on a directory or file of completed JSON annotations using the command line or Python to convert the completed annotations from Label Studio JSON format into another format. 

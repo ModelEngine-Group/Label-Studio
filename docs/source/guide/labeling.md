@@ -444,5 +444,4 @@ OR
 
 1. Press CTRL button and start drawing bounding box over another one. 
 
-
-<!-- md annotation_ids.md -->
+{% insertmd includes/annotation_ids.md %}

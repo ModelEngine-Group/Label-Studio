@@ -8,8 +8,7 @@ meta_title: Requirements to Install and Upgrade
 meta_description: "Label Studio documentation: Requirements to install and upgrade Label Studio." 
 ---
 
-<!-- md deploy.md -->
-
+{% insertmd includes/deploy.md %}
 
 ## Install prerequisite
 

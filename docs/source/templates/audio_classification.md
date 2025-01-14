@@ -79,7 +79,7 @@ If you want to make the classification section visually distinct from the rest o
 </View>
 ```
 
-<!-- md nested-classification.md -->
+{% insertmd includes/nested-classification.md %}
 
 ## Related tags
 

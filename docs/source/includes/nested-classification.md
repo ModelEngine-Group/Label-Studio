@@ -1,20 +1,3 @@
-<!-- Unfortunately included md files doesn't support code highlighting, do it manually -->
-<script src="/js/highlight.min.js"></script>
-<script>
-    hljs.highlightAll();
-    $(function() {
-      $('.code-badge-language').each(function (o, v) {
-        console.log(o)
-        if ($(v).html() === 'undefined')
-          $(v).html('')
-        if ($(v).html() === 'bash')
-          $(v).html('shell')
-        if ($(v).html() === 'html')
-          $(v).html('xml')
-      })
-    });
-</script>
-
 ## Enhance classification templates with nested choices
 
 You can add conditional or nested choices to any classification template. If you want classification options to appear only if certain conditions are met, such as specific choices being selected by annotators, adapt one of these conditional and nested classification examples. 

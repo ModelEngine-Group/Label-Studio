@@ -214,7 +214,7 @@ Check that you are using the correct annotation units.
 
 {% details <b>Image annotation units</b> %}
 
-<!-- md image_units.md -->
+{% insertmd includes/image_units.md %}
 
 {% enddetails %}
 
