@@ -14,7 +14,6 @@ import time
 import traceback as tb
 import uuid
 from collections import defaultdict
-from datetime import datetime
 from functools import wraps
 from typing import Any, Callable, Generator, Iterable, Mapping, Optional
 
@@ -41,6 +40,7 @@ from django.db.models.signals import (
     pre_save,
 )
 from django.db.utils import OperationalError
+from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.module_loading import import_string
 from django_filters.rest_framework import DjangoFilterBackend
@@ -261,7 +261,7 @@ def datetime_to_timestamp(dt):
 
 
 def timestamp_now():
-    return datetime_to_timestamp(datetime.utcnow())
+    return datetime_to_timestamp(timezone.now())
 
 
 def find_first_one_to_one_related_field_by_prefix(instance, prefix):
