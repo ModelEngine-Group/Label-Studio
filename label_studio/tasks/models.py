@@ -688,6 +688,7 @@ class Annotation(AnnotationMixin, models.Model):
         _('bulk created'),
         default=False,
         db_default=False,
+        null=True,
         help_text='Annotation was created in bulk mode',
     )
 
