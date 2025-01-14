@@ -49,6 +49,7 @@ export const ActionsButton = injector(
           onOk() {
             const body = formRef.current?.assembleFormData({ asJSON: true });
 
+            store.SDK.invoke("actionDialogOk", action.id, { body });
             store.invokeAction(action.id, { body });
           },
         });
