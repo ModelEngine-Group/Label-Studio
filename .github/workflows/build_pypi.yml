@@ -98,7 +98,9 @@ jobs:
         run: yarn version:libs
 
       - name: "Install poetry"
-        run: pipx install poetry
+        env:
+          POETRY_VERSION: ${{ vars.POETRY_VERSION }}
+        run: pipx install "poetry==${POETRY_VERSION}"
 
       - name: "Set up Python"
         id: setup_python
