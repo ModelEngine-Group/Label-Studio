@@ -73,6 +73,10 @@ export const API_CONFIG = {
     createWebhook: "POST:/webhooks",
     deleteWebhook: "DELETE:/webhooks/:pk",
     webhooksInfo: "/webhooks/info",
+
+    // Product tours
+    getProductTour: "GET:/current-user/product-tour",
+    updateProductTour: "PATCH:/current-user/product-tour",
   },
   alwaysExpectJSON: false,
 };

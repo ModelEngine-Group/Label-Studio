@@ -77,6 +77,7 @@
     "react-dom": "17.0.2",
     "react-hotkeys-hook": "^2.4.0",
     "react-icons": "^4.2.0",
+    "react-joyride": "^2.9.3",
     "react-konva": "^17.0.2-0",
     "react-konva-utils": "^0.2.0",
     "react-router": "^5.2.0",
