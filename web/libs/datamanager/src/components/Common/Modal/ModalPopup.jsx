@@ -11,6 +11,7 @@ const { Block, Elem } = BemWithSpecifiContext();
 
 export class Modal extends React.Component {
   modalRef = React.createRef();
+  originalOverflow = null;
 
   constructor(props) {
     super(props);
@@ -25,9 +26,16 @@ export class Modal extends React.Component {
   }
 
   componentDidMount() {
+    this.originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
     if (this.props.animateAppearance) {
       setTimeout(() => this.show(), 30);
     }
+  }
+
+  componentWillUnmount() {
+    document.body.style.overflow = this.originalOverflow;
   }
 
   setBody(body) {

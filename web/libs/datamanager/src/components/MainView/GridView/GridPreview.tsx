@@ -91,6 +91,7 @@ const TaskModal = observer(({ view, tasks, imageField, currentTaskId, setCurrent
       <p>Use [arrow keys] to navigate.</p>
       <p>[Escape] to close the modal.</p>
       <p>[Space] to select/unselect the task.</p>
+      <p>Use [scroll] to zoom in/out and [drag] to pan around while image is zoomed in.</p>
     </div>
   );
 

@@ -104,8 +104,8 @@ export const GridView = observer(({ data, view, loadMore, fields, onChange, hidd
   const renderItem = useCallback(
     ({ style, rowIndex, columnIndex }) => {
       const index = getCellIndex(rowIndex, columnIndex);
-      const row = data?.[index];
-      if (!row) return null;
+      if (!data || !(index in data)) return null;
+      const row = data[index];
 
       const props = {
         style: {
@@ -125,7 +125,7 @@ export const GridView = observer(({ data, view, loadMore, fields, onChange, hidd
         />
       );
     },
-    [data, fieldsData, view.selected, view, view.selected.list, view.selected.all, columnCount],
+    [data, fieldsData, view.selected, view, view.selected.list, view.selected.all, getCellIndex],
   );
 
   const onItemsRenderedWrap =

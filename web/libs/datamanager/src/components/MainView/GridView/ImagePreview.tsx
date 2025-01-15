@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, type CSSProperties } from "react";
+import { useState, useRef, useEffect, type CSSProperties, useCallback } from "react";
 import { observer } from "mobx-react";
 import styles from "./GridPreview.module.scss";
 
@@ -17,7 +17,7 @@ type ImagePreviewProps = {
 
 // @todo constrain the position of the image to the container
 const ImagePreview = observer(({ task, field }: ImagePreviewProps) => {
-  const src = task?.data?.[field ?? ""] ?? "";
+  const src = task.data?.[field] ?? "";
 
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
@@ -30,12 +30,14 @@ const ImagePreview = observer(({ task, field }: ImagePreviewProps) => {
 
   // Zoom and position state
   const [scale, setScale] = useState(1);
-  const [coverScale, setCoverScale] = useState(1);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
 
   const [isDragging, setIsDragging] = useState(false);
-  const [dragAnchor, setDragAnchor] = useState({ x: 0, y: 0 });
-  const [startOffset, setStartOffset] = useState({ x: 0, y: 0 });
+
+  const dragParams = useRef({
+    dragAnchor: { x: 0, y: 0 },
+    startOffset: { x: 0, y: 0 },
+  });
 
   // Reset on task change
   // biome-ignore lint/correctness/useExhaustiveDependencies: those are setStates, not values
@@ -44,25 +46,28 @@ const ImagePreview = observer(({ task, field }: ImagePreviewProps) => {
     setIsDragging(false);
   }, [task, src]);
 
-  const constrainOffset = (newOffset: { x: number; y: number }) => {
-    const { x, y } = newOffset;
-    const { width, height } = imageSize;
-    const { width: containerWidth, height: containerHeight } = containerSize;
+  const constrainOffset = useCallback(
+    (newOffset: { x: number; y: number }) => {
+      const { x, y } = newOffset;
+      const { width, height } = imageSize;
+      const { width: containerWidth, height: containerHeight } = containerSize;
 
-    // to preserve paddings and make it less weird
-    const minX = (containerWidth - width) / 2;
-    const minY = (containerHeight - height) / 2;
-    // the far edges should be behind container edges
-    const maxX = Math.max(width * scale - containerWidth, 0);
-    const maxY = Math.max(height * scale - containerHeight, 0);
+      // to preserve paddings and make it less weird
+      const minX = (containerWidth - width) / 2;
+      const minY = (containerHeight - height) / 2;
+      // the far edges should be behind container edges
+      const maxX = Math.max(width * scale - containerWidth, 0);
+      const maxY = Math.max(height * scale - containerHeight, 0);
 
-    return {
-      x: Math.min(Math.max(x, -maxX), minX),
-      y: Math.min(Math.max(y, -maxY), minY),
-    };
-  };
+      return {
+        x: Math.min(Math.max(x, -maxX), minX),
+        y: Math.min(Math.max(y, -maxY), minY),
+      };
+    },
+    [imageSize, containerSize, scale],
+  );
 
-  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+  const handleImageLoad = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
     if (containerRef.current) {
       const img = e.currentTarget;
       const containerRect = containerRef.current.getBoundingClientRect();
@@ -81,9 +86,8 @@ const ImagePreview = observer(({ task, field }: ImagePreviewProps) => {
       const scaledWidth = img.naturalWidth * imageScale;
       const scaledHeight = img.naturalHeight * imageScale;
       // how much should we zoom image in to cover container
-      const coverScale = Math.max(containerRect.width / scaledWidth, containerRect.height / scaledHeight);
+      // const coverScale = Math.max(containerRect.width / scaledWidth, containerRect.height / scaledHeight);
 
-      setCoverScale(coverScale);
       setImageSize({
         width: scaledWidth,
         height: scaledHeight,
@@ -96,62 +100,84 @@ const ImagePreview = observer(({ task, field }: ImagePreviewProps) => {
       setOffset({ x: initialX, y: initialY });
       setImageLoaded(true);
     }
-  };
+  }, []);
 
-  const handleWheel = (e: React.WheelEvent) => {
-    if (!containerRef.current || !imageLoaded) return;
+  const handleWheel = useCallback(
+    (e: React.WheelEvent) => {
+      if (!containerRef.current || !imageLoaded) return;
 
-    e.preventDefault();
+      const container = containerRef.current;
+      const rect = container.getBoundingClientRect();
+      const img = imageRef.current;
+      if (!img) return;
 
-    const container = containerRef.current;
-    const rect = container.getBoundingClientRect();
-    const img = imageRef.current;
-    if (!img) return;
+      // Calculate cursor position relative to center
+      const cursorX = e.clientX - rect.left;
+      const cursorY = e.clientY - rect.top;
 
-    // Calculate cursor position relative to center
-    const cursorX = e.clientX - rect.left;
-    const cursorY = e.clientY - rect.top;
+      // Zoom calculation
+      const newScale =
+        e.deltaY < 0
+          ? Math.min(scale * (1 + ZOOM_FACTOR), MAX_ZOOM) // Max zoom
+          : Math.max(scale * (1 - ZOOM_FACTOR), 1); // Min zoom
 
-    // Zoom calculation
-    const newScale =
-      e.deltaY < 0
-        ? Math.min(scale * (1 + ZOOM_FACTOR), MAX_ZOOM) // Max zoom
-        : Math.max(scale * (1 - ZOOM_FACTOR), 1); // Min zoom
+      // Calculate zoom translation
+      const scaleDelta = newScale / scale;
+      // cursor - offset = cursor position relative to image; and that's the value being scaled.
+      // cursor position on a screen should stay the same, so we need to calculate new offset
+      // by scaling the distance to image edges and subtracting it from cursor position
+      const newX = cursorX - (cursorX - offset.x) * scaleDelta;
+      const newY = cursorY - (cursorY - offset.y) * scaleDelta;
 
-    // Calculate zoom translation
-    const scaleDelta = newScale / scale;
-    // cursor - offset = cursor position relative to image; and that's the value being scaled.
-    // cursor position on a screen should stay the same, so we need to calculate new offset
-    // by scaling the distance to image edges and subtracting it from cursor position
-    const newX = cursorX - (cursorX - offset.x) * scaleDelta;
-    const newY = cursorY - (cursorY - offset.y) * scaleDelta;
+      setScale(newScale);
+      setOffset(constrainOffset({ x: newX, y: newY }));
+    },
+    [imageLoaded, offset, scale, constrainOffset],
+  );
 
-    setScale(newScale);
-    setOffset(constrainOffset({ x: newX, y: newY }));
-  };
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (!containerRef.current || !imageRef.current) return;
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (!containerRef.current || scale <= 1) return;
+      const { x: oldX, y: oldY } = dragParams.current.dragAnchor;
+      const { x: offsetX, y: offsetY } = dragParams.current.startOffset;
+      const newX = e.clientX - oldX;
+      const newY = e.clientY - oldY;
 
-    setIsDragging(true);
-    setDragAnchor({ x: e.clientX, y: e.clientY });
-    setStartOffset({ x: offset.x, y: offset.y });
-  };
+      setOffset(constrainOffset({ x: offsetX + newX, y: offsetY + newY }));
+    },
+    [constrainOffset],
+  );
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || !containerRef.current || !imageRef.current) return;
+  const handleMouseUp = useCallback(
+    (e: MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
 
-    const newX = e.clientX - dragAnchor.x;
-    const newY = e.clientY - dragAnchor.y;
+      setIsDragging(false);
 
-    setOffset(constrainOffset({ x: startOffset.x + newX, y: startOffset.y + newY }));
-  };
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    },
+    [handleMouseMove],
+  );
 
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      if (!containerRef.current || scale <= 1) return;
 
-  if (!task) return null;
+      setIsDragging(true);
+      dragParams.current.dragAnchor = { x: e.clientX, y: e.clientY };
+      dragParams.current.startOffset = { ...offset };
+
+      window.addEventListener("mousemove", handleMouseMove);
+      // this event would be fired even if we release the mouse outside the window
+      // we catch `click` and use `capture: true` to block the click outside of the modal
+      /** @see ModalPopup#onClickOutside() */
+      window.addEventListener("click", handleMouseUp, { capture: true, once: true });
+    },
+    [scale, offset, handleMouseMove, handleMouseUp],
+  );
 
   // Container styles
   const containerStyle: CSSProperties = {
@@ -161,6 +187,7 @@ const ImagePreview = observer(({ task, field }: ImagePreviewProps) => {
     position: "relative",
     overflow: "hidden",
     cursor: scale > 1 ? (isDragging ? "grabbing" : "grab") : "default",
+    userSelect: "none",
   };
 
   // Image styles
@@ -184,9 +211,6 @@ const ImagePreview = observer(({ task, field }: ImagePreviewProps) => {
       className={styles.imageContainer}
       onWheel={handleWheel}
       onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
     >
       {src && (
         <img
@@ -202,4 +226,9 @@ const ImagePreview = observer(({ task, field }: ImagePreviewProps) => {
   );
 });
 
-export { ImagePreview };
+const ImagePreviewWrapper = observer(({ task, field }: ImagePreviewProps) => {
+  if (!task || !field) return null;
+  return <ImagePreview task={task} field={field} />;
+});
+
+export { ImagePreviewWrapper as ImagePreview };
