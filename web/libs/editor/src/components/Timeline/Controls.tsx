@@ -17,6 +17,7 @@ import {
 } from "../../assets/icons/timeline";
 import { Button, type ButtonProps } from "../../common/Button/Button";
 import { Space } from "../../common/Space/Space";
+import { Hotkey } from "../../core/Hotkey";
 import { Block, Elem } from "../../utils/bem";
 import { isDefined } from "../../utils/utilities";
 import { TimelineContext } from "./Context";
@@ -247,6 +248,7 @@ export const Controls: FC<TimelineControlsProps> = memo(
               data-testid={`playback-button:${playing ? "pause" : "play"}`}
               onClick={handlePlay}
               hotkey={settings?.playpauseHotkey}
+              hotkeyScope={Hotkey.ALL_SCOPES}
             >
               {playing ? <IconPause /> : <IconPlay />}
             </ControlButton>

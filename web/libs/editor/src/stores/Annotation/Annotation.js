@@ -888,7 +888,7 @@ const _Annotation = types
           else audioNode = node;
 
           node.hotkey = comb;
-          hotkeys.addKey(comb, node.onHotKey, "Play an audio", `${Hotkey.DEFAULT_SCOPE},${Hotkey.INPUT_SCOPE}`);
+          hotkeys.addKey(comb, node.onHotKey, "Play an audio", Hotkey.ALL_SCOPES);
 
           audiosNum++;
         }

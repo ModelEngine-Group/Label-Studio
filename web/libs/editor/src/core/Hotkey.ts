@@ -389,6 +389,8 @@ Hotkey.DEFAULT_SCOPE = DEFAULT_SCOPE;
 
 Hotkey.INPUT_SCOPE = INPUT_SCOPE;
 
+Hotkey.ALL_SCOPES = [DEFAULT_SCOPE, INPUT_SCOPE].join(",");
+
 Hotkey.keymap = { ...defaultKeymap } as Keymap;
 
 Hotkey.setKeymap = (newKeymap: Keymap) => {

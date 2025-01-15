@@ -4,7 +4,11 @@
     "mac": "command+b",
     "description": "Back for one second"
   },
-  "audio:playpause": {},
+  "audio:playpause": {
+    "key": "ctrl+p",
+    "mac": "command+p",
+    "description": "Play/pause"
+  },
   "ts:grow-left": {
     "key": "left",
     "description": "Increase region to the left"
@@ -119,7 +123,8 @@
     "description": "Delete selected region"
   },
   "media:playpause": {
-    "key": "alt+space",
+    "key": "ctrl+alt+space",
+    "mac": "control+space",
     "description": "Play/pause"
   },
   "media:step-backward": {

@@ -1,5 +1,6 @@
 import { observer } from "mobx-react";
-import { type FC, useEffect, useRef } from "react";
+import { type FC, useEffect, useMemo, useRef } from "react";
+import { TimelineContextProvider } from "../../../components/Timeline/Context";
 import { Hotkey } from "../../../core/Hotkey";
 import { useWaveform } from "../../../lib/AudioUltra/react";
 import { Controls } from "../../../components/Timeline/Controls";
@@ -152,6 +153,22 @@ const AudioUltraView: FC<AudioUltraProps> = ({ item }) => {
     };
   }, []);
 
+  const contextValue = useMemo(() => {
+    return {
+      position: 0,
+      length: 0,
+      regions: [],
+      step: 10,
+      playing: false,
+      visibleWidth: 0,
+      seekOffset: 0,
+      data: undefined,
+      settings: {
+        playpauseHotkey: "audio:playpause",
+      },
+    };
+  }, []);
+
   return (
     <Block name="audio-tag">
       {item.errors?.map((error: any, i: any) => (
@@ -163,45 +180,47 @@ const AudioUltraView: FC<AudioUltraProps> = ({ item }) => {
           item.stageRef.current = el;
         }}
       />
-      <Controls
-        position={controls.currentTime}
-        playing={controls.playing}
-        volume={controls.volume}
-        speed={controls.rate}
-        zoom={controls.zoom}
-        duration={controls.duration}
-        onPlay={() => controls.setPlaying(true)}
-        onPause={() => controls.setPlaying(false)}
-        allowFullscreen={false}
-        onVolumeChange={(vol) => controls.setVolume(vol)}
-        onStepBackward={() => {
-          waveform.current?.seekBackward(NORMALIZED_STEP);
-          waveform.current?.syncCursor();
-        }}
-        onStepForward={() => {
-          waveform.current?.seekForward(NORMALIZED_STEP);
-          waveform.current?.syncCursor();
-        }}
-        onPositionChange={(pos) => {
-          waveform.current?.seek(pos);
-          waveform.current?.syncCursor();
-        }}
-        onSpeedChange={(speed) => controls.setRate(speed)}
-        onZoom={(zoom) => controls.setZoom(zoom)}
-        amp={controls.amp}
-        onAmpChange={(amp) => controls.setAmp(amp)}
-        mediaType="audio"
-        toggleVisibility={(layerName: string, isVisible: boolean) => {
-          if (waveform.current) {
-            const layer = waveform.current?.getLayer(layerName);
+      <TimelineContextProvider value={contextValue}>
+        <Controls
+          position={controls.currentTime}
+          playing={controls.playing}
+          volume={controls.volume}
+          speed={controls.rate}
+          zoom={controls.zoom}
+          duration={controls.duration}
+          onPlay={() => controls.setPlaying(true)}
+          onPause={() => controls.setPlaying(false)}
+          allowFullscreen={false}
+          onVolumeChange={(vol) => controls.setVolume(vol)}
+          onStepBackward={() => {
+            waveform.current?.seekBackward(NORMALIZED_STEP);
+            waveform.current?.syncCursor();
+          }}
+          onStepForward={() => {
+            waveform.current?.seekForward(NORMALIZED_STEP);
+            waveform.current?.syncCursor();
+          }}
+          onPositionChange={(pos) => {
+            waveform.current?.seek(pos);
+            waveform.current?.syncCursor();
+          }}
+          onSpeedChange={(speed) => controls.setRate(speed)}
+          onZoom={(zoom) => controls.setZoom(zoom)}
+          amp={controls.amp}
+          onAmpChange={(amp) => controls.setAmp(amp)}
+          mediaType="audio"
+          toggleVisibility={(layerName: string, isVisible: boolean) => {
+            if (waveform.current) {
+              const layer = waveform.current?.getLayer(layerName);
 
-            if (layer) {
-              layer.setVisibility(isVisible);
+              if (layer) {
+                layer.setVisibility(isVisible);
+              }
             }
-          }
-        }}
-        layerVisibility={controls.layerVisibility}
-      />
+          }}
+          layerVisibility={controls.layerVisibility}
+        />
+      </TimelineContextProvider>
     </Block>
   );
 };
