@@ -1,6 +1,6 @@
 {
-  "message": "fix: LEAP-1731: Bulk annotation follow-ups (#6867)",
-  "commit": "5e2ad0b71c6863e1682ed364f376cfd1fbf08192",
-  "date": "2025-01-15T16:29:14.000Z",
+  "message": "fix: DIA-1767: Move FE Tour component to LSO (#6907)",
+  "commit": "b7b2bad2ba92fa2b8161eaa2faea320358f27eda",
+  "date": "2025-01-15T18:25:25.000Z",
   "branch": "develop"
 }
