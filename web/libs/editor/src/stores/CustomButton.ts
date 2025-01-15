@@ -1,4 +1,4 @@
-import { applySnapshot, getSnapshot, type Instance, type SnapshotIn, types } from "mobx-state-tree";
+import { type Instance, type SnapshotIn, types } from "mobx-state-tree";
 import { guidGenerator } from "../utils/unique";
 
 export type CustomButtonType = Instance<typeof CustomButton>;
@@ -19,9 +19,14 @@ export const CustomButton = types
     tooltip: types.maybe(types.string),
     ariaLabel: types.maybe(types.string),
     disabled: types.maybe(types.boolean),
+    props: types.maybe(types.frozen()),
   })
   .actions((self) => ({
     updateState(newState: CustomButtonSnType) {
-      applySnapshot(self, Object.assign({}, getSnapshot(self), newState));
+      for (const key in newState) {
+        if (key in self) {
+          self[key] = newState[key];
+        }
+      }
     },
   }));

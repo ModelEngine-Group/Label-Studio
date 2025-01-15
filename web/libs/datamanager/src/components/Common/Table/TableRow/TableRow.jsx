@@ -61,7 +61,7 @@ export const TableRow = observer(({ data, even, style, wrapperStyle, onClick, st
 
   return (
     <div className={rowWrapperCN.mod(mods).toString()} style={wrapperStyle} onClick={(e) => onClick?.(data, e)}>
-      <div className={tableRowCN.toString()} style={style}>
+      <div className={tableRowCN.toString()} style={style} data-leave={true}>
         {columns.map((col) => {
           return <CellRenderer key={col.id} col={col} data={data} cellViews={cellViews} decoration={decoration} />;
         })}

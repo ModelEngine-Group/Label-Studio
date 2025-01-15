@@ -49,7 +49,13 @@ const ControlButton = observer(({ button, disabled, onClick }: ControlButtonProp
 
   return (
     <ButtonTooltip title={button.tooltip ?? ""}>
-      <Button aria-label={button.ariaLabel} disabled={button.disabled || disabled} look={look} onClick={onClick}>
+      <Button
+        {...button.props}
+        aria-label={button.ariaLabel}
+        disabled={button.disabled || disabled}
+        look={look}
+        onClick={onClick}
+      >
         {button.title}
       </Button>
     </ButtonTooltip>

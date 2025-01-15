@@ -61,7 +61,7 @@ export const Tabs = ({
             </Droppable>
           </DragDropContext>
           {allowedActions.add !== false && (
-            <Button className={tabsCN.elem("add").toString()} type="text" onClick={onAdd} icon={addIcon} />
+            <Button className={tabsCN.elem("add").toString()} type="text" onClick={onAdd} icon={addIcon} data-leave />
           )}
         </span>
         <span className={tabsCN.elem("extra").toString()}>{tabBarExtraContent}</span>
@@ -140,6 +140,7 @@ export const TabsItem = ({
           .toString()}
         onClick={() => switchTab?.(tab)}
         title={currentTitle}
+        data-leave
       >
         {renameMode ? (
           <Input
