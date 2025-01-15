@@ -1,6 +1,6 @@
 {
-  "message": "feat: OPTIC-1417: Improve projects list API usage with frontend query cache. (#6844)",
-  "commit": "62e08b0f79eb7ff27712b4031e09e1c2a796b3b4",
-  "date": "2025-01-14T13:56:44.000Z",
+  "message": "feat: LEAP-1737: Add keyboard shortcut for audio play/pause action (#6863)",
+  "commit": "ef86b7c24f6620a01fecd15eac0d0fd506a291d9",
+  "date": "2025-01-15T15:01:16.000Z",
   "branch": "develop"
 }
