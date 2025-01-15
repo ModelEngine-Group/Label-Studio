@@ -1,6 +1,18 @@
 {% extends 'users/new-ui/user_base.html' %}
 {% load static %}
 
+{% block content %}
+  {{ block.super }}
+  <script nonce="{{request.csp_nonce}}">
+    gaClientIdTrackingIframe('users.signup.view');
+    // Give time for `ls_gaclient_id` to be set
+    setTimeout(() => {
+      const ls_gaclient_id = sessionStorage.getItem('ls_gaclient_id');
+      __lsa('users.signup.view', { ls_gaclient_id });
+    }, 2000);
+  </script>
+{% endblock %}
+
 {% block user_content %}
   <div class="form-wrapper">
     <h2>Sign Up</h2>
