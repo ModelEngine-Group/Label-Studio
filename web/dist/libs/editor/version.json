@@ -1,6 +1,6 @@
 {
-  "message": "feat: LEAP-1356: Add custom button props  (#6787)",
-  "commit": "6d9d939731e6865cd42d64559ab449cb563faab0",
-  "date": "2025-01-15T16:06:06.000Z",
+  "message": "fix: LEAP-1731: Bulk annotation follow-ups (#6867)",
+  "commit": "5e2ad0b71c6863e1682ed364f376cfd1fbf08192",
+  "date": "2025-01-15T16:29:14.000Z",
   "branch": "develop"
 }
