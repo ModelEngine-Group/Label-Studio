@@ -1,6 +1,6 @@
 {
-  "message": "fix: DIA-1767: Move FE Tour component to LSO (#6907)",
-  "commit": "b7b2bad2ba92fa2b8161eaa2faea320358f27eda",
-  "date": "2025-01-15T18:25:25.000Z",
+  "message": "ci: PLT-628: Update pyproject.toml (#6912)",
+  "commit": "574f0e5936da7a9a84271a9d04a8af66ab0d2212",
+  "date": "2025-01-16T12:30:42.000Z",
   "branch": "develop"
 }
