@@ -1,3 +1,22 @@
+[project]
+name = "label-studio"
+version = "1.16.0.dev0"
+description = "Label Studio annotation tool"
+authors = [
+    { name = "HumanSignal", email = "support@humansignal.com" },
+]
+readme = "README.md"
+license = "Apache-2.0"
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+]
+requires-python = ">=3.10,<4"
+
+[project.urls]
+Repository = "https://github.com/HumanSignal/label-studio"
+
 [tool.ruff]
 # Enable the pycodestyle (`E`) and Pyflakes (`F`) rules by default.
 # Unlike Flake8, Ruff doesn't enable pycodestyle warnings (`W`) or
@@ -103,20 +122,6 @@ target-version = ['py38']
 
 [tool.poetry]
 
-name = "label-studio"
-version = "1.16.0.dev0"
-description = "Label Studio annotation tool"
-authors = [
-    "Heartex <hello@heartex.ai>",
-]
-readme = "README.md"
-license = "Apache-2.0"
-classifiers = [
-    "License :: OSI Approved :: Apache Software License",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3",
-]
-homepage = "https://github.com/HumanSignal/label-studio"
 packages = [
     { include = "label_studio" },
 ]

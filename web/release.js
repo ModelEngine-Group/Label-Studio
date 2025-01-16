@@ -7,8 +7,8 @@ const packageFile = fs.readFileSync(pyproject).toString();
 
 const parsedToml = toml.parse(packageFile);
 
-const packageName = parsedToml.tool.poetry.name;
-const versionNumber = parsedToml.tool.poetry.version;
+const packageName = parsedToml.project.name;
+const versionNumber = parsedToml.project.version;
 
 module.exports.name = packageName;
 module.exports.version = versionNumber;
