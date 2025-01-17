@@ -1,6 +1,7 @@
 import { IconInfoOutline, LsSettingsAlt } from "../../assets/icons";
 import { Button } from "../../common/Button/Button";
 import { Elem } from "../../utils/bem";
+import { isSelfServe } from "../../utils/billing";
 import { FF_BULK_ANNOTATION } from "../../utils/feature-flags";
 import { EditingHistory } from "./HistoryActions";
 import { DynamicPreannotationsToggle } from "../AnnotationTab/DynamicPreannotationsToggle";
@@ -13,7 +14,7 @@ export const Actions = ({ store }) => {
   const entity = annotationStore.selected;
   const isPrediction = entity?.type === "prediction";
   const isViewAll = annotationStore.viewingAll === true;
-  const isBulkMode = isFF(FF_BULK_ANNOTATION) && store.hasInterface("annotation:bulk");
+  const isBulkMode = isFF(FF_BULK_ANNOTATION) && !isSelfServe() && store.hasInterface("annotation:bulk");
 
   return (
     <Elem name="section">

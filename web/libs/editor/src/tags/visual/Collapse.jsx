@@ -7,6 +7,7 @@ import Registry from "../../core/Registry";
 
 import Types from "../../core/Types";
 import Tree from "../../core/Tree";
+import { isSelfServe } from "../../utils/billing";
 import { FF_BULK_ANNOTATION } from "../../utils/feature-flags";
 
 const { Panel } = Collapse;
@@ -116,7 +117,7 @@ const Model = types
 const CollapseModel = types.compose("CollapseModel", Model, ProcessAttrsMixin);
 
 const HtxCollapse = observer(({ item }) => {
-  const isBulkMode = isFF(FF_BULK_ANNOTATION) && item.store.hasInterface("annotation:bulk");
+  const isBulkMode = isFF(FF_BULK_ANNOTATION) && !isSelfServe() && item.store.hasInterface("annotation:bulk");
 
   return (
     <Collapse bordered={item.bordered} accordion={item.accordion}>

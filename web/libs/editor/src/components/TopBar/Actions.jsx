@@ -2,6 +2,7 @@ import { IconCopy, IconInfo, IconViewAll, LsSettings, LsTrash } from "../../asse
 import { Button } from "../../common/Button/Button";
 import { Tooltip } from "../../common/Tooltip/Tooltip";
 import { Elem } from "../../utils/bem";
+import { isSelfServe } from "../../utils/billing";
 import { FF_BULK_ANNOTATION, isFF } from "../../utils/feature-flags";
 import { GroundTruth } from "../CurrentEntity/GroundTruth";
 import { EditingHistory } from "./HistoryActions";
@@ -14,7 +15,7 @@ export const Actions = ({ store }) => {
   const saved = !entity.userGenerate || entity.sentUserGenerate;
   const isPrediction = entity?.type === "prediction";
   const isViewAll = annotationStore.viewingAll;
-  const isBulkMode = isFF(FF_BULK_ANNOTATION) && store.hasInterface("annotation:bulk");
+  const isBulkMode = isFF(FF_BULK_ANNOTATION) && !isSelfServe() && store.hasInterface("annotation:bulk");
 
   const onToggleVisibility = useCallback(() => {
     annotationStore.toggleViewingAllAnnotations();

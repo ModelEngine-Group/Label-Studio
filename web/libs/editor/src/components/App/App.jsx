@@ -26,6 +26,7 @@ import "../../tags/visual";
 import { Space } from "../../common/Space/Space";
 import { Button } from "../../common/Button/Button";
 import { Block, Elem } from "../../utils/bem";
+import { isSelfServe } from "../../utils/billing";
 import {
   FF_BULK_ANNOTATION,
   FF_DEV_1170,
@@ -240,7 +241,7 @@ class App extends Component {
       </Block>
     );
 
-    const isBulkMode = isFF(FF_BULK_ANNOTATION) && store.hasInterface("annotation:bulk");
+    const isBulkMode = isFF(FF_BULK_ANNOTATION) && !isSelfServe() && store.hasInterface("annotation:bulk");
     const outlinerEnabled = isFF(FF_DEV_1170);
     const newUIEnabled = isFF(FF_DEV_3873);
 
