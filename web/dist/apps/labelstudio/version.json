@@ -1,6 +1,6 @@
 {
-  "message": "ci: PLT-628: Update pyproject.toml (#6912)",
-  "commit": "574f0e5936da7a9a84271a9d04a8af66ab0d2212",
-  "date": "2025-01-16T12:30:42.000Z",
+  "message": "feat: LEAP-1774: exclude starter cloud accounts from bulk labeling feature (#6919)",
+  "commit": "7f68061de57f4fc26690089c3969958459e3e328",
+  "date": "2025-01-17T22:15:21.000Z",
   "branch": "develop"
 }
