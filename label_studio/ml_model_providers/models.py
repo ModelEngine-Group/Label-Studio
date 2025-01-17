@@ -11,6 +11,7 @@ from tasks.models import PredictionMeta
 class ModelProviders(models.TextChoices):
     OPENAI = 'OpenAI', _('OpenAI')
     AZURE_OPENAI = 'AzureOpenAI', _('AzureOpenAI')
+    VERTEX_AI = 'VertexAI', _('VertexAI')
     CUSTOM = 'Custom', _('Custom')
 
 
@@ -31,6 +32,21 @@ class ModelProviderConnection(models.Model):
     deployment_name = models.CharField(max_length=512, null=True, blank=True, help_text='Azure OpenAI deployment name')
 
     endpoint = models.CharField(max_length=512, null=True, blank=True, help_text='Azure OpenAI endpoint')
+
+    google_application_credentials = models.TextField(
+        _('google application credentials'),
+        null=True,
+        blank=True,
+        help_text='The content of GOOGLE_APPLICATION_CREDENTIALS json file',
+    )
+
+    google_project_id = models.CharField(
+        _('google project id'), max_length=255, null=True, blank=True, help_text='Google project ID'
+    )
+
+    google_location = models.CharField(
+        _('google location'), max_length=255, null=True, blank=True, help_text='Google project location'
+    )
 
     cached_available_models = models.CharField(
         max_length=4096, null=True, blank=True, help_text='List of available models from the provider'
