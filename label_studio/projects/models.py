@@ -1208,8 +1208,8 @@ class ProjectSummary(models.Model):
             self.common_data_columns = list(sorted(common_data_columns))
         else:
             self.common_data_columns = list(sorted(set(self.common_data_columns) & common_data_columns))
-        logger.debug(f'summary.all_data_columns = {self.all_data_columns}')
-        logger.debug(f'summary.common_data_columns = {self.common_data_columns}')
+        logger.info(f'update summary.all_data_columns = {self.all_data_columns} project_id={self.project_id}')
+        logger.info(f'update summary.common_data_columns = {self.common_data_columns} project_id={self.project_id}')
         self.save(update_fields=['all_data_columns', 'common_data_columns'])
 
     def remove_data_columns(self, tasks):
@@ -1232,8 +1232,8 @@ class ProjectSummary(models.Model):
                 if key in common_data_columns:
                     common_data_columns.remove(key)
             self.common_data_columns = common_data_columns
-        logger.debug(f'summary.all_data_columns = {self.all_data_columns}')
-        logger.debug(f'summary.common_data_columns = {self.common_data_columns}')
+        logger.info(f'remove summary.all_data_columns = {self.all_data_columns} project_id={self.project_id}')
+        logger.info(f'remove summary.common_data_columns = {self.common_data_columns} project_id={self.project_id}')
         self.save(
             update_fields=[
                 'all_data_columns',
