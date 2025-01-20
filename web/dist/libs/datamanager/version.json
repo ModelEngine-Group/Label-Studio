@@ -1,6 +1,6 @@
 {
-  "message": "chore: LEAP-1719: update path-to-regexp to version 0.1.12 (#6928)",
-  "commit": "534cddf6dcc15ee61fa79e2467bea5d77cd8012c",
-  "date": "2025-01-20T16:56:54.000Z",
+  "message": "chore: LEAP-1717: update path-to-regexp to version 0.1.12 (#6927)",
+  "commit": "b5e2108467aa20a1f3c403a80e3b7771bb842bb6",
+  "date": "2025-01-20T17:19:02.000Z",
   "branch": "develop"
 }
