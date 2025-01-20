@@ -1,6 +1,6 @@
 {
-  "message": "feat: LEAP-1774: exclude starter cloud accounts from bulk labeling feature (#6919)",
-  "commit": "7f68061de57f4fc26690089c3969958459e3e328",
-  "date": "2025-01-17T22:15:21.000Z",
+  "message": "chore: OPTIC-1337: Update Tooltips #3 (#6899)",
+  "commit": "d27acf3241cbfcb6b2240e38cc983cde27fc4548",
+  "date": "2025-01-20T15:59:21.000Z",
   "branch": "develop"
 }
