@@ -24,8 +24,8 @@ Set up the following cloud and other storage systems with Label Studio:
 
 When working with an external cloud storage connection, keep the following in mind:
 
-* Label Studio doesn’t import the data stored in the bucket, but instead creates *references* to the objects. Therefore, you must have full access control on the data to be synced and shown on the labeling screen.
-* Sync operations with external buckets only goes one way. It either creates tasks from objects on the bucket (Source storage) or pushes annotations to the output bucket (Target storage). Changing something on the bucket side doesn’t guarantee consistency in results.
+* Label Studio doesn't import the data stored in the bucket, but instead creates *references* to the objects. Therefore, you must have full access control on the data to be synced and shown on the labeling screen.
+* Sync operations with external buckets only goes one way. It either creates tasks from objects on the bucket (Source storage) or pushes annotations to the output bucket (Target storage). Changing something on the bucket side doesn't guarantee consistency in results.
 * We recommend using a separate bucket folder for each Label Studio project. 
 
 <div class="opensource-only">
@@ -280,7 +280,7 @@ After you [configure access to your S3 bucket](#Configure-access-to-your-S3-buck
     - <div class="enterprise-only">(Optional) Enable **Can delete objects from storage** if you want to delete annotations stored in the S3 bucket when they are deleted in Label Studio. The storage credentials associated with the bucket must include the ability to delete bucket objects. Leave disabled to not take any action on annotations if they are deleted in Label Studio. </div>
 8. Click **Add Storage**.
 
-After adding the storage, click **Sync** to collect tasks from the bucket, or make an API call to [sync export storage](https://api.labelstud.io/api-reference/api-reference/export-storage/s-3/sync).
+After adding the storage, click **Sync** to collect tasks from the bucket, or make an API call to [sync export storage](https://api.labelstud.io/api-reference/api-reference/export-storage/s-3/sync)
 
 <div class="enterprise-only">
 
@@ -470,6 +470,75 @@ After adding the storage, click **Sync** to collect tasks from the bucket, or ma
 You can also create a storage connection using the Label Studio API. 
 - See [Create new import storage](/api#operation/api_storages_gcs_create) then [sync the import storage](/api#operation/api_storages_gcs_sync_create). 
 - See [Create export storage](/api#operation/api_storages_export_gcs_create) and after annotating, [sync the export storage](/api#operation/api_storages_export_gcs_sync_create).
+
+
+### IP Filtering for Enhanced Security
+
+Google Cloud Storage offers [bucket IP filtering](https://cloud.google.com/storage/docs/ip-filtering-overview) as a powerful security mechanism to restrict access to your data based on source IP addresses. This feature helps prevent unauthorized access and provides fine-grained control over who can interact with your storage buckets.
+
+**Common Use Cases:**
+- Restrict bucket access to only your organization's IP ranges
+- Allow access only from specific VPC networks in your infrastructure
+- Secure sensitive data by limiting access to known IP addresses
+- Control access for third-party integrations by whitelisting their IPs
+
+**How to Set Up IP Filtering:**
+
+1. First, create your GCS bucket through the console or CLI
+2. Create a JSON configuration file to define IP filtering rules. You have two options:
+   For public IP ranges:
+```json
+{
+  "mode": "Enabled", 
+  "publicNetworkSource": {
+    "allowedIpCidrRanges": [
+      "xxx.xxx.xxx.xxx", // Your first IP address
+      "xxx.xxx.xxx.xxx", // Your second IP address
+      "xxx.xxx.xxx.xxx/xx" // Your IP range in CIDR notation
+    ]
+  }
+}
+```
+
+!!! note
+    If you're using Label Studio Enterprise at app.humansignal.com and accessing it from your office network:
+    - Add Label Studio Enterprise outgoing IP addresses (see [IP ranges](saas.html#IP-range))
+    - Add your office network IP range (e.g. 192.168.1.0/24)
+    - If both Label Studio Enterprise and your office are on the same VPN network (e.g. 10.0.0.0/16), you only need to add that VPN subnet
+
+
+For VPC network sources:
+```json
+{
+  "mode": "Enabled",
+  "vpcNetworkSources": [
+    {
+      "network": "projects/PROJECT_ID/global/networks/NETWORK_NAME",
+      "allowedIpCidrRanges": [
+        RANGE_CIDR
+      ]
+    }
+  ]
+}
+```
+
+3. Apply the IP filtering rules to your bucket using the following command:
+```bash
+gcloud alpha storage buckets update gs://BUCKET_NAME --ip-filter-file=IP_FILTER_CONFIG_FILE
+```
+
+4. To remove IP filtering rules when no longer needed:
+```bash
+gcloud alpha storage buckets update gs://BUCKET_NAME --clear-ip-filter
+```
+
+#### Limitations to Consider
+- Maximum of 200 IP CIDR blocks across all rules
+- Maximum of 25 VPC networks in the IP filter rules
+- Not supported for dual-regional buckets
+- May affect access from certain Google Cloud services
+
+[Read more about GCS IP filtering](https://cloud.google.com/storage/docs/ip-filtering-overview)
 
 ##  Microsoft Azure Blob storage
 
