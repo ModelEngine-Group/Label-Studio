@@ -209,6 +209,7 @@
     "diff": "3.5.0",
     "ejs": "3.1.10",
     "express": ">=4.19.2",
+    "express/path-to-regexp": "0.1.12",
     "follow-redirects": "^1.15.6",
     "ip": ">=2.0.1",
     "jpeg-js": "0.4.4",
