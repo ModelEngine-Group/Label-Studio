@@ -166,6 +166,7 @@ class SerializationOptionsSerializer(serializers.Serializer):
 
 class ExportConvertSerializer(serializers.Serializer):
     export_type = serializers.CharField(help_text='Export file format.')
+    download_resources = serializers.BooleanField(help_text='Download resources in converter.', required=False)
 
     def validate_export_type(self, value):
         project = self.context.get('project')

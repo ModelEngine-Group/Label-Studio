@@ -142,7 +142,7 @@ class DataExport(object):
         return sorted(formats, key=lambda f: f.get('disabled', False))
 
     @staticmethod
-    def generate_export_file(project, tasks, output_format, download_resources, get_args):
+    def generate_export_file(project, tasks, output_format, download_resources, get_args, hostname=None):
         """Generate export file and return it as an open file object.
 
         Be sure to close the file after using it, to avoid wasting disk space.
@@ -161,6 +161,8 @@ class DataExport(object):
             project_dir=None,
             upload_dir=os.path.join(settings.MEDIA_ROOT, settings.UPLOAD_DIR),
             download_resources=download_resources,
+            access_token=project.organization.created_by.auth_token.key,
+            hostname=hostname,
         )
         with get_temp_dir() as tmp_dir:
             converter.convert(input_json, tmp_dir, output_format, is_dir=False)
