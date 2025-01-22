@@ -9,6 +9,8 @@ meta_title: Video Object Detection Data Labeling Template
 meta_description: Template for detecting objects in videos with Label Studio for your machine learning and data science projects.
 ---
 
+<img src="/images/templates/video-object-tracking.png" alt="" class="gif-border" width="552px" height="408px" />
+
 Video object detection is aimed at detecting object in a video stream with bounding boxes, as opposed to [Image object detection](/templates/image_bbox.html) with static images.
 
 Video object tracking is a further extension where detected objects are tracked as they move around video frames, in both spatial and temporal directions.
