@@ -131,6 +131,11 @@ export const TourProvider: React.FC<{
         return;
       }
 
+      if (response.awaiting) {
+        console.info(`Tour "${name}" is awaiting other tours`);
+        return;
+      }
+
       if (!response.steps?.length) {
         console.info(`No steps found for tour "${name}"`);
         return;
