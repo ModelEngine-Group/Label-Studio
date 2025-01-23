@@ -1,6 +1,6 @@
 {
-  "message": "refactor: OPTIC-1555: cleanup FF (#6948)",
-  "commit": "aa6c9151e7b04a15ae7558851446c29f818567a9",
-  "date": "2025-01-23T00:54:40.000Z",
+  "message": "feat: DIA-1783: [FE] Prep work - Tailwind + shadcn cross integration in LSO + LSE (#6870)",
+  "commit": "2dfd5c7bffb806ad4903a2a4aba103072dc425e5",
+  "date": "2025-01-23T19:22:53.000Z",
   "branch": "develop"
 }
