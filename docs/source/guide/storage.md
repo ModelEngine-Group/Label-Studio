@@ -27,6 +27,7 @@ When working with an external cloud storage connection, keep the following in mi
 * Label Studio doesn't import the data stored in the bucket, but instead creates *references* to the objects. Therefore, you must have full access control on the data to be synced and shown on the labeling screen.
 * Sync operations with external buckets only goes one way. It either creates tasks from objects on the bucket (Source storage) or pushes annotations to the output bucket (Target storage). Changing something on the bucket side doesn't guarantee consistency in results.
 * We recommend using a separate bucket folder for each Label Studio project. 
+* Storage Regions: To minimize latency and improve efficiency, store data in cloud storage buckets that are geographically closer to your team rather than near the Label Studio server.
 
 <div class="opensource-only">
 
@@ -282,6 +283,14 @@ After you [configure access to your S3 bucket](#Configure-access-to-your-S3-buck
 
 After adding the storage, click **Sync** to collect tasks from the bucket, or make an API call to [sync export storage](https://api.labelstud.io/api-reference/api-reference/export-storage/s-3/sync)
 
+<div class="opensource-only">
+
+### S3 connection with IAM role access 
+
+In Label Studio Enterprise, you can use an IAM role configured with an external ID to access S3 bucket contents securely. An 'external ID' is a unique identifier that enhances security by ensuring that only trusted entities can assume the role, reducing the risk of unauthorized access. See how to [Set up an S3 connection with IAM role access](https://docs.humansignal.com/guide/storage#Set-up-an-S3-connection-with-IAM-role-access)</span> in the Enterprise documentation.
+
+</div>
+
 <div class="enterprise-only">
 
 ###  Set up an S3 connection with IAM role access
@@ -416,6 +425,72 @@ You can also create a storage connection using the Label Studio API.
 - See [Create new import storage](/api#operation/api_storages_s3_create) then [sync the import storage](/api#operation/api_storages_s3_sync_create).
 - See [Create export storage](/api#operation/api_storages_export_s3_create) and after annotating, [sync the export storage](/api#operation/api_storages_export_s3_sync_create).
 
+### IP Filtering and VPN for Enhanced Security for S3 storage
+
+To maximize security and data isolation behind a VPC, restrict access to the Label Studio backend and internal network users by setting IP restrictions for storage, allowing only trusted networks to perform task synchronization and generate pre-signed URLs. Additionally, establish a secure connection between storage and users' browsers by configuring a VPC private endpoint or limiting storage access to specific IPs or VPCs. 
+
+Read more about [Source storage behind your VPC](security.html#Source-storage-behind-your-VPC).
+
+<details>
+<summary>Bucket Policy Example for S3 storage</summary>
+<br>
+
+!!! warning
+    These example bucket policies explicitly deny access to any requests outside the allowed IP addresses. Even the user that entered the bucket policy can be denied access to the bucket if the user doesn't meet the conditions. Therefore, make sure to review the bucket policy carefully before saving it. If you get accidentally locked out, see [How to regain access to an Amazon S3 bucket](https://repost.aws/knowledge-center/s3-accidentally-denied-access).
+
+ **Helpful Resources**:
+   - [AWS Documentation: VPC Endpoints for Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/privatelink-interface-endpoints.html)
+   - [AWS Documentation: How to Configure VPC Endpoints](https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-services-overview.html)
+
+Go to your S3 bucket and then **Permissions > Bucket Policy** in the AWS management console. Add the following policy:
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "DenyAccessUnlessFromSaaSIPsForListAndGet",
+            "Effect": "Deny",
+            "Principal": {
+                "AWS": "arn:aws:iam::490065312183:user/rw_bucket"
+            },
+            "Action": [
+                "s3:ListBucket",
+                "s3:GetObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::YOUR_BUCKET_NAME",
+                "arn:aws:s3:::YOUR_BUCKET_NAME/*"
+            ],
+            "Condition": {
+                "NotIpAddress": {
+                    "aws:SourceIp": [
+                      //// IP ranges for app.humansignal.com from the documentation
+                        "x.x.x.x/32",
+                        "x.x.x.x/32",
+                        "x.x.x.x/32"
+                    ]
+                }
+            }
+        },
+//// Optional
+        {
+            "Sid": "DenyAccessUnlessFromVPNForGetObject",
+            "Effect": "Deny",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::YOUR_BUCKET_NAME/*",
+            "Condition": {
+                "NotIpAddress": {
+                    "aws:SourceIp": "YOUR_VPN_SUBNET/32"
+                }
+            }
+        }
+    ]
+}
+```
+</details>
+
 ## Google Cloud Storage
 
 Dynamically import tasks and export annotations to Google Cloud Storage (GCS) buckets in Label Studio. For details about how Label Studio secures access to cloud storage, see [Secure access to cloud storage](security.html/#Secure-access-to-cloud-storage).
@@ -472,9 +547,11 @@ You can also create a storage connection using the Label Studio API.
 - See [Create export storage](/api#operation/api_storages_export_gcs_create) and after annotating, [sync the export storage](/api#operation/api_storages_export_gcs_sync_create).
 
 
-### IP Filtering for Enhanced Security
+### IP Filtering for Enhanced Security for GCS storage
 
 Google Cloud Storage offers [bucket IP filtering](https://cloud.google.com/storage/docs/ip-filtering-overview) as a powerful security mechanism to restrict access to your data based on source IP addresses. This feature helps prevent unauthorized access and provides fine-grained control over who can interact with your storage buckets.
+
+Read more about [Source storage behind your VPC](security.html#Source-storage-behind-your-VPC).
 
 **Common Use Cases:**
 - Restrict bucket access to only your organization's IP ranges
@@ -482,7 +559,9 @@ Google Cloud Storage offers [bucket IP filtering](https://cloud.google.com/stora
 - Secure sensitive data by limiting access to known IP addresses
 - Control access for third-party integrations by whitelisting their IPs
 
-**How to Set Up IP Filtering:**
+<details>
+<summary>How to Set Up IP Filtering</summary>
+<br>
 
 1. First, create your GCS bucket through the console or CLI
 2. Create a JSON configuration file to define IP filtering rules. You have two options:
@@ -542,6 +621,13 @@ gcloud alpha storage buckets update gs://BUCKET_NAME --clear-ip-filter
 - May affect access from certain Google Cloud services
 
 [Read more about GCS IP filtering](https://cloud.google.com/storage/docs/ip-filtering-overview)
+
+</details>
+
+#### Application Default Credentials as Advanced Security Approach
+
+**Google ADC**: If you use Label Studio on-premises with Google Cloud Storage, you can set up [Application Default Credentials](https://cloud.google.com/docs/authentication/provide-credentials-adc) to provide cloud storage authentication globally for all projects, so users do not need to configure credentials manually.
+
 
 ##  Microsoft Azure Blob storage
 
