@@ -4,8 +4,6 @@ const FEATURE_FLAGS = window.APP_SETTINGS?.feature_flags || {};
 
 // Fix displaying of created_at in the review mode
 export const FF_DEV_1480 = "ff_front_dev_1480_created_on_in_review_180122_short";
-// Fix avatar blinking and stuck on organization page
-export const FF_DEV_1495 = "ff_front_dev_1495_avatar_mess_210122_short";
 // Notifications
 export const FF_DEV_1658 = "ff_front_dev_1658_notification_center_170222_short";
 // Model version selector per model backend
