@@ -1,6 +1,6 @@
 {
-  "message": "feat: DIA-1783: [FE] Prep work - Tailwind + shadcn cross integration in LSO + LSE (#6870)",
-  "commit": "2dfd5c7bffb806ad4903a2a4aba103072dc425e5",
-  "date": "2025-01-23T19:22:53.000Z",
+  "message": "refactor: OPTIC-1540: Add stale ff new batch (#6922)",
+  "commit": "7cff2a8746644c7a74f2b206c5c00e87884d5751",
+  "date": "2025-01-23T20:53:02.000Z",
   "branch": "develop"
 }
