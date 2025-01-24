@@ -263,7 +263,7 @@ class ImportStorage(Storage):
             return resolved
 
         # string: process one url
-        elif isinstance(uri, str):
+        elif isinstance(uri, str) and self.url_scheme in uri:
             try:
                 # extract uri first from task data
                 extracted_uri, _ = get_uri_via_regex(uri, prefixes=(self.url_scheme,))
