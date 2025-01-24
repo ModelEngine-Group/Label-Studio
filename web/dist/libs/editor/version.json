@@ -1,6 +1,6 @@
 {
-  "message": "refactor: OPTIC-1540: Add stale ff new batch (#6922)",
-  "commit": "7cff2a8746644c7a74f2b206c5c00e87884d5751",
-  "date": "2025-01-23T20:53:02.000Z",
+  "message": "chore(deps): bump store2 from 2.14.2 to 2.14.4 in /web (#6960)",
+  "commit": "b2bd56cc8c7115d2fcf62727dcf25d1050d57f69",
+  "date": "2025-01-24T23:42:48.000Z",
   "branch": "develop"
 }
