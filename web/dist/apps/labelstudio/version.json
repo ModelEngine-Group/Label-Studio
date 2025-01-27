@@ -1,6 +1,6 @@
 {
-  "message": "feat: OPTIC-1479: Improve memory usage of Image tag (#6930)",
-  "commit": "a626c0a39266f4bb2c46d8db0e4fa41fdc12b93a",
-  "date": "2025-01-27T14:10:38.000Z",
+  "message": "feat: OPTIC-1537: Update template images (#6972)",
+  "commit": "e50745e81ffed826bba963777e87b43b2cc7f841",
+  "date": "2025-01-27T16:28:17.000Z",
   "branch": "develop"
 }
