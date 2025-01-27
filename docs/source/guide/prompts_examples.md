@@ -83,7 +83,7 @@ This example demonstrates how to set up Prompts to predict image captions.
 !!! note
     Prompts does not currently support image data uploaded as raw images. Only image references (HTTP URIs to images) or images imported via cloud storage are supported. 
 
-2. Create a [label config](setup) for image captioning, for example:
+2. Create a [label config](setup) for image captioning (or Ask AI to create one for you), for example:
 
 ```xml
 <View>
@@ -104,23 +104,21 @@ This example demonstrates how to set up Prompts to predict image captions.
 !!! note
     Ensure you include `{image}` in your instructions. Click `image` above the instruction field to insert it. 
 
-    ![Screenshot pointing to how to insert image into your instructions](/images/prompts/example_insert_image.png)
-
 !!! info Tip
     You can also automatically generate the instructions using the [**Enhance Prompt** action](prompts_draft#Enhance-prompt). Before you can use this action, you must at least add the variable name `{image}` and then click **Save**. 
 
     ![Screenshot pointing to Enhance Prompt action](/images/prompts/example_enhance_prompt.png)
 
-5. Run the prompt. View predictions to accept or correct.
+5. Run the prompt! View predictions to accept or correct.
 
     You can [read more about evaluation metrics](prompts_draft#Evaluation-results) and ways to assess your prompt performance. 
 
 !!! info Tip
-    Use the drop-down menu above the results field to change the subset of data being used (e.g. only data with Ground Truth annotations, or a small sample of records). 
+    You can change the subset of data being used (e.g. only data with Ground Truth annotations, or a small sample of records). 
 
     ![Screenshot pointing to subset dropdown](/images/prompts/example_subset.png)
 
-6. Accept the [predictions as annotations](prompts_predictions#Create-annotations-from-predictions).
+6. Accept the [predictions as annotations](prompts_predictions#Create-annotations-from-predictions)!
 
 
 ### Evaluate LLM outputs for toxicity
@@ -131,7 +129,7 @@ This example demonstrates how to set up Prompts to evaluate if the LLM-generated
 
     For example: you can use the [jigsaw_toxicity](https://huggingface.co/datasets/tasksource/jigsaw_toxicity) dataset as an example. See [the appendix](#Appendix-Generate-dataset) for how you can pre-process and (optionally) downsample this dataset to use with this guide.
 
-2. Create a [label config](setup) for toxicity detection, for example:
+2. Create a [label config](setup) for toxicity detection (or Ask AI to create one for you), for example:
 
 ```xml
 <View>
@@ -192,25 +190,23 @@ This example demonstrates how to set up Prompts to evaluate if the LLM-generated
 !!! note
     Ensure you include `{comment_text}` in your instructions. Click `comment_text` above the instruction field to insert it. 
 
-    ![Screenshot pointing to how to insert comment text into your instructions](/images/prompts/example_insert_comment_text.png)
-
 !!! info Tip
     You can also automatically generate the instructions using the [**Enhance Prompt** action](prompts_draft#Enhance-prompt). Before you can use this action, you must at least add the variable name `{comment_text}` and then click **Save**. 
 
-    ![Screenshot pointing to Enhance Prompt action](/images/prompts/example_enhance_prompt2.png)
+    ![Screenshot pointing to Enhance Prompt action](/images/prompts/example_enhance_prompt.png)
 
-5. Run the prompt. View predictions to accept or correct.
+5. Run the prompt! View predictions to accept or correct.
 
     You can [read more about evaluation metrics](prompts_draft#Evaluation-results) and ways to assess your prompt performance. 
 
 !!! info Tip
-    Use the drop-down menu above the results field to change the subset of data being used (e.g. only data with Ground Truth annotations, or a small sample of records). 
+    You can change the subset of data being used (e.g. only data with Ground Truth annotations, or a small sample of records). 
 
-    ![Screenshot pointing to subset dropdown](/images/prompts/example_subset2.png)
+    ![Screenshot pointing to subset dropdown](/images/prompts/example_subset.png)
 
-6. Accept the [predictions as annotations](prompts_predictions#Create-annotations-from-predictions). 
+6. Accept the [predictions as annotations](prompts_predictions#Create-annotations-from-predictions)! 
 
-### Appendix: Preprocess jigsaw toxicity dataset
+#### Appendix: Preprocess jigsaw toxicity dataset
 
 Download the jigsaw_toxicity dataset, then downsample/format using the following script (modify the `INPUT_PATH` and `OUTPUT_PATH` to suit your needs):
 
@@ -254,6 +250,116 @@ OUTPUT_PATH = "/Users/pakelley/Downloads/toxicity-sample-ls-format.json"
 df = pd.read_csv(INPUT_PATH)
 sample = df.sample(n=100)
 label_studio_tasks = [gen_task(row) for row in sample.itertuples()]
+with open(OUTPUT_PATH, "w") as f:
+    json.dump(label_studio_tasks, f)
+```
+
+If you choose to, you could also easily change how many records to use (or use the entire dataset by removing the sample step). 
+
+### Generate Synthetic Q&A Datasets
+
+#### Overview
+
+Synthetic datasets are datasets artificially generated rather than being collected from real-world observations. They encode characteristics similar to real data, but allow for scaling up data diversity or volume gaps in general purpose application, such as model training and evaluation. Synthetic datasets also work well in enhancing AI systems that have unbound human context as inputs and output, such as chatbot question and answers, test datasets for evaluation, and rich knowledge datasets for contextual retrieval. LLMs are particularly effective for generating synthetic datasets for these use cases, and allow you to enhance your AI system’s performance by creating diversity to learn from. 
+
+#### Example
+
+Let’s expand on the Q&A use case above with an example demonstrating how to use Prompts to generate synthetic user prompts for a chatbot RAG system. Given a dataset of chatbot answers, we’ll generate some questions that could return each answer.
+ 
+
+1. [Create a new label studio project](setup_project) by importing chunks of text that would be meaningful answers from a chatbot.
+
+    You can use a preprocessed sample of the [SQuAD](https://huggingface.co/datasets/rajpurkar/squad) dataset as an example. See [the appendix](#Appendix-Preprocess-SQuAD-Q-A-dataset) for how this was generated.
+
+2. Create a [label config](setup) for question generation (or Ask AI to create one for you), for example:
+
+```xml
+<View>
+  <Header value="Context" />
+  <Text name="context" value="$context" />
+  <Header value="Answer" />
+  <Text name="answer" value="$answer" />
+
+  <Header value="Questions" />
+  <TextArea name="question1" toName="context" 
+            placeholder="Enter question 1" 
+            rows="2"
+            maxSubmissions="1" />
+
+  <TextArea name="question2" toName="context" 
+            placeholder="Enter question 2" 
+            rows="2"
+            maxSubmissions="1" />
+
+  <TextArea name="question3" toName="context" 
+            placeholder="Enter question 3" 
+            rows="2"
+            maxSubmissions="1" />
+</View>
+```
+
+3. Navigate to **Prompts** from the sidebar, and [create a prompt](prompts_create) for the project
+
+    If you have not yet set up API the keys you want to use, do that now: [API keys](prompts_create#Model-provider-API-keys). 
+
+4. Add instructions to create 3 questions:
+
+    *Using the "context" below as context, come up with 3 questions ("question1", "question2", and "question3") for which the appropriate answer would be the "answer" below:*
+
+    *Context:*
+
+    *---*
+
+    *{context}*
+
+    *---*
+
+    *Answer:*
+
+    *---*
+
+    *{answer}*
+
+    *---*
+
+
+!!! note
+    Ensure you include `{answer}` and `{context}` in your instructions. Click `answer`/`context` above the instruction field to insert them. 
+
+!!! info Tip
+    You can also automatically generate the instructions using the [**Enhance Prompt** action](prompts_draft#Enhance-prompt). Before you can use this action, you must at least add a variable name (e.g. `{context}` or `{answer}`) and then click **Save**. 
+
+    ![Screenshot pointing to Enhance Prompt action](/images/prompts/example_enhance_prompt.png)
+    
+5. Run the Prompt! View predictions to accept or correct.
+
+    You can [read more about evaluation metrics](prompts_draft#Evaluation-results) and ways to assess your prompt performance. 
+
+!!! info Tip
+    You can change the subset of data being used (e.g. only data with Ground Truth annotations, or a small sample of records). 
+
+    ![Screenshot pointing to subset dropdown](/images/prompts/example_subset.png)
+
+6. Accept the [predictions as annotations](prompts_predictions#Create-annotations-from-predictions)!
+
+#### Appendix: Preprocess SQuAD Q&A dataset
+
+This downloads the SQuAD dataset from Huggingface and formats it for use in Label Studio.
+
+```python
+import pandas as pd
+import json
+
+OUTPUT_PATH = "/Users/pakelley/Downloads/qna-sample-ls-format.json"
+N_SAMPLES = 100
+
+splits = {'train': 'plain_text/train-00000-of-00001.parquet', 'validation': 'plain_text/validation-00000-of-00001.parquet'}
+df = pd.read_parquet("hf://datasets/rajpurkar/squad/" + splits["train"])
+
+sample = df.sample(n=N_SAMPLES)
+
+sample['answer'] = sample['answers'].map(lambda item: item['text'][0])
+label_studio_tasks = [{"context": row.context, "answer": row.answer} for row in sample.itertuples()]
 with open(OUTPUT_PATH, "w") as f:
     json.dump(label_studio_tasks, f)
 ```
