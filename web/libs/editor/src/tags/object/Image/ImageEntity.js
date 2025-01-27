@@ -1,6 +1,7 @@
-import { types } from "mobx-state-tree";
+import { types, getParent } from "mobx-state-tree";
 import { FileLoader } from "../../../utils/FileLoader";
 import { clamp } from "../../../utils/utilities";
+import { FF_IMAGE_MEMORY_USAGE, isFF } from "../../../utils/feature-flags";
 
 const fileLoader = new FileLoader();
 
@@ -65,12 +66,45 @@ export const ImageEntity = types
     /** Is image loaded using `<img/>` tag and cached by the browser */
     imageLoaded: false,
   }))
+  .views((self) => ({
+    get parent() {
+      // Get the ImageEntityMixin
+      return getParent(self, 2);
+    },
+    get imageCrossOrigin() {
+      return self.parent?.imageCrossOrigin ?? "anonymous";
+    },
+  }))
   .actions((self) => ({
     preload() {
       if (self.ensurePreloaded() || !self.src) return;
 
-      self.setDownloading(true);
+      if (isFF(FF_IMAGE_MEMORY_USAGE)) {
+        self.setDownloading(true);
+        new Promise((resolve) => {
+          const img = new Image();
+          // Get from the image tag
+          const crossOrigin = self.imageCrossOrigin;
+          if (crossOrigin) img.crossOrigin = crossOrigin;
+          img.onload = () => {
+            self.setCurrentSrc(self.src);
+            self.setDownloaded(true);
+            self.setProgress(1);
+            self.setDownloading(false);
+            self.setImageLoaded(true);
+            resolve();
+          };
+          img.onerror = () => {
+            self.setError(true);
+            self.setDownloading(false);
+            resolve();
+          };
+          img.src = self.src;
+        });
+        return;
+      }
 
+      self.setDownloading(true);
       fileLoader
         .download(self.src, (_t, _l, progress) => {
           self.setProgress(progress);
@@ -87,6 +121,8 @@ export const ImageEntity = types
     },
 
     ensurePreloaded() {
+      if (isFF(FF_IMAGE_MEMORY_USAGE)) return self.currentSrc !== undefined;
+
       if (fileLoader.isError(self.src)) {
         self.setDownloading(false);
         self.setError(true);
