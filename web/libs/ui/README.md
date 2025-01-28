@@ -1,10 +1,5 @@
 # Spark: HumanSignal UI Library
 
-Based on Tailwind and Shadcn. Still WIP with the Design System, so refer to official docs for now:
-
-- [Tailwind](https://tailwindcss.com/docs/installation/using-vite)
-- [Shadcn](https://ui.shadcn.com/docs/components/accordion)
-
 ## Running unit tests
 
 Run `yarn nx test ui` to execute the unit tests via [Jest](https://jestjs.io).

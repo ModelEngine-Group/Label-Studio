@@ -194,10 +194,6 @@ module.exports = composePlugins(
           }
         });
       }
-
-      if (testString.includes(".css")) {
-        rule.exclude = /tailwind\.css/;
-      }
     });
 
     config.module.rules.push(
@@ -226,21 +222,6 @@ module.exports = composePlugins(
         options: {
           name: "[name].[ext]",
         },
-      },
-      // tailwindcss
-      {
-        test: /tailwind\.css/,
-        exclude: /node_modules/,
-        use: [
-          "style-loader",
-          {
-            loader: "css-loader",
-            options: {
-              importLoaders: 1,
-            },
-          },
-          "postcss-loader",
-        ],
       },
     );
 
