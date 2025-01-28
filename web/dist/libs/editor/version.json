@@ -1,6 +1,6 @@
 {
-  "message": "fix: OPTIC-1570: Update lodash to remove security issues (#6973)",
-  "commit": "41c6fb20f67a2b2ac301d061fe0c7704a136e030",
-  "date": "2025-01-28T14:35:40.000Z",
+  "message": "chore: DIA-1783: Revert Tailwind Integration (#6983)",
+  "commit": "7f0847485504e1a003b29fd23a06a621654ba260",
+  "date": "2025-01-28T18:29:06.000Z",
   "branch": "develop"
 }
