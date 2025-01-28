@@ -29,6 +29,16 @@ jobs:
     steps:
       - uses: hmarr/debug-action@v3.0.0
 
+      - name: Add Workflow link to chat ops command comment
+        if: github.event.client_payload.github.payload.comment.id && github.event.client_payload.github.payload.repository.full_name
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GIT_PAT }}
+          repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
+          comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
+          body: |
+            > [Workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
       - name: Configure git
         shell: bash
         run: |
@@ -68,3 +78,12 @@ jobs:
           git status -s
           git commit -m '${{ env.FEATURE_FLAGS_COMMIT_MESSAGE }}' -m 'Workflow run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}' || true
           git push origin HEAD
+
+      - name: Add reaction to chat ops command comment
+        if: always() && github.event.client_payload.github.payload.comment.id && github.event.client_payload.github.payload.repository.full_name
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GIT_PAT }}
+          repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
+          comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
+          reactions: ${{ job.status == 'success' && '+1' || '-1' }}
