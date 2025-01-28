@@ -1,6 +1,6 @@
 {
-  "message": "feat: OPTIC-1537: Update template images (#6972)",
-  "commit": "e50745e81ffed826bba963777e87b43b2cc7f841",
-  "date": "2025-01-27T16:28:17.000Z",
+  "message": "feat: OPTIC-1581: Display prediction score on prediction tabs in editor (#6965)",
+  "commit": "e2de3c98929362cdba990cde84d809f5e9c5b82f",
+  "date": "2025-01-28T13:30:39.000Z",
   "branch": "develop"
 }
