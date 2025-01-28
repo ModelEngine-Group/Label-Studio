@@ -1,6 +1,6 @@
 {
-  "message": "chore: DIA-1783: Revert Tailwind Integration (#6983)",
-  "commit": "7f0847485504e1a003b29fd23a06a621654ba260",
-  "date": "2025-01-28T18:29:06.000Z",
+  "message": "fix: OPTIC-1585: Change Annotations => Submitted Annotations to match its real meaning (#6982)",
+  "commit": "552c27754142c27d9c6c336a97c276e62646fc31",
+  "date": "2025-01-28T22:26:31.000Z",
   "branch": "develop"
 }
