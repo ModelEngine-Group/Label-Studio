@@ -2904,6 +2904,33 @@
       "version": 2,
       "deleted": false
     },
+    "fflag_feature_all_optic_1541_performance_score_on_latest_review_short": {
+      "key": "fflag_feature_all_optic_1541_performance_score_on_latest_review_short",
+      "on": false,
+      "prerequisites": [],
+      "targets": [],
+      "contextTargets": [],
+      "rules": [],
+      "fallthrough": {
+        "variation": 0
+      },
+      "offVariation": 1,
+      "variations": [
+        true,
+        false
+      ],
+      "clientSideAvailability": {
+        "usingMobileKey": false,
+        "usingEnvironmentId": false
+      },
+      "clientSide": false,
+      "salt": "9a52adb8dcdf49e4b1c9d18ec8441ec9",
+      "trackEvents": false,
+      "trackEventsFallthrough": false,
+      "debugEventsUntilDate": null,
+      "version": 2,
+      "deleted": false
+    },
     "fflag_fix_all_leap_877_annotator_membership_api_03042024_short": {
       "key": "fflag_fix_all_leap_877_annotator_membership_api_03042024_short",
       "on": false,
