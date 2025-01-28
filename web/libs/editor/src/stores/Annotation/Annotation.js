@@ -112,6 +112,7 @@ const _Annotation = types
     createdAgo: types.maybeNull(types.string),
     createdBy: types.optional(types.string, "Admin"),
     user: types.optional(types.maybeNull(types.safeReference(UserExtended)), null),
+    score: types.maybeNull(types.number),
 
     parent_prediction: types.maybeNull(types.integer),
     parent_annotation: types.maybeNull(types.integer),
