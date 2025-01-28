@@ -1,6 +1,6 @@
 {
-  "message": "feat: OPTIC-1581: Display prediction score on prediction tabs in editor (#6965)",
-  "commit": "e2de3c98929362cdba990cde84d809f5e9c5b82f",
-  "date": "2025-01-28T13:30:39.000Z",
+  "message": "fix: OPTIC-1570: Update lodash to remove security issues (#6973)",
+  "commit": "41c6fb20f67a2b2ac301d061fe0c7704a136e030",
+  "date": "2025-01-28T14:35:40.000Z",
   "branch": "develop"
 }
