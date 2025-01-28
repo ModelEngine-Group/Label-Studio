@@ -21,7 +21,7 @@ Multi-page document annotation requires that you first pre-process your document
 To improve performance, we preload images by downloading an image via XHR and storing it in the local browser’s storage. For this to function properly, you must set up a CORS policy on the CDN/storage where the images are located. Specifically, the following headers must be set:
 
 ```
-Access-Control-Allow-Origin: https://app.heartex.com
+Access-Control-Allow-Origin: https://app.humansignal.com
 Access-Control-Allow-Methods: GET, OPTIONS
 Access-Control-Allow-Headers: Content-Type
 ```
