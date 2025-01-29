@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Spinner } from "../../../components";
 import { cn } from "../../../utils/bem";
-import { FF_DEV_3617, isFF } from "../../../utils/feature-flags";
 import "./Config.scss";
 import { EMPTY_CONFIG } from "./Template";
 import { API_CONFIG } from "../../../config/ApiConfig";
@@ -75,7 +74,7 @@ export const Preview = ({ config, data, error, loading, project }) => {
         task,
         interfaces: ["side-column"],
         // with SharedStore we should use more late event
-        [isFF(FF_DEV_3617) ? "onStorageInitialized" : "onLabelStudioLoad"](LS) {
+        onStorageInitialized(LS) {
           LS.settings.bottomSidePanel = true;
 
           const initAnnotation = () => {
@@ -86,12 +85,8 @@ export const Preview = ({ config, data, error, loading, project }) => {
             setStoreReady(true);
           };
 
-          if (isFF(FF_DEV_3617)) {
-            // and even then we need to wait a little even after the store is initialized
-            setTimeout(initAnnotation);
-          } else {
-            initAnnotation();
-          }
+          // and even then we need to wait a little even after the store is initialized
+          setTimeout(initAnnotation);
         },
       });
 

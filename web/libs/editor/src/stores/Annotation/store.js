@@ -9,7 +9,7 @@ import Types from "../../core/Types";
 import { StoreExtender } from "../../mixins/SharedChoiceStore/extender";
 import { ViewModel } from "../../tags/visual";
 import Utils from "../../utils";
-import { FF_DEV_3034, FF_DEV_3391, FF_DEV_3617, FF_SIMPLE_INIT, isFF } from "../../utils/feature-flags";
+import { FF_DEV_3034, FF_DEV_3391, FF_SIMPLE_INIT, isFF } from "../../utils/feature-flags";
 import { emailFromCreatedBy } from "../../utils/utilities";
 import { Annotation } from "./Annotation";
 import { HistoryItem } from "./HistoryItem";
@@ -563,4 +563,4 @@ const AnnotationStoreModel = types
     };
   });
 
-export default types.compose("AnnotationStore", AnnotationStoreModel, ...(isFF(FF_DEV_3617) ? [StoreExtender] : []));
+export default types.compose("AnnotationStore", AnnotationStoreModel, StoreExtender);

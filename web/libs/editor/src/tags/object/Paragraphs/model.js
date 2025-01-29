@@ -9,7 +9,7 @@ import { SyncableMixin } from "../../../mixins/Syncable";
 import { ParagraphsRegionModel } from "../../../regions/ParagraphsRegion";
 import Utils from "../../../utils";
 import { parseValue } from "../../../utils/data";
-import { FF_DEV_2669, FF_DEV_2918, FF_DEV_3666, FF_LSDV_E_278, isFF } from "../../../utils/feature-flags";
+import { FF_DEV_2669, FF_DEV_2918, FF_LSDV_E_278, isFF } from "../../../utils/feature-flags";
 import messages from "../../../utils/messages";
 import { clamp, isDefined, isValidObjectURL } from "../../../utils/utilities";
 import ObjectBase from "../Base";
@@ -516,7 +516,7 @@ const ParagraphsLoadingModel = types.model().actions((self) => ({
 
   addRegions(ranges) {
     const areas = [];
-    const states = isFF(FF_DEV_3666) ? self.getAvailableStates() : self.activeStates();
+    const states = self.getAvailableStates();
 
     if (states.length === 0) return;
 
@@ -540,7 +540,7 @@ const ParagraphsLoadingModel = types.model().actions((self) => ({
     if (isFF(FF_DEV_2918)) {
       return self.addRegions([range])[0];
     }
-    const states = isFF(FF_DEV_3666) ? self.getAvailableStates() : self.activeStates();
+    const states = self.getAvailableStates();
 
     if (states.length === 0) return;
 

@@ -16,7 +16,6 @@ import ToolsManager from "../../../tools/Manager";
 import { parseValue } from "../../../utils/data";
 import {
   FF_DEV_3377,
-  FF_DEV_3666,
   FF_DEV_3793,
   FF_LSDV_4583,
   FF_LSDV_4583_6,
@@ -1106,15 +1105,8 @@ const Model = types
     },
 
     checkLabels() {
-      let labelStates;
-
-      if (isFF(FF_DEV_3666)) {
-        // there should be at least one available label or none of them should be selected
-        labelStates = self.activeStates() || [];
-      } else {
-        // there is should be at least one state selected for *labels object
-        labelStates = (self.states() || []).filter((s) => s.type.includes("labels"));
-      }
+      // there should be at least one available label or none of them should be selected
+      const labelStates = self.activeStates() || [];
       const selectedStates = self.getAvailableStates();
 
       return selectedStates.length !== 0 || labelStates.length === 0;

@@ -17,8 +17,6 @@ STALE_FEATURE_FLAGS = {
     'fflag_feat_front_lsdv_4620_richtext_opimization_060423_short': True,
     'fflag_feat_front_dev_3873_labeling_ui_improvements_short': True,
     'fflag_feat_back_dev_3756_queue_enrollment_min_short': False,
-    'fflag_fix_front_dev_3666_max_usages_on_region_creation_171122_short': True,
-    'fflag_fix_front_dev_3617_taxonomy_memory_leaks_fix': True,
     'ff_front_dev_2432_auto_save_polygon_draft_210622_short': True,
     'ff_front_1170_outliner_030222_short': True,
     'fflag_fix_front_lsdv_4620_memory_leaks_100723_short': False,

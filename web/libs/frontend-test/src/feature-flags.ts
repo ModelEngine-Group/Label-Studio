@@ -50,18 +50,6 @@ export const FF_DEV_3377 = "fflag_fix_front_dev_3377_image_regions_shift_on_resi
 // Refactoring to use separate trees for every annotation to allow real annotations in View All
 export const FF_DEV_3391 = "fflag_fix_front_dev_3391_interactive_view_all";
 
-/**
- * Addresses the memory leak issue in Taxonomy with Repeater
- * @link https://app.launchdarkly.com/default/production/features/fflag_fix_front_dev_3617_taxonomy_memory_leaks_fix
- */
-export const FF_DEV_3617 = "fflag_fix_front_dev_3617_taxonomy_memory_leaks_fix";
-
-/**
- * Fixing maxUsages prop of *labels on region creation.
- * @link https://app.launchdarkly.com/default/test/features/fflag_fix_front_dev_3666_max_usages_on_region_creation_171122_short
- */
-export const FF_DEV_3666 = "fflag_fix_front_dev_3666_max_usages_on_region_creation_171122_short";
-
 // Use only relative coords internally to improve performance and reduce bugs
 export const FF_DEV_3793 = "fflag_fix_front_dev_3793_relative_coords_short";
 
