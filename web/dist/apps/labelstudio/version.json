@@ -1,6 +1,6 @@
 {
-  "message": "chore: OPTIC-1548:  Update the tooltips for Jan 28 (#6959)",
-  "commit": "c6079d7e43ecd0f4530483d6257a1aa8db8dd893",
-  "date": "2025-01-29T16:06:19.000Z",
+  "message": "refactor: OPTIC-1542: remove a buch of stale feature flags (#6954)",
+  "commit": "884942e0a554e8d84a295b807e45ce848c19e886",
+  "date": "2025-01-29T18:21:55.000Z",
   "branch": "develop"
 }
