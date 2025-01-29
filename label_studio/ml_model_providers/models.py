@@ -12,6 +12,7 @@ class ModelProviders(models.TextChoices):
     OPENAI = 'OpenAI', _('OpenAI')
     AZURE_OPENAI = 'AzureOpenAI', _('AzureOpenAI')
     VERTEX_AI = 'VertexAI', _('VertexAI')
+    GEMINI = 'Gemini', _('Gemini')
     CUSTOM = 'Custom', _('Custom')
 
 
