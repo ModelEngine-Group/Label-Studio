@@ -169,19 +169,6 @@
           "treatment": "connect_ml_models_live"
         }
       }
-    },
-    {
-      "title": "Faster image labeling",
-      "content": "You can add a rectangle or an ellipse to your image with just two clicks, or double click to create a polygon, rectangle, or ellipse.",
-      "closable": true,
-      "link": {
-        "label": "Learn more",
-        "url": "https://labelstud.io/guide/labeling#Faster-image-labeling",
-        "params": {
-          "experiment": "project_settings_tip",
-          "treatment": "two_clicks_live"
-        }
-      }
     }
   ],
   "authPage": [
@@ -223,7 +210,7 @@
     },
     {
       "title": "Did you know?",
-      "description": "Label Studio now has a Starter Cloud offering optimized for small teams and projects.",
+      "description": "Try Label Studio Starter Cloud, optimized for small teams and projects.",
       "link": {
         "label": "Learn more",
         "url": "https://humansignal.com/pricing/",
@@ -242,18 +229,6 @@
         "params": {
           "experiment": "login_revamp",
           "treatment": "enterprise_platform_live"
-        }
-      }
-    },
-    {
-      "title": "Upcoming Webinar",
-      "description": "Join Jimmy Whitaker January 29th to learn how to analyze and annotate multi-turn generative AI chat responses.",
-      "link": {
-        "label": "Learn more or sign up",
-        "url": "https://humansignal.com/webinars/evaluating-llm-based-chat-systems-for-continuous-improvement/",
-        "params": {
-          "experiment": "login_revamp",
-          "treatment": "webinar_jan29_live"
         }
       }
     }

@@ -115,16 +115,15 @@ export const defaultTipsCollection: TipsCollection = {
       },
     },
     {
-      title: "Source data faster",
-      content:
-        "Use semantic search, similarity search, and filters to curate optimal datasets and automatically assign labeling tasks in the Enterprise platform.",
+      title: "Did you know?",
+      content: "Try Label Studio Starter Cloud, optimized for small teams and projects.",
       closable: true,
       link: {
         label: "Learn more",
-        url: "https://docs.humansignal.com/guide/dataset_overview",
+        url: "https://humansignal.com/pricing/",
         params: {
           experiment: "organization_page_tip",
-          treatment: "data_discovery",
+          treatment: "starter_cloud_live",
         },
       },
     },
@@ -230,6 +229,18 @@ export const defaultTipsCollection: TipsCollection = {
     },
     {
       title: "Did you know?",
+      content: "Try Label Studio Starter Cloud, optimized for small teams and projects.",
+      link: {
+        label: "Learn more",
+        url: "https://humansignal.com/pricing/",
+        params: {
+          experiment: "project_settings_tip",
+          treatment: "starter_cloud_live",
+        },
+      },
+    },
+    {
+      title: "Did you know?",
       content: "You can connect ML models using the backend SDK to save time with pre-labeling or active learning.",
       closable: true,
       link: {
@@ -238,20 +249,6 @@ export const defaultTipsCollection: TipsCollection = {
         params: {
           experiment: "project_settings_tip",
           treatment: "connect_ml_models",
-        },
-      },
-    },
-    {
-      title: "Faster image labeling",
-      content:
-        "You can add a rectangle or an ellipse to your image with just two clicks, or double click to create a polygon, rectangle, or ellipse.",
-      closable: true,
-      link: {
-        label: "Learn more",
-        url: "https://labelstud.io/guide/labeling#Faster-image-labeling",
-        params: {
-          experiment: "project_settings_tip",
-          treatment: "two_clicks",
         },
       },
     },
