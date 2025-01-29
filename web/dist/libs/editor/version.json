@@ -1,6 +1,6 @@
 {
-  "message": "fix: OPTIC-1585: Change Annotations => Submitted Annotations to match its real meaning (#6982)",
-  "commit": "552c27754142c27d9c6c336a97c276e62646fc31",
-  "date": "2025-01-28T22:26:31.000Z",
+  "message": "chore: OPTIC-1548:  Update the tooltips for Jan 28 (#6959)",
+  "commit": "c6079d7e43ecd0f4530483d6257a1aa8db8dd893",
+  "date": "2025-01-29T16:06:19.000Z",
   "branch": "develop"
 }
