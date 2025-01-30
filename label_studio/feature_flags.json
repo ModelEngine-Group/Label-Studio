@@ -1110,7 +1110,7 @@
     },
     "fflag_feat_all_leap_1181_bulk_annotation_short": {
       "key": "fflag_feat_all_leap_1181_bulk_annotation_short",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -1132,7 +1132,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 4,
+      "version": 5,
       "deleted": false
     },
     "fflag_feat_all_leap_1429_flexible_reject_mode_250924_short": {
@@ -2042,7 +2042,7 @@
     },
     "fflag_feat_front_leap_1424_grid_preview_short": {
       "key": "fflag_feat_front_leap_1424_grid_preview_short",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -2064,7 +2064,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 2,
+      "version": 3,
       "deleted": false
     },
     "fflag_feat_front_leap_482_self_serve_short": {
@@ -2474,7 +2474,7 @@
     },
     "fflag_feat_front_optic_1479_improve_image_tag_memory_usage_short": {
       "key": "fflag_feat_front_optic_1479_improve_image_tag_memory_usage_short",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -2496,7 +2496,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 2,
+      "version": 3,
       "deleted": false
     },
     "fflag_feat_front_optic_1553_url_based_region_visibility_short": {
