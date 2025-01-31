@@ -1,6 +1,6 @@
 {
-  "message": "feat: DIA-1794: [FE] Implement home page in LSO and LSE (#6885)",
-  "commit": "e95280e1d4731af31047009a25eebf237964f435",
-  "date": "2025-01-31T14:08:59.000Z",
+  "message": "chore: Reverts tailwind and LSO Homepage (#7007)",
+  "commit": "61b9bbecd8d97f88863650fe777d129885c62421",
+  "date": "2025-01-31T21:09:28.000Z",
   "branch": "develop"
 }
