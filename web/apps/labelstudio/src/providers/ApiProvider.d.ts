@@ -1,3 +1,5 @@
+import type { APIProxy } from "libs/datamanager/src/utils/api-proxy";
+
 export interface Meta {
   headers: Map<string, string>;
   status: number;
@@ -21,3 +23,5 @@ export function useAPI(): {
     },
   ) => Promise<WrappedResponse<T>>;
 };
+
+export const API: APIProxy;

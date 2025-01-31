@@ -78,7 +78,7 @@ const ProjectName = ({ name, setName, onSaveName, onSubmit, error, description, 
     </form>
   );
 
-export const CreateProject = ({ onClose }) => {
+export const CreateProject = ({ onClose, redirect = true }) => {
   const [step, _setStep] = React.useState("name"); // name | import | config
   const [waiting, setWaitingStatus] = React.useState(false);
 
@@ -173,9 +173,9 @@ export const CreateProject = ({ onClose }) => {
         },
       });
     setWaitingStatus(false);
-    history.replace("/projects");
+    redirect && history.replace("/projects");
     onClose?.();
-  }, [project]);
+  }, [project, redirect]);
 
   return (
     <Modal onHide={onDelete} closeOnClickOutside={false} allowToInterceptEscape fullscreen visible bare>

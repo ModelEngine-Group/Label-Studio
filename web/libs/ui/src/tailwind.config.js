@@ -21,7 +21,7 @@ module.exports = {
         black: "#181C31",
         blackho: "#2C3149",
         blacksection: "#1C2136",
-        primaryho: "#0063EC",
+        primaryho: "#37447A",
         meta: "#20C5A8",
         waterloo: "#757693",
         manatee: "#999AA1",
@@ -62,6 +62,27 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+
+        // LS color space
+        lsPrimaryIcon: "#617ADA",
+        lsPrimaryContent: "#4C5FA9",
+        lsPrimaryEmphasisSubtle: "#F0F3FE",
+        lsSubtitle: "#6B6860",
+        lsNeutralSurface: "#F9F8F6",
+        lsNeutralBorder: "#E1DED5",
+        lsNeutralBorderSubtle: "#E1DED5",
+        lsNeutralContent: "#262522",
+        lsNeutralContentSubtle: "#45433E",
+        lsNeutralContentSubtler: "#6B6860",
+        lsNeutralContentSubtlest: "#A49F95",
+        lsBorderSubtle: "#617ADA",
+        lsButtonBg: "#4C5FA9",
+        lsPositiveSurfaceHover: "#34988D",
+
+        // Accents
+        lsAccentMangoSubtle: "#FFEED0",
+        lsAccentMangoBold: "#EB9C14",
+        lsAccentGrapeSubtle: "#D4DBFB",
       },
       fontSize: {
         metatitle: ["12px", "20px"],
@@ -76,6 +97,11 @@ module.exports = {
         sectiontitle3: ["44px", "55px"],
         sectiontitle2: ["40px", "52px"],
         sectiontitle4: ["34px", "48px"],
+        // LS styles
+        lsLabelMedium: ["16px", "24px"],
+        lsLabelSmall: ["14px", "8px"],
+        lsLabelSmaller: ["12px", "16px"],
+        lsLabelSmallest: ["11px", "16px"],
       },
       spacing: {
         4.5: "1.125rem",
@@ -154,6 +180,7 @@ module.exports = {
         "solid-11": "0px 6px 20px rgba(45, 74, 170, 0.05)",
         "solid-12": "0px 2px 10px rgba(0, 0, 0, 0.05)",
         "solid-13": "0px 2px 19px rgba(0, 0, 0, 0.05)",
+        "border-1": "inset 0 0 0 1px rgba(0,0,0,1)",
       },
       borderRadius: {
         lg: "var(--radius)",
