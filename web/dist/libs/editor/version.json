@@ -1,6 +1,6 @@
 {
-  "message": "refactor: OPTIC-1542: remove a buch of stale feature flags (#6954)",
-  "commit": "884942e0a554e8d84a295b807e45ce848c19e886",
-  "date": "2025-01-29T18:21:55.000Z",
+  "message": "feat: DIA-1794: [FE] Implement home page in LSO and LSE (#6885)",
+  "commit": "e95280e1d4731af31047009a25eebf237964f435",
+  "date": "2025-01-31T14:08:59.000Z",
   "branch": "develop"
 }
