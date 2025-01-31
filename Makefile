@@ -33,9 +33,6 @@ docker-run-dev:
 docker-migrate-dev:
 	docker compose run app python3 /label-studio/label_studio/manage.py migrate
 
-docker-collectstatic-dev:
-	docker compose run app python3 /label-studio/label_studio/manage.py collectstatic
-
 # Install modules
 frontend-install:
 	cd web && yarn install --frozen-lockfile;

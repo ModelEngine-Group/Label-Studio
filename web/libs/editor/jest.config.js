@@ -1,5 +1,3 @@
-const { pathsToModuleNameMapper } = require("ts-jest");
-const tsconfig = require("../../tsconfig.base.json");
 /** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 module.exports = {
   bail: true,
@@ -59,7 +57,6 @@ module.exports = {
     "^react-konva-utils": "identity-obj-proxy",
     "\\.(s[ac]ss|css|svg|png|jpe?g)$": "identity-obj-proxy",
     "^@humansignal/ui": "<rootDir>/../ui/src/index.ts",
-    ...pathsToModuleNameMapper(tsconfig.compilerOptions.paths, { prefix: "<rootDir>/../../" }),
   },
   testPathIgnorePatterns: ["/node_modules/", "/e2e/"],
   testRegex: "__tests__/.*.test.[tj]sx?",

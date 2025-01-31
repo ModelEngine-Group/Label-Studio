@@ -105,10 +105,8 @@ const ConfigureControl = ({ control, template }) => {
       <form className={configClass.elem("add-labels")} action="">
         <h4>{tagname === "Choices" ? "Add choices" : "Add label names"}</h4>
         <span>Use new line as a separator to add multiple labels</span>
-        <textarea name="labels" id="" cols="50" rows="5" ref={refLabels} onKeyPress={onKeyPress} />
-        <Button type="button" size="compact" onClick={onAddLabels}>
-          Add
-        </Button>
+        <textarea name="labels" id="" cols="30" rows="5" ref={refLabels} onKeyPress={onKeyPress} />
+        <input type="button" value="Add" onClick={onAddLabels} />
       </form>
       <div className={configClass.elem("current-labels")}>
         <h3>
@@ -166,7 +164,7 @@ const ConfigureSettings = ({ template }) => {
           <li key={key}>
             <label>
               {options.title}{" "}
-              <select className="border" value={value} onChange={onChange}>
+              <select value={value} onChange={onChange}>
                 {options.type.map((option) => (
                   <option key={option} value={option}>
                     {option}
@@ -284,7 +282,7 @@ const ConfigureColumn = ({ template, obj, columns }) => {
       {template.objects > 1 && ` for ${obj.getAttribute("name")}`}
       {" from "}
       {columns?.length > 0 && columns[0] !== DEFAULT_COLUMN && "field "}
-      <select className="border" onChange={selectValue} value={isManual ? "-" : value}>
+      <select onChange={selectValue} value={isManual ? "-" : value}>
         {columns?.map((column) => (
           <option key={column} value={column}>
             {column === DEFAULT_COLUMN ? "<imported file>" : `$${column}`}
@@ -470,9 +468,9 @@ const Configurator = ({
       <div className={configClass.elem("container")}>
         <h1>Labeling Interface{hasChanges ? " *" : ""}</h1>
         <header>
-          <Button type="button" data-leave={true} onClick={onBrowse} size="compact">
+          <button type="button" data-leave={true} onClick={onBrowse}>
             Browse Templates
-          </Button>
+          </button>
           <ToggleItems items={{ code: "Code", visual: "Visual" }} active={configure} onSelect={onSelect} />
         </header>
         <div className={configClass.elem("editor")}>

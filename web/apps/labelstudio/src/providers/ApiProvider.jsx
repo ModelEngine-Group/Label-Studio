@@ -5,7 +5,7 @@ import { API_CONFIG } from "../config/ApiConfig";
 import { APIProxy } from "../utils/api-proxy";
 import { absoluteURL } from "../utils/helpers";
 
-export const API = new APIProxy(API_CONFIG);
+const API = new APIProxy(API_CONFIG);
 
 export const ApiContext = createContext();
 ApiContext.displayName = "ApiContext";

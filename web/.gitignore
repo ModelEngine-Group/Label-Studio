@@ -6,7 +6,6 @@ tmp
 
 # dependencies
 node_modules
-dist
 
 # IDEs and editors
 /.idea

@@ -6,11 +6,9 @@
     "declaration": false,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
-    "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "importHelpers": true,
-    "jsx": "react",
     "target": "esnext",
     "module": "esnext",
     "lib": ["es2020", "dom"],
@@ -22,11 +20,7 @@
       "@humansignal/datamanager": ["libs/datamanager/src/index.js"],
       "@humansignal/editor": ["libs/editor/src/index.js"],
       "@humansignal/frontend-test/*": ["libs/frontend-test/src/*"],
-      "@humansignal/icons": ["libs/ui/src/assets/icons"],
-      "@humansignal/shad/*": ["./libs/ui/src/shad/*"],
-      "@humansignal/typography": ["libs/ui/src/typography"],
-      "@humansignal/ui": ["libs/ui/src/index.ts"],
-      "@humansignal/ui/*": ["libs/ui/src/*"]
+      "@humansignal/ui": ["libs/ui/src/index.ts"]
     },
     "types": ["vite-plugin-svgr/client"]
   },

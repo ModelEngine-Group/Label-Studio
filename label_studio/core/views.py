@@ -13,7 +13,7 @@ from wsgiref.util import FileWrapper
 import pandas as pd
 import requests
 from core import utils
-from core.feature_flags import all_flags, flag_set, get_feature_file_path
+from core.feature_flags import all_flags, get_feature_file_path
 from core.label_config import generate_time_series_json
 from core.utils.common import collect_versions
 from core.utils.io import find_file
@@ -27,7 +27,7 @@ from django.http import (
     HttpResponseServerError,
     JsonResponse,
 )
-from django.shortcuts import redirect, render, reverse
+from django.shortcuts import redirect, reverse
 from django.template import loader
 from django.utils._os import safe_join
 from django.views.decorators.csrf import csrf_exempt
@@ -55,10 +55,7 @@ def main(request):
             return redirect(reverse('user-login'))
 
         # business mode access
-        if flag_set('fflag_all_feat_dia_1777_ls_homepage_short'):
-            return render(request, 'home/home.html')
-        else:
-            return redirect(reverse('projects:project-index'))
+        return redirect(reverse('projects:project-index'))
 
     # not authenticated
     return redirect(reverse('user-login'))

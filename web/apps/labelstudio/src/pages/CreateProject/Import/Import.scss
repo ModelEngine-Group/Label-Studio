@@ -119,6 +119,7 @@
   }
 
   &__info-icon {
+    margin-right: 8px;
     vertical-align: -5px;
     height: 20px;
   }
@@ -250,13 +251,6 @@
 #import-tasks .loading h4,
 #import-tasks .loading p {
   margin-bottom: 24px;
-}
-
-.import-footer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem
 }
 
 @keyframes reveal {

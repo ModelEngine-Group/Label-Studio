@@ -11,22 +11,15 @@ export const RoutesContext = createContext();
 const findMacthingComponents = (path, routesMap, parentPath = "") => {
   const result = [];
 
-  const match =
-    path === "/"
-      ? routesMap.at(0)
-      : routesMap.find((route) => {
-          // if (route.path === "/") return false;
+  const match = routesMap.find((route) => {
+    const matchingPath = `${parentPath}${route.path}`;
+    const match = matchPath(path, { path: matchingPath });
 
-          const isRoot = route.path === "/";
-          const matchingPath = `${parentPath}${route.path}`;
-          const match = matchPath(path, { path: matchingPath, exact: isRoot });
-
-          return match;
-        });
+    return match;
+  });
 
   if (match) {
     const routePath = `${parentPath}${match.path}`;
-
     result.push({ ...match, path: routePath });
 
     if (match.routes) {
@@ -100,7 +93,6 @@ export const RoutesProvider = ({ children }) => {
     }
   }, [location, routesMap, currentContextProps, routesChain, lastRoute]);
 
-  console.log(breadcrumbs);
   return <RoutesContext.Provider value={contextValue}>{children}</RoutesContext.Provider>;
 };
 
@@ -113,7 +105,7 @@ export const useFindRouteComponent = () => {
 };
 
 export const useBreadcrumbs = () => {
-  return useBreadcrumbControls();
+  return useContext(RoutesContext)?.breadcrumbs ?? [];
 };
 
 export const useCurrentPath = () => {
