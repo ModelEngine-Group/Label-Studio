@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { Modal } from "../../../components/Modal/Modal";
 import { cn } from "../../../utils/bem";
+import { cn as scn } from "@humansignal/shad/utils/utils";
 import { unique } from "../../../utils/helpers";
 import "./Import.scss";
 import { IconError, IconInfo, IconUpload } from "../../../assets/icons";
 import { useAPI } from "../../../providers/ApiProvider";
+import Input from "libs/datamanager/src/components/Common/Input/Input";
+import { Button } from "apps/labelstudio/src/components";
 
 const importClass = cn("upload_page");
 const dropzoneClass = cn("dropzone");
@@ -73,17 +76,19 @@ function getFiles(files) {
 
 const Footer = () => {
   return (
-    <Modal.Footer>
-      <IconInfo className={importClass.elem("info-icon")} width="20" height="20" />
-      See the&nbsp;documentation to{" "}
-      <a target="_blank" href="https://labelstud.io/guide/predictions.html" rel="noreferrer">
-        import preannotated data
-      </a>{" "}
-      or&nbsp;to{" "}
-      <a target="_blank" href="https://labelstud.io/guide/storage.html" rel="noreferrer">
-        sync data from a&nbsp;database or&nbsp;cloud storage
-      </a>
-      .
+    <Modal.Footer className="import-footer">
+      <IconInfo className={scn(importClass.elem("info-icon"), "mr-1")} width="20" height="20" />
+      <span>
+        See the&nbsp;documentation to{" "}
+        <a target="_blank" href="https://labelstud.io/guide/predictions.html" rel="noreferrer">
+          import preannotated data
+        </a>{" "}
+        or&nbsp;to{" "}
+        <a target="_blank" href="https://labelstud.io/guide/storage.html" rel="noreferrer">
+          sync data from a&nbsp;database or&nbsp;cloud storage
+        </a>
+        .
+      </span>
     </Modal.Footer>
   );
 };
@@ -334,18 +339,20 @@ export const ImportPage = ({
 
       <header>
         <form className={`${importClass.elem("url-form")} inline`} method="POST" onSubmit={onLoadURL}>
-          <input placeholder="Dataset URL" name="url" ref={urlRef} />
-          <button type="submit">Add URL</button>
+          <Input placeholder="Dataset URL" name="url" ref={urlRef} style={{ height: 40 }} />
+          <Button type="submit" look="primary">
+            Add URL
+          </Button>
         </form>
         <span>or</span>
-        <button
+        <Button
           type="button"
           onClick={() => document.getElementById("file-input").click()}
           className={importClass.elem("upload-button")}
         >
           <IconUpload width="16" height="16" className={importClass.elem("upload-icon")} />
           Upload {files.uploaded.length ? "More " : ""}Files
-        </button>
+        </Button>
         <div
           className={importClass.elem("csv-handling").mod({ highlighted: highlightCsvHandling, hidden: !csvHandling })}
         >
