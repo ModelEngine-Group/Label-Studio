@@ -34,6 +34,8 @@ except ImportError:
     print('\n\n !!! Please, pip install pytest-env \n\n')
     exit(-100)
 
+from label_studio.tests.sdk.fixtures import *  # noqa: F403
+
 from .utils import (
     azure_client_mock,
     create_business,

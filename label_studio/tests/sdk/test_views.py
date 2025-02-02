@@ -32,27 +32,13 @@ def test_create_view(django_live_url, business_client):
     }
 
 
-def test_get_tasks_from_view(django_live_url, business_client):
-    ls = LabelStudio(base_url=django_live_url, api_key=business_client.api_key)
-    p = ls.projects.create(title='New Project', label_config=LABEL_CONFIG_AND_TASKS['label_config'])
-
-    project = ls.projects.get(id=p.id)
-
-    task_data = [{'data': {'my_text': 'Test task ' + str(i)}} for i in range(10)]
-    ls.projects.import_tasks(id=project.id, request=task_data)
-    orig_tasks = []
-    for task in ls.tasks.list(project=project.id):
-        orig_tasks.append(task)
-
-    filters = Filters.create(
-        Filters.OR,
-        [Filters.item(Column.id, Operator.EQUAL, Type.Number, Filters.value(t.id)) for t in orig_tasks[::2]],
-    )
-
-    ls.views.create(project=project.id, data=dict(title='Test View', filters=filters, ordering=['-' + Column.id]))
+def test_get_tasks_from_view(test_project_with_view):
+    ls, project, orig_tasks, view = test_project_with_view
     views = ls.views.list(project=project.id)
     assert len(views) == 1
-    view = views[0]
+    found_view = views[0]
+
+    assert found_view.id == view.id
     tasks = []
     for task in ls.tasks.list(view=view.id):
         tasks.append(task)
