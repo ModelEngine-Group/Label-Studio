@@ -15,13 +15,7 @@ def annotate_finished_task_number(queryset):
 
 
 def annotate_total_predictions_number(queryset):
-    if flag_set(
-        'fflag_perf_back_lsdv_4695_update_prediction_query_to_use_direct_project_relation',
-        user='auto',
-    ):
-        predictions = Prediction.objects.filter(project=OuterRef('id')).values('id')
-    else:
-        predictions = Prediction.objects.filter(task__project=OuterRef('id')).values('id')
+    predictions = Prediction.objects.filter(project=OuterRef('id')).values('id')
     return queryset.annotate(total_predictions_number=SQCount(predictions))
 
 
