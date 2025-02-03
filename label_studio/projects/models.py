@@ -5,6 +5,7 @@ import logging
 from typing import Any, Mapping, Optional
 
 from annoying.fields import AutoOneToOneField
+from core.feature_flags import flag_set
 from core.label_config import (
     check_control_in_config_by_regex,
     check_toname_in_config_by_regex,
@@ -326,7 +327,13 @@ class Project(ProjectMixin, models.Model):
 
     @property
     def has_any_predictions(self):
-        return Prediction.objects.filter(Q(project=self.id)).exists()
+        if flag_set(
+            'fflag_perf_back_lsdv_4695_update_prediction_query_to_use_direct_project_relation',
+            user='auto',
+        ):
+            return Prediction.objects.filter(Q(project=self.id)).exists()
+        else:
+            return Prediction.objects.filter(Q(task__project=self.id)).exists()
 
     @property
     def business(self):
@@ -926,7 +933,14 @@ class Project(ProjectMixin, models.Model):
         :param extended: Boolean, if True, returns additional information. Default is False.
         :return: Dict or list containing model versions and their count predictions.
         """
-        predictions = Prediction.objects.filter(project=self)
+        if flag_set(
+            'fflag_perf_back_lsdv_4695_update_prediction_query_to_use_direct_project_relation',
+            user='auto',
+        ):
+            predictions = Prediction.objects.filter(project=self)
+        else:
+            predictions = Prediction.objects.filter(task__project=self)
+        # model_versions = set(predictions.values_list('model_version', flat=True).distinct())
 
         if extended:
             model_versions = list(
