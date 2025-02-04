@@ -778,13 +778,7 @@ class PredictionAPI(viewsets.ModelViewSet):
     filterset_fields = ['task', 'task__project', 'project']
 
     def get_queryset(self):
-        if flag_set(
-            'fflag_perf_back_lsdv_4695_update_prediction_query_to_use_direct_project_relation',
-            user='auto',
-        ):
-            return Prediction.objects.filter(project__organization=self.request.user.active_organization)
-        else:
-            return Prediction.objects.filter(task__project__organization=self.request.user.active_organization)
+        return Prediction.objects.filter(project__organization=self.request.user.active_organization)
 
 
 @method_decorator(name='get', decorator=swagger_auto_schema(auto_schema=None))
