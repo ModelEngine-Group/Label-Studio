@@ -36,12 +36,10 @@ def playground_replacements(request, task_data):
     return task_data
 
 
-@require_http_methods(['GET', 'POST'])
+@require_http_methods(['POST'])
 def upload_example_using_config(request):
     """Generate upload data example by config only"""
-    config = request.GET.get('label_config', '')
-    if not config:
-        config = request.POST.get('label_config', '')
+    config = request.POST.get('label_config', '')
 
     org_pk = get_organization_from_request(request)
     secure_mode = False
