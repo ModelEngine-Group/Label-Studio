@@ -1,6 +1,6 @@
 {
-  "message": "chore: Reverts tailwind and LSO Homepage (#7007)",
-  "commit": "61b9bbecd8d97f88863650fe777d129885c62421",
-  "date": "2025-01-31T21:09:28.000Z",
+  "message": "feat: LEAP-1709: Add region index displaying to relations list (#6941)",
+  "commit": "ab3f405ac07e09feaa8238effc9791a728b13b1b",
+  "date": "2025-02-04T14:06:41.000Z",
   "branch": "develop"
 }
