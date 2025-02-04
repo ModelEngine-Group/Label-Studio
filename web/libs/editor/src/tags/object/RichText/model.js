@@ -331,7 +331,7 @@ const Model = types
       },
 
       setStyles(stylesMap) {
-        domManager.setStyles(stylesMap);
+        domManager?.setStyles(stylesMap);
       },
       removeStyles(ids) {
         domManager?.removeStyles(ids);

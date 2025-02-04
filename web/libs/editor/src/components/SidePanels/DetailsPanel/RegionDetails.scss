@@ -2,7 +2,7 @@
   &__icon {
     width: 24px;
     height: 24px;
-    margin-right: 8px;
+    margin-right: 4px;
     flex-shrink: 0;
   }
 
@@ -28,6 +28,25 @@
         content: "ID ";
       }
     }
+  }
+
+  &__index {
+    width: 18px;
+    height: 18px;
+    margin-top: 3px; // to align with 24px icon
+    display: flex;
+    font-size: 9px;
+    text-align: center;
+    align-items: center;
+    border-radius: 4px;
+    justify-content: center;
+    background-color: currentcolor;
+    flex-grow: 0;
+    margin-right: 4px;
+  }
+
+  &__index_value {
+    color: var(--sand_0);
   }
 
   &__result {

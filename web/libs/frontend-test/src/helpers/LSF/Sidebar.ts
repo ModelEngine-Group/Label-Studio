@@ -17,6 +17,16 @@ export const Sidebar = {
   get showAllRegionsButton() {
     return this.toolBar.get('[aria-label="Show all regions"]');
   },
+  get orderRegionsButton() {
+    return this.toolBar.get(".lsf-view-controls__sort button");
+  },
+  toggleOrderByTime() {
+    this.orderRegionsButton.click();
+    cy.get(".lsf-dropdown").contains("Order by Time").parent().click();
+    // Cypress is bad at events emitting, so this is a hack to close the panel that
+    // would be closed if the same action is done by a real person
+    this.orderRegionsButton.click();
+  },
   get regions() {
     return LabelStudio.getFeatureFlag(FF_DEV_1170).then((isFFDEV1170) => {
       if (isFFDEV1170) {
@@ -33,6 +43,12 @@ export const Sidebar = {
   },
   findRegionByIndex(idx: number) {
     return this.findRegion(`:eq(${idx})`);
+  },
+  findByRegionIndex(idx: number) {
+    return this.regions
+      .find(".lsf-outliner-item__index")
+      .filter(`:contains("${idx}")`)
+      .parents(".lsf-tree-node-content-wrapper");
   },
   get hiddenRegions() {
     return this.outliner.should("be.visible").get(".lsf-tree__node_hidden .lsf-tree-node-content-wrapper");

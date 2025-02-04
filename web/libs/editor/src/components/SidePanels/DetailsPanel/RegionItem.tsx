@@ -49,6 +49,11 @@ export const RegionItem: FC<RegionItemProps> = observer(
             <Elem name="icon">
               <NodeIcon node={region} />
             </Elem>
+            <Elem name="index">
+              <Elem tag="span" name="index_value">
+                {region.region_index}
+              </Elem>
+            </Elem>
             <RegionLabels region={region} />
           </Elem>
           {withIds && <span>{region.cleanId}</span>}

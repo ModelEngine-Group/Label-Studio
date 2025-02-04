@@ -13,6 +13,12 @@ export const Relations = {
 
     return cy.wrap(relationList);
   },
+  get relationItems() {
+    return this.relations.find(".lsf-relations__item");
+  },
+  get relationRegions() {
+    return this.relationItems.find(".lsf-detailed-region");
+  },
   get hideAllRelationsButton() {
     return cy.get('[aria-label="Hide all"]');
   },

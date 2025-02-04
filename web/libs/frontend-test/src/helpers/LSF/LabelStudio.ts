@@ -35,14 +35,20 @@ class LSParamsBuilder {
       predictions: [],
     },
   };
+  private _localStorageItems: Record<string, any> = {};
   private ls: typeof LabelStudio = null;
 
   constructor(ls: typeof LabelStudio) {
     this.ls = ls;
   }
 
-  init() {
-    this.ls.init(this.params);
+  init(beforeLoadCallback?: (win: Cypress.AUTWindow) => void) {
+    this.ls.init(this.params, (win) => {
+      Object.entries(this._localStorageItems).forEach(([key, value]) => {
+        win.localStorage.setItem(key, typeof value === "string" ? value : JSON.stringify(value));
+      });
+      beforeLoadCallback?.(win);
+    });
   }
 
   private get _task() {
@@ -125,13 +131,21 @@ class LSParamsBuilder {
     this.params[paramName] = paramValue;
     return this;
   }
+  localStorageItems(items) {
+    this._localStorageItems = items;
+    return this;
+  }
+  withLocalStorageItem(key, value) {
+    this._localStorageItems[key] = value;
+    return this;
+  }
 }
 
 export const LabelStudio = {
   /**
    * Initializes LabelStudio instance with given configuration
    */
-  init(params: LSParams) {
+  init(params: LSParams, beforeLoadCallback?: (win: Cypress.AUTWindow) => void) {
     cy.log("Initialize LSF");
     const windowLoadCallback = (win: Cypress.AUTWindow) => {
       win.DEFAULT_LSF_INIT = false;
@@ -160,6 +174,7 @@ export const LabelStudio = {
         ],
         ...params,
       };
+      beforeLoadCallback?.(win);
 
       Cypress.off("window:before:load", windowLoadCallback);
     };

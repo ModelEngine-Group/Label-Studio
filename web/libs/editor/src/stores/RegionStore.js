@@ -245,6 +245,14 @@ export default types
         return sorted;
       },
 
+      get regionIndexMap() {
+        const map = {};
+        self.sortedRegions.forEach((region, idx) => {
+          map[region.id] = idx + 1;
+        });
+        return map;
+      },
+
       getRegionsTree(enrich) {
         if (self.group === null || self.group === "manual") {
           return self.asTree(enrich);
@@ -454,6 +462,7 @@ export default types
       window.localStorage.setItem(localStorageKeys.sortDirection, self.sortOrder);
 
       self.initHotkeys();
+      self.annotation.updateAppearenceFromState();
     },
 
     setGrouping(group) {
@@ -476,6 +485,7 @@ export default types
           else if (!region.hidden) region.toggleFiltered();
         });
       }
+      self.annotation.updateAppearenceFromState();
     },
 
     /**

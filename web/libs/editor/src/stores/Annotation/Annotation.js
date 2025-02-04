@@ -657,13 +657,16 @@ const _Annotation = types
       if (force) self.unselectAll();
 
       self.names.forEach((tag) => tag.needsUpdate && tag.needsUpdate());
-      self.areas.forEach((area) => area.updateAppearenceFromState && area.updateAppearenceFromState());
+      self.updateAppearenceFromState();
       if (isFF(FF_DEV_2432)) {
         const areas = Array.from(self.areas.values());
         const filtered = areas.filter((area) => area.isDrawing);
 
         self.regionStore.selection._updateResultsFromRegions(filtered);
       }
+    },
+    updateAppearenceFromState() {
+      self.areas.forEach((area) => area.updateAppearenceFromState?.());
     },
 
     setInitialValues() {
@@ -962,6 +965,11 @@ const _Annotation = types
       objectTag?.afterResultCreated?.(area);
 
       if (!area) return;
+
+      // This is added mostly for the reason of updating indexes in labels
+      // for the elements (like highlights in text) that won't be dynamically changed
+      // but are dependent on the whole region list values
+      self.updateAppearenceFromState();
 
       if (!area.classification) getEnv(self).events.invoke("entityCreate", area);
       if (!skipAfrerCreate) self.afterCreateResult(area, control);

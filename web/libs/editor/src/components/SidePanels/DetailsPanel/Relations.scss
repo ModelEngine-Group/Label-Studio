@@ -19,6 +19,12 @@
     padding: 5px 0;
   }
 
+  &__nodes {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
   &__direction {
     height: 100%;
     width: 100%;
