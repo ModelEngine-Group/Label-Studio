@@ -1,6 +1,6 @@
 {
-  "message": "feat: LEAP-1709: Add region index displaying to relations list (#6941)",
-  "commit": "ab3f405ac07e09feaa8238effc9791a728b13b1b",
-  "date": "2025-02-04T14:06:41.000Z",
+  "message": "refactor: OPTIC-1557: Remove Stale Feature Flag - fflag_fix_front_lsd… (#6997)",
+  "commit": "d2ee3a28547ff200240de7599ebfd46882b38cf2",
+  "date": "2025-02-04T19:34:20.000Z",
   "branch": "develop"
 }
