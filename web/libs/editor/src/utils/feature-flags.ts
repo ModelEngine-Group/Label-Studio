@@ -140,12 +140,6 @@ export const FF_LSDV_4988 = "fflag_fix_front_lsdv_4988_dynamic_no_label_120523_s
 export const FF_LSDV_4930 = "fflag_fix_front_lsdv_4930_selection_tool_fixes_240423_short";
 
 /**
- * Restore "hide all regions" button functionality in the outliner
- * @link https://app.launchdarkly.com/default/production/features/fflag_fix_front_lsdv_4992_hide_all_regions_04052023_short
- */
-export const FF_LSDV_4992 = "fflag_fix_front_lsdv_4992_hide_all_regions_04052023_short";
-
-/**
  * Resetting shared stores on task change to correctly generate dynamic children
  * @see: fflag_fix_front_dev_3617_taxonomy_memory_leaks_fix: To enable shared store
  * @link https://app.launchdarkly.com/default/production/features/fflag_fix_front_lsdv_4998_missed_dynamic_children_030523_short

@@ -8,9 +8,10 @@
   align-items: center;
   grid-auto-flow: column;
   grid-auto-columns: min-content;
-  grid-column-gap: 8px;
+  grid-column-gap: 4px;
   background-color: var(--sand_0);
   box-shadow: 0 1px 0 rgb(0 0 0 / 10%);
+
 
   &__sort {
     display: flex;
@@ -36,11 +37,13 @@
   }
 
   .button {
-    height: 40px;
-    font-size: 14px;
+    height: 24px;
+    font-size: 11px;
     font-weight: 400;
     padding: 0;
     justify-content: flex-start;
+    white-space: nowrap;
+    box-shadow: none;
 
     &_newUI {
       font-size: 12px;
@@ -60,34 +63,23 @@
     &:focus {
       box-shadow: none;
     }
-  }
 
-  &_FF_LSDV_4992 {
-    grid-column-gap: 4px;
+    &:hover {
+      background: var(--sand_200);
+      border-radius: 4px;
+    }
 
-    .button {
-      height: 24px;
-      font-size: 11px;
-      white-space: nowrap;
-      box-shadow: none;
+    &[disabled] {
+      background-color: var(--sand_0);
+      color: var(--sand_400);
+    }
 
-      &:hover {
-        background: var(--sand_200);
-        border-radius: 4px;
-      }
+    &_type_text {
+      padding: 0 2px !important;
+    }
 
-      &[disabled] {
-        background-color: var(--sand_0);
-        color: var(--sand_400);
-      }
-
-      &_type_text {
-        padding: 0 2px !important;
-      }
-
-      &.dropdown__trigger {
-        padding: 0 6px 0 2px;
-      }
+    &.dropdown__trigger {
+      padding: 0 6px 0 2px;
     }
   }
 }

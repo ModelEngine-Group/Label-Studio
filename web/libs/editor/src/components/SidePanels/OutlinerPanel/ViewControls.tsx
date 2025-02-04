@@ -20,7 +20,7 @@ import { Menu } from "../../../common/Menu/Menu";
 import { BemWithSpecifiContext } from "../../../utils/bem";
 import { SidePanelsContext } from "../SidePanelsContext";
 import "./ViewControls.scss";
-import { FF_DEV_3873, FF_LSDV_4992, isFF } from "../../../utils/feature-flags";
+import { FF_DEV_3873, isFF } from "../../../utils/feature-flags";
 import { observer } from "mobx-react";
 
 const { Block, Elem } = BemWithSpecifiContext();
@@ -56,14 +56,14 @@ export const ViewControls: FC<ViewControlsProps> = observer(
         case "label":
           return {
             label: "Group by Label",
-            selectedLabel: isFF(FF_DEV_3873) ? (isFF(FF_LSDV_4992) ? "By Label" : "Label") : "Grouped by Label",
+            selectedLabel: isFF(FF_DEV_3873) ? "By Label" : "Grouped by Label",
             icon: <IconTagAlt />,
             tooltip: "Grouped by Label",
           };
         case "type":
           return {
             label: "Group by Tool",
-            selectedLabel: isFF(FF_DEV_3873) ? (isFF(FF_LSDV_4992) ? "By Tool" : "Tool") : "Grouped by Tool",
+            selectedLabel: isFF(FF_DEV_3873) ? "By Tool" : "Grouped by Tool",
             icon: <IconCursor />,
             tooltip: "Grouped by Tool",
           };
@@ -95,7 +95,7 @@ export const ViewControls: FC<ViewControlsProps> = observer(
       );
 
     return (
-      <Block name="view-controls" mod={{ collapsed: context.locked, FF_LSDV_4992: isFF(FF_LSDV_4992) }}>
+      <Block name="view-controls" mod={{ collapsed: context.locked }}>
         <Grouping
           value={grouping}
           options={["manual", "type", "label"]}
@@ -115,7 +115,7 @@ export const ViewControls: FC<ViewControlsProps> = observer(
             />
           </Elem>
         )}
-        {isFF(FF_LSDV_4992) ? <ToggleRegionsVisibilityButton regions={regions} /> : null}
+        <ToggleRegionsVisibilityButton regions={regions} />
       </Block>
     );
   },
@@ -183,16 +183,7 @@ const Grouping = <T extends string>({
 
   // mods are already set in the button from type, so use it only in new UI
   const extraStyles = isFF(FF_DEV_3873) ? { mod: { newUI: true } } : undefined;
-  const style = isFF(FF_LSDV_4992)
-    ? {}
-    : {
-        padding: "0",
-        whiteSpace: "nowrap",
-      };
-
-  if (isFF(FF_DEV_3873)) {
-    style.padding = "0 12px 0 2px";
-  }
+  const style = isFF(FF_DEV_3873) ? { padding: "0 12px 0 2px" } : {};
 
   return (
     <Dropdown.Trigger content={dropdownContent} style={{ width: 200 }}>
@@ -209,7 +200,7 @@ const Grouping = <T extends string>({
             <DirectionIndicator direction={direction} name={value} value={value} wrap={false} />
           )
         }
-        tooltip={(isFF(FF_LSDV_4992) && readableValue.tooltip) || undefined}
+        tooltip={readableValue.tooltip || undefined}
         tooltipTheme="dark"
       >
         {readableValue.selectedLabel}
