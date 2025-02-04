@@ -919,6 +919,33 @@
       "version": 5,
       "deleted": false
     },
+    "fflag__feature_develop__prompts__dia_1829_jwt_token_auth": {
+      "key": "fflag__feature_develop__prompts__dia_1829_jwt_token_auth",
+      "on": false,
+      "prerequisites": [],
+      "targets": [],
+      "contextTargets": [],
+      "rules": [],
+      "fallthrough": {
+        "variation": 0
+      },
+      "offVariation": 1,
+      "variations": [
+        true,
+        false
+      ],
+      "clientSideAvailability": {
+        "usingMobileKey": false,
+        "usingEnvironmentId": false
+      },
+      "clientSide": false,
+      "salt": "e907cff690ed4dc490a6104c7dca73d9",
+      "trackEvents": false,
+      "trackEventsFallthrough": false,
+      "debugEventsUntilDate": null,
+      "version": 3,
+      "deleted": false
+    },
     "fflag_all_feat_dia_1777_ls_homepage_short": {
       "key": "fflag_all_feat_dia_1777_ls_homepage_short",
       "on": false,
