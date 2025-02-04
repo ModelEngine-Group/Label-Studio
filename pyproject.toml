@@ -206,6 +206,7 @@ django-csp = "3.7"
 openai = "^1.10.0"
 django-migration-linter = "^5.1.0"
 setuptools = ">=75.4.0"
+tldextract = ">=5.1.3"
 
 # Humansignal repo dependencies
 label-studio-sdk = {url = "https://github.com/HumanSignal/label-studio-sdk/archive/09995cf0c72398322af949bb13de034a7bbb785f.zip"}

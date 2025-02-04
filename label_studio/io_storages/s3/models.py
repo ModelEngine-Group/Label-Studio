@@ -20,7 +20,7 @@ from io_storages.base_models import (
     ImportStorageLink,
     ProjectStorageMixin,
 )
-from io_storages.s3.utils import get_client_and_resource, resolve_s3_url
+from io_storages.s3.utils import catch_and_reraise_from_none, get_client_and_resource, resolve_s3_url
 from io_storages.utils import storage_can_resolve_bucket_url
 from tasks.models import Annotation
 from tasks.validation import ValidationError as TaskValidationError
@@ -54,6 +54,7 @@ class S3StorageMixin(models.Model):
     region_name = models.TextField(_('region_name'), null=True, blank=True, help_text='AWS Region')
     s3_endpoint = models.TextField(_('s3_endpoint'), null=True, blank=True, help_text='S3 Endpoint')
 
+    @catch_and_reraise_from_none
     def get_client_and_resource(self):
         # s3 client initialization ~ 100 ms, for 30 tasks it's a 3 seconds, so we need to cache it
         cache_key = f'{self.aws_access_key_id}:{self.aws_secret_access_key}:{self.aws_session_token}:{self.region_name}:{self.s3_endpoint}'
@@ -80,6 +81,7 @@ class S3StorageMixin(models.Model):
             self.validate_connection(client)
         return client, s3.Bucket(self.bucket)
 
+    @catch_and_reraise_from_none
     def validate_connection(self, client=None):
         logger.debug('validate_connection')
         if client is None:
@@ -126,6 +128,7 @@ class S3ImportStorageBase(S3StorageMixin, ImportStorage):
         _('recursive scan'), default=False, help_text=_('Perform recursive scan over the bucket content')
     )
 
+    @catch_and_reraise_from_none
     def iterkeys(self):
         client, bucket = self.get_client_and_bucket()
         if self.prefix:
@@ -146,6 +149,7 @@ class S3ImportStorageBase(S3StorageMixin, ImportStorage):
                 continue
             yield key
 
+    @catch_and_reraise_from_none
     def scan_and_create_links(self):
         return self._scan_and_create_links(S3ImportStorageLink)
 
@@ -157,6 +161,7 @@ class S3ImportStorageBase(S3StorageMixin, ImportStorage):
             )
         return parsed_data
 
+    @catch_and_reraise_from_none
     def get_data(self, key):
         uri = f'{self.url_scheme}://{self.bucket}/{key}'
         if self.use_blob_urls:
@@ -174,12 +179,15 @@ class S3ImportStorageBase(S3StorageMixin, ImportStorage):
         value = self._get_validated_task(value, key)
         return value
 
+    @catch_and_reraise_from_none
     def generate_http_url(self, url):
         return resolve_s3_url(url, self.get_client(), self.presign, expires_in=self.presign_ttl * 60)
 
+    @catch_and_reraise_from_none
     def can_resolve_url(self, url: Union[str, None]) -> bool:
         return storage_can_resolve_bucket_url(self, url)
 
+    @catch_and_reraise_from_none
     def get_blob_metadata(self, key):
         return AWS.get_blob_metadata(
             key,
@@ -201,6 +209,7 @@ class S3ImportStorage(ProjectStorageMixin, S3ImportStorageBase):
 
 
 class S3ExportStorage(S3StorageMixin, ExportStorage):
+    @catch_and_reraise_from_none
     def save_annotation(self, annotation):
         client, s3 = self.get_client_and_resource()
         logger.debug(f'Creating new object on {self.__class__.__name__} Storage {self} for annotation {annotation}')
@@ -228,6 +237,7 @@ class S3ExportStorage(S3StorageMixin, ExportStorage):
         # create link if everything ok
         S3ExportStorageLink.create(annotation, self)
 
+    @catch_and_reraise_from_none
     def delete_annotation(self, annotation):
         client, s3 = self.get_client_and_resource()
         logger.debug(f'Deleting object on {self.__class__.__name__} Storage {self} for annotation {annotation}')

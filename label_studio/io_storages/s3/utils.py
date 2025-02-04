@@ -10,6 +10,7 @@ import boto3
 from botocore.exceptions import ClientError
 from core.utils.params import get_env
 from django.conf import settings
+from tldextract import TLDExtract
 
 logger = logging.getLogger(__name__)
 
@@ -135,3 +136,36 @@ class AWS(object):
                 logger.debug(key + ' matches file pattern')
                 return ''
         return 'No objects found matching the provided glob pattern'
+
+
+class S3StorageError(Exception):
+    pass
+
+
+# see https://github.com/john-kurkowski/tldextract?tab=readme-ov-file#note-about-caching
+# prevents network call on first use
+extractor = TLDExtract(suffix_list_urls=())
+
+
+def catch_and_reraise_from_none(func):
+    """
+    For S3 storages - if s3_endpoint is not on a known domain, catch exception and
+    raise a new one with the previous context suppressed. See also: https://peps.python.org/pep-0409/
+    """
+
+    def wrapper(self, *args, **kwargs):
+        try:
+            return func(self, *args, **kwargs)
+        except Exception as e:
+            if self.s3_endpoint and (
+                domain := extractor.extract_urllib(urlparse(self.s3_endpoint)).registered_domain.lower()
+            ) not in [trusted_domain.lower() for trusted_domain in settings.S3_TRUSTED_STORAGE_DOMAINS]:
+                logger.error(f'Exception from unrecognized S3 domain: {e}', exc_info=True)
+                raise S3StorageError(
+                    f'Debugging info is not available for s3 endpoints on domain: {domain}. '
+                    'Please contact your Label Studio devops team if you require detailed error reporting for this domain.'
+                ) from None
+            else:
+                raise e
+
+    return wrapper
