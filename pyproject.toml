@@ -126,23 +126,22 @@ packages = [
     { include = "label_studio" },
 ]
 include = [
-    "web/dist/libs/datamanager/**/*",
-    "web/dist/libs/editor/**/*",
-    "web/dist/apps/labelstudio/**/*",
-    "label_studio/annotation_templates/**/*",
-    "label_studio/core/static/**/*",
-    "label_studio/core/static_build/**/*",
-    "label_studio/core/utils/schema/*.json",
-    "label_studio/core/templatetags/*.py",
-    "label_studio/core/version_.py",
-    "label_studio/core/all_urls.json",
-    "label_studio/io_storages/**/*.yml",
+    { path = "web/dist/libs/datamanager/**/*", format = ["sdist", "wheel"] },
+    { path = "web/dist/libs/editor/**/*", format = ["sdist", "wheel"] },
+    { path = "web/dist/apps/labelstudio/**/*", format = ["sdist", "wheel"] },
+    { path = "label_studio/annotation_templates/**/*", format = ["sdist", "wheel"] },
+    { path = "label_studio/core/static/**/*", format = ["sdist", "wheel"] },
+    { path = "label_studio/core/static_build/**/*", format = ["sdist", "wheel"] },
+    { path = "label_studio/core/utils/schema/*.json", format = ["sdist", "wheel"] },
+    { path = "label_studio/core/templatetags/*.py", format = ["sdist", "wheel"] },
+    { path = "label_studio/core/version_.py", format = ["sdist", "wheel"] },
+    { path = "label_studio/core/all_urls.json", format = ["sdist", "wheel"] },
+    { path = "label_studio/io_storages/**/*.yml", format = ["sdist", "wheel"] },
 ]
 
 exclude = [
-    "label_studio/frontend",
+   { path = "label_studio/frontend", format = ["sdist", "wheel"] },
 ]
-
 
 [tool.poetry.scripts]
 label-studio = "label_studio.server:main"
