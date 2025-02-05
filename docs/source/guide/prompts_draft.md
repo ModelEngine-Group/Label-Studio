@@ -18,9 +18,8 @@ With your [Prompt created](prompts_create), you can begin drafting your prompt c
 
 1. Select your base model. 
 
-    The models that appear depend on the [API keys](prompts_create#Model-provider-API-keys) that you have configured for your organization. If you have added an OpenAI key, then you will see all supported OpenAI models. If you have other API keys, then you will see one model per each deployment that you have added. 
+    The models that appear depend on the [API keys](prompts_keys) that you have configured for your organization. 
     
-    For a description of all OpenAI models, see [OpenAI's models overview](https://platform.openai.com/docs/models/models-overview).
 2. In the **Prompt** field, enter your prompt. Keep in mind the following:
     * You must include the text variables. These appear directly above the prompt field. (In the demo below, this is the `review` variable.) Click the text variable name to insert it into the prompt. 
     * Although not strictly required, you should provide definitions for each class to ensure prediction accuracy and to help [add context](#Add-context). 

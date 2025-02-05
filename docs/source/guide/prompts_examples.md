@@ -95,7 +95,7 @@ This example demonstrates how to set up Prompts to predict image captions.
 ```
 3. Navigate to **Prompts** from the sidebar, and [create a prompt](prompts_create) for the project
 
-    If you have not yet set up API the keys you want to use, do that now: [API keys](prompts_create#Model-provider-API-keys). 
+    If you have not yet set up API the keys you want to use, do that now: [API keys](prompts_keys). 
 
 4. Add the instruction you’d like to provide the LLM to caption your images. For example:
 
@@ -174,7 +174,7 @@ This example demonstrates how to set up Prompts to evaluate if the LLM-generated
 
 3. Navigate to **Prompts** from the sidebar, and [create a prompt](prompts_create) for the project
 
-    If you have not yet set up API the keys you want to use, do that now: [API keys](prompts_create#Model-provider-API-keys). 
+    If you have not yet set up API the keys you want to use, do that now: [API keys](prompts_keys). 
 
 4. Add the instruction you’d like to provide the LLM to best evaluate the text. For example:
 
@@ -300,7 +300,7 @@ Let’s expand on the Q&A use case above with an example demonstrating how to us
 
 3. Navigate to **Prompts** from the sidebar, and [create a prompt](prompts_create) for the project
 
-    If you have not yet set up API the keys you want to use, do that now: [API keys](prompts_create#Model-provider-API-keys). 
+    If you have not yet set up API the keys you want to use, do that now: [API keys](prompts_keys). 
 
 4. Add instructions to create 3 questions:
 
