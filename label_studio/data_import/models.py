@@ -41,6 +41,10 @@ class FileUpload(models.Model):
     def filepath(self):
         return self.file.name
 
+    @cached_property
+    def file_name(self):
+        return os.path.basename(self.file.name)
+
     @property
     def url(self):
         if settings.FORCE_SCRIPT_NAME and not (settings.HOSTNAME and settings.CLOUD_FILE_STORAGE_ENABLED):
@@ -149,7 +153,7 @@ class FileUpload(models.Model):
                 tasks = self.read_task_from_uploaded_file()
 
         except Exception as exc:
-            raise ValidationError('Failed to parse input file ' + self.filepath + ': ' + str(exc))
+            raise ValidationError('Failed to parse input file ' + self.file_name + ': ' + str(exc))
         return tasks
 
     @classmethod
