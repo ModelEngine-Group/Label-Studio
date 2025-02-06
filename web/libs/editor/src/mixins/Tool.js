@@ -73,11 +73,11 @@ const ToolMixin = types
     },
   }))
   .actions((self) => ({
-    setSelected(selected) {
+    setSelected(selected, isInitial) {
       self.selected = selected;
       self.afterUpdateSelected();
 
-      if (selected && self.obj) {
+      if (!isInitial && selected && self.obj) {
         const storeName = `selected-tool:${self.obj.name}`;
 
         if (self.shouldPreserveSelectedState) {

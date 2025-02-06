@@ -73,13 +73,13 @@ class ToolsManager {
     if (this.preservedTool && tool.shouldPreserveSelectedState) {
       if (tool.fullName === this.preservedTool && tool.setSelected) {
         this.unselectAll();
-        this.selectTool(tool, true);
+        this.selectTool(tool, true, true);
+        return;
       }
-      return;
     }
 
     if (this._default_tool && !this.hasSelected) {
-      this.selectTool(this._default_tool, true);
+      this.selectTool(this._default_tool, true, true);
     }
   }
 
@@ -97,7 +97,7 @@ class ToolsManager {
     }
   }
 
-  selectTool(tool, selected) {
+  selectTool(tool, selected, isInitial = false) {
     const currentTool = this.findSelectedTool();
     const newSelection = tool?.group;
 
@@ -122,7 +122,7 @@ class ToolsManager {
 
     if (selected) {
       this.unselectAll();
-      tool.setSelected?.(true);
+      tool.setSelected?.(true, isInitial);
     } else {
       const drawingTool = this.findDrawingTool();
 
