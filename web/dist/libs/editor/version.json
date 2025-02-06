@@ -1,6 +1,6 @@
 {
-  "message": "refactor: OPTIC-1557: Remove Stale Feature Flag - fflag_fix_front_lsd… (#6997)",
-  "commit": "d2ee3a28547ff200240de7599ebfd46882b38cf2",
-  "date": "2025-02-04T19:34:20.000Z",
+  "message": "fix: LEAP-1815: Fix initial image tool selection logic  (#7023)",
+  "commit": "768db9d893d567bbb4d9501e456fb56ea3629a8d",
+  "date": "2025-02-06T17:03:48.000Z",
   "branch": "develop"
 }
