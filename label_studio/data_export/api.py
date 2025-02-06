@@ -602,8 +602,13 @@ def set_convert_background_failure(job, connection, type, value, traceback_obj):
     from data_export.models import ConvertedFormat
 
     convert_id = job.args[0]
-    trace = tb.format_exception(type, value, traceback_obj)
-    ConvertedFormat.objects.filter(id=convert_id).update(status=Export.Status.FAILED, traceback=''.join(trace))
+    try:
+        trace = ''.join(tb.format_exception(type, value, traceback_obj))
+    except Exception as e:
+        if flag_set('fflag_fix_back_leap_1818_set_convert_background_failure_logging_02062025_short'):
+            logger.error(f'Failed to format traceback: {job=} {type=} {value=} {traceback_obj=} {e=}', exc_info=True)
+        trace = 'Exception while processing traceback. See stderr for details'
+    ConvertedFormat.objects.filter(id=convert_id).update(status=Export.Status.FAILED, traceback=trace)
 
 
 @method_decorator(name='get', decorator=swagger_auto_schema(auto_schema=None))
