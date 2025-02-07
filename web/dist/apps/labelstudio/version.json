@@ -1,6 +1,6 @@
 {
-  "message": "chore(deps): bump nanoid from 3.3.7 to 3.3.8 in /web (#6774)",
-  "commit": "53e29e8692a010362f0c1af94e805353ce0e1f47",
-  "date": "2025-02-07T15:11:38.000Z",
+  "message": "fix: LEAP-1742: Update description for Sequential sampling method (#7017)",
+  "commit": "9999c9973143d1730ab924d86890491be79a4a37",
+  "date": "2025-02-07T18:07:58.000Z",
   "branch": "develop"
 }
