@@ -1,6 +1,6 @@
 {
-  "message": "fix: LEAP-1742: Update description for Sequential sampling method (#7017)",
-  "commit": "9999c9973143d1730ab924d86890491be79a4a37",
-  "date": "2025-02-07T18:07:58.000Z",
+  "message": "fix: OPTIC-1608: Seeking video frame by frame sometimes produces duplicated or skipped frames visually (#7027)",
+  "commit": "5093b7f98105a32c4bd22dfac8478de8d58bca47",
+  "date": "2025-02-10T13:55:46.000Z",
   "branch": "develop"
 }
