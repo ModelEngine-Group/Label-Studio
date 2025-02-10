@@ -21,6 +21,9 @@
   &__category-selector {
     display: flex;
     flex-grow: 1;
+
+    // hack to keep selector within bounds and not push buttons out of view
+    min-width: 0;
   }
 
   &__category-selector > div {
