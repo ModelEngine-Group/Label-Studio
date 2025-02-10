@@ -18,6 +18,9 @@ export const VideoView = {
     cy.log("Get VideoView's drawing area");
     return this.root.get(".konvajs-content");
   },
+  get videoCanvas() {
+    return this.root.get(".lsf-video-canvas");
+  },
   get timelineContainer() {
     return this.root.get(".lsf-video-segmentation__timeline");
   },
@@ -133,5 +136,33 @@ export const VideoView = {
    */
   canvasShouldNotChange(name: string, treshold = 0.1) {
     return this.drawingArea.compareScreenshot(name, "shouldNotChange", { withHidden: [".lsf-video-canvas"], treshold });
+  },
+
+  /**
+   * Captures a screenshot of the video canvas to compare later
+   * @param {string} name name of the screenshot
+   */
+  captureVideoCanvas(name: string) {
+    return this.videoCanvas.captureScreenshot(name, { withHidden: [".konvajs-content"] });
+  },
+
+  /**
+   * Captures a new screenshot of the video canvas and compares it to already taken one
+   * Fails if screenshots are identical
+   * @param name name of the screenshot
+   * @param treshold to compare image. It's a relation between original number of pixels vs changed number of pixels
+   */
+  videoCanvasShouldChange(name: string, treshold = 0.1) {
+    return this.videoCanvas.compareScreenshot(name, "shouldChange", { withHidden: [".konvajs-content"], treshold });
+  },
+
+  /**
+   * Captures a new screenshot of the video canvas and compares it to already taken one
+   * Fails if screenshots are different
+   * @param name name of the screenshot
+   * @param treshold to compare image. It's a relation between original number of pixels vs changed number of pixels
+   */
+  videoCanvasShouldNotChange(name: string, treshold = 0.1) {
+    return this.videoCanvas.compareScreenshot(name, "shouldNotChange", { withHidden: [".konvajs-content"], treshold });
   },
 };

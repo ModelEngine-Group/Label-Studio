@@ -6,6 +6,7 @@ import IsReadyMixin from "../../../mixins/IsReadyMixin";
 import ProcessAttrsMixin from "../../../mixins/ProcessAttrs";
 import { SyncableMixin } from "../../../mixins/Syncable";
 import { parseValue } from "../../../utils/data";
+import { FF_VIDEO_FRAME_SEEK_PRECISION, isFF } from "../../../utils/feature-flags";
 import ObjectBase from "../Base";
 
 /**
@@ -196,7 +197,11 @@ const Model = types
       setFrame(frame) {
         if (self.frame !== frame && self.framerate) {
           self.frame = frame;
-          self.ref.current.currentTime = frame / self.framerate;
+          if (isFF(FF_VIDEO_FRAME_SEEK_PRECISION)) {
+            self.ref.current.goToFrame(frame);
+          } else {
+            self.ref.current.currentTime = frame / self.framerate;
+          }
         }
       },
 
