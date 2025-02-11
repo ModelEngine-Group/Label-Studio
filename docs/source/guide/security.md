@@ -75,6 +75,13 @@ Data in Label Studio is stored in one or two places, depending on your deploymen
 - Project settings and configuration details are stored in Label Studio's internal database.
 - Input data (texts, images, audio files) is hosted by external data storage and provided to the Label Studio by using URI links. The data is not stored in Label Studio directly, the content is retrieved client-side only.
 - Project annotations are stored in the internal database, and optionally can be stored in a local file directory, a Redis database, or cloud storage buckets on Amazon Web Services (AWS), Google Cloud Platform (GCP), or Microsoft Azure.
+  
+
+!!! info Tip
+    There are several advanced security options for AWS and GCP storage, including:
+    * [Application Default Credentials for GCP](storage#Application-Default-Credentials-for-enhanced-security-for-GCS) (on-prem only)
+    * [IP filtering for GCP storage](storage#IP-filtering-for-enhanced-security-for-GCS)
+    * [IP filtering and VPN for S3](storage#IP-Filtering-and-VPN-for-Enhanced-Security-for-S3-Storage)
 
 ### Secure database access
 

@@ -532,12 +532,11 @@ In the Label Studio UI, do the following to set up the connection:
     - Enable **Treat every bucket object as a source file** if your bucket contains BLOB storage files such as JPG, MP3, or similar file types. This setting creates a URL for each bucket object to use for labeling, such as `gs://my-gcs-bucket/image.jpg`. Leave this option disabled if you have multiple JSON files in the bucket with one task per JSON file.
     - Choose whether to disable **Use pre-signed URLs**. If your tasks contain gs://... links, they must be pre-signed in order to be displayed in the browser.
     - Adjust the counter for how many minutes the pre-signed URLs are valid.
-8. In the **Google Application Credentials** field, add a JSON file with the GCS credentials you created to manage authentication for your bucket. You can also use the `GOOGLE_APPLICATION_CREDENTIALS` environment variable to specify this file. For example:
-```bash
-  export GOOGLE_APPLICATION_CREDENTIALS=json-file-with-GCP-creds-23441-8f8sd99vsd115a.json
-  ```
+8. In the **Google Application Credentials** field, add a JSON file with the GCS credentials you created to manage authentication for your bucket. 
+
+    **On-prem users:** Alternatively, you can use the `GOOGLE_APPLICATION_CREDENTIALS` environment variable and/or set up Application Default Credentials, so that users do not need to configure credentials manually. See [Application Default Credentials for enhanced security](#Application-Default-Credentials-for-enhanced-security-for-GCS) below.
 9. Click **Add Storage**.
-10. Repeat these steps for **Target Storage** to sync completed data annotations to a bucket.
+10.  Repeat these steps for **Target Storage** to sync completed data annotations to a bucket.
 
 After adding the storage, click **Sync** to collect tasks from the bucket, or make an API call to [sync import storage](/api#operation/api_storages_gcs_sync_create).
 
@@ -546,8 +545,17 @@ You can also create a storage connection using the Label Studio API.
 - See [Create new import storage](/api#operation/api_storages_gcs_create) then [sync the import storage](/api#operation/api_storages_gcs_sync_create). 
 - See [Create export storage](/api#operation/api_storages_export_gcs_create) and after annotating, [sync the export storage](/api#operation/api_storages_export_gcs_sync_create).
 
+### Application Default Credentials for enhanced security for GCS
 
-### IP Filtering for Enhanced Security for GCS storage
+If you use Label Studio on-premises with Google Cloud Storage, you can set up [Application Default Credentials](https://cloud.google.com/docs/authentication/provide-credentials-adc) to provide cloud storage authentication globally for all projects, so users do not need to configure credentials manually.
+
+The recommended way to to do this is by using the `GOOGLE_APPLICATION_CREDENTIALS` environment variable. For example:
+
+```bash
+  export GOOGLE_APPLICATION_CREDENTIALS=json-file-with-GCP-creds-23441-8f8sd99vsd115a.json
+  ```
+
+### IP filtering for enhanced security for GCS
 
 Google Cloud Storage offers [bucket IP filtering](https://cloud.google.com/storage/docs/ip-filtering-overview) as a powerful security mechanism to restrict access to your data based on source IP addresses. This feature helps prevent unauthorized access and provides fine-grained control over who can interact with your storage buckets.
 
@@ -623,10 +631,6 @@ gcloud alpha storage buckets update gs://BUCKET_NAME --clear-ip-filter
 [Read more about GCS IP filtering](https://cloud.google.com/storage/docs/ip-filtering-overview)
 
 </details>
-
-#### Application Default Credentials as Advanced Security Approach
-
-**Google ADC**: If you use Label Studio on-premises with Google Cloud Storage, you can set up [Application Default Credentials](https://cloud.google.com/docs/authentication/provide-credentials-adc) to provide cloud storage authentication globally for all projects, so users do not need to configure credentials manually.
 
 
 ##  Microsoft Azure Blob storage
