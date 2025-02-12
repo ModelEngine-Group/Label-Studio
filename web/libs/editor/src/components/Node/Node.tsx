@@ -26,6 +26,11 @@ import { NodeView } from "./NodeView";
 import { Tooltip } from "../../common/Tooltip/Tooltip";
 
 const NodeViews = {
+  // fake view for virtual node representing label group
+  LabelModel: {
+    icon: () => null,
+  },
+
   RichTextRegionModel: {
     name: "HTML",
     icon: IconText,
