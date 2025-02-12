@@ -26,8 +26,7 @@ jobs:
     name: Sync PR
     runs-on: ubuntu-latest
     outputs:
-      adala: "${{ steps.upstream-prs.outputs.adala }}"
-      label-studio-query-vectordb: "${{ steps.upstream-prs.outputs.label-studio-query-vectordb }}"
+      label-studio-sdk: "${{ steps.upstream-prs.outputs.label-studio-sdk }}"
     steps:
       - uses: hmarr/debug-action@v3.0.0
 
