@@ -1,6 +1,6 @@
 {
-  "message": "fix: LEAP-1741: Prevent comment category from overflow (#7039)",
-  "commit": "6a6c3baf93ffd9f8e576fe17bc2072f1c5d06586",
-  "date": "2025-02-10T15:56:19.000Z",
+  "message": "fix: LEAP-1661: Don't allow to review skipped annotations (#7055)",
+  "commit": "6b51f559d21674f2e9048d01bdf9fd5954925e77",
+  "date": "2025-02-12T14:47:32.000Z",
   "branch": "develop"
 }
