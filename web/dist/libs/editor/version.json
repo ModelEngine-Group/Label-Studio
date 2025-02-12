@@ -1,6 +1,6 @@
 {
-  "message": "fix: LEAP-1661: Don't allow to review skipped annotations (#7055)",
-  "commit": "6b51f559d21674f2e9048d01bdf9fd5954925e77",
-  "date": "2025-02-12T14:47:32.000Z",
+  "message": "fix: LEAP-1829: Fix \"No LabelModel in NodeView\" error in Sentry (#7067)",
+  "commit": "687f3f9272c03a49ea1d39f644c90a892ae2f46d",
+  "date": "2025-02-12T23:13:22.000Z",
   "branch": "develop"
 }
