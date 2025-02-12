@@ -362,6 +362,8 @@ const _Annotation = types
         getEnv(self).events.hasEvent("acceptAnnotation") &&
         // Quick View — we don't have View All in Label Stream
         store.hasInterface("annotations:view-all") &&
+        // skipped annotations can't be reviewed
+        !self.skipped &&
         // annotation was submitted already
         !isNaN(self.pk)
       );
