@@ -4,6 +4,7 @@ import os.path
 import re
 import tempfile
 from contextlib import contextmanager
+from functools import wraps
 from pathlib import Path
 from types import SimpleNamespace
 from unittest import mock
@@ -13,6 +14,7 @@ import requests
 import requests_mock
 import ujson as json
 from box import Box
+from core.feature_flags import flag_set
 from data_export.models import ConvertedFormat, Export
 from django.apps import apps
 from django.conf import settings
@@ -390,3 +392,28 @@ def file_exists_in_storage(response, exists=True, file_path=None):
         file_path = export.file.path
 
     assert os.path.isfile(file_path) == exists
+
+
+def mock_feature_flag(flag_name: str, value: bool, parent_module: str = 'core.feature_flags'):
+    """Decorator to mock a feature flag state for a test function.
+
+    Args:
+        flag_name: Name of the feature flag to mock
+        value: True or False to set the flag state
+        parent_module: Module path containing the flag_set function to patch
+    """
+
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            def fake_flag_set(feature_flag, *flag_args, **flag_kwargs):
+                if feature_flag == flag_name:
+                    return value
+                return flag_set(feature_flag, *flag_args, **flag_kwargs)
+
+            with mock.patch(f'{parent_module}.flag_set', wraps=fake_flag_set):
+                return func(*args, **kwargs)
+
+        return wrapper
+
+    return decorator
