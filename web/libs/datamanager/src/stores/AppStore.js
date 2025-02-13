@@ -676,6 +676,10 @@ export const AppStore = types
         body: actionParams,
       });
 
+      if (result.async) {
+        self.SDK.invoke("toast", { message: "Your action is being processed in the background.", type: "info" });
+      }
+
       if (result.reload) {
         self.SDK.reload();
         return;
