@@ -1,6 +1,6 @@
 {
-  "message": "fix: DIA-1888: Followup permission fix (#7073)",
-  "commit": "d491f2b1292fcf194e7e3672ea955ca2921c3b26",
-  "date": "2025-02-13T15:14:24.000Z",
+  "message": "feat: OPTIC-1157: Data manager action for ground truth assignment (#7035)",
+  "commit": "5dc6098c09ed279c343940634834efa63ccd63ec",
+  "date": "2025-02-13T15:48:40.000Z",
   "branch": "develop"
 }
