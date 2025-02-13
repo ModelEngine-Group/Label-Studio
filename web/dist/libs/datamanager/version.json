@@ -1,6 +1,6 @@
 {
-  "message": "refactor: OPTIC-1678: ff clean up left overs (#7077)",
-  "commit": "1eeddc6b17a8f5e380e963faf7bc4e271710cd55",
-  "date": "2025-02-13T20:22:41.000Z",
+  "message": "feat: block sentry in frontend side (#6615)",
+  "commit": "560e33091fa392bec906ca43f082afb1657b11a7",
+  "date": "2025-02-13T23:13:39.000Z",
   "branch": "develop"
 }
