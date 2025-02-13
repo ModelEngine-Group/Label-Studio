@@ -3,7 +3,7 @@ import { FormField } from "../../FormField";
 import { default as Label } from "../Label/Label";
 import "./Input.scss";
 
-const Input = ({ label, className, validate, required, skip, labelProps, ghost, ...props }) => {
+const Input = ({ label, description, className, validate, required, skip, labelProps, ghost, ...props }) => {
   const classList = [cn("input-ls").mod({ ghost }), className].join(" ").trim();
 
   const input = (
@@ -13,7 +13,7 @@ const Input = ({ label, className, validate, required, skip, labelProps, ghost, 
   );
 
   return label ? (
-    <Label {...(labelProps ?? {})} text={label} required={required}>
+    <Label {...(labelProps ?? {})} description={description} text={label} required={required}>
       {input}
     </Label>
   ) : (

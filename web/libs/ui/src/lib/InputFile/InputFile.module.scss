@@ -1,0 +1,37 @@
+.input {
+  border: 0 none;
+  padding: 0;
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  outline: none;
+}
+
+.labelContent {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border: 1px solid var(--primary_link);
+  color: var(--primary_link);
+  border-radius: var(--radius-xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-small);
+  background-color: var(--white);
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  height: 42px;
+  width: 100%;
+  margin: 0;
+  cursor: pointer;
+  align-items: center;
+  outline: none;
+
+  &:focus-within .labelContent {
+    outline: 2px solid var(--primary_link);
+  }
+}

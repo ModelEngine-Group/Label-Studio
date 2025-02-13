@@ -9,12 +9,13 @@ import { Space } from "../../../components/Space/Space";
 import { useAPI } from "../../../providers/ApiProvider";
 import { useConfig } from "../../../providers/ConfigProvider";
 import { Block, Elem } from "../../../utils/bem";
-import { FF_LSDV_E_297, isFF } from "../../../utils/feature-flags";
+import { FF_AUTH_TOKENS, FF_LSDV_E_297, isFF } from "../../../utils/feature-flags";
 import { copyText } from "../../../utils/helpers";
 import "./PeopleInvitation.scss";
 import { PeopleList } from "./PeopleList";
 import "./PeoplePage.scss";
 import { SelectedUser } from "./SelectedUser";
+import { TokenSettingsModal } from "@humansignal/core/blocks/TokenSettingsModal";
 
 const InvitationModal = ({ link }) => {
   return (
@@ -107,6 +108,20 @@ export const PeoplePage = () => {
     [],
   );
 
+  const apiTokensSettingsModalProps = useMemo(
+    () => ({
+      title: "API Token Settings",
+      style: { width: 480 },
+      body: () => <TokenSettingsModal />,
+    }),
+    [],
+  );
+
+  const showApiTokenSettingsModal = useCallback(() => {
+    inviteModal.current = modal(apiTokensSettingsModalProps);
+    __lsa("organization.token_settings");
+  }, [inviteModalProps, link]);
+
   const showInvitationModal = useCallback(() => {
     inviteModal.current = modal(inviteModalProps(link));
     __lsa("organization.add_people");
@@ -133,6 +148,7 @@ export const PeoplePage = () => {
           <Space />
 
           <Space>
+            {isFF(FF_AUTH_TOKENS) && <Button onClick={showApiTokenSettingsModal}>API Tokens Settings</Button>}
             <Button icon={<LsPlus />} primary onClick={showInvitationModal}>
               Add People
             </Button>

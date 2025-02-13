@@ -6,6 +6,19 @@
   &__navigation {
     width: calc(var(--menu-sidebar-width) + 1px);
     display: flex;
+    
+    & .main-menu {
+      background: var(--sand_100);
+
+      &__item{
+        background: var(--sand_100);
+
+        &_active{
+          background: var(--sand_200);
+          pointer-events: all;
+        }
+      }
+    }
   }
 
   &__content {

@@ -19,6 +19,7 @@ import { RootPage } from "./RootPage";
 import { FF_OPTIC_2, FF_UNSAVED_CHANGES, FF_PRODUCT_TOUR, isFF } from "../utils/feature-flags";
 import { TourProvider } from "@humansignal/core";
 import { ToastProvider, ToastViewport } from "@humansignal/ui";
+import { CurrentUserProvider } from "../providers/CurrentUser";
 
 const baseURL = new URL(APP_SETTINGS.hostname || location.origin);
 export const UNBLOCK_HISTORY_MESSAGE = "UNBLOCK_HISTORY";
@@ -62,6 +63,7 @@ const App = ({ content }) => {
             <RoutesProvider key="rotes" />,
             <ProjectProvider key="project" />,
             <ToastProvider key="toast" />,
+            <CurrentUserProvider key="current-user" />,
             isFF(FF_PRODUCT_TOUR) && <TourProvider useAPI={useAPI} />,
           ].filter(Boolean)}
         >

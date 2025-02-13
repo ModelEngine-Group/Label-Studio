@@ -1,23 +1,25 @@
-import { forwardRef } from "react";
+import { forwardRef, type PropsWithChildren } from "react";
 import clsx from "clsx";
 import styles from "./label.module.scss";
-type LabelProps = {
+type LabelProps = PropsWithChildren<{
   text: string;
-  children?: any;
-  required: false;
+  required?: false;
   placement?: "right" | "left";
   description?: string;
   size?: "large" | "small";
+  className?: string;
   style?: any;
-  simple: false;
-  flat: false;
-};
+  simple?: boolean;
+  flat?: boolean;
+}>;
+
 export const Label = forwardRef(
   ({
     text,
     children,
     required,
     placement = "left",
+    className,
     description,
     size = "small",
     style: inlineStyle,
@@ -30,7 +32,7 @@ export const Label = forwardRef(
       <TagName
         style={inlineStyle}
         data-required={required}
-        className={clsx(styles.label, {
+        className={clsx(styles.label, className, {
           [styles.label_size_small]: size === "small",
           [styles.label_size_large]: size === "large",
           [styles.label_flat]: flat,

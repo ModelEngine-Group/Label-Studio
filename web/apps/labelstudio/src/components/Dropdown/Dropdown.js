@@ -1,6 +1,6 @@
 import { Dropdown } from "./DropdownComponent";
-import { DropdownTrigger } from "./DropdownTrigger";
+import { DropdownTrigger, useDropdown } from "./DropdownTrigger";
 
 Dropdown.Trigger = DropdownTrigger;
 
-export { Dropdown };
+export { Dropdown, useDropdown };

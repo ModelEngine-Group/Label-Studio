@@ -1,0 +1,25 @@
+.input {
+  flex: 1;
+  max-height: 40px;
+
+  // min-height: 0;
+  // box-sizing: border-box;
+  // overflow: hidden;
+  // resize: none;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 90px;
+  overflow: hidden;
+  resize: none;
+}
+
+.label {
+  margin-bottom: 8px;
+
+  span {
+    padding: 0;
+  }
+}
+

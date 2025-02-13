@@ -59,10 +59,25 @@
 .counter,
 .select-ls__list {
   &:not(&_ghost):focus,
+  &:not(:read-only):focus,
   &_focused {
     outline: none;
     box-shadow: 0 0 0 6px var(--grape_100), inset 0 -1px 0 rgb(0 0 0 / 10%), inset 0 0 0 1px rgb(0 0 0 / 15%), inset 0 0 0 1px var(--grape_100);
     border-color: var(--grape_100);
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+
+  &:read-only:focus {
+    box-shadow: none;
+    border-color: var(--border-color);
+  }
+
+  &:read-only {
+    background-color: var(--sand_100);
+    color: var(--sand_500);
   }
 }
 

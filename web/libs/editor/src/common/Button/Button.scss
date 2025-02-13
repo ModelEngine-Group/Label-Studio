@@ -30,6 +30,9 @@
   &:disabled,
   &[disabled] {
     --button-color: var(--sand_500);
+    --button-background-color: var(--sand_200);
+    --button-events: none;
+    --button-border: 1px solid transparent;
 
     pointer-events: none;
     background-color: var(--sand_200);
