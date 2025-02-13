@@ -51,7 +51,7 @@ def recalculate_created_annotations_and_labels_from_scratch(
     :param organization_id: Organization.id, it is required for django-rq displaying on admin page
     """
     logger.info(f'Reset cache started for project {project.id} and organization {organization_id}')
-
+    logger.info(f'recalculate_created_annotations_and_labels_from_scratch project_id={project.id}')
     summary.all_data_columns = {}
     summary.common_data_columns = []
     summary.update_data_columns(project.tasks.only('data'))

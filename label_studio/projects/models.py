@@ -526,6 +526,7 @@ class Project(ProjectMixin, models.Model):
 
         if self.num_tasks == 0:
             logger.debug(f'Project {self} has no tasks: nothing to validate here. Ensure project summary is empty')
+            logger.info(f'calling reset project_id={self.id} validate_config() num_tasks={self.num_tasks}')
             self.summary.reset()
             return
 
@@ -549,6 +550,9 @@ class Project(ProjectMixin, models.Model):
             logger.debug(
                 f'Project {self} has no annotations and drafts: nothing to validate here. '
                 f'Ensure annotations-related project summary is empty'
+            )
+            logger.info(
+                f'calling reset project_id={self.id} validate_config() num_annotations={self.num_annotations} num_drafts={self.num_drafts}'
             )
             self.summary.reset(tasks_data_based=False)
             return
@@ -780,8 +784,12 @@ class Project(ProjectMixin, models.Model):
         if hasattr(self, 'summary'):
             # Ensure project.summary is consistent with current tasks / annotations
             if self.num_tasks == 0:
+                logger.info(f'calling reset project_id={self.id} Project.save() num_tasks={self.num_tasks}')
                 self.summary.reset()
             elif self.num_annotations == 0 and self.num_drafts == 0:
+                logger.info(
+                    f'calling reset project_id={self.id} Project.save() num_annotations={self.num_annotations} num_drafts={self.num_drafts}'
+                )
                 self.summary.reset(tasks_data_based=False)
 
     def get_member_ids(self):
@@ -1165,6 +1173,11 @@ class ProjectSummary(models.Model):
         return self.project.has_permission(user)
 
     def reset(self, tasks_data_based=True):
+        import traceback
+
+        logger.info(
+            f'reset summary project_id={self.project_id} {tasks_data_based=} {self.all_data_columns=} {traceback.format_stack(limit=4)=}'
+        )
         if tasks_data_based:
             self.all_data_columns = {}
             self.common_data_columns = []
@@ -1194,8 +1207,8 @@ class ProjectSummary(models.Model):
             self.common_data_columns = list(sorted(common_data_columns))
         else:
             self.common_data_columns = list(sorted(set(self.common_data_columns) & common_data_columns))
-        logger.info(f'update summary.all_data_columns = {self.all_data_columns} project_id={self.project_id}')
-        logger.info(f'update summary.common_data_columns = {self.common_data_columns} project_id={self.project_id}')
+        logger.info(f'update summary.all_data_columns project_id={self.project_id} {self.all_data_columns=}')
+        logger.info(f'update summary.common_data_columns project_id={self.project_id} {self.common_data_columns=}')
         self.save(update_fields=['all_data_columns', 'common_data_columns'])
 
     def remove_data_columns(self, tasks):
@@ -1218,8 +1231,8 @@ class ProjectSummary(models.Model):
                 if key in common_data_columns:
                     common_data_columns.remove(key)
             self.common_data_columns = common_data_columns
-        logger.info(f'remove summary.all_data_columns = {self.all_data_columns} project_id={self.project_id}')
-        logger.info(f'remove summary.common_data_columns = {self.common_data_columns} project_id={self.project_id}')
+        logger.info(f'remove summary.all_data_columns project_id={self.project_id} {self.all_data_columns=}')
+        logger.info(f'remove summary.common_data_columns project_id={self.project_id} {self.common_data_columns=}')
         self.save(
             update_fields=[
                 'all_data_columns',

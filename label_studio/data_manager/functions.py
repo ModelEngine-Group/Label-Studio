@@ -43,12 +43,15 @@ def get_all_columns(project, *_):
 
     # all data types from import data
     all_data_columns = project.summary.all_data_columns
+    logger.info(f'get_all_columns: project_id={project.id} {all_data_columns=} {data_types=}')
     if all_data_columns:
         data_types.update({key: 'Unknown' for key in all_data_columns if key not in data_types})
+    logger.info(f'get_all_columns: project_id={project.id} {data_types=}')
 
     # remove $undefined$ if there is one type at least in labeling config, because it will be resolved automatically
     if len(project_data_types) > 0:
         data_types.pop(settings.DATA_UNDEFINED_NAME, None)
+    logger.info(f'get_all_columns: project_id={project.id} {data_types=} {project_data_types=}')
 
     for key, data_type in list(data_types.items()):  # make data types from labeling config first
         column = {
