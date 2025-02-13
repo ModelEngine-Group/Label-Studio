@@ -15,7 +15,7 @@ export const settingsAtom = atomWithQuery(() => ({
     const result = await API.invoke("accessTokenSettings");
 
     if (!result.$meta.ok) {
-      throw new Error(result.error);
+      return { error: true };
     }
 
     return result as AuthTokenSettings;

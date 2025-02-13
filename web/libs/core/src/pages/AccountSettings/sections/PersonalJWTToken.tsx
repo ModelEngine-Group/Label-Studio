@@ -31,7 +31,8 @@ const tokensListAtom = atomWithQuery(() => ({
   async queryFn() {
     const tokens = await API.invoke("accessTokenList");
     if (!tokens.$meta.ok) {
-      throw new Error(tokens.error);
+      console.error(token.error);
+      return [];
     }
 
     return tokens as Token[];
@@ -46,7 +47,8 @@ const refreshTokenAtom = atomWithMutation((get) => {
     async mutationFn() {
       const token = await API.invoke("accessTokenGetRefreshToken");
       if (!token.$meta.ok) {
-        throw new Error(token.error);
+        console.error(token.error);
+        return "";
       }
       return token.token;
     },
