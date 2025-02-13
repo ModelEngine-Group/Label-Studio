@@ -1,6 +1,6 @@
 import { destroy, flow, types } from "mobx-state-tree";
 import { Modal } from "../components/Common/Modal/Modal";
-import { FF_DEV_2887, FF_LOPS_E_3, isFF } from "../utils/feature-flags";
+import { FF_DEV_2887, FF_LOPS_E_3, FF_REGION_VISIBILITY_FROM_URL, isFF } from "../utils/feature-flags";
 import { History } from "../utils/history";
 import { isDefined } from "../utils/utils";
 import { Action } from "./Action";
@@ -199,7 +199,22 @@ export const AppStore = types
 
     setTask: flow(function* ({ taskID, annotationID, pushState }) {
       if (pushState !== false) {
-        History.navigate({ task: taskID, annotation: annotationID ?? null, interaction: null });
+        History.navigate({
+          task: taskID,
+          annotation: annotationID ?? null,
+          interaction: null,
+          region: null,
+        });
+      } else if (isFF(FF_REGION_VISIBILITY_FROM_URL)) {
+        const { task, region, annotation } = History.getParams();
+        History.navigate(
+          {
+            task,
+            region,
+            annotation,
+          },
+          true,
+        );
       }
 
       if (!isDefined(taskID)) return;
@@ -216,20 +231,41 @@ export const AppStore = types
         self.annotationStore.setSelected(annotationID);
       } else {
         self.taskStore.setSelected(taskID);
-
-        const taskPromise = self.taskStore.loadTask(taskID, {
-          select: !!taskID && !!annotationID,
-        });
-
-        taskPromise.then(() => {
-          const annotation = self.LSF?.currentAnnotation;
-          const id = annotation?.pk ?? annotation?.id;
-
-          self.LSF?.setLSFTask(self.taskStore.selected, id);
-
-          self.setLoadingData(false);
-        });
       }
+
+      const taskPromise = self.taskStore.loadTask(taskID, {
+        select: !!taskID && !!annotationID,
+      });
+
+      taskPromise.then(() => {
+        const annotation = self.LSF?.currentAnnotation;
+        const id = annotation?.pk ?? annotation?.id;
+
+        self.LSF?.setLSFTask(self.taskStore.selected, id);
+
+        if (isFF(FF_REGION_VISIBILITY_FROM_URL)) {
+          const { annotation: annIDFromUrl, region: regionIDFromUrl } = History.getParams();
+          if (annIDFromUrl) {
+            const lsfAnnotation = self.LSF.lsf.annotationStore.annotations.find((a) => {
+              return a.pk === annIDFromUrl || a.id === annIDFromUrl;
+            });
+
+            if (lsfAnnotation) {
+              const annID = lsfAnnotation.pk ?? lsfAnnotation.id;
+              self.LSF?.setLSFTask(self.taskStore.selected, annID);
+            }
+          }
+          if (regionIDFromUrl) {
+            const currentAnn = self.LSF?.currentAnnotation;
+            // Focus on the region by hiding all other regions
+            currentAnn?.regionStore?.setRegionVisible(regionIDFromUrl);
+            // Select the region so outliner details are visible
+            currentAnn?.regionStore?.selectRegionByID(regionIDFromUrl);
+          }
+        }
+
+        self.setLoadingData(false);
+      });
     }),
 
     setLoadingData(value) {
@@ -379,7 +415,7 @@ export const AppStore = types
     },
 
     handlePopState: (({ state }) => {
-      const { tab, task, annotation, labeling } = state ?? {};
+      const { tab, task, annotation, labeling, region } = state ?? {};
 
       if (tab) {
         const tabId = Number.parseInt(tab);
@@ -398,6 +434,11 @@ export const AppStore = types
           params.id = Number.parseInt(annotation);
         } else {
           params.id = Number.parseInt(task);
+        }
+        if (region) {
+          params.region = region;
+        } else {
+          delete params.region;
         }
 
         self.startLabeling(params, { pushState: false });

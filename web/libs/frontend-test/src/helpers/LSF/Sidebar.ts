@@ -93,4 +93,8 @@ export const Sidebar = {
   expandDetailsRightPanel() {
     cy.get(".lsf-sidepanels__wrapper_align_right .lsf-panel__header").should("be.visible").click();
   },
+  assertRegionHidden(idx: number, id: string, shouldBeHidden: boolean) {
+    const expectation = shouldBeHidden ? "have.class" : "not.have.class";
+    this.findRegionByIndex(idx).should("contain.text", id).parent().should(expectation, "lsf-tree__node_hidden");
+  },
 };

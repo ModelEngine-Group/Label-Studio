@@ -73,6 +73,11 @@ export const FF_GRID_PREVIEW = "fflag_feat_front_leap_1424_grid_preview_short";
 
 export const FF_MEMORY_LEAK_FIX = "fflag_feat_all_optic_1178_reduce_memory_leak_short";
 
+/**
+ * Add ability to show specific region from URL params (by hiding all other regions).
+ */
+export const FF_REGION_VISIBILITY_FROM_URL = "fflag_feat_front_optic_1553_url_based_region_visibility_short";
+
 // Customize flags
 const flags = {};
 

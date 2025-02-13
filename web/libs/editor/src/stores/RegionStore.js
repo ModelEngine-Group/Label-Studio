@@ -507,15 +507,24 @@ export default types
     },
 
     findRegionID(id) {
+      if (!id) return null;
       return self.regions.find((r) => r.id === id);
     },
 
     findRegion(id) {
-      return self.regions.find((r) => r.id === id);
+      return self.findRegionID(id);
     },
 
     filterByParentID(id) {
       return self.regions.filter((r) => r.parentID === id);
+    },
+
+    normalizeRegionID(regionId) {
+      if (!regionId) return "";
+      if (!regionId.includes("#")) {
+        regionId = `${regionId}#${self.annotation.id}`;
+      }
+      return regionId;
     },
 
     afterCreate() {
@@ -582,6 +591,28 @@ export default types
         }
       });
     },
+
+    selectRegionByID(regionId) {
+      const normalizedRegionId = self.normalizeRegionID(regionId);
+      const targetRegion = self.findRegionID(normalizedRegionId);
+      if (!targetRegion) return;
+      self.toggleSelection(targetRegion, true);
+    },
+
+    setRegionVisible(regionId) {
+      const normalizedRegionId = self.normalizeRegionID(regionId);
+      const targetRegion = self.findRegionID(normalizedRegionId);
+      if (!targetRegion) return;
+
+      self.regions.forEach((area) => {
+        if (!area.hidden) {
+          area.toggleHidden();
+        }
+      });
+
+      targetRegion.toggleHidden();
+    },
+
     setHiddenByTool(shouldBeHidden, label) {
       self.regions.forEach((area) => {
         if (area.hidden !== shouldBeHidden && area.type === label.type) {
@@ -589,6 +620,7 @@ export default types
         }
       });
     },
+
     setHiddenByLabel(shouldBeHidden, label) {
       self.regions.forEach((area) => {
         if (area.hidden !== shouldBeHidden) {
@@ -604,6 +636,7 @@ export default types
         }
       });
     },
+
     highlight(area) {
       self.selection.highlight(area);
     },

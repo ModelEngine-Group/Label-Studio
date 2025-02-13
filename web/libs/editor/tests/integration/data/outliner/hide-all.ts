@@ -3,7 +3,7 @@ export const simpleRegionsConfig = `<View>
   <Labels name="label" toName="text">
       <Label value="Label 1"/>
       <Label value="Label 2"/>
-      <Label value="Label 2"/> 
+      <Label value="Label 3"/> 
   </Labels>
 </View>`;
 
