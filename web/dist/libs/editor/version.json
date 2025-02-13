@@ -1,6 +1,6 @@
 {
-  "message": "feat: OPTIC-1553: Add URL-based region visibility, hiding all but the specified region on load (#6880)",
-  "commit": "b02dfd4f7c12d2bbb39976c49ee999e9559725da",
-  "date": "2025-02-13T16:11:37.000Z",
+  "message": "refactor: OPTIC-1678: ff clean up left overs (#7077)",
+  "commit": "1eeddc6b17a8f5e380e963faf7bc4e271710cd55",
+  "date": "2025-02-13T20:22:41.000Z",
   "branch": "develop"
 }
