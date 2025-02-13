@@ -38,7 +38,6 @@ STALE_FEATURE_FLAGS = {
     'fflag_fix_front_dev_3793_relative_coords_short': True,
     'ff_front_dev_2715_audio_3_280722_short': True,
     # Feb 5
-    'fflag_fix_back_optic_1526_project_members_prefetch_short': True,
     'fflag_feat_front_optic_1351_use_new_projects_counts_api_short': True,
     'fflag_feature_all_optic_1421_cold_start_v2': False,
     'fflag_fix_back_optic_1407_optimize_tasks_api_pagination_counts': True,
@@ -51,6 +50,5 @@ STALE_FEATURE_FLAGS = {
     # Feb 6
     'fflag_feat_dia_1528_gemini_models_support_vertex_ai_support_short': True,
     'fflag_feat_all_dia_1576_prompts_easy_breezy_onboarding_short_async_presets_ks': False,
-    'fflag__feature_develop__prompts__dia_1362_custom_llm_endpoint': True,
     'fflag_front_dia_1150_ddisco_sneak_preview': False,
 }
