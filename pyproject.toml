@@ -180,7 +180,6 @@ lxml = {extras = ["html_clean"], version = ">=4.9.4"}
 defusedxml = ">=0.7.1"
 numpy = "^1.26.4"
 ordered-set = "4.0.2"
-packaging = ">=24.2"
 pandas = ">=2.2.3"
 psycopg2-binary = "2.9.10"
 pydantic = ">=2.9.2"
@@ -229,8 +228,10 @@ s3transfer = "0.7.0"
 mock = ">=5.1.0"
 moto = ">=4.2.6"
 requests-mock = "1.12.1"
+
 [tool.poetry.group.build.dependencies]
-twine = ">=4.0.2"
+twine = "==6.0.1"
+packaging = ">=24.2"
 
 [tool.poetry.extras]
 uwsgi = ["pyuwsgi","uwsgitop"]
