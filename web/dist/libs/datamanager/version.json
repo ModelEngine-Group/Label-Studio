@@ -1,6 +1,6 @@
 {
-  "message": "feat: OPTIC-1157: Data manager action for ground truth assignment (#7035)",
-  "commit": "5dc6098c09ed279c343940634834efa63ccd63ec",
-  "date": "2025-02-13T15:48:40.000Z",
+  "message": "feat: OPTIC-1553: Add URL-based region visibility, hiding all but the specified region on load (#6880)",
+  "commit": "b02dfd4f7c12d2bbb39976c49ee999e9559725da",
+  "date": "2025-02-13T16:11:37.000Z",
   "branch": "develop"
 }
