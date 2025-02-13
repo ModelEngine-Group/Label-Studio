@@ -230,7 +230,7 @@ moto = ">=4.2.6"
 requests-mock = "1.12.1"
 
 [tool.poetry.group.build.dependencies]
-twine = "==6.0.1"
+twine = ">=6.1.0"
 packaging = ">=24.2"
 
 [tool.poetry.extras]
