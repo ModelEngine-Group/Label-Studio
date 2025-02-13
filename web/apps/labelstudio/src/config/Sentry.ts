@@ -4,10 +4,10 @@ import type { RouterHistory } from "@sentry/react/build/types/reactrouter";
 import { Route } from "react-router-dom";
 
 export const initSentry = (history: RouterHistory) => {
-  if (APP_SETTINGS.debug === false) {
+  if (APP_SETTINGS.debug === false && APP_SETTINGS.sentry_dsn) {
     setTags();
     Sentry.init({
-      dsn: "https://5f51920ff82a4675a495870244869c6b@o227124.ingest.sentry.io/5838868",
+      dsn: APP_SETTINGS.sentry_dsn,
       integrations: [
         Sentry.browserTracingIntegration(),
         ReactSentry.reactRouterV5BrowserTracingIntegration({ history }),
