@@ -1,6 +1,6 @@
 {
-  "message": "feat: DIA-1888: [FE] JWT auth token (#7049)",
-  "commit": "981139e5357da87276bb332e64780fa8fd411b4e",
-  "date": "2025-02-13T13:05:04.000Z",
+  "message": "fix: DIA-1888: Followup permission fix (#7073)",
+  "commit": "d491f2b1292fcf194e7e3672ea955ca2921c3b26",
+  "date": "2025-02-13T15:14:24.000Z",
   "branch": "develop"
 }
