@@ -1,6 +1,6 @@
 {
-  "message": "fix: LEAP-1829: Fix \"No LabelModel in NodeView\" error in Sentry (#7067)",
-  "commit": "687f3f9272c03a49ea1d39f644c90a892ae2f46d",
-  "date": "2025-02-12T23:13:22.000Z",
+  "message": "feat: DIA-1888: [FE] JWT auth token (#7049)",
+  "commit": "981139e5357da87276bb332e64780fa8fd411b4e",
+  "date": "2025-02-13T13:05:04.000Z",
   "branch": "develop"
 }
