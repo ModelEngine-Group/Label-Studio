@@ -8,7 +8,20 @@ mkdir -p "$OPT_DIR/nginx"
 \cp -f /etc/nginx/nginx.conf $NGINX_CONFIG
 
 echo >&3 "=> Configure system resolver..."
-echo resolver $(awk 'BEGIN{ORS=" "} $1=="nameserver" {print $2}' /etc/resolv.conf) ";" > $OPT_DIR/nginx/resolv.conf
+# Process each nameserver individually, wrapping only valid IPv6 addresses in square brackets.
+# This regex accepts only hex digits and colons so that IPv4 addresses with :port are not captured.
+nameservers=$(awk '$1=="nameserver" {
+    ns = $2;
+    # Capture only IPv6 addresses (they contain a colon and no dot)
+    if (ns ~ /^[0-9a-fA-F:]+$/ && ns ~ /:/ && ns !~ /\./) {
+        printf "[%s] ", ns;
+    } else {
+        # IPv4 addresses
+        printf "%s ", ns;
+    }
+}' /etc/resolv.conf)
+echo "resolver $nameservers;" > $OPT_DIR/nginx/resolv.conf
+
 
 if [ -n "${NGINX_SSL_CERT:-}" ]; then
   echo >&3 "=> Replacing nginx certs..."
