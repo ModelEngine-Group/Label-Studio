@@ -163,6 +163,9 @@ jobs:
       - name: Check SDK version is not git sha
         run: grep 'label-studio-sdk\s*=\s*"[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*"' pyproject.toml
 
+      - name: Check Build
+        run: poetry run twine check dist/*
+
       - name: Upload to PYPI
         if: inputs.upload_to_pypi
         env:
