@@ -24,6 +24,10 @@ logger = logging.getLogger()
 @login_required
 def logout(request):
     auth.logout(request)
+
+    if settings.LOGOUT_REDIRECT_URL:
+        return redirect(settings.LOGOUT_REDIRECT_URL)
+
     if settings.HOSTNAME:
         redirect_url = settings.HOSTNAME
         if not redirect_url.endswith('/'):

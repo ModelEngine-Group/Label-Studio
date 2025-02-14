@@ -809,3 +809,5 @@ if CI:
         'ignore_name': '0002_auto_20210304_1457',
         'sql-analyser': 'postgresql',
     }
+
+LOGOUT_REDIRECT_URL = get_env('LOGOUT_REDIRECT_URL', None)
