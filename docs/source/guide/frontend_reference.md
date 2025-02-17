@@ -210,7 +210,10 @@ This events group contains top-level events. Those events are not related to any
 
 ### `labelStudioLoad`
 
-Label Studio instance is loaded.
+Label Studio instance is loaded. 
+
+!!! warning
+    This event does not work in custom scripts.
 
 **Event handler arguments**
 
@@ -221,6 +224,9 @@ Label Studio instance is loaded.
 ### `storageInitialized`
 
 The internal storage is initialized.
+
+!!! warning
+    This event does not work in custom scripts.
 
 **Event handler arguments**
 
