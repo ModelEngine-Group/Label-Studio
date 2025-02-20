@@ -1,6 +1,6 @@
 {
-  "message": "feat: block sentry in frontend side (#6615)",
-  "commit": "560e33091fa392bec906ca43f082afb1657b11a7",
-  "date": "2025-02-13T23:13:39.000Z",
+  "message": "fix: DIA-1934: [FE] Popup warning is missing when user clicks 'Revoke' button on account settings page (#7107)",
+  "commit": "eb02f558db42615af21c65514fa631efb55b0b3c",
+  "date": "2025-02-20T12:12:40.000Z",
   "branch": "develop"
 }
