@@ -1,4 +1,4 @@
-import { isFlagEnabled } from "./helpers";
+import { isFlagEnabled } from "@humansignal/core/lib/utils/helpers";
 
 /**
  * Control Visibility and Access of Cloud Storage Connectors for Managers
