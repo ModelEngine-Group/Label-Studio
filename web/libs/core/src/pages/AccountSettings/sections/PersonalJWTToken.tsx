@@ -13,7 +13,7 @@ import styles from "./PersonalJWTToken.module.scss";
  * each one of these eventually has to be migrated to core/ui
  */
 import { API } from "/apps/labelstudio/src/providers/ApiProvider";
-import { modal } from "/apps/labelstudio/src/components/Modal/Modal";
+import { modal, confirm } from "/apps/labelstudio/src/components/Modal/Modal";
 import { Button } from "/apps/labelstudio/src/components/Button/Button";
 import { Input, Label } from "/apps/labelstudio/src/components/Form/Elements";
 import { Tooltip } from "/apps/labelstudio/src/components/Tooltip/Tooltip";
@@ -106,7 +106,17 @@ export function PersonalJWTToken() {
 
   const revoke = useCallback(
     async (token: string) => {
-      await revokeToken.mutateAsync({ token });
+      confirm({
+        title: "Revoke Token",
+        body: `Are you sure you want to delete this access token? Any application using this token will need a new token to be able to access ${
+          window?.APP_SETTINGS?.app_name || "Label Studio"
+        }`,
+        okText: "Revoke",
+        buttonLook: "danger",
+        onOk: async () => {
+          await revokeToken.mutateAsync({ token });
+        },
+      });
     },
     [revokeToken],
   );
