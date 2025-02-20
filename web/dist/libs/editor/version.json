@@ -1,6 +1,6 @@
 {
-  "message": "fix: DIA-1928: [FE] User is able to create multiple tokens by multiple clicks on 'Create new token' button (#7113)",
-  "commit": "e694268c3e2da4a2de4e023915fd9fddcdf445b9",
-  "date": "2025-02-20T14:49:48.000Z",
+  "message": "fix: OPTIC-1709: Ensure checks for feature flag enablement are done correctly (#7121)",
+  "commit": "459ffbf8e7a133c938453ae21b689dd28280b5ea",
+  "date": "2025-02-20T22:35:54.000Z",
   "branch": "develop"
 }
