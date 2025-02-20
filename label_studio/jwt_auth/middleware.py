@@ -23,12 +23,17 @@ class JWTAuthenticationMiddleware:
             try:
                 user_and_token = JWTAuthentication().authenticate(request)
                 if not user_and_token:
+                    logger.debug('JWT auth could not resolve user/token')
                     return self.get_response(request)
 
                 user = User.objects.get(pk=user_and_token[0].pk)
                 if user.active_organization.jwt.api_tokens_enabled:
+                    logger.debug('JWT auth resolved user/token')
                     request.user = user
                     request.is_jwt = True
+                else:
+                    logger.debug('JWT auth resolved user/token, but org does not have jwt enabled')
+
             except User.DoesNotExist:
                 logger.info('JWT authentication failed: User no longer exists')
                 return JsonResponse({'detail': 'User not found'}, status=status.HTTP_401_UNAUTHORIZED)
