@@ -22,4 +22,12 @@ export const Hotkeys = {
   deleteRegion() {
     pressHotkey("{backspace}");
   },
+  deleteAllRegions() {
+    const alertHandler = (_s) => true;
+    cy.once("window:alert", alertHandler);
+    pressHotkey("{ctrl}{backspace}", "{command}{backspace}");
+  },
+  unselectAllRegions() {
+    pressHotkey("{esc}");
+  },
 };

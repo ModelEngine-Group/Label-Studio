@@ -146,7 +146,7 @@ const _Tool = types
         brush.addPoint(Math.floor(x), Math.floor(y));
       },
 
-      mouseupEv(ev, _, [x, y]) {
+      mouseupEv(_ev, _, [x, y]) {
         if (self.mode !== "drawing") return;
         self.addPoint(x, y);
         self.mode = "viewing";
@@ -167,6 +167,7 @@ const _Tool = types
       },
 
       mousemoveEv(ev, _, [x, y]) {
+        if (!self.isAllowedInteraction(ev)) return;
         if (self.mode !== "drawing") return;
         if (
           !findClosestParent(
@@ -181,6 +182,7 @@ const _Tool = types
       },
 
       mousedownEv(ev, _, [x, y]) {
+        if (!self.isAllowedInteraction(ev)) return;
         if (
           !findClosestParent(
             ev.target,

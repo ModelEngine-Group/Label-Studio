@@ -72,6 +72,18 @@ export const ImageView = {
       this.clickAt(realX, realY, options);
     });
   },
+  dblClickAt(x, y) {
+    this.drawingArea.scrollIntoView().dblclick(x, y);
+  },
+  dblClickAtRelative(x, y) {
+    this.drawingFrame.then((el) => {
+      const bbox: DOMRect = el[0].getBoundingClientRect();
+      const realX = x * bbox.width;
+      const realY = y * bbox.height;
+
+      this.dblClickAt(realX, realY);
+    });
+  },
   /**
    * Draws a rectangle on the drawing area.
    * It also could be used for some drag and drop interactions for example selecting area or moving existing regions.
@@ -119,7 +131,7 @@ export const ImageView = {
     if (autoclose) {
       points = [...points, points[0]];
     }
-    points.forEach((point, index) => {
+    points.forEach((point, _index) => {
       drawingArea
         .trigger("mousemove", point[0], point[1], { eventConstructor: "MouseEvent", ...options })
         .trigger("mousedown", point[0], point[1], { eventConstructor: "MouseEvent", buttons: 1, ...options })
@@ -196,6 +208,18 @@ export const ImageView = {
 
   selectPolygonToolByButton() {
     this.toolBar.find('[aria-label="polygon-tool"]').should("be.visible").click().should("have.class", "lsf-tool");
+  },
+
+  selectKeypointToolByButton() {
+    this.toolBar
+      .find('[aria-label="key-point-tool"]')
+      .should("be.visible")
+      .click()
+      .should("have.class", "lsf-tool_active");
+  },
+
+  selectBrushToolByButton() {
+    this.toolBar.find('[aria-label="brush-tool"]').should("be.visible").click().should("have.class", "lsf-tool_active");
   },
 
   selectMoveToolByButton() {

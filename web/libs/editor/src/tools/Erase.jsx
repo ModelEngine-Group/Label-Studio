@@ -148,6 +148,7 @@ const _Tool = types
       },
 
       mousedownEv(ev, _, [x, y]) {
+        if (!self.isAllowedInteraction(ev)) return;
         if (
           !findClosestParent(
             ev.target,

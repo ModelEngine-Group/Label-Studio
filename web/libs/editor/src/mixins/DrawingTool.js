@@ -68,6 +68,18 @@ const DrawingTool = types
           Y: MIN_SIZE.Y / self.obj.stageScale,
         };
       },
+      /**
+       * Determines if an interaction is allowed based on the current context and event properties.
+       *
+       * @param {Object} ev - The event object containing details about the interaction.
+       * @return {boolean} Returns true if the interaction is allowed, otherwise false.
+       */
+      isAllowedInteraction(ev) {
+        if (self.group !== "segmentation") return true;
+        if (ev.offsetX > self.obj.canvasSize.width) return false;
+        if (ev.offsetY > self.obj.canvasSize.height) return false;
+        return true;
+      },
     };
   })
   .actions((self) => {
@@ -270,8 +282,9 @@ const TwoPointsDrawingTool = DrawingTool.named("TwoPointsDrawingTool")
         modeAfterMouseMove = DEFAULT_MODE;
       },
 
-      mousedownEv(_, [x, y]) {
+      mousedownEv(ev, [x, y]) {
         if (!self.canStartDrawing()) return;
+        if (!self.isAllowedInteraction(ev)) return;
         startPoint = { x, y };
         if (currentMode === DEFAULT_MODE) {
           modeAfterMouseMove = DRAG_MODE;
@@ -305,8 +318,9 @@ const TwoPointsDrawingTool = DrawingTool.named("TwoPointsDrawingTool")
         self.finishDrawing(x, y);
       },
 
-      clickEv(_, [x, y]) {
+      clickEv(ev, [x, y]) {
         if (!self.canStartDrawing()) return;
+        if (!self.isAllowedInteraction(ev)) return;
         // @todo: here is a potential problem with endPoint
         // it may be incorrect due to it may be not set at this moment
         if (startPoint && endPoint && !self.comparePointsWithThreshold(startPoint, endPoint)) return;
@@ -319,8 +333,9 @@ const TwoPointsDrawingTool = DrawingTool.named("TwoPointsDrawingTool")
         }
       },
 
-      dblclickEv(_, [x, y]) {
+      dblclickEv(ev, [x, y]) {
         if (!self.canStartDrawing()) return;
+        if (!self.isAllowedInteraction(ev)) return;
 
         let dX = self.defaultDimensions.width;
         let dY = self.defaultDimensions.height;
@@ -397,6 +412,7 @@ const MultipleClicksDrawingTool = DrawingTool.named("MultipleClicksMixin")
         self._resetState();
       },
       mousedownEv(ev, [x, y]) {
+        if (!self.isAllowedInteraction(ev)) return;
         lastPoint = { x, y };
         lastEvent = MOUSE_DOWN_EVENT;
       },
@@ -415,6 +431,7 @@ const MultipleClicksDrawingTool = DrawingTool.named("MultipleClicksMixin")
         lastPoint = { x: -1, y: -1 };
       },
       _clickEv(ev, [x, y]) {
+        if (!self.isAllowedInteraction(ev)) return;
         if (self.current()) {
           if (
             pointsCount === 1 &&
@@ -544,11 +561,12 @@ const ThreePointsDrawingTool = DrawingTool.named("ThreePointsDrawingTool")
       },
       mousedownEv(ev, [x, y]) {
         if (!self.canStartDrawing() || self.annotation.isDrawing) return;
+        if (!self.isAllowedInteraction(ev)) return;
         lastEvent = MOUSE_DOWN_EVENT;
         startPoint = { x, y };
         self.mode = "drawing";
       },
-      mouseupEv(ev, [x, y]) {
+      mouseupEv(_ev, [x, y]) {
         if (!self.canStartDrawing()) return;
         if (self.isDrawing) {
           if (currentMode === DRAG_MODE) {
@@ -560,12 +578,13 @@ const ThreePointsDrawingTool = DrawingTool.named("ThreePointsDrawingTool")
       },
       clickEv(ev, [x, y]) {
         if (!self.canStartDrawing()) return;
+        if (!self.isAllowedInteraction(ev)) return;
         if (currentMode === DEFAULT_MODE) {
           self._clickEv(ev, [x, y]);
         }
         lastEvent = CLICK_EVENT;
       },
-      _clickEv(ev, [x, y]) {
+      _clickEv(_ev, [x, y]) {
         if (points.length >= 2) {
           self.finishDrawing(x, y);
         } else if (points.length === 0) {
@@ -576,9 +595,10 @@ const ThreePointsDrawingTool = DrawingTool.named("ThreePointsDrawingTool")
         }
       },
 
-      dblclickEv(_, [x, y]) {
+      dblclickEv(ev, [x, y]) {
         lastEvent = DBL_CLICK_EVENT;
         if (!self.canStartDrawing()) return;
+        if (!self.isAllowedInteraction(ev)) return;
 
         let dX = self.defaultDimensions.width;
         let dY = self.defaultDimensions.height;
