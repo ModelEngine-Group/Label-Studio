@@ -78,6 +78,7 @@ export interface VideoRef {
   play: () => void;
   pause: () => void;
   goToFrame: (frame: number) => void;
+  frameSteppedTime: (time?: number) => number;
   seek: (time: number) => void;
   setContrast: (value: number) => void;
   setBrightness: (value: number) => void;
@@ -413,10 +414,22 @@ export const VideoCanvas = memo(
       },
       pause() {
         videoRef.current?.pause();
+        if (isFF(FF_VIDEO_FRAME_SEEK_PRECISION)) {
+          this.currentTime = clamp(this.frameSteppedTime(), 0, this.duration);
+        }
       },
       seek(time) {
         this.currentTime = clamp(time, 0, this.duration);
         requestAnimationFrame(() => drawVideo());
+      },
+      frameSteppedTime(time?: number): number {
+        if (isFF(FF_VIDEO_FRAME_SEEK_PRECISION)) {
+          return (
+            Math.round((time ?? this.currentTime) / BROWSER_TIME_PRECISION) * BROWSER_TIME_PRECISION +
+            BROWSER_TIME_PRECISION
+          );
+        }
+        return time ?? this.currentTime;
       },
       goToFrame(frame: number) {
         const frameClamped = clamp(frame, 1, length);
@@ -429,8 +442,7 @@ export const VideoCanvas = memo(
         const exactTime = frameZeroBased / framerate;
 
         // Round to next closest browser precision frame time
-        this.currentTime =
-          Math.round(exactTime / BROWSER_TIME_PRECISION) * BROWSER_TIME_PRECISION + BROWSER_TIME_PRECISION;
+        this.currentTime = this.frameSteppedTime(exactTime);
       },
     };
 

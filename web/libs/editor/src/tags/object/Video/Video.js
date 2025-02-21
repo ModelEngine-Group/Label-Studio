@@ -128,7 +128,7 @@ const Model = types
       self.syncSend(
         {
           playing: self.ref.current.playing,
-          time: self.ref.current.currentTime,
+          time: self.ref.current.frameSteppedTime(),
           ...data,
         },
         event,
