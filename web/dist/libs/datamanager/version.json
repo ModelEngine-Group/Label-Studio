@@ -1,6 +1,6 @@
 {
-  "message": "fix: OPTIC-1709: Ensure checks for feature flag enablement are done correctly (#7121)",
-  "commit": "459ffbf8e7a133c938453ae21b689dd28280b5ea",
-  "date": "2025-02-20T22:35:54.000Z",
+  "message": "fix: LEAP-1819: Prevent drawing actions outside the stage area (#7084)",
+  "commit": "debc18662a1af719d2d45bb71afbec3e919e4670",
+  "date": "2025-02-21T15:17:53.000Z",
   "branch": "develop"
 }
