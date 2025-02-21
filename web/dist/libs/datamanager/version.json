@@ -1,6 +1,6 @@
 {
-  "message": "fix: LEAP-1819: Prevent drawing actions outside the stage area (#7084)",
-  "commit": "debc18662a1af719d2d45bb71afbec3e919e4670",
-  "date": "2025-02-21T15:17:53.000Z",
+  "message": "fix: OPTIC-1677: Incorrect video frame rendered when pausing a video during playback (#7078)",
+  "commit": "6691ef0e1b7eebcaff54b9eb44dfc63eb9269577",
+  "date": "2025-02-21T17:21:27.000Z",
   "branch": "develop"
 }
