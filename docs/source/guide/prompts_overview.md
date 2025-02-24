@@ -48,9 +48,10 @@ With Prompts, you can:
 
 | Provider | Supported models |
 | --- | --- |
-| **OpenAI** | gpt-3.5-turbo-16k* <br>gpt-3.5-turbo* <br>gpt-4 <br>gpt-4-turbo <br>gpt-4o <br>gpt-4o-mini <br>o3-mini<br><br>**Note:** We recommend against using GPT 3.5 models, as these can sometimes be prone to rate limit errors and are not compatible with Image data.  |
+| **OpenAI** | gpt-3.5-turbo-16k* <br>gpt-3.5-turbo* <br>gpt-4 <br>gpt-4-turbo <br>gpt-4o <br>gpt-4o-mini <br>o3-mini <br>o1<br><br>**Note:** We recommend against using GPT 3.5 models, as these can sometimes be prone to rate limit errors and are not compatible with Image data.  |
 | **Gemini** | gemini-2.0-flash-exp <br>gemini-1.5-flash <br>gemini-1.5-flash-8b <br>gemini-1.5-pro  |
 | **Vertex AI** | gemini-2.0-flash-exp <br>gemini-1.5-flash <br>gemini-1.5-pro   |
+| **Anthropic** | claude-3-5-haiku <br>claude-3-5-sonnet    |
 | **Azure OpenAI** | [Azure OpenAI chat-based models](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models) <br><br>**Note:** We recommend against using GPT 3.5 models, as these can sometimes be prone to rate limit errors and are not compatible with Image data.  |
 | **Custom** | [Custom LLM](prompts_create#Add-OpenAI-Azure-OpenAI-or-a-custom-model) |
 

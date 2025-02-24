@@ -18,6 +18,7 @@ There are two approaches to adding a model provider API key.
     * OpenAI
     * Vertex AI
     * Gemini
+    * Anthropic
 
 * In the second scenario, you add a separate API key per model. Examples include:
 
@@ -55,6 +56,14 @@ You can only have one Vertex AI key per organization. This grants you access to 
 Follow the instructions here to generate a credentials file in JSON format: [Authenticate to Vertex AI Agent Builder - Client libraries or third-party tools](https://cloud.google.com/generative-ai-app-builder/docs/authentication#client-libs)
 
 The JSON credentials are required. You can also optionally provide the project ID and location associated with your Google Cloud Platform environment. 
+
+Once added, all supported models will appear in the base model drop-down when you [draft your prompt](prompts_draft).
+
+## Anthropic API key
+
+You can only have one Anthropic key per organization. This grants you access to set of whitelisted models. For a list of these models, see [Supported base models](prompts_overview#Supported-base-models). 
+
+For information on getting an Anthropic API key, see [Anthropic - Accessing the API](https://docs.anthropic.com/en/api/getting-started#accessing-the-api).
 
 Once added, all supported models will appear in the base model drop-down when you [draft your prompt](prompts_draft).
 
