@@ -12,6 +12,7 @@ from jwt_auth.serializers import (
     TokenRefreshResponseSerializer,
 )
 from rest_framework import generics, status
+from rest_framework.exceptions import APIException
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -20,6 +21,12 @@ from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, Ou
 from rest_framework_simplejwt.views import TokenRefreshView, TokenViewBase
 
 logger = logging.getLogger(__name__)
+
+
+class TokenExistsError(APIException):
+    status_code = status.HTTP_409_CONFLICT
+    default_detail = 'You already have a valid token. Please revoke it before creating a new one.'
+    default_code = 'token_exists'
 
 
 @method_decorator(
@@ -131,6 +138,11 @@ class LSAPITokenView(generics.ListCreateAPIView):
         return LSAPITokenListSerializer
 
     def perform_create(self, serializer):
+        # Check for existing valid tokens
+        existing_tokens = self.get_queryset()
+        if existing_tokens.exists():
+            raise TokenExistsError()
+
         token = self.token_class.for_user(self.request.user)
         serializer.instance = token
 
