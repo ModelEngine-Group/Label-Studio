@@ -1,6 +1,6 @@
 {
-  "message": "fix: OPTIC-1677: Incorrect video frame rendered when pausing a video during playback (#7078)",
-  "commit": "6691ef0e1b7eebcaff54b9eb44dfc63eb9269577",
-  "date": "2025-02-21T17:21:27.000Z",
+  "message": "fix: LEAP-1856: Fix filters not being sent to Bulk API (#7125)",
+  "commit": "d84765d50f6d9b1c4ef502e3f8443003cec463ed",
+  "date": "2025-02-24T00:53:33.000Z",
   "branch": "develop"
 }
