@@ -1,6 +1,6 @@
 {
-  "message": "fix: DIA-1916: [FE] User is NOT able to upload profile image on new account page (#7106)",
-  "commit": "9215ad62f05c8c3e36b46a2adf4d04d8ab1a41aa",
-  "date": "2025-02-24T11:55:34.000Z",
+  "message": "docs: Fix formatting in Taxonomy tag params (#6977)",
+  "commit": "87ced23fe772e330704a68b82377131e1a4bd1d6",
+  "date": "2025-02-24T21:58:34.000Z",
   "branch": "develop"
 }
