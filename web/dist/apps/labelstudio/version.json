@@ -1,6 +1,6 @@
 {
-  "message": "fix: LEAP-1856: Fix filters not being sent to Bulk API (#7125)",
-  "commit": "d84765d50f6d9b1c4ef502e3f8443003cec463ed",
-  "date": "2025-02-24T00:53:33.000Z",
+  "message": "fix: DIA-1916: [FE] User is NOT able to upload profile image on new account page (#7106)",
+  "commit": "9215ad62f05c8c3e36b46a2adf4d04d8ab1a41aa",
+  "date": "2025-02-24T11:55:34.000Z",
   "branch": "develop"
 }
