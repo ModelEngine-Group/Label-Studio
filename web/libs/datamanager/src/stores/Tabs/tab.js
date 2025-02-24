@@ -158,7 +158,7 @@ export const Tab = types
       return self.selectedCount === self.dataStore.total;
     },
 
-    get filterSnposhot() {
+    get filterSnapshot() {
       return {
         conjunction: self.conjunction,
         items: self.serializedFilters,
@@ -176,7 +176,7 @@ export const Tab = types
 
     get query() {
       return JSON.stringify({
-        filters: self.filterSnposhot,
+        filters: self.filterSnapshot,
         ordering: self.ordering.toJSON(),
         hiddenColumns: self.hiddenColumnsSnapshot,
       });
@@ -186,7 +186,7 @@ export const Tab = types
       if (self.virtual) {
         return {
           title: self.title,
-          filters: self.filterSnposhot,
+          filters: self.filterSnapshot,
           ordering: self.ordering.toJSON(),
         };
       }
@@ -199,7 +199,7 @@ export const Tab = types
         ordering: self.ordering.toJSON(),
         type: self.type,
         target: self.target,
-        filters: self.filterSnposhot,
+        filters: self.filterSnapshot,
         hiddenColumns: getSnapshot(self.hiddenColumns),
         columnsWidth: self.columnsWidth.toPOJO(),
         columnsDisplayType: self.columnsDisplayType.toPOJO(),

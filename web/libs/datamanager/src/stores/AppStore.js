@@ -126,7 +126,7 @@ export const AppStore = types
     },
 
     get currentFilter() {
-      return self.currentView.filterSnposhot;
+      return self.currentView.filterSnapshot;
     },
   }))
   .volatile(() => ({
