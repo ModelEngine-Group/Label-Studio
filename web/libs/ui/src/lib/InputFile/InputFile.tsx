@@ -1,15 +1,17 @@
 import { IconUpload } from "../../assets/icons";
 import clsx from "clsx";
-type InputFileProps = {
+type InputFileProps = HTMLAttributes<HTMLInputElement> & {
   name?: string;
   className?: string;
   text?: React.ReactNode | string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  accept?: string;
   props?: Record<string, any>;
 };
+
 import styles from "./InputFile.module.scss";
 import type React from "react";
-import { forwardRef, useCallback, useRef } from "react";
+import { forwardRef, type HTMLAttributes, useCallback, useRef } from "react";
 export const InputFile = forwardRef(({ name, className, text, onChange, ...props }: InputFileProps, ref: any) => {
   if (!ref) {
     ref = useRef();

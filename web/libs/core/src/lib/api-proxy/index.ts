@@ -53,7 +53,11 @@ export class APIProxy<T extends {}> {
     this.resolveMethods(options.endpoints);
   }
 
-  invoke(method: keyof typeof this.methods, params?: Record<string, any>, options?: ApiParams) {
+  invoke<T>(
+    method: keyof typeof this.methods,
+    params?: Record<string, any>,
+    options?: ApiParams,
+  ): Promise<WrappedResponse<T>> {
     if (!this.isValidMethod(method as string)) {
       throw new Error(`Method ${method.toString()} not found`);
     }
