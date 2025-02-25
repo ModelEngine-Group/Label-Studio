@@ -238,8 +238,6 @@ class TaskPagination(PageNumberPagination):
     def paginate_queryset(self, queryset, request, view=None):
         if flag_set('fflag_fix_back_optic_1407_optimize_tasks_api_pagination_counts'):
             return self.paginate_totals_queryset(queryset, request, view)
-        if flag_set('fflag_fix_back_leap_24_tasks_api_optimization_05092023_short'):
-            return self.async_paginate_queryset(queryset, request, view)
         return self.sync_paginate_queryset(queryset, request, view)
 
     def get_paginated_response(self, data):
@@ -350,15 +348,7 @@ class TaskListAPI(generics.ListCreateAPIView):
                 evaluate_predictions(tasks_for_predictions)
                 [tasks_by_ids[_id].refresh_from_db() for _id in ids]
 
-            if flag_set('fflag_fix_back_leap_24_tasks_api_optimization_05092023_short'):
-                serializer = self.task_serializer_class(
-                    page,
-                    many=True,
-                    context=context,
-                    include=get_fields_for_evaluation(prepare_params, request.user, skip_regular=False),
-                )
-            else:
-                serializer = self.task_serializer_class(page, many=True, context=context)
+            serializer = self.task_serializer_class(page, many=True, context=context)
             return self.get_paginated_response(serializer.data)
         # all tasks
         if project.evaluate_predictions_automatically:
