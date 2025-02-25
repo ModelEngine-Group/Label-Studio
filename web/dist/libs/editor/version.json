@@ -1,6 +1,6 @@
 {
-  "message": "fix: LEAP-1792: Prevent empty tooltip for ControlButton (#7083)",
-  "commit": "c0d9151718b85ce919426417df4fc601f81b7568",
-  "date": "2025-02-25T14:29:41.000Z",
+  "message": "feat: OPTIC-1607: More analytics event tracking (#7120)",
+  "commit": "f9d94ecbcd23307b937b64793e626704610c4458",
+  "date": "2025-02-25T15:43:30.000Z",
   "branch": "develop"
 }
