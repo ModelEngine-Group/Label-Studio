@@ -31,8 +31,10 @@ export const ProjectsPage = () => {
   const defaultPageSize = Number.parseInt(localStorage.getItem("pages:projects-list") ?? 30);
 
   const [modal, setModal] = React.useState(false);
-  const openModal = setModal.bind(null, true);
-  const closeModal = setModal.bind(null, false);
+
+  const openModal = () => setModal(true);
+
+  const closeModal = () => setModal(false);
 
   const fetchProjects = async (page = currentPage, pageSize = defaultPageSize) => {
     setNetworkState("loading");
