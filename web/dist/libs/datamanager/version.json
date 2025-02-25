@@ -1,6 +1,6 @@
 {
-  "message": "docs: Fix formatting in Taxonomy tag params (#6977)",
-  "commit": "87ced23fe772e330704a68b82377131e1a4bd1d6",
-  "date": "2025-02-24T21:58:34.000Z",
+  "message": "fix: LEAP-1792: Prevent empty tooltip for ControlButton (#7083)",
+  "commit": "c0d9151718b85ce919426417df4fc601f81b7568",
+  "date": "2025-02-25T14:29:41.000Z",
   "branch": "develop"
 }
