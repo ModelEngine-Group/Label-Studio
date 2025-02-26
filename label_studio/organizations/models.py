@@ -99,9 +99,9 @@ class Organization(OrganizationMixin, models.Model):
         return self.title + ', id=' + str(self.pk)
 
     @classmethod
-    def create_organization(cls, created_by=None, title='Your Organization'):
+    def create_organization(cls, created_by=None, title='Your Organization', **kwargs):
         _create_organization = load_func(settings.CREATE_ORGANIZATION)
-        return _create_organization(title=title, created_by=created_by)
+        return _create_organization(title=title, created_by=created_by, **kwargs)
 
     @classmethod
     def find_by_user(cls, user, check_deleted=False):

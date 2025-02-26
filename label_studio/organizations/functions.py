@@ -4,13 +4,13 @@ from organizations.models import Organization, OrganizationMember
 from projects.models import Project
 
 
-def create_organization(title, created_by):
+def create_organization(title, created_by, **kwargs):
     from core.feature_flags import flag_set
 
     JWT_ACCESS_TOKEN_ENABLED = flag_set('fflag__feature_develop__prompts__dia_1829_jwt_token_auth')
 
     with transaction.atomic():
-        org = Organization.objects.create(title=title, created_by=created_by)
+        org = Organization.objects.create(title=title, created_by=created_by, **kwargs)
         OrganizationMember.objects.create(user=created_by, organization=org)
         if JWT_ACCESS_TOKEN_ENABLED:
             # set auth tokens to new system for new users

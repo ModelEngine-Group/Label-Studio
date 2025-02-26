@@ -228,6 +228,7 @@ s3transfer = "0.7.0"
 mock = ">=5.1.0"
 moto = ">=4.2.6"
 requests-mock = "1.12.1"
+factory-boy = "^3.3.3"
 
 [tool.poetry.group.build.dependencies]
 twine = ">=6.1.0"

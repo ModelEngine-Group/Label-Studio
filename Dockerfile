@@ -87,9 +87,17 @@ ENV PATH="$VENV_PATH/bin:$PATH"
 # Copy dependency files
 COPY pyproject.toml poetry.lock README.md ./
 
+# Set a default build argument for including dev dependencies
+ARG INCLUDE_DEV=false
+
 # Install dependencies without dev packages
 RUN --mount=type=cache,target=$POETRY_CACHE_DIR,sharing=locked \
-    poetry check --lock && poetry install --no-root --without test --extras uwsgi
+    poetry check --lock && \
+    if [ "$INCLUDE_DEV" = "true" ]; then \
+        poetry install --no-root --extras uwsgi --with test; \
+    else \
+        poetry install --no-root --without test --extras uwsgi; \
+    fi
 
 # Install LS
 COPY label_studio label_studio
