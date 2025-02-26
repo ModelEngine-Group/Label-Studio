@@ -1,6 +1,6 @@
 {
-  "message": "feat: OPTIC-1607: More analytics event tracking (#7120)",
-  "commit": "f9d94ecbcd23307b937b64793e626704610c4458",
-  "date": "2025-02-25T15:43:30.000Z",
+  "message": "feat: OPTIC-1643: Copy Data Manager Quick View link to annotation or region (#7122)",
+  "commit": "b0783d85eb641cd7e5986ea12b085ff172473d27",
+  "date": "2025-02-26T13:45:32.000Z",
   "branch": "develop"
 }
