@@ -245,14 +245,16 @@ export const AppStore = types
 
         if (isFF(FF_REGION_VISIBILITY_FROM_URL)) {
           const { annotation: annIDFromUrl, region: regionIDFromUrl } = History.getParams();
-          if (annIDFromUrl) {
-            const lsfAnnotation = self.LSF.lsf.annotationStore.annotations.find((a) => {
+          const annotationStore = self.LSF?.lsf?.annotationStore;
+
+          if (annIDFromUrl && annotationStore) {
+            const lsfAnnotation = [...annotationStore.annotations, ...annotationStore.predictions].find((a) => {
               return a.pk === annIDFromUrl || a.id === annIDFromUrl;
             });
 
             if (lsfAnnotation) {
               const annID = lsfAnnotation.pk ?? lsfAnnotation.id;
-              self.LSF?.setLSFTask(self.taskStore.selected, annID);
+              self.LSF?.setLSFTask(self.taskStore.selected, annID, undefined, lsfAnnotation.type === "prediction");
             }
           }
           if (regionIDFromUrl) {

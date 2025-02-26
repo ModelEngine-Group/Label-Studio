@@ -57,6 +57,7 @@ module.exports = {
     "^react-konva-utils": "identity-obj-proxy",
     "\\.(s[ac]ss|css|svg|png|jpe?g)$": "identity-obj-proxy",
     "^@humansignal/ui": "<rootDir>/../ui/src/index.ts",
+    "^@humansignal/core/lib/(.*)$": "<rootDir>/../core/src/lib/$1",
   },
   testPathIgnorePatterns: ["/node_modules/", "/e2e/"],
   testRegex: "__tests__/.*.test.[tj]sx?",

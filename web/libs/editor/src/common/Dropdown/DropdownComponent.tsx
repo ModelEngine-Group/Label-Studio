@@ -38,7 +38,7 @@ export interface DropdownProps {
   className?: string;
   dataTestId?: string;
   style?: CSSProperties;
-  children?: JSX.Element;
+  children?: React.ReactNode;
   onToggle?: (visible: boolean) => void;
 }
 

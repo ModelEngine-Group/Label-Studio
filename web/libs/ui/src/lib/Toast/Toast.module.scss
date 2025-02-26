@@ -38,6 +38,8 @@
   position: fixed;
   display: flex;
   justify-content: center;
+  left: 0;
+  right: 0;
   width: 100%;
   z-index: 9999;
   bottom: 24px;
@@ -45,8 +47,10 @@
 
   & ol {
     list-style: none;
+    margin: 0;
+    padding: 0;
 
-    & li + li {
+    & li+li {
       margin-top: var(--toast-spacing);
     }
   }

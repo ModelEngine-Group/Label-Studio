@@ -25,7 +25,8 @@
 
     &:hover .outliner-item__controls_newUI {
       .outliner-item__control_type_lock button,
-      .outliner-item__control_type_visibility button {
+      .outliner-item__control_type_visibility button,
+      .outliner-item__control_type_menu button {
         display: inline-flex !important;
       }
     }
@@ -214,6 +215,16 @@
       display: flex;
       margin-left: 13px;
     }
+
+    .region-context-menu {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .region-context-menu button {
+      display: none;
+    }
   }
 
   &:hover &__controls {
@@ -250,7 +261,7 @@
   }
 
   &_hidden {
-    & .ocr{
+    & .ocr {
       background: var(--sand_0);
     }
   }

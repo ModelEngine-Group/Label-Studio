@@ -75,7 +75,7 @@
       color: var(--sand_900);
     }
 
-    & .annotation-button__ellipsisIcon {
+    & .annotation-button__trigger {
       visibility: visible;
     }
   }
@@ -91,7 +91,7 @@
       border-bottom-color: transparent;
     }
 
-    & .annotation-button__ellipsisIcon {
+    & .annotation-button__trigger {
       visibility: visible;
     }
 
@@ -119,7 +119,7 @@
     }
   }
 
-  &__ellipsisIcon {
+  &__trigger {
     transform: rotate(90deg);
     display: flex;
     border-radius: 4px;
@@ -163,72 +163,6 @@
 
       svg {
         display: block;
-      }
-    }
-  }
-
-  &_contextMenuOpen {
-    & .annotation-button {
-      &__ellipsisIcon {
-        color: var(--grape_500);
-        background: var(--grape_0);
-      }
-    }
-  }
-}
-
-.AnnotationButtonContextMenu {
-  border-radius: 4px;
-  box-shadow: 0 1px 3px 1px #26262626, 0 1px 2px 0 #2626264D;
-
-  &__seperator {
-    height: 1px;
-    background-color: var(--sand_100);
-  }
-
-  &__option {
-    display: flex;
-    margin: 8px;
-    align-items: center;
-    white-space: nowrap;
-    gap: 2px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 22px;
-    border-radius: 4px;
-    padding-right: 32px;
-
-    &:hover {
-      background-color: var(--grape_0);
-      color: var(--grape_500);
-    }
-
-    &_duplicate {
-      padding-top: 6px;
-      padding-bottom: 6px;
-
-      .AnnotationButtonContextMenu__icon {
-        display: flex;
-        padding: 0 8px 0 9px;
-        align-items: center;
-      }
-    }
-
-    &_delete {
-      padding-top: 6px;
-      padding-bottom: 6px;
-      color: var(--danger_color);
-
-      &:hover {
-        background-color: var(--red_1);
-        color: var(--danger_color);
-      }
-
-      & .AnnotationButtonContextMenu__icon {
-        display: flex;
-        padding: 4px 11px 4px 12px;
-        align-items: center;
       }
     }
   }

@@ -1,5 +1,5 @@
 import chroma from "chroma-js";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import Tree from "rc-tree";
 import {
   createContext,
@@ -25,11 +25,11 @@ import { flatten, isDefined, isMacOS } from "../../../utils/utilities";
 import { NodeIcon } from "../../Node/Node";
 import { LockButton } from "../Components/LockButton";
 import { RegionControlButton } from "../Components/RegionControlButton";
+import { RegionContextMenu } from "../Components/RegionContextMenu";
 import "./TreeView.scss";
 import ResizeObserver from "../../../utils/resize-observer";
 import type { EventDataNode, Key } from "rc-tree/es/interface";
 import { RegionLabel } from "./RegionLabel";
-
 const { localStorage } = window;
 const localStoreName = "collapsed-label-pos";
 const MIN_REGIONS_TREE_ROW_HEIGHT = 34;
@@ -463,8 +463,14 @@ interface RegionControlsProps {
   toggleCollapsed: (e: any) => void;
 }
 
-const RegionControls: FC<RegionControlsProps> = observer(
-  ({ hovered, item, entity, collapsed, regions, hasControls, type, toggleCollapsed }) => {
+const injector = inject(({ store }) => {
+  return {
+    store,
+  };
+});
+
+const RegionControls: FC<RegionControlsProps> = injector(
+  observer(({ hovered, item, entity, collapsed, regions, hasControls, type, toggleCollapsed, store }) => {
     const { regions: regionStore } = useContext(OutlinerContext);
 
     const hidden = useMemo(() => {
@@ -525,6 +531,11 @@ const RegionControls: FC<RegionControlsProps> = observer(
           </>
         )}
         <Elem name={"wrapper"}>
+          {store.hasInterface("annotations:copy-link") && isDefined(item?.annotation?.pk) && (
+            <Elem name="control" mod={{ type: "menu" }}>
+              <RegionContextMenu item={item} />
+            </Elem>
+          )}
           <Elem name="control" mod={{ type: "lock" }}>
             <LockButton
               item={item}
@@ -559,7 +570,7 @@ const RegionControls: FC<RegionControlsProps> = observer(
         </Elem>
       </Elem>
     );
-  },
+  }),
 );
 
 interface RegionItemOCSProps {

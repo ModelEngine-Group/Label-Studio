@@ -36,8 +36,8 @@ const getMinIndex = (element?: HTMLElement) => {
 
 interface DropdownTriggerProps extends DropdownProps {
   tag?: string;
-  dropdown?: RefObject<JSX.Element>;
-  content?: JSX.Element;
+  dropdown?: RefObject<DropdownRef>;
+  content?: React.ReactNode;
   dataTestId?: string;
   toggle?: boolean;
   closeOnClickOutside?: boolean;

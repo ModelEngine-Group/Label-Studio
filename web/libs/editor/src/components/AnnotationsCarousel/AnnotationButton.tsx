@@ -1,11 +1,13 @@
-import { Block, Elem } from "../../utils/bem";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { inject, observer } from "mobx-react";
+import { Block, cn, Elem } from "../../utils/bem";
 import { Userpic } from "../../common/Userpic/Userpic";
 import {
   IconAnnotationGroundTruth,
   IconAnnotationSkipped2,
   IconDraftCreated2,
   IconDuplicate,
-  IconEllipsis,
+  IconLink,
   IconTrashRect,
   LsCommentResolved,
   LsCommentUnresolved,
@@ -15,22 +17,23 @@ import {
 } from "../../assets/icons";
 import { userDisplayName } from "../../utils/utilities";
 import { TimeAgo } from "../../common/TimeAgo/TimeAgo";
-import "./AnnotationButton.scss";
-import { useCallback, useEffect, useState } from "react";
-import { Dropdown } from "../../common/Dropdown/Dropdown";
 import { useDropdown } from "../../common/Dropdown/DropdownTrigger";
 import { isDefined } from "../../utils/utilities";
 import { Tooltip } from "./../../common/Tooltip/Tooltip";
+import { ToastType, useToast } from "@humansignal/ui/lib/Toast/Toast";
+import { useCopyText } from "@humansignal/core/lib/hooks/useCopyText";
 
 // eslint-disable-next-line
 // @ts-ignore
 import { confirm } from "../../common/Modal/Modal";
-import { observer } from "mobx-react";
+import { type ContextMenuAction, ContextMenu, ContextMenuTrigger, type MenuActionOnClick } from "../ContextMenu";
+import "./AnnotationButton.scss";
 
 interface AnnotationButtonInterface {
   entity?: any;
   capabilities?: any;
   annotationStore?: any;
+  store: any;
   onAnnotationChange?: () => void;
 }
 
@@ -56,9 +59,15 @@ const renderCommentTooltip = (ent: any) => {
   return "";
 };
 
+const injector = inject(({ store }) => {
+  return {
+    store,
+  };
+});
+
 export const AnnotationButton = observer(
   ({ entity, capabilities, annotationStore, onAnnotationChange }: AnnotationButtonInterface) => {
-    const iconSize = 37;
+    const iconSize = 32;
     const isPrediction = entity.type === "prediction";
     const username = userDisplayName(
       entity.user ?? {
@@ -66,7 +75,6 @@ export const AnnotationButton = observer(
       },
     );
     const [isGroundTruth, setIsGroundTruth] = useState<boolean>();
-    const [isContextMenuOpen, setIsContextMenuOpen] = useState<boolean>(false);
     const infoIsHidden = annotationStore.store?.hasInterface("annotations:hide-info");
     let hiddenUser = null;
 
@@ -96,89 +104,118 @@ export const AnnotationButton = observer(
         }
       }
     }, [entity]);
-    const ContextMenu = ({ entity, capabilities }: AnnotationButtonInterface) => {
-      const dropdown = useDropdown();
-      const clickHandler = () => {
-        onAnnotationChange?.();
-        dropdown?.close();
-      };
-      const setGroundTruth = useCallback(() => {
-        entity.setGroundTruth(!isGroundTruth);
-        clickHandler();
-      }, [entity]);
-      const duplicateAnnotation = useCallback(() => {
-        const c = annotationStore.addAnnotationFromPrediction(entity);
 
-        window.setTimeout(() => {
-          annotationStore.selectAnnotation(c.id);
+    const AnnotationButtonContextMenu = injector(
+      observer(({ entity, capabilities, store }: AnnotationButtonInterface) => {
+        const annotationLink = useMemo(() => {
+          const url = new URL(window.location.href);
+          if (entity.pk) {
+            url.searchParams.set("annotation", entity.pk);
+          }
+          // In case of targeting directly an annotation, we don't want to show the region in the URL
+          // otherwise it will be shown as a region link
+          url.searchParams.delete("region");
+          return url.toString();
+        }, [entity.pk]);
+        const [copyLink] = useCopyText(annotationLink);
+        const toast = useToast();
+        const dropdown = useDropdown();
+        const clickHandler = () => {
+          onAnnotationChange?.();
+          dropdown?.close();
+        };
+        const setGroundTruth = useCallback<MenuActionOnClick>(() => {
+          entity.setGroundTruth(!isGroundTruth);
           clickHandler();
-        });
-      }, [entity]);
-      const deleteAnnotation = useCallback(() => {
-        clickHandler();
-        confirm({
-          title: "Delete annotation?",
-          body: (
-            <>
-              This will <strong>delete all existing regions</strong>. Are you sure you want to delete them?
-              <br />
-              This action cannot be undone.
-            </>
-          ),
-          buttonLook: "destructive",
-          okText: "Delete",
-          onOk: () => {
-            entity.list.deleteAnnotation(entity);
-          },
-        });
-      }, [entity]);
-      const isPrediction = entity.type === "prediction";
-      const isDraft = !isDefined(entity.pk);
-      const showGroundTruth = capabilities.groundTruthEnabled && !isPrediction && !isDraft;
-      const showDuplicateAnnotation = capabilities.enableCreateAnnotation && !isDraft;
+        }, [entity]);
+        const duplicateAnnotation = useCallback<MenuActionOnClick>(() => {
+          const c = annotationStore.addAnnotationFromPrediction(entity);
 
-      return (
-        <Block name="AnnotationButtonContextMenu">
-          {showGroundTruth && (
-            <Elem name="option" mod={{ groundTruth: true }} onClick={setGroundTruth}>
-              {isGroundTruth ? (
-                <>
-                  <LsStar color="#FFC53D" width={iconSize} height={iconSize} /> {"Unset "}
-                </>
+          window.setTimeout(() => {
+            annotationStore.selectAnnotation(c.id);
+            clickHandler();
+          });
+        }, [entity]);
+        const linkAnnotation = useCallback<MenuActionOnClick>(() => {
+          copyLink();
+          dropdown?.close();
+          toast.show({
+            message: "Annotation link copied to clipboard",
+            type: ToastType.info,
+          });
+        }, [entity, copyLink]);
+        const deleteAnnotation = useCallback(() => {
+          clickHandler();
+          confirm({
+            title: "Delete annotation?",
+            body: (
+              <>
+                This will <strong>delete all existing regions</strong>. Are you sure you want to delete them?
+                <br />
+                This action cannot be undone.
+              </>
+            ),
+            buttonLook: "destructive",
+            okText: "Delete",
+            onOk: () => {
+              entity.list.deleteAnnotation(entity);
+            },
+          });
+        }, [entity]);
+        const isPrediction = entity.type === "prediction";
+        const isDraft = !isDefined(entity.pk);
+        const showGroundTruth = capabilities.groundTruthEnabled && !isPrediction && !isDraft;
+        const showDuplicateAnnotation = capabilities.enableCreateAnnotation && !isDraft;
+        const actions = useMemo<ContextMenuAction[]>(
+          () => [
+            {
+              label: `${isGroundTruth ? "Unset " : "Set "} as Ground Truth`,
+              onClick: setGroundTruth,
+              icon: isGroundTruth ? (
+                <LsStar color="#FFC53D" width={iconSize} height={iconSize} />
               ) : (
-                <>
-                  <LsStarOutline width={iconSize} height={iconSize} />
-                  {"Set "}
-                </>
-              )}
-              as Ground Truth
-            </Elem>
-          )}
-          {showDuplicateAnnotation && (
-            <Elem name="option" mod={{ duplicate: true }} onClick={duplicateAnnotation}>
-              <Elem name="icon">
-                <IconDuplicate width={20} height={24} />
-              </Elem>
-              Duplicate Annotation
-            </Elem>
-          )}
-          {capabilities.enableAnnotationDelete && !isPrediction && (
-            <>
-              <Elem name="seperator" />
-              <Elem name="option" mod={{ delete: true }} onClick={deleteAnnotation}>
-                <Elem name="icon">
-                  <IconTrashRect width={14} height={18} />
-                </Elem>{" "}
-                Delete Annotation
-              </Elem>
-            </>
-          )}
-        </Block>
-      );
-    };
+                <LsStarOutline width={iconSize} height={iconSize} />
+              ),
+              enabled: showGroundTruth,
+            },
+            {
+              label: "Duplicate Annotation",
+              onClick: duplicateAnnotation,
+              icon: <IconDuplicate width={16} height={20} />,
+              enabled: showDuplicateAnnotation,
+            },
+            {
+              label: "Copy Annotation Link",
+              onClick: linkAnnotation,
+              icon: <IconLink width={24} height={24} />,
+              enabled: !isDraft && store.hasInterface("annotations:copy-link"),
+            },
+            {
+              label: "Delete Annotation",
+              onClick: deleteAnnotation,
+              icon: <IconTrashRect width={14} height={18} />,
+              separator: true,
+              danger: true,
+              enabled: capabilities.enableAnnotationDelete && !isPrediction,
+            },
+          ],
+          [
+            entity,
+            isGroundTruth,
+            isPrediction,
+            isDraft,
+            capabilities.enableAnnotationDelete,
+            capabilities.enableCreateAnnotation,
+            capabilities.groundTruthEnabled,
+          ],
+        );
+
+        return <ContextMenu actions={actions} />;
+      }),
+    );
 
     return (
-      <Block name="annotation-button" mod={{ selected: entity.selected, contextMenuOpen: isContextMenuOpen }}>
+      <Block name="annotation-button" mod={{ selected: entity.selected }}>
         <Elem name="mainSection" onClick={clickHandler}>
           <Elem name="picSection">
             <Elem
@@ -260,16 +297,16 @@ export const AnnotationButton = observer(
             </Elem>
           )}
         </Elem>
-        <Elem name="contextMenu">
-          <Dropdown.Trigger
-            content={<ContextMenu entity={entity} capabilities={capabilities} annotationStore={annotationStore} />}
-            onToggle={(isVisible) => setIsContextMenuOpen(isVisible)}
-          >
-            <Elem name="ellipsisIcon">
-              <IconEllipsis width={28} height={28} />
-            </Elem>
-          </Dropdown.Trigger>
-        </Elem>
+        <ContextMenuTrigger
+          className={cn("annotation-button").elem("trigger").toClassName()}
+          content={
+            <AnnotationButtonContextMenu
+              entity={entity}
+              capabilities={capabilities}
+              annotationStore={annotationStore}
+            />
+          }
+        />
       </Block>
     );
   },

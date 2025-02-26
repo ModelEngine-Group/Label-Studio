@@ -40,6 +40,7 @@ import { sanitizeHtml } from "../../utils/html";
 import { reactCleaner } from "../../utils/reactCleaner";
 import { guidGenerator } from "../../utils/unique";
 import { isDefined, sortAnnotations } from "../../utils/utilities";
+import { ToastProvider, ToastViewport } from "@humansignal/ui/lib/Toast/Toast";
 
 /**
  * Components
@@ -253,82 +254,85 @@ class App extends Component {
       >
         <Settings store={store} />
         <Provider store={store}>
-          {newUIEnabled ? (
-            <InstructionsModal
-              visible={store.showingDescription}
-              onCancel={() => store.toggleDescription()}
-              title={store.hasInterface("review") ? "Review Instructions" : "Labeling Instructions"}
-            >
-              {store.description}
-            </InstructionsModal>
-          ) : (
-            <>
-              {store.showingDescription && (
-                <Segment>
-                  <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(store.description) }} />
-                </Segment>
-              )}
-            </>
-          )}
+          <ToastProvider>
+            {newUIEnabled ? (
+              <InstructionsModal
+                visible={store.showingDescription}
+                onCancel={() => store.toggleDescription()}
+                title={store.hasInterface("review") ? "Review Instructions" : "Labeling Instructions"}
+              >
+                {store.description}
+              </InstructionsModal>
+            ) : (
+              <>
+                {store.showingDescription && (
+                  <Segment>
+                    <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(store.description) }} />
+                  </Segment>
+                )}
+              </>
+            )}
 
-          {isDefined(store) && store.hasInterface("topbar") && <TopBar store={store} />}
-          <Block
-            name="wrapper"
-            mod={{
-              viewAll: viewingAll,
-              bsp: settings.bottomSidePanel,
-              outliner: outlinerEnabled,
-              showingBottomBar: newUIEnabled,
-            }}
-          >
-            {outlinerEnabled ? (
-              newUIEnabled ? (
-                isBulkMode ? (
-                  <>
-                    {mainContent}
-                    {store.hasInterface("topbar") && <BottomBar store={store} />}
-                  </>
+            {isDefined(store) && store.hasInterface("topbar") && <TopBar store={store} />}
+            <Block
+              name="wrapper"
+              mod={{
+                viewAll: viewingAll,
+                bsp: settings.bottomSidePanel,
+                outliner: outlinerEnabled,
+                showingBottomBar: newUIEnabled,
+              }}
+            >
+              {outlinerEnabled ? (
+                newUIEnabled ? (
+                  isBulkMode ? (
+                    <>
+                      {mainContent}
+                      {store.hasInterface("topbar") && <BottomBar store={store} />}
+                    </>
+                  ) : (
+                    <SideTabsPanels
+                      panelsHidden={viewingAll}
+                      currentEntity={as.selectedHistory ?? as.selected}
+                      regions={as.selected.regionStore}
+                      showComments={store.hasInterface("annotations:comments")}
+                      focusTab={store.commentStore.tooltipMessage ? "comments" : null}
+                    >
+                      {mainContent}
+                      {store.hasInterface("topbar") && <BottomBar store={store} />}
+                    </SideTabsPanels>
+                  )
+                ) : isBulkMode ? (
+                  <>{mainContent}</>
                 ) : (
-                  <SideTabsPanels
+                  <SidePanels
                     panelsHidden={viewingAll}
                     currentEntity={as.selectedHistory ?? as.selected}
                     regions={as.selected.regionStore}
-                    showComments={store.hasInterface("annotations:comments")}
-                    focusTab={store.commentStore.tooltipMessage ? "comments" : null}
                   >
                     {mainContent}
-                    {store.hasInterface("topbar") && <BottomBar store={store} />}
-                  </SideTabsPanels>
+                  </SidePanels>
                 )
-              ) : isBulkMode ? (
-                <>{mainContent}</>
               ) : (
-                <SidePanels
-                  panelsHidden={viewingAll}
-                  currentEntity={as.selectedHistory ?? as.selected}
-                  regions={as.selected.regionStore}
-                >
+                <>
                   {mainContent}
-                </SidePanels>
-              )
-            ) : (
-              <>
-                {mainContent}
 
-                {viewingAll === false && (
-                  <Block name="menu" mod={{ bsp: settings.bottomSidePanel }}>
-                    {store.hasInterface("side-column") && (
-                      <SidebarTabs>
-                        <AnnotationTab store={store} />
-                      </SidebarTabs>
-                    )}
-                  </Block>
-                )}
+                  {viewingAll === false && (
+                    <Block name="menu" mod={{ bsp: settings.bottomSidePanel }}>
+                      {store.hasInterface("side-column") && (
+                        <SidebarTabs>
+                          <AnnotationTab store={store} />
+                        </SidebarTabs>
+                      )}
+                    </Block>
+                  )}
 
-                {newUIEnabled && store.hasInterface("topbar") && <BottomBar store={store} />}
-              </>
-            )}
-          </Block>
+                  {newUIEnabled && store.hasInterface("topbar") && <BottomBar store={store} />}
+                </>
+              )}
+            </Block>
+            <ToastViewport />
+          </ToastProvider>
         </Provider>
         {store.hasInterface("debug") && <Debug store={store} />}
       </Block>

@@ -80,6 +80,7 @@ export { ReactComponent as IconCopy } from "./copy.svg";
 export { ReactComponent as IconText } from "./text.svg";
 export { ReactComponent as IconViewAll } from "./view-all.svg";
 export { ReactComponent as IconLink } from "./link.svg";
+export { ReactComponent as IconRelationLink } from "./link-relation.svg";
 export { ReactComponent as IconPlusAlt } from "./plus-alt.svg";
 export { ReactComponent as IconTrash } from "./trash.svg";
 export { ReactComponent as IconTrashAlt } from "./trash-alt.svg";
