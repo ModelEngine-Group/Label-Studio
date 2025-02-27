@@ -1,36 +1,53 @@
-import { Form, Input, Toggle } from "apps/labelstudio/src/components/Form";
 import { useAtomValue } from "jotai";
-import { formDataToJPO } from "@humansignal/core/lib/utils/helpers";
-import { saveSettingsAtom, settingsAtom } from "@humansignal/core/pages/AccountSettings/atoms";
+import { settingsAtom, TOKEN_SETTINGS_KEY } from "@humansignal/core/pages/AccountSettings/atoms";
+import { queryClientAtom } from "jotai-tanstack-query";
+
+import { Form, Input, Toggle } from "apps/labelstudio/src/components/Form";
+import { Button } from "apps/labelstudio/src/components/Button/Button";
 import type { AuthTokenSettings } from "@humansignal/core/pages/AccountSettings/types";
-import { useRef } from "react";
-import { debounce } from "@humansignal/core/lib/utils/debounce";
+import { type ChangeEvent, useState } from "react";
 
 export const TokenSettingsModal = ({
   showTTL,
+  onSaved,
 }: {
   showTTL?: boolean;
+  onSaved?: () => void;
 }) => {
   const settings = useAtomValue(settingsAtom);
-  const formRef = useRef<Form>();
-  const { mutate: saveSettings } = useAtomValue(saveSettingsAtom);
-  const onSubmit = debounce(() => {
-    const form = formRef.current.formElement.current as HTMLFormElement;
-    const data = formDataToJPO(new FormData(form));
-    const body = {
-      api_tokens_enabled: data.api_tokens_enabled === "on",
-      legacy_api_tokens_enabled: data.legacy_api_tokens_enabled === "on",
-    } satisfies Partial<AuthTokenSettings>;
-    saveSettings(body);
-  });
+  if (!settings.isSuccess || settings.isError || "error" in settings.data) {
+    return <div>Error loading settings.</div>;
+  }
   return (
-    <Form ref={formRef} onChange={onSubmit}>
+    <TokenSettingsModalView
+      key={settings.data?.api_tokens_enabled}
+      settings={settings.data}
+      showTTL={showTTL}
+      onSaved={onSaved}
+    />
+  );
+};
+
+function TokenSettingsModalView({
+  settings,
+  showTTL,
+  onSaved,
+}: { settings: AuthTokenSettings; showTTL?: boolean; onSaved?: () => void }) {
+  const [enableTTL, setEnableTTL] = useState(settings.api_tokens_enabled);
+  const queryClient = useAtomValue(queryClientAtom);
+  const reloadSettings = () => {
+    queryClient.invalidateQueries({ queryKey: [TOKEN_SETTINGS_KEY] });
+    onSaved?.();
+  };
+  return (
+    <Form action="accessTokenUpdateSettings" onSubmit={reloadSettings}>
       <Form.Row columnCount={1}>
         <Toggle
           label="Personal Access Tokens"
           name="api_tokens_enabled"
           description="Enable increased token authentication security"
-          checked={settings.data?.api_tokens_enabled ?? false}
+          checked={settings.api_tokens_enabled ?? false}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => setEnableTTL(e.target.checked)}
         />
       </Form.Row>
       <Form.Row columnCount={1}>
@@ -38,27 +55,30 @@ export const TokenSettingsModal = ({
           label="Legacy Tokens"
           name="legacy_api_tokens_enabled"
           description="Enable legacy access tokens"
-          checked={settings.data?.legacy_api_tokens_enabled}
+          checked={settings.legacy_api_tokens_enabled ?? true}
         />
       </Form.Row>
       {showTTL === true && (
         <Form.Row columnCount={1}>
           <Input
-            name="time_to_live"
+            name="api_token_ttl_days"
             label="Personal Access Token Time-to-Live"
             description="The number of days, after creation, that the token will be valid for. After this time period a user will need to create a new access token"
             labelProps={{
               description:
                 "The number of days, after creation, that the token will be valid for. After this time period a user will need to create a new access token",
             }}
-            disabled={!settings.data?.api_tokens_enabled}
+            disabled={!enableTTL}
             type="number"
             min={10}
             max={365}
-            value={settings.data?.time_to_live ?? 30}
+            value={settings.api_token_ttl_days ?? 30}
           />
         </Form.Row>
       )}
+      <Form.Actions>
+        <Button type="submit">Save</Button>
+      </Form.Actions>
     </Form>
   );
-};
+}

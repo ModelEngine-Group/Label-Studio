@@ -16,6 +16,7 @@ import { PeopleList } from "./PeopleList";
 import "./PeoplePage.scss";
 import { SelectedUser } from "./SelectedUser";
 import { TokenSettingsModal } from "@humansignal/core/blocks/TokenSettingsModal";
+import { useToast } from "@humansignal/ui";
 import { debounce } from "@humansignal/core/lib/utils/debounce";
 
 const InvitationModal = ({ link }) => {
@@ -51,7 +52,9 @@ const InvitationModal = ({ link }) => {
 export const PeoplePage = () => {
   const api = useAPI();
   const inviteModal = useRef();
+  const apiSettingsModal = useRef();
   const config = useConfig();
+  const toast = useToast();
   const [selectedUser, setSelectedUser] = useState(null);
 
   const [link, setLink] = useState();
@@ -121,13 +124,20 @@ export const PeoplePage = () => {
     () => ({
       title: "API Token Settings",
       style: { width: 480 },
-      body: () => <TokenSettingsModal />,
+      body: () => (
+        <TokenSettingsModal
+          onSaved={() => {
+            toast.show({ message: "API Token settings saved" });
+            apiSettingsModal.current?.close();
+          }}
+        />
+      ),
     }),
     [],
   );
 
   const showApiTokenSettingsModal = useCallback(() => {
-    inviteModal.current = modal(apiTokensSettingsModalProps);
+    apiSettingsModal.current = modal(apiTokensSettingsModalProps);
     __lsa("organization.token_settings");
   }, [inviteModalProps, link]);
 
