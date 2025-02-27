@@ -113,3 +113,14 @@ To add a custom model, enter the following:
 * The endpoint URL for the model. For example, `https://my.openai.endpoint.com/v1`
 * An API key to access the model. An API key is tied to a specific account, but the access is shared within the org if added. (Optional)
 * An auth token to access the model API. An auth token provides API access at the server level. (Optional)
+
+### Example
+
+1. Setup [Ollama](https://ollama.com/), e.g. `ollama run llama3.2`
+2. [Verify your local OpenAI-compatible API is working](https://ollama.com/blog/openai-compatibility), e.g. `http://localhost:11434/v1`
+3. Create an externally facing endpoint, e.g. `https://my.openai.endpoint.com/v1` -> `http://localhost:11434/v1`
+4. Add connection to Label Studio:
+    - Name: `llama3.2` (must match the model name in Ollama)
+    - Endpoint: `https://my.openai.endpoint.com/v1` (note `v1` suffix is required)
+    - API key: `ollama` (default)
+    - Auth token: empty
