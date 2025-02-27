@@ -3,7 +3,6 @@
 import logging
 
 import drf_yasg.openapi as openapi
-from core.feature_flags import flag_set
 from core.mixins import GetParentObjectMixin
 from core.permissions import ViewClassPermission, all_permissions
 from core.utils.common import DjangoFilterDescriptionInspector
@@ -573,9 +572,7 @@ class AnnotationsListAPI(GetParentObjectMixin, generics.ListCreateAPIView):
             if draft.task_id != task.id or not draft.has_permission(user) or draft.user_id != user.id:
                 raise PermissionDenied(f'You have no permission to draft id:{draft_id}')
 
-        if draft is not None and flag_set(
-            'fflag_feat_back_lsdv_5035_use_created_at_from_draft_for_annotation_256052023_short', user='auto'
-        ):
+        if draft is not None:
             # if the annotation will be created from draft - get created_at from draft to keep continuity of history
             extra_args['draft_created_at'] = draft.created_at
 
