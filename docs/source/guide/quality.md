@@ -116,6 +116,34 @@ For specific labels, you can see in a donut chart how many labels of each type w
 
 For example, if you're developing a dataset of OCR images, and 90% of your tasks have **Text** labels and 10% have **Handwriting** labels, you might want to increase the number of images of handwriting in your dataset, to improve the eventual accuracy of a machine learning model trained on this dataset.
 
+## Pause an annotator
+
+For organizations with a large number of annotators, it might prove useful to pause an annotator's progress. This might be useful for annotators that are performing poorly or exhibiting behavior that might indicate they have automated their work (bot behavior). 
+
+You can pause annotators from the Members dashboard in a project. This action is only available next to users in the Annotator and Reviewer roles:
+
+![Screenshot of pause](/images/review/pause.png)
+
+When a user is paused, the following occurs:
+
+* They immediately see a message informing them that they have been paused. 
+
+    ![Screenshot of message](/images/review/paused-message.png)
+* Their progress within their current task is saved as a draft, but they cannot make any further changes.   
+* When they click **Go Back**, they are returned to the Projects page. If they attempt to re-enter the project, they are shown the error message above. 
+
+!!! info Tip
+
+    If you have [custom scripts](scripts) enabled, you can automatically pause an annotator based on certain behaviors and then customize the message that appears on their screen. 
+
+    For more information, see [Custom script examples - Pause an annotator](script_examples#Pause-an-annotator).
+
+!!! info Tip
+
+    If you hover over the **Paused** indicator, you can see the message that was shown to the user when they were paused. If a user was manually paused, it also shows who initiated the action.  
+
+    ![Screenshot of hover](/images/review/paused-tooltip.png)
+
 ## Verify model and annotator performance
 
 To verify the performance of specific annotators, review the **Members** section for a specific project. If you don't see an annotator's activity reflected, make sure they have been added as a member to the project.
