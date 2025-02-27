@@ -41,7 +41,7 @@ The SDK provides a set of predefined classes and methods to interact with the La
    `pip install label-studio-sdk`
 2. In your Python script, do the following:
    - Import the SDK.
-   - Define your API key and Label Studio URL. The API key is available from your [**Account & Settings** page](user_account#Access-token).
+   - Define your API key and Label Studio URL. You can generate a key from your [**Account & Settings** page](user_account#Personal-access-token).
    - Connect to the API.
 ```python
 # Define the URL where Label Studio is accessible and the API key for your user account
