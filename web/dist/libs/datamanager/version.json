@@ -1,6 +1,6 @@
 {
-  "message": "feat: OPTIC-1643: Copy Data Manager Quick View link to annotation or region (#7122)",
-  "commit": "b0783d85eb641cd7e5986ea12b085ff172473d27",
-  "date": "2025-02-26T13:45:32.000Z",
+  "message": "fix: DIA-1972: [FE] Updating TTL for an org doesn't seem to update the org settings (#7138)",
+  "commit": "a70d3c885db99996d3267333134b36944c1c1b2b",
+  "date": "2025-02-27T14:27:47.000Z",
   "branch": "develop"
 }
