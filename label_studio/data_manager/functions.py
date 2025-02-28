@@ -6,7 +6,6 @@ from typing import Any, Iterable, Tuple
 from urllib.parse import unquote
 
 import ujson as json
-from core.feature_flags import flag_set
 from core.utils.common import int_from_request
 from data_manager.models import View
 from data_manager.prepare_params import PrepareParams
@@ -105,10 +104,7 @@ def get_all_columns(project, *_):
         }
     ]
 
-    if flag_set('fflag_fix_back_lsdv_4648_annotator_filter_29052023_short', user=project.organization.created_by):
-        project_members = project.all_members.values_list('id', flat=True)
-    else:
-        project_members = project.organization.members.values_list('user__id', flat=True)
+    project_members = project.all_members.values_list('id', flat=True)
 
     result['columns'] += [
         {
