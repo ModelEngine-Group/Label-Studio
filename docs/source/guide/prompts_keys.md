@@ -102,7 +102,7 @@ You can find all this information in the **Details** section of the deployment i
 
 You can use your own self-hosted and fine-tuned model as long as it meets the following criteria:
 
-* Your server must provide [JSON mode](https://python.useinstructor.com/concepts/patching/#json-mode) for the LLM. 
+* Your server must provide [JSON mode](https://js.useinstructor.com/concepts/patching/#json-schema-mode) for the LLM, specifically, the API must accepts `response_format` with `type: json_object` and `schema` with a valid JSON schema: ` {"response_format": {"type": "json_object", "schema": <schema>}}`
 * The server API must follow [OpenAI format](https://platform.openai.com/docs/api-reference/chat/create#chat-create-response_format). 
 
 Examples of compatible LLMs include [Ollama](https://ollama.com/) and [sglang](https://github.com/sgl-project/sglang?tab=readme-ov-file#openai-compatible-api). 
@@ -114,7 +114,7 @@ To add a custom model, enter the following:
 * An API key to access the model. An API key is tied to a specific account, but the access is shared within the org if added. (Optional)
 * An auth token to access the model API. An auth token provides API access at the server level. (Optional)
 
-### Example
+### Example with Ollama
 
 1. Setup [Ollama](https://ollama.com/), e.g. `ollama run llama3.2`
 2. [Verify your local OpenAI-compatible API is working](https://ollama.com/blog/openai-compatibility), e.g. `http://localhost:11434/v1`
@@ -123,4 +123,13 @@ To add a custom model, enter the following:
     - Name: `llama3.2` (must match the model name in Ollama)
     - Endpoint: `https://my.openai.endpoint.com/v1` (note `v1` suffix is required)
     - API key: `ollama` (default)
+    - Auth token: empty
+
+
+### Example with Hugging Face Inference Endpoints
+1. Use [DeepSeek model](https://huggingface.co/deepseek-ai/DeepSeek-R1)
+2. In `API Keys`, add to `Custom` provider:
+    - Name: `deepseek-ai/DeepSeek-R1`
+    - Endpoint: `https://router.huggingface.co/together/v1`
+    - API key: `<your-hf-api-key>`
     - Auth token: empty
