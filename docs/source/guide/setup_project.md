@@ -18,37 +18,51 @@ All labeling activities in Label Studio occur in the context of a project.
 
 After you [start Label Studio](start) and [create an account](signup), create a project to start labeling your data.
 
-1. [Create a project](#Create-a-project)
-2. Import data into Label Studio. 
+1. **[Create a project](#Create-a-project)**.
+2. **[Import data into Label Studio](tasks)**. 
 
-    For small projects, testing, or proof of concept work, you can import local files directly into Label Studio. However, for larger projects, we recommend setting up cloud storage. For more information, see [Get data into Label Studio](tasks) and [Sync data from external storage](storage). 
-3. After you have imported your data, then you can [set up the labeling interface for your project](setup).
-4. Finally, you can configure optional settings to such as task sampling and annotation instructions. For more information, see [Project settings](project_settings).
+    For small projects, testing, or proof of concept work, you can import local files directly into Label Studio through the UI. You can do this during the project creation workflow. 
+    
+    However, for larger projects, we recommend setting up cloud storage. You will need to create the project first, and then add storage from the project settings. For more information, see [Sync data from external storage](storage). 
+3. **[Customize your labeling interface](setup)**. 
+
+    We recommend that you begin with a pre-configured template and modify it, but you can also create your own custom template using our [tag library](/tags). 
+    
+4. **[Configure project settings](project_settings)**. 
+
+    Finally, you can configure optional settings to such as task sampling and annotation instructions. 
    
-</div>
-
 </div>
 
 <div class="enterprise-only">
 
-1. [Create a project](#Create-a-project)
-2. [Import data](tasks.html).
-3. Select a template to configure the labeling interface for your dataset. [Set up the labeling interface for your project](setup.html).
-4. (Optional) [Set up annotation settings for your project](#Set-up-annotation-settings-for-your-project).
-5. (Optional) [Set up review settings for your project](#Set-up-review-settings-for-your-project).
-2. Import data into Label Studio. 
+1. **[Create a project](#Create-a-project)**.
+2. **[Import data into Label Studio](tasks)**. 
 
-    For small projects, testing, or proof of concept work, you can import local files directly into Label Studio. However, for larger projects, we recommend setting up cloud storage. For more information, see [Get data into Label Studio](tasks) and [Sync data from external storage](storage). 
-3. After you have imported your data, then you can [set up the labeling interface for your project](setup).
-4. Next, you will want to configure what information annotators and reviewers can see, and how automated you want their workflow to be. 
+    For small projects, testing, or proof of concept work, you can import local files directly into Label Studio through the UI. You can do this during the project creation workflow. 
+    
+    However, for larger projects, we recommend setting up cloud storage. You will need to create the project first, and then add storage from the project settings. For more information, see [Sync data from external storage](storage). 
+3. **[Customize your labeling interface](setup)**. 
+
+    We recommend that you begin with a pre-configured template and modify it, but you can also create your own custom template using our [tag library](/tags). 
+    
+    If enabled, can start by describing to the Label Studio [AI assistant](ask_ai) what your are looking for and let it generate the XML on your behalf. 
+4. **[Configure project settings](project_settings_lse)**. 
+
+    Next, you will want to configure what information annotators and reviewers can see, and how automated you want their workflow to be. 
 
     By default, any annotator who is a member of project can begin labeling as soon as it is published, and each task only requires one annotator before being considered complete. To customize this, see the [**Annotation** section of the project settings](project_settings_lse#Annotation).
 
     By default, reviewers do not need to be assigned to completed tasks, and each task only needs one accepted annotation. To customize this, see the [**Review** section of the project settings](project_settings_lse#Review).
     
 
-5. [Add members to your project](#Add-members-to-a-project). 
-6. [Publish your project](#Publish-project-to-annotators).
+5. **[Add members to your project or workspace](#Add-members-to-a-project).** 
+
+    Users in the Owner and Admin role can see all projects. But users in the Manager, Annotator, and Reviewer role must be added to a project [or its parent workspace](workspaces) before they can access it. 
+
+6. **[Publish your project](#Publish-project-to-annotators)**.
+
+    Users in the Manager role can see unpublished projects if they are members of that project. But users in the Annotator or Reviewer role are unable to see or access a project until it is published. 
 
 </div>
 
@@ -76,7 +90,7 @@ Once complete, you can click **Save** to create the project, or you can complete
 
 From here, you can upload files into Label Studio. You can do this now or after the project has been created.
 
-However, for larger projects, we recommend setting up cloud storage or using a different import method. For more information, see [Get data into Label Studio](tasks) and [Sync data from external storage](storage).
+For larger projects, we recommend setting up cloud storage or using a different import method. For more information, see [Get data into Label Studio](tasks) and [Sync data from external storage](storage).
 
 </dd>
 
@@ -86,7 +100,7 @@ However, for larger projects, we recommend setting up cloud storage or using a d
 
 You can select a template to begin your labeling configuration. For easier setup, select a [template](/templates). You can later customize template to meet your needs. See [Configure labeling](setup).
 
-You can do this now or after the project has been created.
+You can do this now or after the project has been created. 
 
 </dd>
 
