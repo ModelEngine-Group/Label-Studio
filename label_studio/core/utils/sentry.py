@@ -9,16 +9,7 @@ def event_processor(event, hint):
     # skip specified exceptions
     exceptions = event.get('exception', {}).get('values', [{}])
     last = exceptions[-1]
-    if last.get('type') in [
-        'Http404',
-        'NotAuthenticated',
-        'AuthenticationFailed',
-        'NotFound',
-        'XMLSyntaxError',
-        'FileUpload.DoesNotExist',
-        'Forbidden',
-        'KeyboardInterrupt',
-    ]:
+    if last.get('type') in settings.SENTRY_IGNORED_EXCEPTIONS:
         return None
 
     # sentry ignored factory class
