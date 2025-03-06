@@ -4,7 +4,6 @@ import { PersonalAccessToken, PersonalAccessTokenDescription } from "./PersonalA
 import { MembershipInfo } from "./MembershipInfo";
 import type React from "react";
 import { PersonalJWTToken } from "./PersonalJWTToken";
-import "./index.raw.css";
 import type { AuthTokenSettings } from "../types";
 import { FF_AUTH_TOKENS, isFF } from "@humansignal/core/lib/utils/feature-flags";
 

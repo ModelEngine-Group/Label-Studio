@@ -20,7 +20,7 @@ import { TimeAgo } from "../../common/TimeAgo/TimeAgo";
 import { useDropdown } from "../../common/Dropdown/DropdownTrigger";
 import { isDefined } from "../../utils/utilities";
 import { Tooltip } from "./../../common/Tooltip/Tooltip";
-import { ToastType, useToast } from "@humansignal/ui/lib/Toast/Toast";
+import { ToastType, useToast } from "@humansignal/ui/lib/toast/toast";
 import { useCopyText } from "@humansignal/core/lib/hooks/useCopyText";
 
 // eslint-disable-next-line

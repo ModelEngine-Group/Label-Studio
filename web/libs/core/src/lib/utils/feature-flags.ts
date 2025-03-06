@@ -37,12 +37,14 @@ export const FF_UNSAVED_CHANGES = "fflag_feat_front_leap_1198_unsaved_changes_18
  */
 export const FF_AUTH_TOKENS = "fflag__feature_develop__prompts__dia_1829_jwt_token_auth";
 
+/**
+ * Enable new home page for LSO and LSE
+ */
+export const FF_HOMEPAGE = "fflag_all_feat_dia_1777_ls_homepage_short";
+
 export function isFF(id: string) {
   // TODO: remove the override + if statement once LSE and LSO start building react the same way and fflag_fix_front_lsdv_4620_memory_leaks_100723_short is removed
-  const override: Record<string, boolean> = {
-    fflag_fix_front_lsdv_4620_memory_leaks_100723_short: false,
-    // [FF_AUTH_TOKENS]: false,
-  };
+  const override: Record<string, boolean> = {};
   if (window?.APP_SETTINGS?.sentry_environment === "opensource" && id in override) {
     return override[id];
   }

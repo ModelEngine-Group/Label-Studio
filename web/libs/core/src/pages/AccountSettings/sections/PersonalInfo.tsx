@@ -6,14 +6,9 @@ import styles from "../AccountSettings.module.scss";
 import { useCurrentUserAtom } from "@humansignal/core/lib/hooks/useCurrentUser";
 import { atomWithMutation } from "jotai-tanstack-query";
 import { useAtomValue } from "jotai";
-
-/**
- * FIXME: This is legacy imports. We're not supposed to use such statements
- * each one of these eventually has to be migrated to core or ui
- */
-import { Input } from "/apps/labelstudio/src/components/Form/Elements";
-import { Userpic } from "/apps/labelstudio/src/components/Userpic/Userpic";
-import { Button } from "/apps/labelstudio/src/components/Button/Button";
+import { Input } from "apps/labelstudio/src/components/Form/Elements";
+import { Userpic } from "apps/labelstudio/src/components/Userpic/Userpic";
+import { Button } from "apps/labelstudio/src/components/Button/Button";
 
 const updateUserAvatarAtom = atomWithMutation(() => ({
   mutationKey: ["update-user"],

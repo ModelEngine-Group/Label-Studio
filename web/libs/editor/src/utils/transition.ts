@@ -13,6 +13,7 @@ export const aroundTransition = (
   element: HTMLElement,
   { init, transition, onStart, beforeTransition, afterTransition }: TransitionOptions = {},
 ) => {
+  if (!element) return;
   return new Promise<true>(async (resolve) => {
     init?.(element);
 

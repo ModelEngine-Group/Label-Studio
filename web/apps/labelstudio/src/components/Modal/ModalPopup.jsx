@@ -13,6 +13,10 @@ const ModalContext = createContext();
 export class Modal extends React.Component {
   modalRef = React.createRef();
 
+  get visible() {
+    return this.state.visible;
+  }
+
   constructor(props) {
     super(props);
 
@@ -204,8 +208,8 @@ Modal.Header = ({ children, divided }) => (
   </Elem>
 );
 
-Modal.Footer = ({ children, bare }) => (
-  <Elem name="footer" mod={{ bare }}>
+Modal.Footer = ({ children, bare, style, className }) => (
+  <Elem name="footer" mod={{ bare }} mix={className} style={style}>
     {children}
   </Elem>
 );

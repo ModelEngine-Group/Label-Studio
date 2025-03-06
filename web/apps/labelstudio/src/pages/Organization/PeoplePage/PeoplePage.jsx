@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { LsPlus } from "../../../assets/icons";
 import { Button } from "../../../components";
 import { Description } from "../../../components/Description/Description";
@@ -10,12 +10,12 @@ import { useAPI } from "../../../providers/ApiProvider";
 import { useConfig } from "../../../providers/ConfigProvider";
 import { Block, Elem } from "../../../utils/bem";
 import { FF_AUTH_TOKENS, FF_LSDV_E_297, isFF } from "../../../utils/feature-flags";
-import { copyText } from "../../../utils/helpers";
 import "./PeopleInvitation.scss";
 import { PeopleList } from "./PeopleList";
 import "./PeoplePage.scss";
 import { SelectedUser } from "./SelectedUser";
 import { TokenSettingsModal } from "@humansignal/core/blocks/TokenSettingsModal";
+import { InviteLink } from "./InviteLink";
 import { useToast } from "@humansignal/ui";
 import { debounce } from "@humansignal/core/lib/utils/debounce";
 
@@ -56,6 +56,7 @@ export const PeoplePage = () => {
   const config = useConfig();
   const toast = useToast();
   const [selectedUser, setSelectedUser] = useState(null);
+  const [invitationOpen, setInvitationOpen] = useState(false);
 
   const [link, setLink] = useState();
 
@@ -66,58 +67,6 @@ export const PeoplePage = () => {
       localStorage.setItem("selectedUser", user?.id);
     },
     [setSelectedUser],
-  );
-
-  const setInviteLink = useCallback(
-    (link) => {
-      const hostname = config.hostname || location.origin;
-
-      setLink(`${hostname}${link}`);
-    },
-    [config, setLink],
-  );
-
-  const updateLink = useCallback(() => {
-    api.callApi("resetInviteLink").then(({ invite_url }) => {
-      setInviteLink(invite_url);
-    });
-    __lsa("organization.add_people.reset_link");
-  }, [setInviteLink]);
-
-  const inviteModalProps = useCallback(
-    (link) => ({
-      title: "Invite people",
-      style: { width: 640, height: 472 },
-      body: () => <InvitationModal link={link} />,
-      footer: () => {
-        const [copied, setCopied] = useState(false);
-
-        const copyLink = useCallback(() => {
-          setCopied(true);
-          copyText(link);
-          setTimeout(() => setCopied(false), 1500);
-          __lsa("organization.add_people.copy_link");
-        }, []);
-
-        return (
-          <Space spread>
-            <Space>
-              <Button style={{ width: 170 }} onClick={() => updateLink()}>
-                Reset Link
-              </Button>
-            </Space>
-            <Space>
-              <Button primary style={{ width: 170 }} onClick={copyLink}>
-                {copied ? "Copied!" : "Copy link"}
-              </Button>
-            </Space>
-          </Space>
-        );
-      },
-      bareFooter: true,
-      onHidden: () => __lsa("organization.add_people.close"),
-    }),
-    [],
   );
 
   const apiTokensSettingsModalProps = useMemo(
@@ -139,26 +88,11 @@ export const PeoplePage = () => {
   const showApiTokenSettingsModal = useCallback(() => {
     apiSettingsModal.current = modal(apiTokensSettingsModalProps);
     __lsa("organization.token_settings");
-  }, [inviteModalProps, link]);
-
-  const showInvitationModal = useCallback(() => {
-    inviteModal.current = modal(inviteModalProps(link));
-    __lsa("organization.add_people");
-  }, [inviteModalProps, link]);
+  }, [apiTokensSettingsModalProps]);
 
   const defaultSelected = useMemo(() => {
     return localStorage.getItem("selectedUser");
   }, []);
-
-  useEffect(() => {
-    api.callApi("inviteLink").then(({ invite_url }) => {
-      setInviteLink(invite_url);
-    });
-  }, []);
-
-  useEffect(() => {
-    inviteModal.current?.update(inviteModalProps(link));
-  }, [link]);
 
   return (
     <Block name="people">
@@ -168,7 +102,7 @@ export const PeoplePage = () => {
 
           <Space>
             {isFF(FF_AUTH_TOKENS) && <Button onClick={showApiTokenSettingsModal}>API Tokens Settings</Button>}
-            <Button icon={<LsPlus />} primary onClick={showInvitationModal}>
+            <Button icon={<LsPlus />} primary onClick={() => setInvitationOpen(true)}>
               Add People
             </Button>
           </Space>
@@ -187,6 +121,13 @@ export const PeoplePage = () => {
           isFF(FF_LSDV_E_297) && <HeidiTips collection="organizationPage" />
         )}
       </Elem>
+      <InviteLink
+        opened={invitationOpen}
+        onClosed={() => {
+          console.log("hidden");
+          setInvitationOpen(false);
+        }}
+      />
     </Block>
   );
 };

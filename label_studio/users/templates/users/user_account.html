@@ -173,7 +173,7 @@
       <div class="field field--wide">
         <label for="example_fetch">Example fetch projects data:</label>
         <textarea id="example_fetch" class="example_code ls-textarea" type="text" readonly
-                  style="height: 92px; font-size: 14px">
+                  style="height: 92px; font-size: 14px; padding: 9px 16px">
           {% if settings.HOSTNAME %}
             curl -X GET {{ settings.HOSTNAME }}/api/projects/ -H 'Authorization: Token {{token}}'
           {% else %}

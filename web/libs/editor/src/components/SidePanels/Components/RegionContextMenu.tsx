@@ -1,7 +1,7 @@
 import { observer } from "mobx-react";
 import { useCallback, useMemo, useState, type FC } from "react";
 import { useCopyText } from "@humansignal/core/lib/hooks/useCopyText";
-import { ToastType, useToast } from "@humansignal/ui/lib/Toast/Toast";
+import { ToastType, useToast } from "@humansignal/ui/lib/toast/toast";
 import { IconLink, IconEllipsis } from "../../../assets/icons";
 import { ContextMenu, type ContextMenuAction, ContextMenuTrigger, type MenuActionOnClick } from "../../ContextMenu";
 import { Button } from "../../../common/Button/Button";

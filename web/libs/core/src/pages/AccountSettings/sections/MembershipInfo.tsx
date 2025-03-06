@@ -7,8 +7,8 @@ import styles from "./MembershipInfo.module.scss";
  * FIXME: This is legacy imports. We're not supposed to use such statements
  * each one of these eventually has to be migrated to core/ui
  */
-import { useCurrentUser } from "/apps/labelstudio/src/providers/CurrentUser";
-import { useAPI } from "/apps/labelstudio/src/providers/ApiProvider";
+import { useCurrentUser } from "apps/labelstudio/src/providers/CurrentUser";
+import { useAPI } from "apps/labelstudio/src/providers/ApiProvider";
 
 export const MembershipInfo = () => {
   const api = useAPI();
@@ -68,7 +68,9 @@ export const MembershipInfo = () => {
       <div className="flex gap-2 w-full justify-between">
         <div>Organization</div>
         <div>
-          <a href="/organization">{user?.email}</a>
+          <a href="/organization" className="text-blue-600 hover:underline">
+            {user?.email}
+          </a>
         </div>
       </div>
 

@@ -5,7 +5,7 @@ import { clsx } from "clsx";
 /** @deprecated - needs to be replaced with @humansignal/ui Label - visualizes differently currently */
 const Label = ({ text, children, required, placement, description, size, large, style, simple, flat, className }) => {
   const rootClass = cn("label-ls");
-  const classList = [rootClass];
+  const classList = [rootClass.toClassName()];
   const tagName = simple ? "div" : "label";
   const mods = {
     size,

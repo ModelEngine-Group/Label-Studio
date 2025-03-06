@@ -12,17 +12,27 @@ import { MultiProvider } from "../providers/MultiProvider";
 import { ProjectProvider } from "../providers/ProjectProvider";
 import { RoutesProvider } from "../providers/RoutesProvider";
 import { DRAFT_GUARD_KEY, DraftGuard, draftGuardCallback } from "../components/DraftGuard/DraftGuard";
-import "./App.scss";
 import { AsyncPage } from "./AsyncPage/AsyncPage";
 import ErrorBoundary from "./ErrorBoundary";
-import { RootPage } from "./RootPage";
 import { FF_OPTIC_2, FF_UNSAVED_CHANGES, FF_PRODUCT_TOUR, isFF } from "../utils/feature-flags";
 import { TourProvider } from "@humansignal/core";
 import { ToastProvider, ToastViewport } from "@humansignal/ui";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { JotaiProvider, JotaiStore } from "../utils/jotai-store";
 import { CurrentUserProvider } from "../providers/CurrentUser";
+import { RootPage } from "./RootPage";
+import "@humansignal/ui/src/tailwind.css";
+import "./App.scss";
 
 const baseURL = new URL(APP_SETTINGS.hostname || location.origin);
 export const UNBLOCK_HISTORY_MESSAGE = "UNBLOCK_HISTORY";
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const browserHistory = createBrowserHistory({
   basename: baseURL.pathname || "/",
@@ -57,6 +67,8 @@ const App = ({ content }) => {
       <Router history={browserHistory}>
         <MultiProvider
           providers={[
+            <JotaiProvider key="jotai" store={JotaiStore} />,
+            <QueryClientProvider key="query" client={queryClient} />,
             <AppStoreProvider key="app-store" />,
             <ApiProvider key="api" />,
             <ConfigProvider key="config" />,

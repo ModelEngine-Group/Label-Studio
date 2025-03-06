@@ -22,6 +22,7 @@
   border: var(--button-border);
   cursor: pointer;
   outline: none;
+  flex-shrink: 0;
   display: inline-flex;
   text-align: center;
   transition: all 100ms ease;

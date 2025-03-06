@@ -11,9 +11,9 @@ import { settingsAtom } from "./atoms";
  * FIXME: This is legacy imports. We're not supposed to use such statements
  * each one of these eventually has to be migrated to core/ui
  */
-import { SidebarMenu } from "/apps/labelstudio/src/components/SidebarMenu/SidebarMenu";
+import { SidebarMenu } from "apps/labelstudio/src/components/SidebarMenu/SidebarMenu";
 
-export const AccountSettingsPage = () => {
+const AccountSettingsPage = () => {
   const settings = useAtomValue(settingsAtom);
   const contentClassName = clsx(styles.accountSettings__content, {
     [styles.accountSettingsPadding]: window.APP_SETTINGS.billing !== undefined,
@@ -75,3 +75,5 @@ AccountSettingsPage.routes = () => [
     // },
   },
 ];
+
+export { AccountSettingsPage };
