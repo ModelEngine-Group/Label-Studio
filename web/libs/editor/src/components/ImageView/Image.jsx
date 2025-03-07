@@ -86,7 +86,7 @@ const ImageRenderer = observer(
     const imageStyles = useMemo(() => {
       const style = imageTransform ?? {};
 
-      return { ...style, visibility: isLoaded ? "visible" : "hidden" };
+      return { ...style, maxWidth: "unset", visibility: isLoaded ? "visible" : "hidden" };
     }, [imageTransform, isLoaded]);
 
     // biome-ignore lint/a11y/noRedundantAlt: The use of this component justifies this alt text

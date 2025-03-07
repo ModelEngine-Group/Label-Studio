@@ -98,6 +98,10 @@
     position: absolute;
     overflow: hidden;
     height: 0;
+
+    img {
+      max-width: unset;
+    }
   }
 
   .frame_height {
