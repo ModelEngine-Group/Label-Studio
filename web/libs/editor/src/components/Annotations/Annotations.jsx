@@ -1,5 +1,6 @@
 import { Component } from "react";
-import { Badge, Button, Card, List, Popconfirm, Tooltip } from "antd";
+import { Badge, Button, Card, List, Popconfirm } from "antd";
+import { Tooltip } from "@humansignal/ui";
 import { observer } from "mobx-react";
 import {
   DeleteOutlined,
@@ -31,7 +32,7 @@ export const DraftPanel = observer(({ item }) => {
   return (
     <div>
       <Tooltip
-        placement="topLeft"
+        alignment="top-left"
         title={item.draftSelected ? "switch to submitted result" : "switch to current draft"}
       >
         <Button type="link" onClick={item.toggleDraft} className={styles.draftbtn}>
@@ -45,7 +46,7 @@ export const DraftPanel = observer(({ item }) => {
 
 const Annotation = observer(({ item, store }) => {
   const removeHoney = () => (
-    <Tooltip placement="topLeft" title="Unset this result as a ground truth">
+    <Tooltip alignment="top-left" title="Unset this result as a ground truth">
       <Button
         size="small"
         type="primary"
@@ -63,7 +64,7 @@ const Annotation = observer(({ item, store }) => {
     const title = item.ground_truth ? "Unset this result as a ground truth" : "Set this result as a ground truth";
 
     return (
-      <Tooltip placement="topLeft" title={title}>
+      <Tooltip alignment="top-left" title={title}>
         <Button
           size="small"
           look="link"
@@ -190,7 +191,7 @@ const Annotation = observer(({ item, store }) => {
         </div>
         {/* platform uses was_cancelled so check both */}
         {store.hasInterface("skip") && (item.skipped || item.was_cancelled) && (
-          <Tooltip placement="topLeft" title="Skipped annotation">
+          <Tooltip alignment="top-left" title="Skipped annotation">
             <StopOutlined className={styles.skipped} />
           </Tooltip>
         )}
@@ -217,7 +218,7 @@ class Annotations extends Component {
 
         <div style={{ marginRight: "1px" }}>
           {store.hasInterface("annotations:add-new") && (
-            <Tooltip placement="topLeft" title="Create a new annotation">
+            <Tooltip alignment="top-left" title="Create a new annotation">
               <Button
                 size="small"
                 onClick={(ev) => {
@@ -233,7 +234,7 @@ class Annotations extends Component {
             </Tooltip>
           )}
           &nbsp;
-          <Tooltip placement="topLeft" title="View all annotations">
+          <Tooltip alignment="top-left" title="View all annotations">
             <Button
               size="small"
               type={store.annotationStore.viewingAll ? "primary" : ""}

@@ -8,7 +8,7 @@ import { inject, observer } from "mobx-react";
 import type React from "react";
 import { memo, type ReactElement } from "react";
 import { Button } from "../../common/Button/Button";
-import { Tooltip } from "../../common/Tooltip/Tooltip";
+import { Tooltip } from "@humansignal/ui";
 
 type MixedInParams = {
   store: MSTStore;
@@ -26,8 +26,6 @@ export function controlsInjector<T extends {}>(fn: (props: T & MixedInParams) =>
   return wrapped as unknown as (props: T) => ReactElement;
 }
 
-const TOOLTIP_DELAY = 0.8;
-
 type ButtonTooltipProps = {
   title: string;
   children: JSX.Element;
@@ -36,7 +34,7 @@ type ButtonTooltipProps = {
 export const ButtonTooltip = controlsInjector<ButtonTooltipProps>(
   observer(({ store, title, children }) => {
     return (
-      <Tooltip title={title} enabled={store.settings.enableTooltips} mouseEnterDelay={TOOLTIP_DELAY}>
+      <Tooltip title={title} disabled={!store.settings.enableTooltips}>
         {children}
       </Tooltip>
     );

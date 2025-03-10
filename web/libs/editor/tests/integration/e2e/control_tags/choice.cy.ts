@@ -18,20 +18,20 @@ describe("Control Tags - Choice", () => {
     it('should show hint for <Choice /> when choice="single"', () => {
       LabelStudio.params().config(choicesConfig).data(simpleData).withResult([]).init();
 
-      Choices.findChoice("Choice 2").trigger("mouseenter");
+      Choices.findChoice("Choice 2").trigger("mouseover");
       Tooltip.hasText("A hint for Choice 2");
     });
     it('should show hint for <Choice /> when choice="multiple"', () => {
       LabelStudio.params().config(choicesMultipleSelectionConfig).data(simpleData).withResult([]).init();
 
-      Choices.findChoice("Choice 2").trigger("mouseenter");
+      Choices.findChoice("Choice 2").trigger("mouseover");
       Tooltip.hasText("A hint for Choice 2");
     });
     it('should show hint for <Choice /> when layout="select"', () => {
       LabelStudio.params().config(choicesSelectLayoutConfig).data(simpleData).withResult([]).init();
 
       Choices.toggleSelect();
-      Choices.findOption("Choice 2").trigger("mouseenter");
+      Choices.findOption("Choice 2").trigger("mouseover");
       Tooltip.hasText("A hint for Choice 2");
     });
   });
@@ -46,14 +46,14 @@ describe("Control Tags - Choice", () => {
     it("should show hint for <Choise />", () => {
       LabelStudio.params().config(choicesConfig).data(simpleData).withResult([]).init();
 
-      Choices.findChoice("Choice 2").trigger("mouseenter");
+      Choices.findChoice("Choice 2").trigger("mouseover");
       Tooltip.hasText("A hint for Choice 2");
     });
 
     it("should show hint for <Choise />", () => {
       LabelStudio.params().config(choicesMultipleSelectionConfig).data(simpleData).withResult([]).init();
 
-      Choices.findChoice("Choice 2").trigger("mouseenter");
+      Choices.findChoice("Choice 2").trigger("mouseover");
       Tooltip.hasText("A hint for Choice 2");
     });
   });

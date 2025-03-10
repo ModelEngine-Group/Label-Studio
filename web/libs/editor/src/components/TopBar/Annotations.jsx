@@ -2,7 +2,7 @@ import { observer } from "mobx-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { IconPlusCircle, LsComment, LsCommentRed, LsSparks } from "../../assets/icons";
 import { Space } from "../../common/Space/Space";
-import { Userpic } from "../../common/Userpic/Userpic";
+import { Userpic } from "@humansignal/ui";
 import { Block, Elem } from "../../utils/bem";
 import { isDefined, userDisplayName } from "../../utils/utilities";
 import { GroundTruth } from "../CurrentEntity/GroundTruth";

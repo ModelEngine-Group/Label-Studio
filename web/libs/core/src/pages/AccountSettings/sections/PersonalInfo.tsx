@@ -1,13 +1,17 @@
 import { type FormEventHandler, useCallback, useEffect, useRef, useState } from "react";
 import clsx from "clsx";
-import { InputFile, ToastType, useToast } from "@humansignal/ui";
+import { InputFile, ToastType, useToast, Userpic } from "@humansignal/ui";
 import { API } from "apps/labelstudio/src/providers/ApiProvider";
 import styles from "../AccountSettings.module.scss";
 import { useCurrentUserAtom } from "@humansignal/core/lib/hooks/useCurrentUser";
 import { atomWithMutation } from "jotai-tanstack-query";
 import { useAtomValue } from "jotai";
+
+/**
+ * FIXME: This is legacy imports. We're not supposed to use such statements
+ * each one of these eventually has to be migrated to core or ui
+ */
 import { Input } from "apps/labelstudio/src/components/Form/Elements";
-import { Userpic } from "apps/labelstudio/src/components/Userpic/Userpic";
 import { Button } from "apps/labelstudio/src/components/Button/Button";
 
 const updateUserAvatarAtom = atomWithMutation(() => ({
@@ -40,6 +44,9 @@ export const PersonalInfo = () => {
   const { user, fetch: refetchUser, isInProgress: userInProgress, updateAsync: updateUser } = useCurrentUserAtom();
   const updateUserAvatar = useAtomValue(updateUserAvatarAtom);
   const [isInProgress, setIsInProgress] = useState(false);
+  const [fname, setFname] = useState(user?.first_name);
+  const [lname, setLname] = useState(user?.last_name);
+  const [phone, setPhone] = useState(user?.phone);
   const avatarRef = useRef<HTMLInputElement>();
   const fileChangeHandler: FormEventHandler<HTMLInputElement> = useCallback(
     async (e) => {
@@ -87,6 +94,12 @@ export const PersonalInfo = () => {
 
   useEffect(() => setIsInProgress(userInProgress), [userInProgress]);
 
+  useEffect(() => {
+    setFname(user?.first_name);
+    setLname(user?.last_name);
+    setPhone(user?.phone);
+  }, [user]);
+
   return (
     <div className={styles.section} id="personal-info">
       <div className={styles.sectionContent}>
@@ -109,10 +122,20 @@ export const PersonalInfo = () => {
         <form onSubmit={userFormSubmitHandler} className={styles.sectionContent}>
           <div className={styles.flexRow}>
             <div className={styles.flex1}>
-              <Input label="First Name" value={user?.first_name} name="first_name" />
+              <Input
+                label="First Name"
+                value={fname}
+                onChange={(e: React.KeyboardEvent<HTMLInputElement>) => setFname(e.currentTarget.value)}
+                name="first_name"
+              />
             </div>
             <div className={styles.flex1}>
-              <Input label="Last Name" value={user?.last_name} name="last_name" />
+              <Input
+                label="Last Name"
+                value={lname}
+                onChange={(e: React.KeyboardEvent<HTMLInputElement>) => setLname(e.currentTarget.value)}
+                name="last_name"
+              />
             </div>
           </div>
           <div className={styles.flexRow}>
@@ -120,7 +143,13 @@ export const PersonalInfo = () => {
               <Input label="E-mail" type="email" readOnly={true} value={user?.email} />
             </div>
             <div className={styles.flex1}>
-              <Input label="Phone" type="phone" value={user?.phone} name="phone" />
+              <Input
+                label="Phone"
+                type="phone"
+                onChange={(e: React.KeyboardEvent<HTMLInputElement>) => setPhone(e.currentTarget.value)}
+                value={phone}
+                name="phone"
+              />
             </div>
           </div>
           <div className={clsx(styles.flexRow, styles.flexEnd)}>

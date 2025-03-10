@@ -1,10 +1,9 @@
 import { inject, observer } from "mobx-react";
 import React from "react";
 import { Button } from "./Button/Button";
-import { Checkbox } from "@humansignal/ui";
+import { Checkbox, Tooltip } from "@humansignal/ui";
 import { Dropdown } from "./Dropdown/Dropdown";
 import { Menu } from "./Menu/Menu";
-import { Tooltip } from "./Tooltip/Tooltip";
 import { Elem } from "../../utils/bem";
 
 const injector = inject(({ store }) => {

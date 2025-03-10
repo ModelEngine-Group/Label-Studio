@@ -140,7 +140,7 @@ describe("Outliner - Hide all regions", () => {
     LabelStudio.params().config(simpleRegionsConfig).data(simpleRegionsData).withResult(simpleRegionsResult).init();
 
     Sidebar.hasRegions(3);
-    Sidebar.hideAllRegionsButton.trigger("mouseenter");
+    Sidebar.hideAllRegionsButton.trigger("mouseover");
     Tooltip.hasText("Hide all regions");
   });
 
@@ -149,7 +149,7 @@ describe("Outliner - Hide all regions", () => {
 
     Sidebar.hasRegions(3);
     Sidebar.hideAllRegionsButton.click();
-    Sidebar.showAllRegionsButton.trigger("mouseenter");
+    Sidebar.showAllRegionsButton.trigger("mouseover");
     Tooltip.hasText("Show all regions");
   });
 

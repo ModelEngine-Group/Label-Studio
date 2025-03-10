@@ -5,7 +5,7 @@ import type { PropsWithChildren } from "react";
 import { createContext, useCallback, useEffect, useRef, useState } from "react";
 import { modal } from "../../Common/Modal/Modal";
 import { Icon } from "../../Common/Icon/Icon";
-import { Tooltip } from "../../Common/Tooltip/Tooltip";
+import { Tooltip } from "@humansignal/ui";
 import { ImagePreview } from "./ImagePreview";
 
 import styles from "./GridPreview.module.scss";

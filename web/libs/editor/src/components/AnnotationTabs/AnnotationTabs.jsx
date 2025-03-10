@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { observer } from "mobx-react";
-import { Userpic } from "../../common/Userpic/Userpic";
+import { Userpic } from "@humansignal/ui";
 import { Space } from "../../common/Space/Space";
 import { Block, Elem } from "../../utils/bem";
 import "./AnnotationTabs.scss";

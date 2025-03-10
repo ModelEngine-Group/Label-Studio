@@ -2,7 +2,7 @@ import { TreeSelect } from "antd";
 import type React from "react";
 import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 
-import { Tooltip } from "../../common/Tooltip/Tooltip";
+import { Tooltip } from "@humansignal/ui";
 
 import "./NewTaxonomy.scss";
 import { TaxonomySearch, type TaxonomySearchRef } from "./TaxonomySearch";
@@ -80,11 +80,7 @@ const convert = (
 
     if (!item.hint) return item.color ? color(item) : item.label;
 
-    return (
-      <Tooltip title={item.hint} mouseEnterDelay={500}>
-        {item.color ? color(item) : <span>{item.label}</span>}
-      </Tooltip>
-    );
+    return <Tooltip title={item.hint}>{item.color ? color(item) : <span>{item.label}</span>}</Tooltip>;
   };
 
   const convertItem = (item: TaxonomyItem): AntTaxonomyItem => {

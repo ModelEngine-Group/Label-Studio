@@ -14,7 +14,7 @@ jest.mock("react", () => ({
   useLayoutEffect: jest.requireActual("react").useEffect,
 }));
 
-jest.mock("@humansignal/ui/lib/Toast/Toast", () => ({
+jest.mock("@humansignal/ui", () => ({
   ToastProvider: ({ children }: { children: React.ReactNode }) => children,
   ToastViewport: ({ children }: { children: React.ReactNode }) => children,
   Toast: ({ children }: { children: React.ReactNode }) => children,

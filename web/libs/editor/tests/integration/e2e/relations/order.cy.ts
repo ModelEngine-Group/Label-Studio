@@ -169,7 +169,7 @@ describe("Relations: Sort Order all relations", () => {
     Relations.hasRelations(1);
     Relations.hasRelation("Moonwalker", "Moonwalker 2");
 
-    Relations.ascendingOrderRelationButton.trigger("mouseenter");
+    Relations.ascendingOrderRelationButton.trigger("mouseover");
     Tooltip.hasText("Order by oldest");
   });
 });

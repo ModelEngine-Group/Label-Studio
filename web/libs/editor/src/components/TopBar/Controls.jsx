@@ -4,7 +4,7 @@
 
 import { inject, observer } from "mobx-react";
 import { Button } from "../../common/Button/Button";
-import { Tooltip } from "../../common/Tooltip/Tooltip";
+import { Tooltip } from "@humansignal/ui";
 import { Block, Elem } from "../../utils/bem";
 import { isDefined } from "../../utils/utilities";
 import { IconBan } from "../../assets/icons";
@@ -17,7 +17,7 @@ const TOOLTIP_DELAY = 0.8;
 const ButtonTooltip = inject("store")(
   observer(({ store, title, children }) => {
     return (
-      <Tooltip title={title} enabled={store.settings.enableTooltips} mouseEnterDelay={TOOLTIP_DELAY}>
+      <Tooltip title={title} disabled={!store.settings.enableTooltips}>
         {children}
       </Tooltip>
     );

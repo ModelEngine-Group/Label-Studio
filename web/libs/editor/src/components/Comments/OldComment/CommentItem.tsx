@@ -1,9 +1,8 @@
 import { observer } from "mobx-react";
 import { type FC, useState } from "react";
-import { Tooltip } from "antd";
+import { Tooltip, Userpic } from "@humansignal/ui";
 import { IconCheck, IconEllipsis } from "../../../assets/icons";
 import { Space } from "../../../common/Space/Space";
-import { Userpic } from "../../../common/Userpic/Userpic";
 import { Dropdown } from "../../../common/Dropdown/Dropdown";
 import { Menu } from "../../../common/Menu/Menu";
 import { Block, Elem } from "../../../utils/bem";
@@ -74,8 +73,8 @@ export const CommentItem: FC<any> = observer(
       if (isPersisted && time)
         return (
           <Elem name="date">
-            <Tooltip placement="topRight" title={new Date(time).toLocaleString()}>
-              {`${isEdited ? "updated" : ""} ${humanDateDiff(time)}`}
+            <Tooltip alignment="top-right" title={new Date(time).toLocaleString()}>
+              <>{`${isEdited ? "updated" : ""} ${humanDateDiff(time)}`}</>
             </Tooltip>
           </Elem>
         );

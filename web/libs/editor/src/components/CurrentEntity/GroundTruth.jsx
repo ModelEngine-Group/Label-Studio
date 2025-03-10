@@ -1,7 +1,7 @@
 import { observer } from "mobx-react";
 import { LsStar, LsStarOutline } from "../../assets/icons";
 import { Button } from "../../common/Button/Button";
-import { Tooltip } from "../../common/Tooltip/Tooltip";
+import { Tooltip } from "@humansignal/ui";
 import { BemWithSpecifiContext } from "../../utils/bem";
 import { FF_DEV_3873, isFF } from "../../utils/feature-flags";
 import "./GroundTruth.scss";
@@ -16,7 +16,7 @@ export const GroundTruth = observer(({ entity, disabled = false, size = "md" }) 
     !entity.userGenerate &&
     entity.type !== "prediction" && (
       <Block name="ground-truth" mod={{ disabled, size }}>
-        <Tooltip placement="topLeft" title={title}>
+        <Tooltip alignment="top-left" title={title}>
           <Elem
             tag={Button}
             name="toggle"

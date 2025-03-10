@@ -7,7 +7,7 @@ import { FiltersPane } from "../../Common/FiltersPane";
 import { Icon } from "../../Common/Icon/Icon";
 import { Interface } from "../../Common/Interface";
 import { ExportButton, ImportButton } from "../../Common/SDKButtons";
-import { Tooltip } from "../../Common/Tooltip/Tooltip";
+import { Tooltip } from "@humansignal/ui";
 import { ActionsButton } from "./ActionsButton";
 import { GridWidthButton } from "./GridWidthButton";
 import { LabelButton } from "./LabelButton";

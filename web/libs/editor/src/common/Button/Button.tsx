@@ -12,7 +12,7 @@ import { Hotkey } from "../../core/Hotkey";
 import { useHotkey } from "../../hooks/useHotkey";
 import { Block, type CNTagName, Elem } from "../../utils/bem";
 import { isDefined } from "../../utils/utilities";
-import { Tooltip } from "../Tooltip/Tooltip";
+import { Tooltip } from "@humansignal/ui";
 import "./Button.scss";
 
 type HTMLButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "type">;

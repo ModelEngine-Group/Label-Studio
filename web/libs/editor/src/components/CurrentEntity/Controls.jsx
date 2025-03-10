@@ -11,12 +11,10 @@ import { IconBan } from "../../assets/icons";
 import "./Controls.scss";
 import { Hotkey } from "../../core/Hotkey";
 
-const TOOLTIP_DELAY = 0.8;
-
 const ButtonTooltip = inject("store")(
   observer(({ store, name, title, children }) => {
     return (
-      <Hotkey.Tooltip name={name} title={title} enabled={store.settings.enableTooltips} mouseEnterDelay={TOOLTIP_DELAY}>
+      <Hotkey.Tooltip name={name} title={title} enabled={store.settings.enableTooltips}>
         {children}
       </Hotkey.Tooltip>
     );

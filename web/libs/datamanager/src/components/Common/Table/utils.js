@@ -1,5 +1,5 @@
 export const prepareColumns = (columns, hidden) => {
-  if (!hidden?.length) return columns;
+  if (!hidden?.length) return [...columns];
   return columns.filter((col) => {
     return !hidden.includes(col.id);
   });

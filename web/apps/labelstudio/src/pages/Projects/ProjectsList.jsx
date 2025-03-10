@@ -2,8 +2,9 @@ import chr from "chroma-js";
 import { format } from "date-fns";
 import { useMemo } from "react";
 import { NavLink } from "react-router-dom";
+import { Userpic } from "@humansignal/ui";
 import { LsBulb, LsCheck, LsEllipsis, LsMinus } from "../../assets/icons";
-import { Button, Dropdown, Menu, Pagination, Userpic } from "../../components";
+import { Button, Dropdown, Menu, Pagination } from "../../components";
 import { Block, Elem } from "../../utils/bem";
 import { absoluteURL } from "../../utils/helpers";
 

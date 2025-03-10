@@ -10,7 +10,7 @@ import { isDefined } from "../../../utils/utils";
 import { Button } from "../Button/Button";
 import { Icon } from "../Icon/Icon";
 import { modal } from "../Modal/Modal";
-import { Tooltip } from "../Tooltip/Tooltip";
+import { Tooltip } from "@humansignal/ui";
 import "./Table.scss";
 import { TableCheckboxCell } from "./TableCheckbox";
 import { tableCN, TableContext } from "./TableContext";
@@ -58,48 +58,50 @@ export const Table = observer(
     const tableHead = useRef();
     const [colOrder, setColOrder] = useState(JSON.parse(localStorage.getItem(colOrderKey)) ?? {});
     const listRef = useRef();
-    const columns = prepareColumns(props.columns, props.hiddenColumns);
     const Decoration = useMemo(() => Decorator(decoration), [decoration]);
     const { api, type } = useSDK();
 
-    useEffect(() => {
-      localStorage.setItem(colOrderKey, JSON.stringify(colOrder));
-    }, [colOrder]);
+    const headerCheckboxCell = useCallback(() => {
+      return (
+        <TableCheckboxCell
+          checked={selectedItems.isAllSelected}
+          indeterminate={selectedItems.isIndeterminate}
+          onChange={() => props.onSelectAll()}
+          className="select-all"
+          ariaLabel={`${selectedItems.isAllSelected ? "Unselect" : "Select"} all rows`}
+        />
+      );
+    }, [props.onSelectAll, selectedItems]);
 
-    if (props.onSelectAll && props.onSelectRow) {
-      columns.unshift({
-        id: "select",
-        headerClassName: "table__select-all",
-        cellClassName: "select-row",
-        style: {
-          width: 40,
-          maxWidth: 40,
-          justifyContent: "center",
-        },
-        onClick: (e) => e.stopPropagation(),
-        Header: () => {
-          return (
-            <TableCheckboxCell
-              checked={selectedItems.isAllSelected}
-              indeterminate={selectedItems.isIndeterminate}
-              onChange={() => props.onSelectAll()}
-              className="select-all"
-              ariaLabel={`${selectedItems.isAllSelected ? "Unselect" : "Select"} all rows`}
-            />
-          );
-        },
-        Cell: ({ data }) => {
-          const isChecked = selectedItems.isSelected(data.id);
-          return (
-            <TableCheckboxCell
-              checked={isChecked}
-              onChange={() => props.onSelectRow(data.id)}
-              ariaLabel={`${isChecked ? "Unselect" : "Select"} Task ${data.id}`}
-            />
-          );
-        },
-      });
-    }
+    const rowCheckBoxCell = useCallback(
+      ({ data }) => {
+        const isChecked = selectedItems.isSelected(data.id);
+        return (
+          <TableCheckboxCell
+            checked={isChecked}
+            onChange={() => props.onSelectRow(data.id)}
+            ariaLabel={`${isChecked ? "Unselect" : "Select"} Task ${data.id}`}
+          />
+        );
+      },
+      [props.onSelectRow, selectedItems],
+    );
+
+    const columns = prepareColumns(props.columns, props.hiddenColumns);
+
+    columns.unshift({
+      id: "select",
+      headerClassName: "table__select-all",
+      cellClassName: "select-row",
+      style: {
+        width: 40,
+        maxWidth: 40,
+        justifyContent: "center",
+      },
+      onClick: (e) => e.stopPropagation(),
+      Header: headerCheckboxCell,
+      Cell: rowCheckBoxCell,
+    });
 
     columns.push({
       id: "show-source",
@@ -162,6 +164,9 @@ export const Table = observer(
         return colOrder[a.id] < colOrder[b.id] ? -1 : 1;
       });
     }
+    useEffect(() => {
+      localStorage.setItem(colOrderKey, JSON.stringify(colOrder));
+    }, [colOrder]);
 
     const contextValue = {
       columns,

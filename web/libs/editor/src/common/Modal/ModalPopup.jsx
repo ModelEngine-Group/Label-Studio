@@ -2,7 +2,7 @@ import { Component, createRef } from "react";
 import { createPortal } from "react-dom";
 import { LsRemove } from "../../assets/icons";
 import { BemWithSpecifiContext, cn } from "../../utils/bem";
-import { aroundTransition } from "../../utils/transition";
+import { aroundTransition } from "@humansignal/core/lib/utils/transition";
 import { Button } from "../Button/Button";
 import "./Modal.scss";
 

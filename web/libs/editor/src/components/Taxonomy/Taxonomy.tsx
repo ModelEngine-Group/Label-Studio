@@ -2,7 +2,7 @@ import React, { type FormEvent, useCallback, useContext, useEffect, useMemo, use
 import { Dropdown, Menu } from "antd";
 
 import { LsChevron } from "../../assets/icons";
-import { Tooltip } from "../../common/Tooltip/Tooltip";
+import { Tooltip } from "@humansignal/ui";
 import { useToggle } from "../../hooks/useToggle";
 import type { CNTagName } from "../../utils/bem";
 import { isArraysEqual } from "../../utils/utilities";
@@ -163,7 +163,7 @@ export const HintTooltip: React.FC<HintTooltipProps> = ({ title, wrapper: Wrappe
 
   if (title) {
     return (
-      <Tooltip title={title} mouseEnterDelay={500} {...rest}>
+      <Tooltip title={title} {...rest}>
         {content}
       </Tooltip>
     );

@@ -16,7 +16,7 @@ import {
 import { IconWarning, LsSparks } from "../../../assets/icons";
 import { IconChevronLeft, IconEyeClosed, IconEyeOpened } from "../../../assets/icons/timeline";
 import { IconArrow } from "../../../assets/icons/tree";
-import { Tooltip } from "../../../common/Tooltip/Tooltip";
+import { Tooltip } from "@humansignal/ui";
 import Registry from "../../../core/Registry";
 import { PER_REGION_MODES } from "../../../mixins/PerRegionModes";
 import { Block, cn, Elem } from "../../../utils/bem";

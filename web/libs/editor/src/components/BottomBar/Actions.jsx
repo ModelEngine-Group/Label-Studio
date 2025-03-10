@@ -7,7 +7,7 @@ import { EditingHistory } from "./HistoryActions";
 import { DynamicPreannotationsToggle } from "../AnnotationTab/DynamicPreannotationsToggle";
 import { AutoAcceptToggle } from "../AnnotationTab/AutoAcceptToggle";
 import { GroundTruth } from "../CurrentEntity/GroundTruth";
-import { Tooltip } from "../../common/Tooltip/Tooltip";
+import { Tooltip } from "@humansignal/ui";
 
 export const Actions = ({ store }) => {
   const annotationStore = store.annotationStore;
@@ -21,7 +21,7 @@ export const Actions = ({ store }) => {
       {!isPrediction && !isViewAll && store.hasInterface("edit-history") && <EditingHistory entity={entity} />}
 
       {store.description && store.hasInterface("instruction") && (
-        <Tooltip placement="topLeft" title="Show instructions">
+        <Tooltip alignment="top-left" title="Show instructions">
           <Button
             icon={<IconInfoOutline style={{ width: 20, height: 20 }} />}
             type="text"
@@ -35,7 +35,7 @@ export const Actions = ({ store }) => {
           />
         </Tooltip>
       )}
-      <Tooltip placement="topLeft" title="Settings">
+      <Tooltip alignment="top-left" title="Settings">
         <Button
           icon={<LsSettingsAlt />}
           type="text"

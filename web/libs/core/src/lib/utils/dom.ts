@@ -1,7 +1,43 @@
+type BoundingBox = {
+  bottom: number;
+  height: number;
+  left: number;
+  right: number;
+  top: number;
+  width: number;
+  x: number;
+  y: number;
+};
+
+const getBoundingBox = (elem?: HTMLElement) => {
+  const template: BoundingBox = {
+    bottom: 0,
+    height: 0,
+    left: 0,
+    right: 0,
+    top: 0,
+    width: 0,
+    x: 0,
+    y: 0,
+  };
+
+  const position = (elem?.getBoundingClientRect?.() ?? {}) as BoundingBox;
+
+  const result = Object.entries(template).reduce<BoundingBox>((res, pair) => {
+    const key = pair[0] as keyof BoundingBox;
+    const value = pair[1];
+
+    res[key] = position[key] ?? value;
+    return res;
+  }, {} as BoundingBox);
+
+  return result;
+};
+
 /**
  * Returns element absolute position relative to document
  */
-const getAbsolutePosition = (elem: HTMLElement) => {
+export const getAbsolutePosition = (elem: HTMLElement) => {
   // crossbrowser version
   const box = elem.getBoundingClientRect();
 
@@ -27,13 +63,9 @@ const getAbsolutePosition = (elem: HTMLElement) => {
   };
 };
 
-/**
- * @param {HTMLElement} source
- * @param {HTMLElement} target
- */
 const positioner = (source: HTMLElement, target: HTMLElement) => {
-  const sourcePosition = getAbsolutePosition(source);
-  const targetPosition = getAbsolutePosition(target);
+  const sourcePosition = getBoundingBox(source);
+  const targetPosition = getBoundingBox(target);
 
   return {
     source: sourcePosition,
@@ -53,48 +85,55 @@ const positioner = (source: HTMLElement, target: HTMLElement) => {
     get horizontalRight() {
       return sourcePosition.left + sourcePosition.width - targetPosition.width;
     },
-  };
+  } as const;
 };
 
-export type ElementAlignment =
-  | "top-center"
-  | "top-left"
-  | "top-right"
-  | "bottom-center"
-  | "bottom-left"
-  | "bottom-right";
+export type Align = "top-left" | "top-center" | "top-right" | "bottom-left" | "bottom-center" | "bottom-right";
 
-export const alignElements = (elem: HTMLElement, target: HTMLElement, align: ElementAlignment, padding = 0) => {
+export const alignElements = (
+  elem: HTMLElement,
+  target: HTMLElement,
+  align: Align = "bottom-left",
+  padding = 0,
+  constrainHeight = false,
+) => {
   let offsetLeft = 0;
   let offsetTop = 0;
+  let maxHeight;
 
   const pos = positioner(elem, target);
   const resultAlign = align.split("-");
 
   switch (align) {
     case "top-center":
-      offsetTop = pos.top - padding;
+      offsetTop = constrainHeight ? Math.max(pos.top - padding, 0) : pos.top - padding;
       offsetLeft = pos.horizontalCenter;
+      maxHeight = pos.source.top - offsetTop;
       break;
     case "top-left":
-      offsetTop = pos.top - padding;
+      offsetTop = constrainHeight ? Math.max(pos.top - padding, 0) : pos.top - padding;
       offsetLeft = pos.horizontalLeft;
+      maxHeight = pos.source.top - offsetTop;
       break;
     case "top-right":
-      offsetTop = pos.top - padding;
+      offsetTop = constrainHeight ? Math.max(pos.top - padding, 0) : pos.top - padding;
       offsetLeft = pos.horizontalRight;
+      maxHeight = pos.source.top - offsetTop;
       break;
     case "bottom-center":
       offsetTop = pos.bottom + padding;
       offsetLeft = pos.horizontalCenter;
+      maxHeight = window.scrollX + window.innerHeight - offsetTop;
       break;
     case "bottom-left":
       offsetTop = pos.bottom + padding;
       offsetLeft = pos.horizontalLeft;
+      maxHeight = window.scrollX + window.innerHeight - offsetTop;
       break;
     case "bottom-right":
       offsetTop = pos.bottom + padding;
       offsetLeft = pos.horizontalRight;
+      maxHeight = window.scrollX + window.innerHeight - offsetTop;
       break;
     default:
       break;
@@ -102,9 +141,14 @@ export const alignElements = (elem: HTMLElement, target: HTMLElement, align: Ele
 
   if (offsetTop < window.scrollX) {
     offsetTop = pos.bottom + padding;
+    maxHeight = window.scrollX + window.innerHeight - offsetTop;
     resultAlign[0] = "bottom";
-  } else if (offsetTop + pos.target.height > window.scrollX + window.innerHeight) {
-    offsetTop = pos.top - padding;
+  }
+  // If the dropdown has more space on the top, then we should align it to the top
+  // of the trigger element instead of the bottom.
+  else if ((maxHeight ?? 0) < pos.source.top - (constrainHeight ? Math.max(pos.top - padding, 0) : pos.top - padding)) {
+    offsetTop = constrainHeight ? Math.max(pos.top - padding, 0) : pos.top - padding;
+    maxHeight = pos.source.top - offsetTop;
     resultAlign[0] = "top";
   }
 
@@ -116,5 +160,13 @@ export const alignElements = (elem: HTMLElement, target: HTMLElement, align: Ele
     resultAlign[1] = "right";
   }
 
-  return { top: offsetTop, left: offsetLeft, pos, align: resultAlign.join("-") as ElementAlignment };
+  const { scrollY, scrollX } = window;
+
+  return {
+    top: offsetTop + scrollY,
+    left: offsetLeft + scrollX,
+    pos,
+    align: resultAlign.join("-") as Align,
+    ...(constrainHeight ? { maxHeight } : {}),
+  };
 };

@@ -16,7 +16,7 @@ import { API } from "apps/labelstudio/src/providers/ApiProvider";
 import { modal, confirm } from "apps/labelstudio/src/components/Modal/Modal";
 import { Button } from "apps/labelstudio/src/components/Button/Button";
 import { Input, Label } from "apps/labelstudio/src/components/Form/Elements";
-import { Tooltip } from "apps/labelstudio/src/components/Tooltip/Tooltip";
+import { Tooltip } from "@humansignal/ui";
 
 type Token = {
   token: string;

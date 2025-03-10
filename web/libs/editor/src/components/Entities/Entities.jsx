@@ -13,7 +13,7 @@ import "./Entities.scss";
 import { Button } from "../../common/Button/Button";
 import { LsInvisible, LsTrash, LsVisible } from "../../assets/icons";
 import { confirm } from "../../common/Modal/Modal";
-import { Tooltip } from "../../common/Tooltip/Tooltip";
+import { Tooltip } from "@humansignal/ui";
 
 export default observer(({ regionStore, annotation }) => {
   const { classifications, regions, view } = regionStore;

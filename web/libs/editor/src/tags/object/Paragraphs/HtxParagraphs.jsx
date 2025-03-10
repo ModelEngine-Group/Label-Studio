@@ -8,9 +8,8 @@ import { isSelectionContainsSpan } from "../../../utils/selection-tools";
 import styles from "./Paragraphs.module.scss";
 import { AuthorFilter } from "./AuthorFilter";
 import { Phrases } from "./Phrases";
-import { Toggle } from "@humansignal/ui";
+import { Toggle, Tooltip } from "@humansignal/ui";
 import { IconHelp } from "../../../assets/icons";
-import { Tooltip } from "../../../common/Tooltip/Tooltip";
 import { cn } from "../../../utils/bem";
 
 const audioDefaultProps = {};
@@ -561,7 +560,7 @@ class HtxParagraphsView extends Component {
               }}
               label={"Auto-scroll"}
             />
-            <Tooltip placement="topLeft" title="Automatically sync transcript scrolling with audio playback">
+            <Tooltip alignment="top-left" title="Automatically sync transcript scrolling with audio playback">
               <IconHelp />
             </Tooltip>
           </div>

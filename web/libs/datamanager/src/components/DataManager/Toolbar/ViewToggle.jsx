@@ -1,8 +1,7 @@
 import { inject, observer } from "mobx-react";
 import { LsGrid, LsList } from "../../../assets/icons";
-import { FF_LOPS_E_10, isFF } from "../../../utils/feature-flags";
 import { RadioGroup } from "../../Common/RadioGroup/RadioGroup";
-import { Tooltip } from "../../Common/Tooltip/Tooltip";
+import { Tooltip } from "@humansignal/ui";
 
 const viewInjector = inject(({ store }) => ({
   view: store.currentView,
@@ -10,16 +9,22 @@ const viewInjector = inject(({ store }) => ({
 
 export const ViewToggle = viewInjector(
   observer(({ view, size, ...rest }) => {
-    const isDatasetsFF = isFF(FF_LOPS_E_10);
-
     return (
       <RadioGroup size={size} value={view.type} onChange={(e) => view.setType(e.target.value)} {...rest}>
-        <RadioGroup.Button value="list">
-          <Tooltip title="List view">{isDatasetsFF ? <LsList /> : <span>List</span>}</Tooltip>
-        </RadioGroup.Button>
-        <RadioGroup.Button value="grid">
-          <Tooltip title="Grid view">{isDatasetsFF ? <LsGrid /> : <span>Grid</span>}</Tooltip>
-        </RadioGroup.Button>
+        <Tooltip title="List view">
+          <div>
+            <RadioGroup.Button value="list">
+              <LsList />
+            </RadioGroup.Button>
+          </div>
+        </Tooltip>
+        <Tooltip title="Grid view">
+          <div>
+            <RadioGroup.Button value="grid">
+              <LsGrid />
+            </RadioGroup.Button>
+          </div>
+        </Tooltip>
       </RadioGroup>
     );
   }),

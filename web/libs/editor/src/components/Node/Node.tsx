@@ -23,7 +23,7 @@ import {
 } from "../../assets/icons";
 import { IconTimelineRegion } from "../../assets/icons/timeline";
 import { NodeView } from "./NodeView";
-import { Tooltip } from "../../common/Tooltip/Tooltip";
+import { Tooltip } from "@humansignal/ui";
 
 const NodeViews = {
   // fake view for virtual node representing label group

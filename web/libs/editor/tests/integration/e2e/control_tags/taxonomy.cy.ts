@@ -11,7 +11,7 @@ describe("Control Tags - Taxonomy", () => {
     LabelStudio.params().config(taxonomyConfig).data(simpleData).withResult([]).init();
 
     Taxonomy.open();
-    Taxonomy.findItem("Choice 2").trigger("mouseenter");
+    Taxonomy.findItem("Choice 2").trigger("mouseover");
     Tooltip.hasText("A hint for Choice 2");
   });
 

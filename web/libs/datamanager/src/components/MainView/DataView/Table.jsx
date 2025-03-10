@@ -11,7 +11,7 @@ import { ImportButton } from "../../Common/SDKButtons";
 import { Spinner } from "../../Common/Spinner";
 import { Table } from "../../Common/Table/Table";
 import { Tag } from "../../Common/Tag/Tag";
-import { Tooltip } from "../../Common/Tooltip/Tooltip";
+import { Tooltip } from "@humansignal/ui";
 import { GridView } from "../GridView/GridView";
 import "./Table.scss";
 import { Button } from "../../Common/Button/Button";

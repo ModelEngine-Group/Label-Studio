@@ -1,27 +1,30 @@
 import chroma from "chroma-js";
 import { type CSSProperties, forwardRef, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Block, Elem } from "../../utils/bem";
-import { isDefined, userDisplayName } from "../../utils/utilities";
-import { Tooltip } from "../Tooltip/Tooltip";
-import "./Userpic.scss";
+import { isDefined, userDisplayName } from "@humansignal/core/lib/utils/helpers";
+import { Tooltip } from "@humansignal/ui";
+import styles from "./Userpic.module.scss";
+import clsx from "clsx";
 
-const FALLBACK_IMAGE =
-  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
-
-interface UserpicProps {
+type UserpicProps = {
   badge?: Record<string, any> | null;
   className?: string;
   faded?: boolean;
   showUsername?: boolean;
-  size?: any;
+  size?: number;
   src?: string;
   style?: CSSProperties;
   user?: any;
   username?: string;
+  children?: any;
+  addCount?: string;
   useRandomBackground?: boolean;
-}
+  isInProgress?: boolean;
+};
 
-export const Userpic = forwardRef<any, UserpicProps>(
+const FALLBACK_IMAGE =
+  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
+
+export const Userpic = forwardRef(
   (
     {
       badge = null,
@@ -30,43 +33,52 @@ export const Userpic = forwardRef<any, UserpicProps>(
       showUsername,
       size,
       src,
-      style,
-      user = {},
+      style = {},
+      addCount,
+      user,
       username,
       useRandomBackground = true,
       children,
+      isInProgress = false,
       ...rest
-    },
+    }: UserpicProps,
     ref,
   ) => {
     const propsSrc = user?.avatar ?? src;
     const imgRef = useRef();
+    const userRef = useRef(user);
     const [finalSrc, setFinalSrc] = useState(propsSrc);
     const [imgVisible, setImgVisible] = useState(false);
     const [nameVisible, setNameVisible] = useState(true);
 
     useEffect(() => {
-      if (propsSrc !== finalSrc) {
+      if (isInProgress) {
+        setFinalSrc(null);
+        setImgVisible(false);
+        setNameVisible(true);
+      } else if (propsSrc !== finalSrc) {
         setFinalSrc(propsSrc);
         setImgVisible(false);
         setNameVisible(true);
       }
-    }, [propsSrc]);
+    }, [propsSrc, isInProgress]);
 
     if (size) {
-      style = Object.assign({ width: size, height: size, fontSize: size * 0.4 }, style);
+      style = Object.assign({ width: size, height: size, fontSize: size * 0.4 }, style ?? {});
     }
 
     const displayName = useMemo(() => {
-      return userDisplayName(user);
+      return userDisplayName(user ?? userRef.current);
     }, [user]);
 
     const background = useMemo(() => {
-      if (isDefined(user.id)) {
-        const color =
-          localStorage.getItem(`userpic-color-${user.id}`) ?? chroma.average([chroma.random(), "#cfcfcf"]).css();
+      const curUser = user ?? userRef.current;
 
-        localStorage.setItem(`userpic-color-${user.id}`, color);
+      if (isDefined(curUser?.id)) {
+        const color =
+          localStorage.getItem(`userpic-color-${curUser.id}`) ?? chroma.average([chroma.random(), "#cfcfcf"]).css();
+
+        localStorage.setItem(`userpic-color-${curUser.id}`, color);
         return color;
       }
 
@@ -90,48 +102,75 @@ export const Userpic = forwardRef<any, UserpicProps>(
 
     const stylesheet = { ...(style ?? {}), background, color: textColor };
 
+    const renderName = () => {
+      let name = "";
+
+      if (addCount) {
+        name = addCount;
+      } else if (nameVisible) {
+        name = displayName?.slice(0, 2).toUpperCase();
+      }
+
+      return (
+        <span className={styles.username} style={style}>
+          {name}
+        </span>
+      );
+    };
+
+    const classNameList: Record<string, any> = {};
+    if (className) {
+      className
+        .toString()
+        .split(" ")
+        .forEach((c) => {
+          classNameList[c] = true;
+        });
+    }
+
     const userpic = (
-      <Block ref={ref} name="userpic" mix={className} mod={{ faded }} style={stylesheet} {...rest}>
+      <div
+        ref={ref}
+        data-testid="userpic"
+        className={clsx(styles.userpic, { [styles.faded]: faded, ...classNameList })}
+        style={stylesheet}
+        {...rest}
+      >
         {children ? (
           children
         ) : (
           <>
-            <Elem
-              tag="img"
-              name="avatar"
+            <img
+              className={clsx(styles.avatar, { [styles.faded]: faded })}
               ref={imgRef}
               src={finalSrc}
               alt={(displayName ?? "").toUpperCase()}
               style={{ opacity: imgVisible ? (faded ? 0.3 : 1) : 0 }}
               onLoad={onImageLoaded}
               onError={() => setFinalSrc(FALLBACK_IMAGE)}
-              mod={{ faded }}
             />
-            {nameVisible && (
-              <Elem tag="span" name="username">
-                {(displayName ?? "").slice(0, 2).toUpperCase()}
-              </Elem>
-            )}
+            {renderName()}
           </>
         )}
-
         {badge &&
           Object.entries(badge).map(([align, content], i) => {
             return (
-              <Elem key={`badge-${i}`} name="badge" mod={{ [align]: true }}>
+              <div key={`badge-${i}`} className={clsx(styles.badge, { [styles[align]]: true })}>
                 {content}
-              </Elem>
+              </div>
             );
           })}
-      </Block>
+      </div>
     );
 
     const userFullName = useMemo(() => {
-      if (user?.firstName || user?.lastName) {
-        return `${user?.firstName ?? ""} ${user?.lastName ?? ""}`.trim();
+      const curUser = user ?? userRef.current;
+
+      if (curUser?.first_name || curUser?.last_name) {
+        return `${curUser?.first_name ?? ""} ${curUser?.last_name ?? ""}`.trim();
       }
-      if (user?.email) {
-        return user.email;
+      if (curUser?.email) {
+        return curUser.email;
       }
       return username;
     }, [user, username]);

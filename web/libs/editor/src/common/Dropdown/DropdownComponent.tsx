@@ -13,8 +13,8 @@ import {
 import { createPortal } from "react-dom";
 import { useFullscreen } from "../../hooks/useFullscreen";
 import { Block, cn } from "../../utils/bem";
-import { alignElements, type ElementAlignment } from "../../utils/dom";
-import { aroundTransition } from "../../utils/transition";
+import { alignElements, type Align } from "@humansignal/core/lib/utils/dom";
+import { aroundTransition } from "@humansignal/core/lib/utils/transition";
 import "./Dropdown.scss";
 import { DropdownContext } from "./DropdownContext";
 import { FF_DEV_3873, isFF } from "../../utils/feature-flags";
@@ -32,7 +32,7 @@ export interface DropdownRef {
 export interface DropdownProps {
   animated?: boolean;
   visible?: boolean;
-  alignment?: ElementAlignment;
+  alignment?: Align;
   enabled?: boolean;
   inline?: boolean;
   className?: string;

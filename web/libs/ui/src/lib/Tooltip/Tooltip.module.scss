@@ -1,7 +1,10 @@
 .tooltip {
+  --transition-delay: 150ms;
   --animation-duration: 100ms;
   --animation-curve: cubic-bezier(0.21, 1.04, 0.68, 1);
   --animation-start: -10px;
+  --pointer-size: 10px;
+  --offset-x: 24px;
 
   top: -1000px;
   left: -1000px;
@@ -9,6 +12,8 @@
   display: none;
   z-index: 10000;
   padding: 4px 10px;
+  font-size: 14px;
+  line-height: 24px;
   position: absolute;
   pointer-events: none;
   background-color: var(--sand_900);
@@ -18,19 +23,17 @@
     left: 50%;
     bottom: 0;
     content: '';
-    width: 10px;
-    height: 10px;
+    width: var(--pointer-size);
+    height: var(--pointer-size);
     display: block;
     position: absolute;
-    background-color: var(--sand_900);
+    background-color: inherit;
     transform: translate(-50%, 50%) rotate(45deg);
   }
 
   &.before-appear,
   &.before-disappear {
-    transition-property: opacity, transform;
-    transition-duration: var(--animation-duration);
-    transition-timing-function: var(--animation-curve);
+    transition: opacity var(--animation-duration) var(--animation-curve) var(--transition-delay), transform var(--animation-duration) var(--animation-curve) var(--transition-delay);
   }
 
   &.before-appear {
@@ -78,8 +81,33 @@
         transform: translate(-50%, -50%) rotate(45deg);
       }
     }
-  }
 
+    &_top-left {
+      margin-left: calc(calc(var(--offset-x) - (var(--pointer-size) / 2)) * -1);
+
+      --animation-start: -10px;
+
+      &::before {
+        bottom: 0;
+        left: 24px;
+        transform: translate(-50%, 50%) rotate(45deg);
+      }
+    }
+
+    &_top-right {
+      margin-left: calc(calc(var(--offset-x) - (var(--pointer-size) / 2)));
+
+      --animation-start: -10px;
+
+      &::before {
+        left: initial;
+        bottom: 0;
+        right: 18px;
+        transform: translate(-50%, 50%) rotate(45deg);
+      }
+    }
+  }
+  
   &_theme {
     &_light {
       color: var(--sand_900);

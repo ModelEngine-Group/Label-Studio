@@ -2,7 +2,7 @@ import keymaster from "keymaster";
 import { inject } from "mobx-react";
 import { observer } from "mobx-react";
 import { createElement, Fragment } from "react";
-import { Tooltip } from "../common/Tooltip/Tooltip";
+import { Tooltip } from "@humansignal/ui";
 import Hint from "../components/Hint/Hint";
 import { Block, Elem } from "../utils/bem";
 import { FF_MULTI_OBJECT_HOTKEYS, isFF } from "../utils/feature-flags";

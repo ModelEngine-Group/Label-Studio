@@ -201,7 +201,7 @@ describe("Relations: Hide/Show all relations", () => {
     ImageView.clickAtRelative(0.51, 0.06);
     Relations.hasRelations(3);
 
-    Relations.hideAllRelationsButton.trigger("mouseenter");
+    Relations.hideAllRelationsButton.trigger("mouseover");
     Tooltip.hasText("Hide all");
   });
 });

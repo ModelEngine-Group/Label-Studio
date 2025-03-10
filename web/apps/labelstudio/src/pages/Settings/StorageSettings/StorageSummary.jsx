@@ -1,7 +1,7 @@
 import { format } from "date-fns/esm";
 import { Button } from "../../../components";
 import { DescriptionList } from "../../../components/DescriptionList/DescriptionList";
-import { Tooltip } from "../../../components/Tooltip/Tooltip";
+import { Tooltip } from "@humansignal/ui";
 import { modal } from "../../../components/Modal/Modal";
 import { Oneof } from "../../../components/Oneof/Oneof";
 import { getLastTraceback } from "../../../utils/helpers";

@@ -4,7 +4,7 @@ import { FaCaretSquareRight, FaPlus } from "react-icons/fa";
 import { Block, cn, Elem } from "../../utils/bem";
 import { Button } from "../Common/Button/Button";
 import { Icon } from "../Common/Icon/Icon";
-import { Tooltip } from "../Common/Tooltip/Tooltip";
+import { Tooltip } from "@humansignal/ui";
 import { FilterLine } from "./FilterLine/FilterLine";
 import "./Filters.scss";
 

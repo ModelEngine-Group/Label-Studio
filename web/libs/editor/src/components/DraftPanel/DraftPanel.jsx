@@ -1,5 +1,5 @@
 import { observer } from "mobx-react";
-import { Tooltip } from "../../common/Tooltip/Tooltip";
+import { Tooltip } from "@humansignal/ui";
 import Utils from "../../utils";
 import { cn } from "../../utils/bem";
 
@@ -20,7 +20,10 @@ export const DraftPanel = observer(({ item }) => {
   }
   return (
     <div className={panel}>
-      <Tooltip placement="topLeft" title={item.draftSelected ? "switch to original result" : "switch to current draft"}>
+      <Tooltip
+        alignment="top-left"
+        title={item.draftSelected ? "switch to original result" : "switch to current draft"}
+      >
         <button type="button" onClick={() => item.toggleDraft()} className={panel.elem("toggle")}>
           {item.draftSelected ? "draft" : "original"}
         </button>

@@ -2,7 +2,7 @@ import { inject, observer } from "mobx-react";
 import { getType, types } from "mobx-state-tree";
 import ColorScheme from "pleasejs";
 
-import { Tooltip } from "../../common/Tooltip/Tooltip";
+import { Tooltip } from "@humansignal/ui";
 import InfoModal from "../../components/Infomodal/Infomodal";
 import { Label } from "../../components/Label/Label";
 import Constants from "../../core/Constants";

@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { inject, observer } from "mobx-react";
+import { ToastType, useToast, Tooltip, Userpic } from "@humansignal/ui";
+import { useCopyText } from "@humansignal/core/lib/hooks/useCopyText";
+import { isDefined, userDisplayName } from "@humansignal/core/lib/utils/helpers";
 import { Block, cn, Elem } from "../../utils/bem";
-import { Userpic } from "../../common/Userpic/Userpic";
 import {
   IconAnnotationGroundTruth,
   IconAnnotationSkipped2,
@@ -15,13 +17,8 @@ import {
   LsStar,
   LsStarOutline,
 } from "../../assets/icons";
-import { userDisplayName } from "../../utils/utilities";
 import { TimeAgo } from "../../common/TimeAgo/TimeAgo";
 import { useDropdown } from "../../common/Dropdown/DropdownTrigger";
-import { isDefined } from "../../utils/utilities";
-import { Tooltip } from "./../../common/Tooltip/Tooltip";
-import { ToastType, useToast } from "@humansignal/ui/lib/toast/toast";
-import { useCopyText } from "@humansignal/core/lib/hooks/useCopyText";
 
 // eslint-disable-next-line
 // @ts-ignore
@@ -267,21 +264,21 @@ export const AnnotationButton = observer(
           {!isPrediction && (
             <Elem name="icons">
               {entity.draftId > 0 && (
-                <Tooltip title={"Draft"}>
+                <Tooltip title="Draft">
                   <Elem name="icon" mod={{ draft: true }}>
                     <IconDraftCreated2 color="#617ADA" />
                   </Elem>
                 </Tooltip>
               )}
               {entity.skipped && (
-                <Tooltip title={"Skipped"}>
+                <Tooltip title="Skipped">
                   <Elem name="icon" mod={{ skipped: true }}>
                     <IconAnnotationSkipped2 color="#DD0000" />
                   </Elem>
                 </Tooltip>
               )}
               {isGroundTruth && (
-                <Tooltip title={"Ground-truth"}>
+                <Tooltip title="Ground-truth">
                   <Elem name="icon" mod={{ groundTruth: true }}>
                     <IconAnnotationGroundTruth />
                   </Elem>

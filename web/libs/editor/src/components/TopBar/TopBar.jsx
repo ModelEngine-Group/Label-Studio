@@ -2,7 +2,7 @@ import { observer } from "mobx-react";
 
 import { IconViewAll, LsPlus } from "../../assets/icons";
 import { Button } from "../../common/Button/Button";
-import { Tooltip } from "../../common/Tooltip/Tooltip";
+import { Tooltip } from "@humansignal/ui";
 import { Block, Elem } from "../../utils/bem";
 import { isSelfServe } from "../../utils/billing";
 import { FF_BULK_ANNOTATION, FF_DEV_3873, isFF } from "../../utils/feature-flags";
@@ -49,7 +49,7 @@ export const TopBar = observer(({ store }) => {
             </Tooltip>
           )}
           {store.hasInterface("annotations:add-new") && (
-            <Tooltip placement="topLeft" title="Create a new annotation">
+            <Tooltip alignment="top-left" title="Create a new annotation" style={{ "--offset-x": "11px" }}>
               <Button
                 icon={<LsPlus />}
                 className={"topbar__button"}
