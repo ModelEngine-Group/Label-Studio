@@ -9,6 +9,10 @@ export type APIUser = {
   initials: string;
   phone: string;
   active_organization: number;
+  active_organization_meta: {
+    title: string;
+    email: string;
+  };
   allow_newsletters: boolean;
   date_joined: string;
 };

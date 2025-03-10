@@ -14,12 +14,20 @@ class BaseUserSerializer(FlexFieldsModelSerializer):
     # short form for user presentation
     initials = serializers.SerializerMethodField(default='?', read_only=True)
     avatar = serializers.SerializerMethodField(read_only=True)
+    active_organization_meta = serializers.SerializerMethodField(read_only=True)
 
     def get_avatar(self, instance):
         return instance.avatar_url
 
     def get_initials(self, instance):
         return instance.get_initials(self._is_deleted(instance))
+
+    def get_active_organization_meta(self, instance):
+        organization = instance.active_organization
+        title = organization.title if organization is not None else ''
+        email = organization.created_by.email if organization is not None else ''
+
+        return {'title': title, 'email': email}
 
     def _is_deleted(self, instance):
         if 'deleted_organization_members' in self.context:
@@ -84,6 +92,7 @@ class BaseUserSerializer(FlexFieldsModelSerializer):
             'initials',
             'phone',
             'active_organization',
+            'active_organization_meta',
             'allow_newsletters',
             'date_joined',
         )

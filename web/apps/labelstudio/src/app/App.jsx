@@ -17,9 +17,11 @@ import ErrorBoundary from "./ErrorBoundary";
 import { FF_OPTIC_2, FF_UNSAVED_CHANGES, FF_PRODUCT_TOUR, isFF } from "../utils/feature-flags";
 import { TourProvider } from "@humansignal/core";
 import { ToastProvider, ToastViewport } from "@humansignal/ui";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
 import { JotaiProvider, JotaiStore } from "../utils/jotai-store";
 import { CurrentUserProvider } from "../providers/CurrentUser";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { LSQueryClient } from "../utils/query-client";
 import { RootPage } from "./RootPage";
 import "@humansignal/ui/src/tailwind.css";
 import "./App.scss";
@@ -67,8 +69,8 @@ const App = ({ content }) => {
       <Router history={browserHistory}>
         <MultiProvider
           providers={[
+            <QueryClientProvider client={LSQueryClient} key="query" />,
             <JotaiProvider key="jotai" store={JotaiStore} />,
-            <QueryClientProvider key="query" client={queryClient} />,
             <AppStoreProvider key="app-store" />,
             <ApiProvider key="api" />,
             <ConfigProvider key="config" />,

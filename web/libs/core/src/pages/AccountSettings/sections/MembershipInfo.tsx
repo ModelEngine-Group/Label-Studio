@@ -1,45 +1,97 @@
-import { useEffect, useState } from "react";
-import { ToastType, useToast } from "@humansignal/ui";
 import { format } from "date-fns";
 import styles from "./MembershipInfo.module.scss";
+import { useQuery } from "@tanstack/react-query";
+import { API } from "apps/labelstudio/src/providers/ApiProvider";
+import { useMemo } from "react";
+import type { WrappedResponse } from "@humansignal/core/lib/api-proxy/types";
+import { useCurrentUserAtom } from "@humansignal/core/lib/hooks/useCurrentUser";
 
-/**
- * FIXME: This is legacy imports. We're not supposed to use such statements
- * each one of these eventually has to be migrated to core/ui
- */
-import { useCurrentUser } from "apps/labelstudio/src/providers/CurrentUser";
-import { useAPI } from "apps/labelstudio/src/providers/ApiProvider";
+function formatDate(date?: string) {
+  return format(new Date(date ?? ""), "dd MMM yyyy, KK:mm a");
+}
 
 export const MembershipInfo = () => {
-  const api = useAPI();
-  const toast = useToast();
-  const { user } = useCurrentUser();
-  const [registrationDate, setRegistrationDate] = useState<string | null>(null);
-  const [annotationsCount, setAnnotationsCount] = useState<number | null>(null);
-  const [projectsContributedTo, setProjectsContributedTo] = useState<number | null>(null);
+  const { user } = useCurrentUserAtom();
+  const dateJoined = useMemo(() => {
+    if (!user?.date_joined) return null;
+    return formatDate(user?.date_joined);
+  }, [user?.date_joined]);
 
-  useEffect(() => {
-    if (!user) return;
-    api
-      .callApi("userMemberships", {
-        params: {
-          pk: user.active_organization,
-          userPk: user.id,
-        },
-      })
-      .then((response: any) => {
-        if (response?.$meta?.ok) {
-          setRegistrationDate(format(new Date(response?.created_at), "dd MMM yyyy, KK:mm a"));
-          setAnnotationsCount(response?.annotations_count);
-          setProjectsContributedTo(response?.contributed_projects_count);
-        } else {
-          toast.show({
-            message: "Failed to fetch membership info",
-            type: ToastType.error,
-          });
-        }
-      });
-  }, [user?.id]);
+  const membership = useQuery({
+    queryKey: [user?.active_organization, user?.id, "user-membership"],
+    async queryFn() {
+      if (!user) return {};
+      const response = (await API.invoke("userMemberships", {
+        pk: user.active_organization,
+        userPk: user.id,
+      })) as WrappedResponse<{
+        user: number;
+        organization: number;
+        contributed_projects_count: number;
+        annotations_count: number;
+        created_at: string;
+        role: string;
+      }>;
+
+      const annotationCount = response?.annotations_count;
+      const contributions = response?.contributed_projects_count;
+      let role = "Owner";
+
+      switch (response.role) {
+        case "OW":
+          role = "Owner";
+          break;
+        case "DI":
+          role = "Deactivated";
+          break;
+        case "AD":
+          role = "Administrator";
+          break;
+        case "MA":
+          role = "Manager";
+          break;
+        case "AN":
+          role = "Annotator";
+          break;
+        case "RE":
+          role = "Reviewer";
+          break;
+        case "NO":
+          role = "Pending";
+          break;
+      }
+
+      return {
+        annotationCount,
+        contributions,
+        role,
+      };
+    },
+  });
+
+  const organization = useQuery({
+    queryKey: ["organization", user?.active_organization],
+    async queryFn() {
+      if (!user) return null;
+      if (!window?.APP_SETTINGS?.billing) return null;
+      const organization = (await API.invoke("organization", {
+        pk: user.active_organization,
+      })) as WrappedResponse<{
+        id: number;
+        external_id: string;
+        title: string;
+        token: string;
+        default_role: string;
+        created_at: string;
+      }>;
+
+      if (!organization.$meta.ok) {
+        return null;
+      }
+
+      return { ...organization, createdAt: formatDate(organization.created_at) } as const;
+    },
+  });
 
   return (
     <div className={styles.membershipInfo} id="membership-info">
@@ -50,49 +102,53 @@ export const MembershipInfo = () => {
 
       <div className="flex gap-2 w-full justify-between">
         <div>Registration date</div>
-        <div>{registrationDate}</div>
+        <div>{dateJoined}</div>
       </div>
 
       <div className="flex gap-2 w-full justify-between">
-        <div>Annotations submitted</div>
-        <div>{annotationsCount}</div>
+        <div>Annotations Submitted</div>
+        <div>{membership.data?.annotationCount}</div>
       </div>
 
       <div className="flex gap-2 w-full justify-between">
         <div>Projects contributed to</div>
-        <div>{projectsContributedTo}</div>
+        <div>{membership.data?.contributions}</div>
       </div>
 
       <div className={styles.divider} />
 
-      <div className="flex gap-2 w-full justify-between">
-        <div>Organization</div>
-        <div>
-          <a href="/organization" className="text-blue-600 hover:underline">
-            {user?.email}
-          </a>
+      {user?.active_organization_meta && (
+        <div className="flex gap-2 w-full justify-between">
+          <div>Organization</div>
+          <div>{user.active_organization_meta.title}</div>
         </div>
-      </div>
+      )}
 
-      <div className="flex gap-2 w-full justify-between">
-        <div>My role</div>
-        <div>Owner</div>
-      </div>
+      {membership.data?.role && (
+        <div className="flex gap-2 w-full justify-between">
+          <div>My role</div>
+          <div>{membership.data.role}</div>
+        </div>
+      )}
 
       <div className="flex gap-2 w-full justify-between">
         <div>Organization ID</div>
         <div>{user?.active_organization}</div>
       </div>
 
-      <div className="flex gap-2 w-full justify-between">
-        <div>Owner</div>
-        <div>{user?.email}</div>
-      </div>
+      {user?.active_organization_meta && (
+        <div className="flex gap-2 w-full justify-between">
+          <div>Owner</div>
+          <div>{user.active_organization_meta.email}</div>
+        </div>
+      )}
 
-      <div className="flex gap-2 w-full justify-between">
-        <div>Created</div>
-        <div>{registrationDate}</div>
-      </div>
+      {organization.data?.createdAt && (
+        <div className="flex gap-2 w-full justify-between">
+          <div>Created</div>
+          <div>{organization.data?.createdAt}</div>
+        </div>
+      )}
     </div>
   );
 };
