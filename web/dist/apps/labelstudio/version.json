@@ -1,6 +1,6 @@
 {
-  "message": "fix: DIA-1927: [FE] Data on organization section are incorrect on new account settings page (#7100)",
-  "commit": "ed26bfb5ac4c16b9e41c18a33fa7c4a02ea4c3b8",
-  "date": "2025-03-10T14:35:22.000Z",
+  "message": "refactor: LEAP-1907: Migrate EnterpriseBadge to UI library (#7173)",
+  "commit": "a5927325db38e1dbdf8d2c7106dfe8eb2da4207d",
+  "date": "2025-03-10T16:01:34.000Z",
   "branch": "develop"
 }
