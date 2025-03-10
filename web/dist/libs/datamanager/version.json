@@ -1,6 +1,6 @@
 {
-  "message": "fix: DIA-2024: [lso][re-opened-via-tailwind] Fix body-parser vulnerable to denial of service when url encoding is enabled (#7186)",
-  "commit": "2f6abbd83df6252f053c58c7c164d0567b3f8b20",
-  "date": "2025-03-10T11:34:34.000Z",
+  "message": "fix: DIA-1927: [FE] Data on organization section are incorrect on new account settings page (#7100)",
+  "commit": "ed26bfb5ac4c16b9e41c18a33fa7c4a02ea4c3b8",
+  "date": "2025-03-10T14:35:22.000Z",
   "branch": "develop"
 }
