@@ -7,7 +7,7 @@ config: |
   <View>
     <View style="display: grid; grid-template: auto/1fr 1fr; column-gap: 1em">
       <Header value="Read the sentence in English" />
-      <Header value="Provide translaton in Spanish" />
+      <Header value="Provide translation in Spanish" />
 
     <Text name="english" value="$english" />
 
