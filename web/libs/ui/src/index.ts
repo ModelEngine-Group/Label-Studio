@@ -1,3 +1,4 @@
+export * from "./lib/enterprise-badge/enterprise-badge";
 export * from "./lib/checkbox/checkbox";
 export * from "./lib/toast/toast";
 export * from "./lib/InputFile/InputFile";

@@ -1,3 +1,4 @@
+import { EnterpriseBadge } from "@humansignal/ui";
 import React from "react";
 import { useHistory } from "react-router";
 import { Button, ToggleItems } from "../../components";
@@ -12,7 +13,6 @@ import { ImportPage } from "./Import/Import";
 import { useImportPage } from "./Import/useImportPage";
 import { useDraftProject } from "./utils/useDraftProject";
 import { Input, Select, TextArea } from "../../components/Form";
-import { EnterpriseBadge } from "../../components/Badges/Enterprise";
 import { Caption } from "../../components/Caption/Caption";
 import { FF_LSDV_E_297, isFF } from "../../utils/feature-flags";
 import { createURL } from "../../components/HeidiTips/utils";
@@ -53,7 +53,7 @@ const ProjectName = ({ name, setName, onSaveName, onSubmit, error, description, 
         <div className="field field--wide">
           <label>
             Workspace
-            <EnterpriseBadge />
+            <EnterpriseBadge className="ml-2" />
           </label>
           <Select placeholder="Select an option" disabled options={[]} />
           <Caption>
