@@ -221,6 +221,7 @@
   "resolutions": {
     "@babel/traverse": "^7.24.1",
     "@cypress/request": "3.0.0",
+    "body-parser": "^1.20.3",
     "axios": "1.6.0",
     "cookie": "0.7.0",
     "**/bin-check/**/cross-spawn": "6.0.6",
