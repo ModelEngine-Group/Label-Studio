@@ -1,6 +1,6 @@
 {
-  "message": "fix: DIA-2022: UI&UX | Issue with zoom functionality in Label Studio labelling UI (#7182)",
-  "commit": "f59505dbbe1b9f4eb7433a872f6f354fbc8b1f43",
-  "date": "2025-03-07T18:30:10.000Z",
+  "message": "fix: DIA-2024: [lso][re-opened-via-tailwind] Fix body-parser vulnerable to denial of service when url encoding is enabled (#7186)",
+  "commit": "2f6abbd83df6252f053c58c7c164d0567b3f8b20",
+  "date": "2025-03-10T11:34:34.000Z",
   "branch": "develop"
 }
