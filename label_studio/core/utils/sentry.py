@@ -2,8 +2,12 @@ from django.conf import settings
 
 
 def event_processor(event, hint):
-    # skip all transactions without errors
+    # skip all transactions without exceptions, unless it's a log record
     if 'exc_info' not in hint:
+
+        if 'log_record' in hint:
+            return event
+
         return None
 
     # skip specified exceptions
