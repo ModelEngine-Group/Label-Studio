@@ -398,7 +398,7 @@ def get_next_task(
                         'project_id': project.id,
                         'title': project.title,
                     }
-                    logger.error(
+                    logger.info(
                         f'DEBUG INFO: get_next_task is_labeled/overlap: '
                         f'LOCALS ==> {local} :: PROJECT ==> {project_data} :: '
                         f'NEXT_TASK ==> {task}'
