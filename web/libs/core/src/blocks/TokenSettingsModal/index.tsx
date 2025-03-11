@@ -54,7 +54,7 @@ function TokenSettingsModalView({
         <Toggle
           label="Legacy Tokens"
           name="legacy_api_tokens_enabled"
-          description="Enable legacy access tokens"
+          description="Enable legacy access tokens, these do not expire"
           checked={settings.legacy_api_tokens_enabled ?? true}
         />
       </Form.Row>
@@ -62,7 +62,7 @@ function TokenSettingsModalView({
         <Form.Row columnCount={1}>
           <Input
             name="api_token_ttl_days"
-            label="Personal Access Token Time-to-Live"
+            label="Time-to-Live (optional, Personal Access Token only)"
             description="The number of days, after creation, that the token will be valid for. After this time period a user will need to create a new access token"
             labelProps={{
               description:
