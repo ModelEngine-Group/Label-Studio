@@ -19,13 +19,19 @@ def test_jwt_settings_permissions():
         organization=org,
     )
 
+    # Any member should be able to view
+    assert org.jwt.has_view_permission(user)
+
+    # Only owners and administrators can modify
     user.is_owner = True
     user.save()
-    assert org.jwt.has_permission(user) is True
+    assert org.jwt.has_modify_permission(user)
+    assert org.jwt.has_permission(user)
 
     user.is_owner = False
     user.save()
-    assert org.jwt.has_permission(user) is False
+    assert not org.jwt.has_modify_permission(user)
+    assert not org.jwt.has_permission(user)
 
 
 @mock_feature_flag(flag_name='fflag__feature_develop__prompts__dia_1829_jwt_token_auth', value=True)
