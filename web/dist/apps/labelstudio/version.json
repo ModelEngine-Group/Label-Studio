@@ -1,6 +1,6 @@
 {
-  "message": "refactor: LEAP-1907: Migrate EnterpriseBadge to UI library (#7173)",
-  "commit": "a5927325db38e1dbdf8d2c7106dfe8eb2da4207d",
-  "date": "2025-03-10T16:01:34.000Z",
+  "message": "chore: DIA-2026: copy changes (#7198)",
+  "commit": "d7ecd1669632e53a6bf2a0361871ac9d85954cb2",
+  "date": "2025-03-11T16:07:12.000Z",
   "branch": "develop"
 }
