@@ -6,7 +6,6 @@ import logging
 import mimetypes
 import os
 import posixpath
-import sys
 from pathlib import Path
 from wsgiref.util import FileWrapper
 
@@ -24,11 +23,9 @@ from django.http import (
     HttpResponse,
     HttpResponseForbidden,
     HttpResponseNotFound,
-    HttpResponseServerError,
     JsonResponse,
 )
 from django.shortcuts import redirect, render, reverse
-from django.template import loader
 from django.utils._os import safe_join
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -116,13 +113,6 @@ def editor_files(request):
     """Get last editor files"""
     response = utils.common.find_editor_files()
     return HttpResponse(json.dumps(response), status=200)
-
-
-def custom_500(request):
-    """Custom 500 page"""
-    t = loader.get_template('500.html')
-    type_, value, tb = sys.exc_info()
-    return HttpResponseServerError(t.render({'exception': value}))
 
 
 def samples_time_series(request):

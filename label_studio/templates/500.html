@@ -13,17 +13,13 @@
 
 {% block content %}
 <div class="ls-global-error">
-  <h1>Server error</h1>
-  <img class="ls-global-error__heidi" src="{{ settings.HOSTNAME }}{% static 'images/opossum_broken.svg' %}" height="111" alt="Heidi's down" />
-  <h2>500 Something went wrong</h2>
-  <div class="ls-global-error__details">{{ exception }}</div>
+  <img class="ls-global-error__heidi" src="{{ settings.HOSTNAME }}{% static 'images/heidi-500.svg' %}" alt="Heidi's down" draggable="false" />
+  <h1>Uh oh, something went wrong.</h1>
+  <h2>Here’s a few things you can try:</h2>
   <p class="ls-global-error__actions">
-    <a class="ls-global-error__slack button" target="_blank" href="https://slack.labelstud.io/?source=product-500-error">
-      <img src="{{ settings.HOSTNAME }}{% static 'images/slack.png' %}" width="16" />
-      Ask on Slack
-    </a>
     <button onClick="history.back()">Go Back</button>
-    <button onClick="location.reload()">Reload</button>
+    <button onClick="location.reload()">Refresh</button>
+    <button onClick="window.location.href='/'" class="ls-global-error__primary_button">Go to Home</button>
   </p>
 </div>
 {% endblock %}

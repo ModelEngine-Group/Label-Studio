@@ -27,8 +27,6 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
-handler500 = 'core.views.custom_500'
-
 versions = collect_versions()
 open_api_info = openapi.Info(
     title='Label Studio API',
