@@ -7,7 +7,7 @@ export const InlineError = ({ children, includeValidation, className, style }) =
   const context = React.useContext(ApiContext);
 
   React.useEffect(() => {
-    context.showModal = false;
+    context.showGlobalError = false;
   }, [context]);
 
   return context.error ? (

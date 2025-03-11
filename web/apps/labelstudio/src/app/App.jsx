@@ -72,11 +72,11 @@ const App = ({ content }) => {
             <QueryClientProvider client={LSQueryClient} key="query" />,
             <JotaiProvider key="jotai" store={JotaiStore} />,
             <AppStoreProvider key="app-store" />,
+            <ToastProvider key="toast" />,
             <ApiProvider key="api" />,
             <ConfigProvider key="config" />,
             <RoutesProvider key="rotes" />,
             <ProjectProvider key="project" />,
-            <ToastProvider key="toast" />,
             <CurrentUserProvider key="current-user" />,
             isFF(FF_PRODUCT_TOUR) && <TourProvider useAPI={useAPI} />,
           ].filter(Boolean)}

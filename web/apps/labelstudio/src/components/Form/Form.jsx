@@ -18,6 +18,7 @@ import {
   FormValidationContext,
 } from "./FormContext";
 import * as Validators from "./Validation/Validators";
+import { ToastProvider, ToastViewport } from "@humansignal/ui";
 
 const PASSWORD_PROTECTED_VALUE = "got ya, suspicious hacker!";
 
@@ -65,6 +66,7 @@ export default class Form extends React.Component {
       <FormSubmissionContext.Provider key="form-submission-ctx" value={this.state.submitting} />,
       <FormStateContext.Provider key="form-state-ctx" value={this.state.state} />,
       <FormResponseContext.Provider key="form-response" value={this.state.lastResponse} />,
+      <ToastProvider key="toast" />,
       <ApiProvider key="form-api" ref={this.apiRef} />,
     ];
 
@@ -86,6 +88,7 @@ export default class Form extends React.Component {
             <ValidationRenderer validation={this.state.validation} />
           )}
         </form>
+        <ToastViewport />
       </MultiProvider>
     );
   }

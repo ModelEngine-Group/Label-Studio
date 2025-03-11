@@ -37,6 +37,7 @@ export const FF_UNSAVED_CHANGES = "fflag_feat_front_leap_1198_unsaved_changes_18
  */
 export const FF_AUTH_TOKENS = "fflag__feature_develop__prompts__dia_1829_jwt_token_auth";
 
+export const FF_IMPROVE_GLOBAL_ERROR_MESSAGES = "fflag_feat_front_optic_1746_improve_global_error_messages_short";
 /**
  * Enable new home page for LSO and LSE
  */
