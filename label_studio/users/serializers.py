@@ -28,6 +28,7 @@ class BaseUserSerializer(FlexFieldsModelSerializer):
             return {'title': '', 'email': ''}
 
         title = organization.title
+        email = ''
 
         if organization.created_by is not None and organization.created_by.email is not None:
             email = organization.created_by.email
