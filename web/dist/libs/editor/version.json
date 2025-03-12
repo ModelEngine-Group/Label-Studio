@@ -1,6 +1,6 @@
 {
-  "message": "chore: DIA-2026: copy changes (#7198)",
-  "commit": "d7ecd1669632e53a6bf2a0361871ac9d85954cb2",
-  "date": "2025-03-11T16:07:12.000Z",
+  "message": "chore(deps-dev): bump @babel/runtime from 7.23.6 to 7.26.10 in /web (#7214)",
+  "commit": "13616f283312b1a47558ab0dd02ac5c35fa1636d",
+  "date": "2025-03-12T15:47:53.000Z",
   "branch": "develop"
 }
