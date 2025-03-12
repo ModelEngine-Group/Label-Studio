@@ -117,7 +117,7 @@
     "@babel/preset-env": "^7.12.13",
     "@babel/preset-react": "^7.14.5",
     "@babel/preset-typescript": "^7.13.0",
-    "@babel/runtime": "^7.12.13",
+    "@babel/runtime": "^7.26.10",
     "@biomejs/biome": "1.7.1",
     "@chromatic-com/storybook": "^3",
     "@cypress/code-coverage": "^3.12.9",
