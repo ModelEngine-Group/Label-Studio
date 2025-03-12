@@ -22,6 +22,7 @@ from django.utils.decorators import method_decorator
 from django_filters import CharFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
+from label_studio_sdk.label_interface.interface import LabelInterface
 from ml.serializers import MLBackendSerializer
 from projects.functions.next_task import get_next_task
 from projects.functions.stream_history import get_label_stream_history
@@ -828,11 +829,27 @@ class ProjectSampleTask(generics.RetrieveAPIView):
 
     def post(self, request, *args, **kwargs):
         label_config = self.request.data.get('label_config')
+        include_annotation_and_prediction = self.request.data.get('include_annotation_and_prediction', False)
+
         if not label_config:
             raise RestValidationError('Label config is not set or is empty')
 
         project = self.get_object()
-        return Response({'sample_task': project.get_sample_task(label_config)}, status=200)
+
+        if include_annotation_and_prediction:
+            try:
+                label_interface = LabelInterface(label_config)
+                complete_task = label_interface.generate_complete_sample_task(raise_on_failure=True)
+                return Response({'sample_task': complete_task}, status=200)
+            except Exception as e:
+                logger.error(
+                    f'Error generating enhanced sample task, falling back to original method: {str(e)}. Label config: {label_config}'
+                )
+                # Fallback to project.get_sample_task if LabelInterface.generate_complete_sample_task failed
+                return Response({'sample_task': project.get_sample_task(label_config)}, status=200)
+        else:
+            # Use the simple sample task generation method
+            return Response({'sample_task': project.get_sample_task(label_config)}, status=200)
 
 
 class ProjectModelVersions(generics.RetrieveAPIView):
