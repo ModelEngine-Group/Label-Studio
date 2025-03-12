@@ -486,11 +486,20 @@ export const AudioModel = types.compose(
           self.clearRegionMappings();
           self._ws = ws;
 
-          self.onReady();
+          self.checkReady();
           self.needsUpdate();
           if (isFF(FF_LSDV_E_278)) {
             self.loadSyncedParagraphs();
           }
+        },
+
+        checkReady() {
+          if (!self._ws || self._ws.destroyed) return;
+          if (self._ws.isDrawing) {
+            requestAnimationFrame(() => self.checkReady());
+            return;
+          }
+          self.onReady();
         },
 
         onSeek(time) {

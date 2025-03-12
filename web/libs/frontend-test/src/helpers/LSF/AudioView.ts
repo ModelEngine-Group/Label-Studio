@@ -1,6 +1,7 @@
 import TriggerOptions = Cypress.TriggerOptions;
 import ObjectLike = Cypress.ObjectLike;
 import ClickOptions = Cypress.ClickOptions;
+import { LabelStudio } from "@humansignal/frontend-test/helpers/LSF/LabelStudio";
 
 type MouseInteractionOptions = Partial<TriggerOptions & ObjectLike & MouseEvent>;
 
@@ -36,7 +37,14 @@ export const AudioView = {
     return this.root.get("loading-progress-bar", { timeout: 10000 });
   },
   isReady() {
+    LabelStudio.waitForObjectsReady();
     this.loadingBar.should("not.exist");
+    /**
+     * There is a time gap between setting `isReady` to `true` and getting the last initial draw at the canvas,
+     * which for now we are going to compensate by waiting approximately 2 frames of render (16 * 2 = 32 milliseconds)
+     * @todo: remove wait when `isReady` in audio become more precise
+     */
+    cy.wait(32);
   },
   get playButton() {
     return cy.get(`[data-testid="playback-button:play"]`);

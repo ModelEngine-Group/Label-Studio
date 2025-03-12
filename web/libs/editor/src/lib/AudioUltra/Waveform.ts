@@ -320,9 +320,8 @@ export class Waveform extends Events<WaveformEventTypes> {
   syncCursor() {
     const time = this.currentTime;
 
-    // @todo - find a less hacky way to consistently update just the cursor
     this.visualizer.updateCursorToTime(time);
-    this.visualizer.draw(true);
+    this.visualizer.redrawCursor();
   }
 
   seek(value: number) {
@@ -552,6 +551,9 @@ export class Waveform extends Events<WaveformEventTypes> {
     return this.media.sampleRate;
   }
 
+  get isDrawing() {
+    return this.visualizer.isDrawing;
+  }
   /**
    * Initialize events
    */

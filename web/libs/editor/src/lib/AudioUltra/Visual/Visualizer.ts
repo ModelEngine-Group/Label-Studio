@@ -1,5 +1,5 @@
 import type { WaveformAudio } from "../Media/WaveformAudio";
-import { averageMinMax, clamp, debounce, defaults, warn } from "../Common/Utils";
+import { averageMinMax, BROWSER_SCROLLBAR_WIDTH, clamp, debounce, defaults, warn } from "../Common/Utils";
 import type { Waveform, WaveformOptions } from "../Waveform";
 import { type CanvasCompositeOperation, Layer, type RenderingContext } from "./Layer";
 import { Events } from "../Common/Events";
@@ -48,6 +48,7 @@ export type VisualizerOptions = Pick<
 
 export class Visualizer extends Events<VisualizerEvents> {
   private wrapper!: HTMLElement;
+  private scrollFiller!: HTMLElement;
   private layers = new Map<string, Layer>();
   private observer!: ResizeObserver;
   private currentTime = 0;
@@ -183,6 +184,7 @@ export class Visualizer extends Events<VisualizerEvents> {
     }
 
     this.getSamplesPerPx();
+    this.updateScrollFiller();
 
     this.wf.invoke("zoom", [this.zoom]);
     this.draw();
@@ -193,6 +195,11 @@ export class Visualizer extends Events<VisualizerEvents> {
   }
 
   setScrollLeft(value: number, redraw = true, forceDraw = false) {
+    this.wrapper.scrollLeft = value * this.fullWidth;
+    this._setScrollLeft(value, redraw, forceDraw);
+  }
+
+  _setScrollLeft(value: number, redraw = true, forceDraw = false) {
     this.scrollLeft = value;
 
     if (redraw) {
@@ -244,6 +251,11 @@ export class Visualizer extends Events<VisualizerEvents> {
     });
   }
 
+  redrawCursor() {
+    this.renderCursor();
+    this.transferImage();
+  }
+
   destroy() {
     if (this.isDestroyed) return;
 
@@ -274,13 +286,13 @@ export class Visualizer extends Events<VisualizerEvents> {
 
   centerToCurrentTime() {
     if (this.zoom === 1) {
-      this.scrollLeft = 0;
+      this.setScrollLeft(0);
       return;
     }
 
     const offset = this.width / 2 / this.zoomedWidth;
 
-    this.scrollLeft = clamp(this.currentTime - offset, 0, 1);
+    this.setScrollLeft(clamp(this.currentTime - offset, 0, 1));
   }
 
   /**
@@ -621,6 +633,10 @@ export class Visualizer extends Events<VisualizerEvents> {
     return result;
   }
 
+  get isDrawing() {
+    return this.drawing;
+  }
+
   private initialRender() {
     if (this.container) {
       this.container.style.height = `${this.baseWaveHeight}px`;
@@ -639,15 +655,44 @@ export class Visualizer extends Events<VisualizerEvents> {
     this.wrapper = document.createElement("div");
     this.wrapper.style.height = "100%";
 
-    this.createLayer({ name: "main" });
+    const mainLayer = this.createLayer({ name: "main" });
     this.createLayer({ name: "background", offscreen: true, zIndex: 0, isVisible: false });
     this.createLayer({ name: "waveform", offscreen: true, zIndex: 100 });
     this.createLayerGroup({ name: "regions", offscreen: true, zIndex: 101, compositeOperation: "source-over" });
     const controlsLayer = this.createLayer({ name: "controls", offscreen: true, zIndex: 1000 });
 
     this.playhead.setLayer(controlsLayer);
-    this.layers.get("main")?.appendTo(this.wrapper);
+    this.initScrollBar();
+    mainLayer.appendTo(this.wrapper);
     container.appendChild(this.wrapper);
+  }
+
+  initScrollBar() {
+    this.wrapper.style.position = "relative";
+    this.wrapper.style.overflowX = "scroll";
+    this.wrapper.style.overflowY = "hidden";
+
+    const mainLayer = this.getLayer("main") as Layer;
+    // The parent element scrolls natively, and the canvas is redrawn accordingly.
+    // To maintain its position during scrolling, the element must use "sticky" positioning.
+    mainLayer.canvas.style.position = "sticky";
+    mainLayer.canvas.style.top = "0";
+    mainLayer.canvas.style.left = "0";
+    mainLayer.canvas.style.zIndex = "2";
+    // Adds a scroll filler element to adjust the size of the scrollable area
+    this.scrollFiller = document.createElement("div");
+    this.scrollFiller.style.position = "absolute";
+    this.scrollFiller.style.width = "100%";
+    this.scrollFiller.style.height = `${BROWSER_SCROLLBAR_WIDTH}px`;
+    this.scrollFiller.style.top = "100%";
+    this.scrollFiller.style.minHeight = "1px";
+    mainLayer.canvas.style.zIndex = "1";
+    this.wrapper.appendChild(this.scrollFiller);
+  }
+
+  updateScrollFiller() {
+    const { fullWidth } = this;
+    this.scrollFiller.style.width = `${fullWidth}px`;
   }
 
   reserveSpace({ height }: { height: number }) {
@@ -792,6 +837,12 @@ export class Visualizer extends Events<VisualizerEvents> {
     this.wrapper.addEventListener("click", this.handleSeek);
     this.wrapper.addEventListener("mousedown", this.handleMouseDown);
 
+    this.wrapper.addEventListener("scroll", (e) => {
+      const scrollLeft = this.wrapper.scrollLeft / this.fullWidth;
+      this.wf.invoke("scroll", [scrollLeft]);
+      this._setScrollLeft(scrollLeft);
+    });
+
     // Cursor events
     this.on("mouseMove", this.playHeadMove);
 
@@ -850,6 +901,8 @@ export class Visualizer extends Events<VisualizerEvents> {
   };
 
   private handleSeek = (e: MouseEvent) => {
+    if (e.offsetY > this.height) return;
+
     const mainLayer = this.getLayer("main");
 
     if (!this.wf.loaded || this.seekLocked || !(e.target && mainLayer?.canvas?.contains(e.target))) return;
@@ -864,6 +917,7 @@ export class Visualizer extends Events<VisualizerEvents> {
   };
 
   private handleMouseDown = (e: MouseEvent) => {
+    if (e.offsetY > this.height) return;
     if (!this.wf.loaded) return;
     this.playhead.invoke("mouseDown", [e]);
   };
@@ -938,7 +992,7 @@ export class Visualizer extends Events<VisualizerEvents> {
   };
 
   private setContainerHeight() {
-    this.container.style.height = `${this.height}px`;
+    this.container.style.height = `${this.height + BROWSER_SCROLLBAR_WIDTH}px`;
   }
 
   private updateSize() {
@@ -955,6 +1009,9 @@ export class Visualizer extends Events<VisualizerEvents> {
 
     requestAnimationFrame(() => {
       this.updateSize();
+      this.updateCursorToTime(this.wf.currentTime);
+      this.updateScrollFiller();
+      this.setScrollLeft(this.scrollLeft, false);
       this.wf.renderTimeline();
       this.resetWaveformRender();
       this.draw(false, true);

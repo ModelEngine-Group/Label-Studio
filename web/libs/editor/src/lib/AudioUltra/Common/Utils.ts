@@ -212,3 +212,27 @@ export const getCursorTime = (e: MouseEvent, visualizer: Visualizer, duration: n
 export const isTimeSimilar = (a: number, b: number) => Math.abs(a - b) < TIME_TOLERANCE;
 export const isTimeRelativelySimilar = (a: number, b: number, observedDuration: number) =>
   isTimeSimilar(a / observedDuration, b / observedDuration);
+
+/**
+ * A constant representing the thickness of the scrollbar's handle in pixels.
+ * This value is calculated dynamically by creating a temporary DOM element
+ * with a scrollable area and comparing its offset width to its client width.
+ * Useful for making precise layout adjustments that depend on the width of the scrollbar.
+ *
+ * Note: The calculation is performed immediately when the variable is defined
+ * and retains its value for the duration of runtime.
+ *
+ * @constant {number}
+ */
+export const BROWSER_SCROLLBAR_WIDTH = ((): number => {
+  const scrollDiv = document.createElement("div");
+  scrollDiv.style.width = "100px";
+  scrollDiv.style.height = "100px";
+  scrollDiv.style.overflow = "scroll";
+  scrollDiv.style.position = "absolute";
+  scrollDiv.style.top = "-9999px";
+  document.body.appendChild(scrollDiv);
+  const scrollSize = scrollDiv.offsetWidth - scrollDiv.clientWidth;
+  document.body.removeChild(scrollDiv);
+  return scrollSize;
+})();
