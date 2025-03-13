@@ -26,7 +26,6 @@ from core.utils.common import (
     merge_labels_counters,
 )
 from core.utils.db import fast_first
-from core.utils.exceptions import LabelStudioValidationErrorSentryIgnored
 from django.conf import settings
 from django.core.validators import MaxLengthValidator, MinLengthValidator
 from django.db import models, transaction
@@ -46,6 +45,7 @@ from projects.functions import (
 )
 from projects.functions.utils import make_queryset_from_iterable
 from projects.signals import ProjectSignals
+from rest_framework.exceptions import ValidationError
 from tasks.models import (
     Annotation,
     AnnotationDraft,
@@ -546,7 +546,7 @@ class Project(ProjectMixin, models.Model):
             fields_from_data.discard(settings.DATA_UNDEFINED_NAME)
             if fields_from_data and not fields_from_config.issubset(fields_from_data):
                 different_fields = list(fields_from_config.difference(fields_from_data))
-                raise LabelStudioValidationErrorSentryIgnored(
+                raise ValidationError(
                     f'These fields are not present in the data: {",".join(different_fields)}'
                 )"""
 
@@ -585,7 +585,7 @@ class Project(ProjectMixin, models.Model):
                     )
             if len(diff_str) > 0:
                 diff_str = '\n'.join(diff_str)
-                raise LabelStudioValidationErrorSentryIgnored(
+                raise ValidationError(
                     f'Created annotations are incompatible with provided labeling schema, we found:\n{diff_str}'
                 )
 
@@ -611,7 +611,7 @@ class Project(ProjectMixin, models.Model):
                 )
                 and not check_control_in_config_by_regex(config_string, control_tag_from_data)
             ):
-                raise LabelStudioValidationErrorSentryIgnored(
+                raise ValidationError(
                     f'There are {sum(labels_from_data.values(), 0)} annotation(s) created with tag '
                     f'"{control_tag_from_data}", you can\'t remove it'
                 )
@@ -651,7 +651,7 @@ class Project(ProjectMixin, models.Model):
                     )
                 ):
                     # raise error if labels not dynamic and not in regex rules
-                    raise LabelStudioValidationErrorSentryIgnored(
+                    raise ValidationError(
                         f'These labels still exist in annotations or drafts:\n{diff_str}'
                         f'Please add labels to tag with name="{str(control_tag_from_data)}".'
                     )

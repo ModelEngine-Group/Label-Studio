@@ -14,10 +14,8 @@ import pandas as pd
 import xmljson
 from django.conf import settings
 from label_studio_sdk._extensions.label_studio_tools.core import label_config
+from rest_framework.exceptions import ValidationError
 
-from label_studio.core.utils.exceptions import (
-    LabelStudioValidationErrorSentryIgnored,
-)
 from label_studio.core.utils.io import find_file
 
 logger = logging.getLogger(__name__)
@@ -110,7 +108,7 @@ def validate_label_config(config_string: Union[str, None]) -> None:
         config, cleaned_config_string = parse_config_to_json(config_string)
         jsonschema.validate(config, _LABEL_CONFIG_SCHEMA_DATA)
     except (etree.ParseError, ValueError) as exc:
-        raise LabelStudioValidationErrorSentryIgnored(str(exc))
+        raise ValidationError(str(exc))
     except jsonschema.exceptions.ValidationError as exc:
         # jsonschema4 validation error now includes all errors from "anyOf" subschemas
         # check https://python-jsonschema.readthedocs.io/en/latest/errors/#jsonschema.exceptions.ValidationError.context
@@ -119,12 +117,12 @@ def validate_label_config(config_string: Union[str, None]) -> None:
         error_message = 'Validation failed on {}: {}'.format(
             '/'.join(map(str, exc.path)), error_message.replace('@', '')
         )
-        raise LabelStudioValidationErrorSentryIgnored(error_message)
+        raise ValidationError(error_message)
 
     # unique names in config # FIXME: 'name =' (with spaces) won't work
     all_names = re.findall(r'name="([^"]*)"', cleaned_config_string)
     if len(set(all_names)) != len(all_names):
-        raise LabelStudioValidationErrorSentryIgnored('Label config contains non-unique names')
+        raise ValidationError('Label config contains non-unique names')
 
     # toName points to existent name
     names = set(all_names)
@@ -132,7 +130,7 @@ def validate_label_config(config_string: Union[str, None]) -> None:
     for toName_ in toNames:
         for toName in toName_.split(','):
             if toName not in names:
-                raise LabelStudioValidationErrorSentryIgnored(f'toName="{toName}" not found in names: {sorted(names)}')
+                raise ValidationError(f'toName="{toName}" not found in names: {sorted(names)}')
 
 
 def extract_data_types(label_config):

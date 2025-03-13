@@ -14,7 +14,6 @@ from core.feature_flags import flag_set
 from core.permissions import ViewClassPermission, all_permissions
 from core.redis import start_job_async_or_sync
 from core.utils.common import retry_database_locked, timeit
-from core.utils.exceptions import LabelStudioValidationErrorSentryIgnored
 from core.utils.params import bool_from_request, list_of_strings_from_request
 from csp.decorators import csp
 from django.conf import settings
@@ -413,7 +412,7 @@ class ImportPredictionsAPI(generics.CreateAPIView):
         predictions = []
         for item in self.request.data:
             if item.get('task') not in tasks_ids:
-                raise LabelStudioValidationErrorSentryIgnored(
+                raise ValidationError(
                     f'{item} contains invalid "task" field: corresponding task ID couldn\'t be retrieved '
                     f'from project {project} tasks'
                 )

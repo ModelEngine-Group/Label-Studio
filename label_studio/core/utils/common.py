@@ -52,7 +52,7 @@ from label_studio_sdk._extensions.label_studio_tools.core.utils.exceptions impor
 from packaging.version import parse as parse_version
 from pyboxen import boxen
 from rest_framework import status
-from rest_framework.exceptions import ErrorDetail
+from rest_framework.exceptions import APIException, ErrorDetail
 from rest_framework.views import Response, exception_handler
 
 import label_studio
@@ -89,7 +89,17 @@ def custom_exception_handler(exc, context):
     :return: response with error desc
     """
     exception_id = uuid.uuid4()
-    logger.error('{} {}'.format(exception_id, exc), exc_info=True)
+
+    sentry_skip = False
+    if isinstance(exc, APIException) and exc.status_code < 500:
+        # Skipping Sentry for non-500 unhandled exceptions
+        sentry_skip = True
+
+    logger.error(
+        '{} {}'.format(exception_id, exc),
+        exc_info=True,
+        extra={'sentry_skip': sentry_skip, 'exception_id': exception_id},
+    )
 
     exc = _override_exceptions(exc)
 
@@ -134,7 +144,9 @@ def custom_exception_handler(exc, context):
         if not settings.DEBUG_MODAL_EXCEPTIONS:
             exc_tb = None
         response_data['exc_info'] = exc_tb
+        # Thrown by sdk when label config is invalid
         if isinstance(exc, LabelStudioXMLSyntaxErrorSentryIgnored):
+            response_data['status_code'] = status.HTTP_400_BAD_REQUEST
             response = Response(status=status.HTTP_400_BAD_REQUEST, data=response_data)
         else:
             response = Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR, data=response_data)
