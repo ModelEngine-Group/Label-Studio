@@ -1,6 +1,6 @@
 {
-  "message": "fix: OPTIC-1794: Improve handling of missing tasks and projects when fetching data within DataManager (#7210)",
-  "commit": "efe460801e93d30fd3a0e3b1c4ab49d2372ce2ed",
-  "date": "2025-03-13T14:52:34.000Z",
+  "message": "feat: LEAP-1893: LEAP-1900: Add setting to toggle region looping and autoplay (#7166)",
+  "commit": "2b7f0a40bd83d3fc30890fb716caed41a6a19c80",
+  "date": "2025-03-13T15:14:59.000Z",
   "branch": "develop"
 }
