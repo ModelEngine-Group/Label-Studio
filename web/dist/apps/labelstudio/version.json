@@ -1,6 +1,6 @@
 {
-  "message": "feat: LEAP-1896: Add scrollbar support to Visualizer (#7165)",
-  "commit": "05a419b5ce92bb646860b285acd19ce5f9936716",
-  "date": "2025-03-12T17:05:15.000Z",
+  "message": "fix: OPTIC-1794: Improve handling of missing tasks and projects when fetching data within DataManager (#7210)",
+  "commit": "efe460801e93d30fd3a0e3b1c4ab49d2372ce2ed",
+  "date": "2025-03-13T14:52:34.000Z",
   "branch": "develop"
 }
