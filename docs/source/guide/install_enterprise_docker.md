@@ -28,7 +28,7 @@ To install Label Studio Community Edition, see [Install Label Studio](https://la
 3. Start the server using Docker Compose.
 
 ### Prerequisites
-Make sure you have an authorization token to retrieve Docker images and a current license file. If you are a Label Studio Enterprise customer and do not have access, [contact us](mailto:hello@heartex.ai) to receive an authorization token and a copy of your license file.
+Make sure you have an authorization token to retrieve Docker images and a current license file. If you are a Label Studio Enterprise customer and do not have access, [email support](mailto:support@humansignal.com) or open a ticket through our [support portal](https://support.humansignal.com/) to receive an authorization token and a copy of your license file.
 
 Make sure [Docker Compose](https://docs.docker.com/compose/install/) is installed on your system.
 
@@ -66,7 +66,6 @@ To run Label Studio Enterprise in production, start it using [Docker compose](ht
 1. Create a file, `label-studio-enterprise/env.list` with the required environment variables:
 ```
 # Specify the path to the license file. 
-# Alternatively, it can be a URL like LICENSE=https://lic.heartex.ai/db/20210203-1234-ab123456.lic
 LICENSE=/label-studio-enterprise/license.txt
 
 # Specify the FQDN name with port if differs from 80
