@@ -253,6 +253,7 @@ export abstract class Player extends Destructable {
 
   protected abstract playAudio(start?: number, duration?: number): void;
 
+  // This function just sets up the playing, but doesn't actually play
   protected playSelection(from?: number, to?: number) {
     const selected = this.wf.regions.selected;
 
@@ -262,7 +263,11 @@ export abstract class Player extends Destructable {
       const regionsStart = Math.min(...selected.map((r) => r.start));
       const regionsEnd = Math.max(...selected.map((r) => r.end));
 
-      const start = clamp(this.currentTime, regionsStart, regionsEnd);
+      // if we are outside of the selected region, start at the beginning
+      let start = this.currentTime;
+      if (start < regionsStart || start >= regionsEnd) {
+        start = regionsStart;
+      }
 
       this.loop = { start: regionsStart, end: regionsEnd };
 
@@ -320,9 +325,13 @@ export abstract class Player extends Destructable {
   protected updateLoop(time: number) {
     if (this.isDestroyed || !this.loop) return;
     if (time >= this.loop.end) {
-      this.currentTime = this.loop.start;
-      this.playing = false;
-      this.play();
+      if (this.wf.settings.loopRegion) {
+        this.currentTime = this.loop.start;
+        this.playing = false;
+        this.play();
+      } else {
+        this.pause();
+      }
     }
   }
 

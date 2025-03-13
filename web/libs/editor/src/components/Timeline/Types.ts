@@ -109,6 +109,7 @@ export interface TimelineContextValue {
   visibleWidth: number;
   seekOffset: number;
   settings?: TimelineSettings;
+  changeSetting?: (key: string, value: any) => void;
   data?: any;
 }
 
@@ -131,6 +132,8 @@ export type TimelineSettings = {
   fastTravelSize?: TimelineStepFunction;
   stepSize?: TimelineStepFunction;
   leftOffset?: number;
+  loopRegion?: boolean;
+  autoPlayNewSegments?: boolean;
 };
 
 export type TimelineStepFunction = (

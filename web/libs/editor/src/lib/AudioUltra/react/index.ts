@@ -1,5 +1,6 @@
-import { type MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
+import { type MutableRefObject, useContext, useEffect, useMemo, useRef, useState } from "react";
 
+import { TimelineContext } from "../../../components/Timeline/Context";
 import { isTimeRelativelySimilar } from "../Common/Utils";
 import type { Layer } from "../Visual/Layer";
 import { Waveform, type WaveformFrameState, type WaveformOptions } from "../Waveform";
@@ -29,6 +30,12 @@ export const useWaveform = (
   const [muted, setMuted] = useState(options?.muted ?? false);
   const [layers, setLayers] = useState<Layer[]>([]);
   const [layerVisibility, setLayerVisibility] = useState(new Map());
+
+  const { settings } = useContext(TimelineContext);
+  useEffect(() => {
+    if (!waveform.current || !settings) return;
+    waveform.current.settings = settings;
+  }, [settings, waveform.current]);
 
   const onFrameChangedRef = useRef(options?.onFrameChanged);
   onFrameChangedRef.current = options?.onFrameChanged;

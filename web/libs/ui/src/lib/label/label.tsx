@@ -3,7 +3,7 @@ import clsx from "clsx";
 import styles from "./label.module.scss";
 type LabelProps = PropsWithChildren<{
   text: string;
-  required?: false;
+  required?: boolean;
   placement?: "right" | "left";
   description?: string;
   size?: "large" | "small";

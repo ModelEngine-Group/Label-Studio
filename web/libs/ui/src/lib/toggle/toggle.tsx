@@ -6,18 +6,18 @@ import styles from "./toggle.module.scss";
 type ToggleProps = {
   className?: string;
   label?: string;
-  labelProps: any;
+  labelProps?: Partial<React.ComponentProps<typeof Label>>;
   description?: string;
   checked?: boolean;
   defaultChecked?: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
-  style: any;
+  style?: React.CSSProperties;
   disabled?: boolean;
   alwaysBlue?: boolean;
 };
 
-export const Toggle = forwardRef(
+export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
   (
     {
       className,
@@ -31,7 +31,7 @@ export const Toggle = forwardRef(
       style,
       alwaysBlue,
       ...props
-    }: ToggleProps,
+    },
     ref,
   ) => {
     const initialChecked = useMemo(() => defaultChecked ?? checked ?? false, [defaultChecked, checked]);

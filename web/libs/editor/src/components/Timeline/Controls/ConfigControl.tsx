@@ -1,11 +1,13 @@
 import type React from "react";
-import { type FC, type MouseEvent, useEffect, useState } from "react";
+import { type FC, type MouseEvent, useContext, useEffect, useState } from "react";
+import { Toggle } from "@humansignal/ui";
 import { Block, Elem } from "../../../utils/bem";
 
-import "./ConfigControl.scss";
 import { IconConfig } from "../../../assets/icons/timeline";
+import { TimelineContext } from "../Context";
 import { ControlButton } from "../Controls";
 import { Slider } from "./Slider";
+import "./ConfigControl.scss";
 
 const MAX_SPEED = 2.5;
 const MAX_ZOOM = 150;
@@ -36,6 +38,7 @@ export const ConfigControl: FC<ConfigControlProps> = ({
   const playbackSpeed = speed ?? 1;
   const [isTimeline, setTimeline] = useState(true);
   const [isAudioWave, setAudioWave] = useState(true);
+  const { settings, changeSetting } = useContext(TimelineContext);
 
   useEffect(() => {
     if (layerVisibility) {
@@ -105,6 +108,24 @@ export const ConfigControl: FC<ConfigControlProps> = ({
           info={"Increase or decrease the appearance of amplitude"}
           onChange={handleChangeAmp}
         />
+        <Elem name="toggle">
+          <Toggle
+            checked={settings?.loopRegion}
+            onChange={(e) => changeSetting?.("loopRegion", e.target.checked)}
+            label="Loop Regions"
+            // there are no "normal" size, so that's the hack to reset size
+            labelProps={{ size: "normal" }}
+          />
+        </Elem>
+        <Elem name="toggle">
+          <Toggle
+            checked={settings?.autoPlayNewSegments}
+            onChange={(e) => changeSetting?.("autoPlayNewSegments", e.target.checked)}
+            label="Auto-play New Regions"
+            // there are no "normal" size, so that's the hack to reset size
+            labelProps={{ size: "normal" }}
+          />
+        </Elem>
         {renderLayerToggles()}
       </Elem>
     );
