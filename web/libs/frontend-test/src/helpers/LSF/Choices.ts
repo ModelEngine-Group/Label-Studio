@@ -3,11 +3,11 @@ class ChoicesHelper {
     return ".lsf-choices";
   }
   private getСhoiceSelector() {
-    return ".lsf-choice__item .ant-checkbox + span";
+    return ".lsf-choice__item .ant-checkbox + span, .lsf-choice__item .ant-radio + span";
   }
 
   private getCheckedСhoiceSelector() {
-    return ".lsf-choice__item .ant-checkbox-checked + span";
+    return ".lsf-choice__item .ant-checkbox-checked + span, .lsf-choice__item .ant-radio-checked + span";
   }
 
   private _rootSelector: string;
