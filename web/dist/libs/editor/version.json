@@ -1,6 +1,6 @@
 {
-  "message": "feat: LEAP-1893: LEAP-1900: Add setting to toggle region looping and autoplay (#7166)",
-  "commit": "2b7f0a40bd83d3fc30890fb716caed41a6a19c80",
-  "date": "2025-03-13T15:14:59.000Z",
+  "message": "fix: LEAP-1892: [FE] Deeply nested Choices are visible when their parents are hidden (#7180)",
+  "commit": "52e941a0860ea8211eaa77bef0e10628db3e1b69",
+  "date": "2025-03-14T12:07:16.000Z",
   "branch": "develop"
 }
