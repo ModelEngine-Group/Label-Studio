@@ -454,6 +454,34 @@ The following options supersede what you specified under [**Annotations > Task S
 
 </dd>
 
+<dt id="annotation-limit">Annotation Limit</dt>
+
+<dd>
+
+Set limits on how many tasks each individual user can annotate. This can be useful if you are concerned with preventing any potential bias that might arise from a small set of power users completing a majority of project tasks. 
+
+When an annotator reaches their limit, they will see a notification telling them that they have been paused. When paused, an annotator can no longer access the project. 
+
+| Field          | Description    |
+| ------------- | ------------ |
+| **Limit by Number of Tasks**    | Set a specific number of tasks each annotator is able to complete before their progress is paused.   |
+| **Limit by Percentage of Tasks** | Calculate the number of tasks each annotator is able to complete as a percentage of tasks within the project.  |
+
+You can set one or both values. Annotators will be paused when they reach whichever limit is smaller.  
+
+To unpause annotators:
+
+* You can manually unpause annotators using the **Paused** toggle available in the Members dashboard.  
+* If you increase the limits, previously paused annotators will regain access. 
+* If you are using a percentage-based limit and you add more tasks to a project, previously paused annotators will regain access. 
+
+For more information about pausing annotators, including how to manually pause specific annotators, see [Pause an annotator](quality#Pause-an-annotator).
+
+!!! note
+    Pauses affect users in Annotator and Reviewer roles. So, for example, if a Reviewer is also annotating tasks and they hit the annotation limit, they will be unable to regain access to the project to review annotations unless they are unpaused. 
+
+</dd>
+
 <dt id="task-agreement">Task Agreement</dt>
 
 <dd>

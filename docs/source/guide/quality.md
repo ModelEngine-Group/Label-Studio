@@ -118,9 +118,11 @@ For example, if you're developing a dataset of OCR images, and 90% of your tasks
 
 ## Pause an annotator
 
-For organizations with a large number of annotators, it might prove useful to pause an annotator's progress. This might be useful for annotators that are performing poorly or exhibiting behavior that might indicate they have automated their work (bot behavior). 
+For organizations with a large number of annotators, it might prove useful to pause an annotator's progress. This might be helpful for annotators that are performing poorly or exhibiting behavior that might indicate they have automated their work (bot behavior). 
 
-You can pause annotators from the Members dashboard in a project. This action is only available next to users in the Annotator and Reviewer roles:
+### Manually pause an annotator
+
+You can manually pause annotators from the Members dashboard in a project. This action is only available next to users in the Annotator and Reviewer roles:
 
 ![Screenshot of pause](/images/review/pause.png)
 
@@ -134,15 +136,22 @@ When a user is paused, the following occurs:
 
 !!! info Tip
 
-    If you have [custom scripts](scripts) enabled, you can automatically pause an annotator based on certain behaviors and then customize the message that appears on their screen. 
-
-    For more information, see [Custom script examples - Pause an annotator](script_examples#Pause-an-annotator).
-
-!!! info Tip
-
     If you hover over the **Paused** indicator, you can see the message that was shown to the user when they were paused. If a user was manually paused, it also shows who initiated the action.  
 
     ![Screenshot of hover](/images/review/paused-tooltip.png)
+
+### Automatically pause annotators 
+
+#### Annotation Limit settings
+
+You can use **Settings > Quality > Annotation Limit** to set limits on how many tasks an annotator is able to complete before they are paused. For more information, see [Annotation Limit](project_settings_lse#annotation-limit). 
+
+#### Behavior-based triggers
+
+If you have [custom scripts](scripts) enabled, you can automatically pause an annotator based on certain behaviors and then customize the message that appears on their screen. 
+
+For more information, see [Custom script examples - Pause an annotator](script_examples#Pause-an-annotator).
+
 
 ## Verify model and annotator performance
 
