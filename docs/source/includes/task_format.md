@@ -115,7 +115,7 @@ Review the full list of JSON properties in the [API documentation](api.html).
 | annotations.completed_by | User ID of the user that created the annotation. Matches the list order of users on the People page on the Label Studio UI. |
 | annotations.was_cancelled | Boolean. Details about whether or not the annotation was skipped, or cancelled. | 
 | result.id | Identifier for the specific annotation result for this task. Use it to combine together regions from different control tags, e.g. `<Labels>` and `<Rectangle>` |
-| result.parentID | (Optional) Reference to the parent region result.id. Use it to create nested regions |
+| result.parentID | (Optional) Reference to the parent region result.id. It organizes regions into a hierarchical tree in the Region panel |
 | result.from_name | Name of the tag used to label the region. See [control tags](/tags). |
 | result.to_name | Name of the object tag that provided the region to be labeled. See [object tags](/tags). |
 | result.type | Type of tag used to annotate the task. |
