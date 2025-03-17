@@ -471,7 +471,6 @@ You can set one or both values. Annotators will be paused when they reach whiche
 
 To unpause annotators:
 
-* You can manually unpause annotators using the **Paused** toggle available in the Members dashboard.  
 * If you increase the limits, previously paused annotators will regain access. 
 * If you are using a percentage-based limit and you add more tasks to a project, previously paused annotators will regain access. 
 
