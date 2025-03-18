@@ -43,11 +43,6 @@ export const FF_LSDV_4620_3_ML = "fflag_fix_front_lsdv_4620_memory_leaks_100723_
 export const FF_LSDV_4711 = "fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short";
 
 /**
- * Updated UX with improved accessibility
- */
-export const FF_LOPS_E_10 = "fflag_feat_front_lops_e_10_updated_ux_short";
-
-/**
  * Save draft on leave annotation editor
  */
 export const FF_OPTIC_2 = "fflag_feat_optic_2_ensure_draft_saved_short";

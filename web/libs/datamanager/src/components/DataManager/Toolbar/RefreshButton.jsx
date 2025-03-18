@@ -1,9 +1,6 @@
 import { inject } from "mobx-react";
-import { LsRefresh, LsRefresh2 } from "../../../assets/icons";
-import { FF_LOPS_E_10, isFF } from "../../../utils/feature-flags";
+import { LsRefresh } from "../../../assets/icons";
 import { Button } from "../../Common/Button/Button";
-
-const isNewUI = isFF(FF_LOPS_E_10);
 
 const injector = inject(({ store }) => {
   return {
@@ -27,11 +24,11 @@ export const RefreshButton = injector(({ store, needsDataFetch, projectFetch, si
         ...(style ?? {}),
         minWidth: 0,
         padding: 0,
-        width: isNewUI ? 40 : 32,
+        width: 32,
       }}
       {...rest}
     >
-      {isNewUI ? <LsRefresh2 /> : <LsRefresh style={{ width: 20, height: 20 }} />}
+      {<LsRefresh style={{ width: 20, height: 20 }} />}
     </Button>
   );
 });

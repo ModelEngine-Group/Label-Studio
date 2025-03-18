@@ -14,4 +14,3 @@ export { ReactComponent as CommentCheck } from "./comment_check.svg";
 export { ReactComponent as CommentRed } from "./comment_red.svg";
 export { ReactComponent as LsGrid } from "./grid.svg";
 export { ReactComponent as LsList } from "./list.svg";
-export { ReactComponent as LsRefresh2 } from "./refresh2.svg";

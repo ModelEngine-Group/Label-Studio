@@ -19,39 +19,6 @@
   font-weight: 500;
   font-size: 14px;
 
-  &_newUI {
-    box-shadow: none;
-    border: 1px solid rgb(65 60 74 / 16%);
-    font-weight: 400;
-
-    &.button-dm {
-      &_withIcon {
-        border: 0 none;
-      }
-    }
-
-    &:not(.button-dm_withIcon) {
-      font-weight: 500;
-
-      &.button-dm {
-        &_waiting,
-        &_disabled,
-        &:disabled,
-        &[disabled] {
-          border: 1px solid rgb(65 60 74 / 16%);
-          background-color: #FFF;
-        }
-      }
-    }
-
-    &.dropdown-dm {
-      &__trigger {
-        font-weight: 400;
-        background-color: #FAFAFA;
-      }
-    }
-  }
-
   svg {
     max-height: 100%;
   }
@@ -310,11 +277,6 @@
 
       &:not(:first-child, :last-child) {
         border-radius: 0;
-      }
-
-      &_newUI {
-        border: 1px solid rgb(65 60 74 / 16%);
-        box-shadow: none;
       }
     }
   }
