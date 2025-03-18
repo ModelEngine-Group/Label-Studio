@@ -1,6 +1,6 @@
 {
-  "message": "chore: OPTIC-1632: Convert Figma design tokens to CSS and Tailwind (#7241)",
-  "commit": "0364bd52713abf66a789be14a969a05ebd8d6645",
-  "date": "2025-03-18T16:06:33.000Z",
+  "message": "chore: OPTIC-1714: Update esbuild to a non vulnerable version (#7243)",
+  "commit": "cb45a880e3d02f2cf8885f9268428594208b5ac7",
+  "date": "2025-03-18T17:11:01.000Z",
   "branch": "develop"
 }
