@@ -1,6 +1,6 @@
 {
-  "message": "chore: OPTIC-1714: Update esbuild to a non vulnerable version (#7243)",
-  "commit": "cb45a880e3d02f2cf8885f9268428594208b5ac7",
-  "date": "2025-03-18T17:11:01.000Z",
+  "message": "refactor: LEAP-1300: Remove outdated FF_LSDV_4620_3 (#7228)",
+  "commit": "0b5f6a0faea973f9f96bf7512cada901f1f1df57",
+  "date": "2025-03-18T18:01:00.000Z",
   "branch": "develop"
 }
