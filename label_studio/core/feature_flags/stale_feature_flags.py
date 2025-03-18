@@ -2,7 +2,6 @@ STALE_FEATURE_FLAGS = {
     'fflag_feat_all_dia_13_structured_data_support_short': False,
     'fflag_feat_front_optic_66_lazy_chart_evaluation_19092023_short': False,
     'fflag_feat_optic_2_ensure_draft_saved_short': True,
-    'fflag_feat_front_lsdv_4620_outliner_optimization_310723_short': True,
     'fflag_fix_front_lsdv_4600_lead_time_27072023_short': False,
     'fflag_feat_front_lops_e_10_updated_ux_short': False,
     'fflag_fix_front_lsdv_4988_dynamic_no_label_120523_short': True,

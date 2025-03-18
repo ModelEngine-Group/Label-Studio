@@ -6,7 +6,6 @@ import { DEFAULT_PANEL_HEIGHT } from "../constants";
 import "./Tabs.scss";
 import { type BaseProps, Side, type TabProps } from "./types";
 import { determineDroppableArea, determineLeftOrRight } from "./utils";
-import { FF_OUTLINER_OPTIM, isFF } from "../../../utils/feature-flags";
 
 const classAddedTabs: (Element | undefined)[] = [];
 
@@ -197,7 +196,7 @@ export const Tabs = (props: BaseProps) => {
 
   return (
     <>
-      <Block name="tabs" mix={isFF(FF_OUTLINER_OPTIM) ? "ff_outliner_optim" : void 0}>
+      <Block name="tabs">
         <Elem name="tabs-row">
           {props.panelViews.map((view, index) => {
             const { component: Component } = view;

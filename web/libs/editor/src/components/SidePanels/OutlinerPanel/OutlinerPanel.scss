@@ -1,12 +1,10 @@
 .outliner {
   --view-controls-height: 40px;
 
+  height: 100%;
+
   &.ff_hide_all_regions {
     --view-controls-height: 32px;
-  }
-
-  &.ff_outliner_optim {
-    height: 100%;
   }
 
   &__empty {
@@ -15,7 +13,7 @@
     color: var(--sand_600);
   }
 
-  .ff_outliner_optim &-tree {
+  &-tree {
     height: calc(100% - var(--view-controls-height));
   }
 }

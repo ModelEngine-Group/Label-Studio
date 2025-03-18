@@ -53,12 +53,8 @@
       flex: 1;
       padding: 0 4px;
       display: flex;
-      align-items: center;
       max-width: 100%;
-
-      .ff_outliner_optim & {
-        align-items: center;
-      }
+      align-items: center;
     }
   }
 

@@ -1,10 +1,9 @@
 import { LabelStudio, Sidebar } from "@humansignal/frontend-test/helpers/LSF";
-import { FF_DEV_3873, FF_OUTLINER_OPTIM } from "../../../../src/utils/feature-flags";
+import { FF_DEV_3873 } from "../../../../src/utils/feature-flags";
 
 describe("Outliner - Regions tree", () => {
   beforeEach(() => {
     LabelStudio.addFeatureFlagsOnPageLoad({
-      [FF_OUTLINER_OPTIM]: true,
       [FF_DEV_3873]: true,
     });
   });
