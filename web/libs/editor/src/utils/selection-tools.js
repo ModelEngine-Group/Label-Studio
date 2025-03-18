@@ -1,5 +1,4 @@
-import { clamp, isDefined } from "./utilities";
-import { FF_LSDV_4620_3, isFF } from "./feature-flags";
+import { isDefined } from "./utilities";
 
 export const isTextNode = (node) => node && node.nodeType === Node.TEXT_NODE;
 
@@ -410,7 +409,7 @@ export const highlightRangePart = (container, startOffset, endOffset, classNames
     startOffset === 0 &&
     container.length === endOffset &&
     parent.classList.contains(classNames[0]) &&
-    (!isFF(FF_LSDV_4620_3) || parent.innerText === text)
+    parent.innerText === text
   ) {
     const placeholder = container.ownerDocument.createElement("span");
     const parentNode = parent.parentNode;
@@ -554,47 +553,6 @@ export const removeRange = (spans) => {
 };
 
 /**
- * Find a startContainer and endContainer by text offsets
- * @param {number} start
- * @param {number} end
- * @param {Node} root
- */
-export const findRange = (start, end, root) => {
-  return {
-    startContainer: codePointsToChars(findOnPosition(root, start, "right")),
-    endContainer: codePointsToChars(findOnPosition(root, end, "left")),
-  };
-};
-
-export const findRangeNative = (start, end, root) => {
-  const { startContainer, endContainer } = findRange(start, end, root);
-
-  const range = (root.contentDocument ?? root.ownerDocument).createRange();
-
-  if (!startContainer || !endContainer) return;
-
-  range.setStart(startContainer.node, startContainer.position);
-  range.setEnd(endContainer.node, endContainer.position);
-
-  return range;
-};
-
-/**
- * Convert position in node from code points count to chars count
- * May be useful to do some string operations and then convert it back
- * @param {{ node: Node, position: number }} container
- * @return {{ node: Node, position: number }}
- */
-export const codePointsToChars = ({ node, position } = {}) => {
-  if (!node) return;
-
-  const codePoints = [...node.textContent].slice(0, position);
-  const chars = codePoints.join("").length;
-
-  return { node, position: chars };
-};
-
-/**
  * Fix position in node from chars count to code points count
  * In python and other modern tools complex unicode symbols handled as code points, not UTF chars
  * So for external usage js length should be converted to code points count
@@ -623,51 +581,6 @@ export const fixCodePointsInRange = (range) => {
   range.setEnd(range.endContainer, end.position);
 
   return range;
-};
-
-/**
- * Find a node by text offset
- * @param {Node} root
- * @param {number} position
- */
-export const findOnPosition = (root, position, borderSide = "left") => {
-  const walker = (root.contentDocument ?? root.ownerDocument).createTreeWalker(root, NodeFilter.SHOW_ALL);
-
-  let lastPosition = 0;
-  let currentNode = walker.nextNode();
-  let nextNode = walker.nextNode();
-  // set to finish on the next text
-  let finishHere = false;
-
-  while (currentNode) {
-    const isText = currentNode.nodeType === Node.TEXT_NODE;
-    const isBR = currentNode.nodeName === "BR";
-
-    if (isBR) {
-      lastPosition++;
-    }
-
-    if (isText && finishHere) {
-      return { node: currentNode, position: 0 };
-    }
-
-    if (isText) {
-      // convert chars count to code points count, see `charsToCodePoints`
-      const length = [...currentNode.textContent].length;
-
-      if (length + lastPosition >= position || !nextNode) {
-        if (borderSide === "right" && length + lastPosition === position && nextNode) {
-          finishHere = true;
-        } else {
-          return { node: currentNode, position: isBR ? 0 : clamp(position - lastPosition, 0, length) };
-        }
-      }
-      lastPosition += length;
-    }
-
-    currentNode = nextNode;
-    nextNode = walker.nextNode();
-  }
 };
 
 /**

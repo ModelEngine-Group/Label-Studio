@@ -56,20 +56,9 @@ const edgeCaseResultValue4 = {
   labels: ["Highlight"],
 };
 
-const featureFlags = new DataTable(["FF_LSDV_4620_3"]);
-
-// featureFlags.add([false]);
-featureFlags.add([true]);
-
-Data(featureFlags).Scenario(
+Scenario(
   "Creating, removing and restoring regions in not normalized HTML content",
-  async ({ I, LabelStudio, AtOutliner, AtLabels, AtRichText, current }) => {
-    const { FF_LSDV_4620_3 } = current;
-
-    LabelStudio.setFeatureFlags({
-      fflag_feat_front_lsdv_4620_richtext_opimization_060423_short: FF_LSDV_4620_3,
-    });
-
+  async ({ I, LabelStudio, AtOutliner, AtLabels, AtRichText }) => {
     I.amOnPage("/");
 
     LabelStudio.init({
@@ -158,16 +147,7 @@ Data(featureFlags).Scenario(
 
       assert.deepStrictEqual(result[0].value, edgeCaseResultValue1);
       assert.deepStrictEqual(result[1].value, edgeCaseResultValue2);
-      assert.deepStrictEqual(
-        result[2].value,
-        FF_LSDV_4620_3
-          ? edgeCaseResultValue3
-          : {
-              ...edgeCaseResultValue3,
-              // For the old version of RichText there is inconsistency between just created value and loaded value.
-              text: edgeCaseResultValue3.text.replace("\\n", "\n"),
-            },
-      );
+      assert.deepStrictEqual(result[2].value, edgeCaseResultValue3);
       assert.deepStrictEqual(result[3].value, edgeCaseResultValue4);
     }
   },

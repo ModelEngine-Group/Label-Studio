@@ -200,9 +200,6 @@ Scenario("Trying to select alt attr", async ({ I, LabelStudio, AtSidebar, AtRich
 });
 
 Scenario("Neighboring nested regions misplacement", async ({ I, LabelStudio, AtSidebar, AtRichText }) => {
-  LabelStudio.setFeatureFlags({
-    fflag_feat_front_lsdv_4620_richtext_opimization_060423_short: true,
-  });
   I.amOnPage("/");
   LabelStudio.init({
     annotations: [
@@ -313,9 +310,6 @@ Scenario("Neighboring nested regions misplacement", async ({ I, LabelStudio, AtS
   Data(startBeforeEndParams).Scenario("Start before end problem", async ({ I, LabelStudio, AtSidebar, current }) => {
     const { tag, content, range } = current;
 
-    LabelStudio.setFeatureFlags({
-      fflag_feat_front_lsdv_4620_richtext_opimization_060423_short: true,
-    });
     I.amOnPage("/");
     LabelStudio.init({
       annotations: [

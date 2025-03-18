@@ -98,7 +98,7 @@ const _detect = (region) => {
     case "paragraphs":
     case "timeseriesregion": {
       const regionBbox = Geometry.getDOMBBox(region.getRegionElement());
-      const container = region.parent?.visibleNodeRef?.current;
+      const container = region.parent?.mountNodeRef?.current;
 
       if (container?.tagName === "IFRAME") {
         const iframeBbox = Geometry.getDOMBBox(container, true);
