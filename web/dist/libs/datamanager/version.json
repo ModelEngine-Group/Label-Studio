@@ -1,6 +1,6 @@
 {
-  "message": "fix: LEAP-1892: [FE] Deeply nested Choices are visible when their parents are hidden (#7180)",
-  "commit": "52e941a0860ea8211eaa77bef0e10628db3e1b69",
-  "date": "2025-03-14T12:07:16.000Z",
+  "message": "refactor: LEAP-1290: remove feature flag FF_LOPS_E_10 and related code (#7218)",
+  "commit": "437b8933f1127bf11d3f488ae9e01a86cbb1ea9b",
+  "date": "2025-03-18T11:06:02.000Z",
   "branch": "develop"
 }
