@@ -1,6 +1,6 @@
 {
-  "message": "refactor: LEAP-1290: remove feature flag FF_LOPS_E_10 and related code (#7218)",
-  "commit": "437b8933f1127bf11d3f488ae9e01a86cbb1ea9b",
-  "date": "2025-03-18T11:06:02.000Z",
+  "message": "chore: OPTIC-1632: Convert Figma design tokens to CSS and Tailwind (#7241)",
+  "commit": "0364bd52713abf66a789be14a969a05ebd8d6645",
+  "date": "2025-03-18T16:06:33.000Z",
   "branch": "develop"
 }
