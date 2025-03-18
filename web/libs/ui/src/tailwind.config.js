@@ -1,3 +1,5 @@
+import tokens from "./tokens/tokens";
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -87,6 +89,9 @@ module.exports = {
         lsAccentMangoSubtle: "#FFEED0",
         lsAccentMangoBold: "#EB9C14",
         lsAccentGrapeSubtle: "#D4DBFB",
+
+        // Add all colors from tokens
+        ...tokens.colors,
       },
       fontSize: {
         metatitle: ["12px", "20px"],
@@ -106,6 +111,17 @@ module.exports = {
         lsLabelSmall: ["14px", "8px"],
         lsLabelSmaller: ["12px", "16px"],
         lsLabelSmallest: ["11px", "16px"],
+
+        // Add all font sizes from tokens
+        ...tokens.typography.fontSize,
+      },
+      lineHeight: {
+        // Add all line heights from tokens
+        ...tokens.typography.lineHeight,
+      },
+      letterSpacing: {
+        // Add all letter spacings from tokens
+        ...tokens.typography.letterSpacing,
       },
       spacing: {
         4.5: "1.125rem",
@@ -152,6 +168,9 @@ module.exports = {
         67: "16.75rem",
         67.5: "16.875rem",
         90: "22.5rem",
+
+        // Add all spacing from tokens
+        ...tokens.spacing,
       },
       maxWidth: {
         "c-1390": "86.875rem",
@@ -190,6 +209,9 @@ module.exports = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+
+        // Add all border radii from tokens
+        ...tokens.cornerRadius,
       },
       keyframes: {
         line: {
