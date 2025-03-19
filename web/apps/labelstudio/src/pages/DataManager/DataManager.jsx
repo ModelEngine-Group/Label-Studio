@@ -7,15 +7,14 @@ import { modal } from "../../components/Modal/Modal";
 import { Space } from "../../components/Space/Space";
 import { useAPI } from "../../providers/ApiProvider";
 import { useProject } from "../../providers/ProjectProvider";
-import { useContextProps, useFixedLocation, useParams } from "../../providers/RoutesProvider";
-import { addAction, addCrumb, deleteAction, deleteCrumb } from "../../services/breadrumbs";
+import { useContextProps, useParams } from "../../providers/RoutesProvider";
+import { addCrumb, deleteCrumb } from "../../services/breadrumbs";
 import { Block, Elem } from "../../utils/bem";
 import { isDefined } from "../../utils/helpers";
 import { ImportModal } from "../CreateProject/Import/ImportModal";
 import { ExportPage } from "../ExportPage/ExportPage";
 import { APIConfig } from "./api-config";
 import { ToastContext, ToastType } from "@humansignal/ui";
-import { FF_OPTIC_2, isFF } from "../../utils/feature-flags";
 
 import "./DataManager.scss";
 
@@ -236,7 +235,6 @@ DataManagerPage.pages = {
   ImportModal,
 };
 DataManagerPage.context = ({ dmRef }) => {
-  const location = useFixedLocation();
   const { project } = useProject();
   const [mode, setMode] = useState(dmRef?.mode ?? "explorer");
 
@@ -246,19 +244,10 @@ DataManagerPage.context = ({ dmRef }) => {
 
   const updateCrumbs = (currentMode) => {
     const isExplorer = currentMode === "explorer";
-    const dmPath = location.pathname.replace(DataManagerPage.path, "");
 
     if (isExplorer) {
-      deleteAction(dmPath);
       deleteCrumb("dm-crumb");
     } else {
-      if (!isFF(FF_OPTIC_2)) {
-        addAction(dmPath, (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          dmRef?.store?.closeLabeling?.();
-        });
-      }
       addCrumb({
         key: "dm-crumb",
         title: "Labeling",

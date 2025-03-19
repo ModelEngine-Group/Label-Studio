@@ -18,7 +18,6 @@ import {
   FF_DEV_2887,
   FF_DEV_3034,
   FF_LSDV_4620_3_ML,
-  FF_OPTIC_2,
   FF_REGION_VISIBILITY_FROM_URL,
   isFF,
 } from "../utils/feature-flags";
@@ -881,7 +880,7 @@ export class LSFWrapper {
     if (window.APP_SETTINGS.read_only_quick_view_enabled && !this.labelStream) {
       prevAnnotation?.setEditable(false);
     }
-    if (isFF(FF_OPTIC_2) && !!nextAnnotation?.history?.undoIdx) {
+    if (nextAnnotation?.history?.undoIdx) {
       this.saveDraft(nextAnnotation).then(() => {
         this.datamanager.invoke("onSelectAnnotation", prevAnnotation, nextAnnotation, options, this);
       });
@@ -891,11 +890,11 @@ export class LSFWrapper {
   };
 
   onNextTask = async (nextTaskId, nextAnnotationId) => {
-    if (isFF(FF_OPTIC_2)) this.saveDraft();
+    this.saveDraft();
     this.loadTask(nextTaskId, nextAnnotationId, true);
   };
   onPrevTask = async (prevTaskId, prevAnnotationId) => {
-    if (isFF(FF_OPTIC_2)) this.saveDraft();
+    this.saveDraft();
     this.loadTask(prevTaskId, prevAnnotationId, true);
   };
   async submitCurrentAnnotation(eventName, submit, includeId = false, loadNext = true) {
