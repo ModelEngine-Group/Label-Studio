@@ -1,6 +1,6 @@
 {
-  "message": "refactor: LEAP-1300: Remove outdated FF_LSDV_4620_3 (#7228)",
-  "commit": "0b5f6a0faea973f9f96bf7512cada901f1f1df57",
-  "date": "2025-03-18T18:01:00.000Z",
-  "branch": "develop"
+  "message": "fix: OPTIC-1832: Missing tokens scss variables import (#7253) (#7254)",
+  "commit": "76842a49c212e42646bdf7aa37608d83c817c1de",
+  "date": "2025-03-19T13:51:32.000Z",
+  "branch": "ls-release/1.17.0"
 }
