@@ -1,6 +1,7 @@
 """This file and its contents are licensed under the Apache License 2.0. Please see the included NOTICE for copyright information and LICENSE for a copy of the license.
 """
 import datetime
+import logging
 from typing import Optional
 
 from core.utils.common import load_func
@@ -17,6 +18,8 @@ from django.utils.translation import gettext_lazy as _
 from organizations.models import Organization
 from rest_framework.authtoken.models import Token
 from users.functions import hash_upload
+
+logger = logging.getLogger(__name__)
 
 YEAR_START = 1980
 YEAR_CHOICES = []
@@ -65,7 +68,17 @@ class UserLastActivityMixin(models.Model):
     last_activity = models.DateTimeField(_('last activity'), default=timezone.now, editable=False)
 
     def update_last_activity(self):
+        check_interval = settings.USER_LAST_ACTIVITY_CHECK_INTERVAL
         self.last_activity = timezone.now()
+
+        if check_interval:
+            if (timezone.now() - self.last_activity).seconds < check_interval:
+                # Don't update last_activity because it's not necessary since it's close enough to the existing last_activity value
+                logger.info(
+                    f'Not updating last_activity for {self.id} because last_activity of {self.last_activity} is within {check_interval} seconds of their existing last_activity value'
+                )
+                return
+
         self.save(update_fields=['last_activity'])
 
     class Meta:
