@@ -176,6 +176,7 @@ class LSTokenBlacklistView(TokenViewBase):
             # .blacklist() on the token under the hood
             serializer.is_valid(raise_exception=True)
         except TokenError as e:
-            return Response({'detail': str(e)}, status=status.HTTP_404_NOT_FOUND)
+            logger.error('Token error occurred while trying to blacklist a token: %s', str(e), exc_info=True)
+            return Response({'detail': 'Token is invalid or already blacklisted.'}, status=status.HTTP_404_NOT_FOUND)
 
         return Response(status=status.HTTP_204_NO_CONTENT)
