@@ -1,6 +1,6 @@
 {
-  "message": "refactor: LEAP-1300: Remove outdated FF_LSDV_4620_3 (#7228)",
-  "commit": "0b5f6a0faea973f9f96bf7512cada901f1f1df57",
-  "date": "2025-03-18T18:01:00.000Z",
+  "message": "refactor: LEAP-1772: Remove FF_OPTIC_2 feature flag and associated logic (#7211)",
+  "commit": "b023a3c9ded3ebd699d4b31829b8fd135eb0cc2e",
+  "date": "2025-03-19T01:13:24.000Z",
   "branch": "develop"
 }
