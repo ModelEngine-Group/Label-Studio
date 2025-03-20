@@ -1,6 +1,6 @@
 {
-  "message": "fix: LEAP-1931: Correct frame offset calculation in Timeline (#7244)",
-  "commit": "6b4ef15e085e82079ded671a653fc5e3776d868b",
-  "date": "2025-03-20T12:25:05.000Z",
+  "message": "refactor: LEAP-1785: remove obsolete feature flag FF_LSDV_4988 (#7219)",
+  "commit": "0672f4b250682f8e6a0f52d591c0b1919d36ebcf",
+  "date": "2025-03-20T13:26:07.000Z",
   "branch": "develop"
 }
