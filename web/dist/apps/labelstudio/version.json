@@ -1,6 +1,6 @@
 {
-  "message": "fix: OPTIC-1832: Missing tokens scss variables import (#7253)",
-  "commit": "a0777872900f2029ec013684a5c81309f7b98bdd",
-  "date": "2025-03-19T13:47:30.000Z",
+  "message": "fix: LEAP-649: Saving draft on task switching (#7212)",
+  "commit": "a01b25548decfe7f47d5f1453c42fdd894df694a",
+  "date": "2025-03-20T09:52:16.000Z",
   "branch": "develop"
 }
