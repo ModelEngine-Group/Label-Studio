@@ -1,6 +1,6 @@
 {
-  "message": "fix: LEAP-1868: Update serialize-javascript version (#7250)",
-  "commit": "84f3f0bf04831d7182bfb4f7e054e55942670d60",
-  "date": "2025-03-20T16:41:09.000Z",
+  "message": "fix: LEAP-1925: Update axios and dependencies (#7249)",
+  "commit": "6ed9c213dbe147b9ef615505fc2c745da34dab36",
+  "date": "2025-03-20T17:52:09.000Z",
   "branch": "develop"
 }
