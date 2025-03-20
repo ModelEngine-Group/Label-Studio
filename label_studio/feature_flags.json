@@ -1635,6 +1635,33 @@
       "version": 2,
       "deleted": false
     },
+    "fflag_feat_all_optic_1811_automax_project_setup_streaming": {
+      "key": "fflag_feat_all_optic_1811_automax_project_setup_streaming",
+      "on": false,
+      "prerequisites": [],
+      "targets": [],
+      "contextTargets": [],
+      "rules": [],
+      "fallthrough": {
+        "variation": 0
+      },
+      "offVariation": 1,
+      "variations": [
+        true,
+        false
+      ],
+      "clientSideAvailability": {
+        "usingMobileKey": false,
+        "usingEnvironmentId": false
+      },
+      "clientSide": false,
+      "salt": "4bbabd8130cd43fcb0b30f2eb3ef7f56",
+      "trackEvents": false,
+      "trackEventsFallthrough": false,
+      "debugEventsUntilDate": null,
+      "version": 2,
+      "deleted": false
+    },
     "fflag_feat_all_optic_520_annotator_report_short": {
       "key": "fflag_feat_all_optic_520_annotator_report_short",
       "on": false,
@@ -2717,7 +2744,7 @@
     },
     "fflag_feat_front_optic_1746_improve_global_error_messages_short": {
       "key": "fflag_feat_front_optic_1746_improve_global_error_messages_short",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -2739,7 +2766,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 2,
+      "version": 3,
       "deleted": false
     },
     "fflag_feat_front_optic_66_lazy_chart_evaluation_19092023_short": {
