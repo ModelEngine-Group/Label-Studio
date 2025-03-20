@@ -432,7 +432,8 @@ const RootTitle: FC<any> = observer(
             toggleCollapsed={toggleCollapsed}
           />
         </Elem>
-        {hasControls && isArea && (
+
+        {!collapsed && hasControls && isArea && (
           <Elem name="ocr">
             <RegionItemDesc
               item={item}
@@ -613,6 +614,7 @@ const RegionItemDesc: FC<RegionItemOCSProps> = observer(({ item, collapsed, setC
               setCollapsed={setCollapsed}
               color={css}
               outliner
+              canDelete={false}
             />
           ) : null;
         })}

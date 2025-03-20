@@ -51,9 +51,8 @@
   &-node {
     &-content-wrapper {
       flex: 1;
-      padding: 0 4px;
+      padding: var(--spacing-small-x, 4px);
       display: flex;
-      max-width: 100%;
       align-items: center;
     }
   }
@@ -93,6 +92,8 @@
       display: inline;
       line-height: 1.2; // make it dense for multiline labels
       padding: 2px 0; // + add a little padding so it won't be too close to the item edges
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 
@@ -122,15 +123,16 @@
     min-height: 32px;
     align-items: center;
     justify-content: space-between;
+    gap: var(--spacing-small-x, 4px);
   }
 
   &__index {
     width: 18px;
     height: 18px;
     display: flex;
+    flex: none;
     font-size: 9px;
     color: var(--sand_0);
-    margin-right: 4px;
     text-align: center;
     align-items: center;
     border-radius: 4px;
@@ -143,7 +145,12 @@
     display: inline-flex;
     flex: 1;
     color: var(--text-color, var(--sand_900));
-    min-width: 0;
+    min-width: 50px;
+  }
+
+  &__ocr {
+    flex: 1 1 auto;
+    min-width: 50px;
   }
 
   &__text {
@@ -209,7 +216,6 @@
 
     &-wrapper {
       display: flex;
-      margin-left: 13px;
     }
 
     .region-context-menu {
@@ -235,7 +241,6 @@
 .ocr {
   background: none;
   position: relative;
-  padding: 0 0 8px;
 
   &_empty {
     display: none;

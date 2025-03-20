@@ -63,11 +63,6 @@
     --border-color: var(--sand_300);
   }
 
-  &_outliner &__item,
-  &_outliner &__form {
-    margin: 0 0 0 -8px;
-  }
-
   &_outliner &__item + &__item,
   &_outliner &__item + &__form,
   &_outliner &__form + &__item,
@@ -80,7 +75,7 @@
     background: none;
     font-size: 14px;
     line-height: normal;
-    padding: 8px 20px 8px 8px;
+    padding: 8px;
     box-sizing: border-box;
     border-radius: 4px;
     border: 1px solid transparent;

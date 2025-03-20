@@ -17,7 +17,7 @@ import "./TextArea.scss";
 const { TextArea } = Input;
 
 const HtxTextAreaResultLine = forwardRef(
-  ({ idx, value, readOnly, onChange, onDelete, onFocus, validate, control, collapsed }, ref) => {
+  ({ idx, value, readOnly, onChange, onDelete, onFocus, validate, control, collapsed, canDelete = true }, ref) => {
     const rows = Number.parseInt(control.rows);
     const isTextarea = rows > 1;
     const [stateValue, setStateValue] = useState(value ?? "");
@@ -75,7 +75,7 @@ const HtxTextAreaResultLine = forwardRef(
     return (
       <Elem name="item">
         <Elem name="input" tag={isTextarea ? TextArea : Input} {...inputProps} ref={ref} />
-        {!collapsed && !readOnly && (
+        {canDelete && !collapsed && !readOnly && (
           <Elem
             name="action"
             aria-label="Delete Region"
@@ -93,7 +93,7 @@ const HtxTextAreaResultLine = forwardRef(
   },
 );
 
-const HtxTextAreaResult = observer(({ item, control, firstResultInputRef, onFocus, collapsed }) => {
+const HtxTextAreaResult = observer(({ item, control, firstResultInputRef, onFocus, collapsed, canDelete = true }) => {
   const value = item.mainValue;
   const editable = !item.isReadOnly() && item.from_name.editable && !item.area.isReadOnly();
 
@@ -133,12 +133,13 @@ const HtxTextAreaResult = observer(({ item, control, firstResultInputRef, onFocu
         onFocus={onFocus}
         collapsed={collapsed}
         validate={item.from_name.validateText}
+        canDelete={item.from_name.isDeleteable && canDelete}
       />
     );
   });
 });
 
-const HtxTextAreaRegionView = observer(({ item, area, collapsed, setCollapsed, outliner, color }) => {
+const HtxTextAreaRegionView = observer(({ item, area, collapsed, setCollapsed, outliner, color, canDelete = true }) => {
   const rows = Number.parseInt(item.rows);
   const isTextArea = rows > 1;
   const isActive = item.perRegionArea === area;
@@ -254,6 +255,7 @@ const HtxTextAreaRegionView = observer(({ item, area, collapsed, setCollapsed, o
             collapsed={collapsed}
             firstResultInputRef={firstResultInputRef}
             onFocus={expand}
+            canDelete={canDelete}
           />
         ) : null}
 

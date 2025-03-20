@@ -2,6 +2,8 @@
 .comment-form-buttons {
   &__buttons {
     display: flex;
+    height: 100%;
+    align-items: center;
   }
 
   &__action {
