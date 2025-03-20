@@ -1,6 +1,6 @@
 {
-  "message": "refactor: LEAP-1785: remove obsolete feature flag FF_LSDV_4988 (#7219)",
-  "commit": "0672f4b250682f8e6a0f52d591c0b1919d36ebcf",
-  "date": "2025-03-20T13:26:07.000Z",
+  "message": "fix: LEAP-1913: Update axios to v1.8.2 (#7248)",
+  "commit": "0e2f1d82a888e741eb645cfe14966aa25869b2f3",
+  "date": "2025-03-20T16:30:59.000Z",
   "branch": "develop"
 }
