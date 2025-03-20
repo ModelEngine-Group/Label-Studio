@@ -1,6 +1,6 @@
 {
-  "message": "fix: LEAP-1925: Update axios and dependencies (#7249)",
-  "commit": "6ed9c213dbe147b9ef615505fc2c745da34dab36",
-  "date": "2025-03-20T17:52:09.000Z",
+  "message": "fix: OPTIC-1835: Address issue affecting OCR region panel visualization (#7259)",
+  "commit": "486803f13a36fbb99f2fdcb5d3ea25a5a8a8fa66",
+  "date": "2025-03-20T21:26:35.000Z",
   "branch": "develop"
 }
