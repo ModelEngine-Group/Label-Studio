@@ -1,6 +1,6 @@
 {
-  "message": "fix: LEAP-649: Saving draft on task switching (#7212)",
-  "commit": "a01b25548decfe7f47d5f1453c42fdd894df694a",
-  "date": "2025-03-20T09:52:16.000Z",
+  "message": "fix: LEAP-1931: Correct frame offset calculation in Timeline (#7244)",
+  "commit": "6b4ef15e085e82079ded671a653fc5e3776d868b",
+  "date": "2025-03-20T12:25:05.000Z",
   "branch": "develop"
 }
