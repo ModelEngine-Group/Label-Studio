@@ -113,9 +113,6 @@ export const FF_LSDV_4620_3_ML = "fflag_fix_front_lsdv_4620_memory_leaks_100723_
  */
 export const FF_LSDV_4711 = "fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short";
 
-/** Fix "No Label" for Dynamic Labels by switching off missing labels removal */
-export const FF_LSDV_4988 = "fflag_fix_front_lsdv_4988_dynamic_no_label_120523_short";
-
 /**
  * Fixing issues related to selection tool functional (selecting hidden regions, onClick in Konva, interaction with regions inside selection area)
  *

@@ -16,44 +16,6 @@ function isLabels(val, key) {
 examples.forEach((example) => {
   const { annotations, config, data, result = annotations[0].result, title } = example;
 
-  Scenario(`Nonexistent label -> ${title}`, async ({ I, LabelStudio, AtSidebar, AtImageView, AtAudioView }) => {
-    LabelStudio.setFeatureFlags({
-      ff_front_dev_2715_audio_3_280722_short: true,
-    });
-
-    let { result = annotations[0].result } = example;
-
-    result = result.filter((res) => isLabelType(res.type));
-    const params = { annotations: [{ id: "test", result }], data };
-    const configTree = Utils.parseXml(config);
-
-    Utils.xmlFilterNodes(configTree, (node) => {
-      return !node["#name"].toLowerCase().endsWith("label");
-    });
-    params.config = Utils.renderXml(configTree);
-    const regionsCount = Utils.countRegionsInResult(result);
-
-    I.amOnPage("/");
-    LabelStudio.init(params);
-    AtSidebar.seeRegions(regionsCount);
-
-    if (Utils.xmlTreeHasTag(configTree, "Image")) {
-      AtImageView.waitForImage();
-    }
-    if (Utils.xmlFindBy(configTree, (node) => node["#name"] === "Audio")) {
-      await AtAudioView.waitForAudio();
-    }
-
-    if (regionsCount) {
-      const restored = await LabelStudio.serialize();
-
-      Asserts.notDeepEqualWithTolerance(result, restored, 1);
-      for (let i = result.length; i--; ) {
-        Asserts.deepEqualWithTolerance(Helpers.omitBy(result[i], isLabels), restored[i], 1);
-      }
-    }
-  });
-
   Scenario(`Different from_name -> ${title}`, async ({ I, LabelStudio, AtSidebar, AtImageView, AtAudioView }) => {
     let { result = annotations[0].result } = example;
 

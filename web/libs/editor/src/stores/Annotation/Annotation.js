@@ -16,7 +16,6 @@ import {
   FF_LLM_EPIC,
   FF_LSDV_3009,
   FF_LSDV_4583,
-  FF_LSDV_4988,
   FF_REVIEWER_FLOW,
   isFF,
 } from "../../utils/feature-flags";
@@ -1047,34 +1046,8 @@ const _Annotation = types
         if (obj.type.endsWith("labels")) {
           const keys = Object.keys(obj.value);
 
-          for (let key of keys) {
+          for (const key of keys) {
             if (key.endsWith("labels")) {
-              const hasControlTag = tagNames.has(obj.from_name) || tagNames.has("labels");
-
-              // remove non-existent labels, it actually breaks dynamic labels
-              // and makes no reason overall — labels from predictions can be out of config
-              if (!isFF(FF_LSDV_4988) && hasControlTag) {
-                const labelsContainer = tagNames.get(obj.from_name) ?? tagNames.get("labels");
-                const value = obj.value[key];
-
-                if (value && value.length && labelsContainer.type.endsWith("labels")) {
-                  const filteredValue = value.filter((labelName) => !!labelsContainer.findLabel(labelName));
-                  const oldKey = key;
-
-                  key = key === labelsContainer.type ? key : labelsContainer.type;
-
-                  if (oldKey !== key) {
-                    obj.type = key;
-                    obj.value[key] = obj.value[oldKey];
-                    delete obj.value[oldKey];
-                  }
-
-                  if (filteredValue.length !== value.length) {
-                    obj.value[key] = filteredValue;
-                  }
-                }
-              }
-
               // detect most relevant label tags if that one from from_name is missing
               // can be useful for predictions in old format with config in new format:
               // Rectangle + Labels -> RectangleLabels
