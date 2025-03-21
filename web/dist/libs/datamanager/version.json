@@ -1,6 +1,6 @@
 {
-  "message": "chore: OPTIC-1778: Unify and prettify icons (#7169)",
-  "commit": "b75cace00764a9ac34b6518e4879eadc8297da9b",
-  "date": "2025-03-21T14:21:21.000Z",
+  "message": "feat: LEAP-1924: Allow to edit Timeline span by drag-n-drop (#7251)",
+  "commit": "c0dab3be4d26d1fc2a45eca650ff61a9ff20d8eb",
+  "date": "2025-03-21T15:40:59.000Z",
   "branch": "develop"
 }
