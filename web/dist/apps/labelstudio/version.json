@@ -1,6 +1,6 @@
 {
-  "message": "feat: DIA-1925: [FE] “View sample raw json” ability in the Data Import page (#7226)",
-  "commit": "6970a351c4792d8e04898079d17e5512227a76bf",
-  "date": "2025-03-21T12:33:54.000Z",
+  "message": "chore: OPTIC-1825: Update project to use React 18 (#7247)",
+  "commit": "46f1f4bca17a924f5cbe5d32e52ff92407718db3",
+  "date": "2025-03-21T12:46:28.000Z",
   "branch": "develop"
 }
