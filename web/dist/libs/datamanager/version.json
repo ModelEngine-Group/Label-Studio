@@ -1,6 +1,6 @@
 {
-  "message": "feat: OPTIC-1810: Further unification of icons using Storybook to identify and iterate the work (#7261)",
-  "commit": "7e882c71e7fb2c1083cd221f949a3923ff4b5993",
-  "date": "2025-03-21T17:14:46.000Z",
+  "message": "feat: DIA-1924: \"Import sample data\" ability in the Data Import page (#7206)",
+  "commit": "4075937f4b2bf286e8cad366fd46b39c8426c55a",
+  "date": "2025-03-21T18:39:51.000Z",
   "branch": "develop"
 }
