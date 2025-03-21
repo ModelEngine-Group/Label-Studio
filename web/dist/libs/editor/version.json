@@ -1,6 +1,6 @@
 {
-  "message": "chore: OPTIC-1825: Update project to use React 18 (#7247)",
-  "commit": "46f1f4bca17a924f5cbe5d32e52ff92407718db3",
-  "date": "2025-03-21T12:46:28.000Z",
+  "message": "chore: OPTIC-1778: Unify and prettify icons (#7169)",
+  "commit": "b75cace00764a9ac34b6518e4879eadc8297da9b",
+  "date": "2025-03-21T14:21:21.000Z",
   "branch": "develop"
 }
