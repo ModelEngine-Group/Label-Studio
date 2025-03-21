@@ -511,30 +511,32 @@ const HtxBrushView = ({ item, setShapeRef }) => {
   const { suggestion } = useContext(ImageViewContext) ?? {};
 
   // Prepare brush stroke from RLE with current stroke color
-  useEffect(async () => {
+  useEffect(() => {
     // Two possible ways to draw an image from precreated data:
     // - rle - An RLE encoded RGBA image
     // - maskDataURL - an RGBA mask encoded as an image data URL that can be directly placed into
     //  an image without having to go through an RLE encode/decode loop to save performance for tools
     //  that dynamically produce image masks.
+    const prepareImage = async () => {
+      if (!item.rle && !item.maskDataURL) return;
+      if (!item.parent || item.parent.naturalWidth <= 1 || item.parent.naturalHeight <= 1) return;
 
-    if (!item.rle && !item.maskDataURL) return;
-    if (!item.parent || item.parent.naturalWidth <= 1 || item.parent.naturalHeight <= 1) return;
+      let img;
 
-    let img;
+      if (item.maskDataURL) {
+        img = await Canvas.maskDataURL2Image(item.maskDataURL, { color: item.strokeColor });
+      } else if (item.rle) {
+        img = Canvas.RLE2Region(item, { color: item.strokeColor });
+      }
 
-    if (item.maskDataURL) {
-      img = await Canvas.maskDataURL2Image(item.maskDataURL, { color: item.strokeColor });
-    } else if (item.rle) {
-      img = Canvas.RLE2Region(item, { color: item.strokeColor });
-    }
-
-    if (img) {
-      img.onload = () => {
-        setImage(img);
-        item.setReady(true);
-      };
-    }
+      if (img) {
+        img.onload = () => {
+          setImage(img);
+          item.setReady(true);
+        };
+      }
+    };
+    prepareImage();
   }, [
     item.rle,
     item.maskDataURL,

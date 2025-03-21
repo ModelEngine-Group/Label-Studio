@@ -13,16 +13,11 @@
     "jsx": "react",
     "target": "esnext",
     "module": "esnext",
-    "lib": [
-      "es2020",
-      "dom",
-      "dom.iterable",
-      "esnext.array"
-    ],
+    "lib": ["es2020", "dom", "dom.iterable", "esnext.array"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths":{
+    "paths": {
       "@humansignal/core": ["libs/core/src/index.ts"],
       "@humansignal/core/*": ["libs/core/src/*"],
       "@humansignal/datamanager": ["libs/datamanager/src/index.js"],

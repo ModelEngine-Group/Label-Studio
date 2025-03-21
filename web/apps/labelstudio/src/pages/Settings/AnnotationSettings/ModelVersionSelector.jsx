@@ -69,7 +69,9 @@ export const ModelVersionSelector = ({
     setLoading(false);
   }, [project?.id, apiName]);
 
-  useEffect(fetchMLVersions, [fetchMLVersions]);
+  useEffect(() => {
+    fetchMLVersions();
+  }, [fetchMLVersions]);
 
   return (
     <div>

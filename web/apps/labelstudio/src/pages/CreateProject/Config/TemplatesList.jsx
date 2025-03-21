@@ -37,14 +37,17 @@ export const TemplatesList = ({ selectedGroup, selectedRecipe, onCustomTemplate,
   const [templates, setTemplates] = React.useState();
   const api = useAPI();
 
-  React.useEffect(async () => {
-    const res = await api.callApi("configTemplates");
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const res = await api.callApi("configTemplates");
 
-    if (!res) return;
-    const { templates, groups } = res;
+      if (!res) return;
+      const { templates, groups } = res;
 
-    setTemplates(templates);
-    setGroups(groups);
+      setTemplates(templates);
+      setGroups(groups);
+    };
+    fetchData();
   }, []);
 
   const selected = selectedGroup || groups[0];

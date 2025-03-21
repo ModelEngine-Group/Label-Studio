@@ -357,41 +357,44 @@ const Configurator = ({
     return () => window.clearTimeout(debounceTimer.current);
   }, [config]);
 
-  React.useEffect(async () => {
-    if (!configToCheck) return;
+  React.useEffect(() => {
+    const validate = async () => {
+      if (!configToCheck) return;
 
-    setLoading(true);
+      setLoading(true);
 
-    const validation = await api.callApi("validateConfig", {
-      params: { pk: project.id },
-      body: { label_config: configToCheck },
-      errorFilter: () => true,
-    });
+      const validation = await api.callApi("validateConfig", {
+        params: { pk: project.id },
+        body: { label_config: configToCheck },
+        errorFilter: () => true,
+      });
 
-    if (validation?.error) {
-      setError(validation.response);
+      if (validation?.error) {
+        setError(validation.response);
+        setLoading(false);
+        return;
+      }
+
+      setError(null);
+      onValidate?.(validation);
+
+      const sample = await api.callApi("createSampleTask", {
+        params: { pk: project.id },
+        body: { label_config: configToCheck },
+        errorFilter: () => true,
+      });
+
       setLoading(false);
-      return;
-    }
-
-    setError(null);
-    onValidate?.(validation);
-
-    const sample = await api.callApi("createSampleTask", {
-      params: { pk: project.id },
-      body: { label_config: configToCheck },
-      errorFilter: () => true,
-    });
-
-    setLoading(false);
-    if (sample && !sample.error) {
-      setData(sample.sample_task);
-      setConfigToDisplay(configToCheck);
-    } else {
-      // @todo validation can be done in this place,
-      // @todo but for now it's extremely slow in /sample-task endpoint
-      setError(sample?.response);
-    }
+      if (sample && !sample.error) {
+        setData(sample.sample_task);
+        setConfigToDisplay(configToCheck);
+      } else {
+        // @todo validation can be done in this place,
+        // @todo but for now it's extremely slow in /sample-task endpoint
+        setError(sample?.response);
+      }
+    };
+    validate();
   }, [configToCheck]);
 
   // code should be reloaded on every render because of uncontrolled codemirror
@@ -601,18 +604,21 @@ export const ConfigPage = ({
 
   const [warning, setWarning] = React.useState();
 
-  React.useEffect(async () => {
-    if (externalColumns) return; // we are in Create Project dialog, so this request is useless
-    if (!project || columns) return;
-    const res = await api.callApi("dataSummary", {
-      params: { pk: project.id },
-      // 404 is ok, and errors here don't matter
-      errorFilter: () => true,
-    });
+  React.useEffect(() => {
+    const fetchData = async () => {
+      if (!externalColumns || (project && !columns)) {
+        const res = await api.callApi("dataSummary", {
+          params: { pk: project.id },
+          // 404 is ok, and errors here don't matter
+          errorFilter: () => true,
+        });
 
-    if (res?.common_data_columns) {
-      setColumns(res.common_data_columns);
-    }
+        if (res?.common_data_columns) {
+          setColumns(res.common_data_columns);
+        }
+      }
+      fetchData();
+    };
   }, [columns, project]);
 
   const onSelectRecipe = React.useCallback((recipe) => {
@@ -620,12 +626,12 @@ export const ConfigPage = ({
       setSelectedRecipe(null);
       setMode("list");
       __lsa("labeling_setup.view.empty");
-      return;
+    } else {
+      setTemplate(recipe.config);
+      setSelectedRecipe(recipe);
+      setMode("view");
+      __lsa(`labeling_setup.view.${toSnakeCase(recipe.group)}.${toSnakeCase(recipe.title)}`);
     }
-    setTemplate(recipe.config);
-    setSelectedRecipe(recipe);
-    setMode("view");
-    __lsa(`labeling_setup.view.${toSnakeCase(recipe.group)}.${toSnakeCase(recipe.title)}`);
   });
 
   const onCustomTemplate = React.useCallback(() => {
