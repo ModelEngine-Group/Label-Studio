@@ -39,9 +39,14 @@ export const FF_IMPROVE_GLOBAL_ERROR_MESSAGES = "fflag_feat_front_optic_1746_imp
  */
 export const FF_HOMEPAGE = "fflag_all_feat_dia_1777_ls_homepage_short";
 
+/**
+ * Sample datasets UI for the import flow
+ */
+export const FF_SAMPLE_DATASETS = "fflag_feat_dia_1920_project_creation_sample_data_short";
+
 export function isFF(id: string) {
   // TODO: remove the override + if statement once LSE and LSO start building react the same way and fflag_fix_front_lsdv_4620_memory_leaks_100723_short is removed
-  const override: Record<string, boolean> = {};
+  const override: Record<string, boolean> = { [FF_SAMPLE_DATASETS]: true };
   if (window?.APP_SETTINGS?.sentry_environment === "opensource" && id in override) {
     return override[id];
   }

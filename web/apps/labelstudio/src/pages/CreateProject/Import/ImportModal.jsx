@@ -76,7 +76,14 @@ export const Inner = () => {
           </Button>
         </Space>
       </Modal.Header>
-      <ImportPage project={project} {...pageProps} />
+      <ImportPage
+        project={project}
+        {...pageProps}
+        projectConfigured={Object.keys(project.parsed_label_config ?? {}).length > 0}
+        openLabelingConfig={() => {
+          history.push(`/projects/${project.id}/settings/labeling`);
+        }}
+      />
     </Modal>
   );
 };

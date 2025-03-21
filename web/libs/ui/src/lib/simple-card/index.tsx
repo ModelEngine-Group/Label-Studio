@@ -15,13 +15,17 @@ export function SimpleCard({
   } & Omit<HtmlHTMLAttributes<HTMLDivElement>, "title">
 >) {
   const className = cn("bg-transparent", cls);
+  const hasHeaderContent = Boolean(title || description);
+  const contentClass = cn("p-4", { "pt-0": hasHeaderContent });
   return (
     <Card className={className} {...rest}>
-      <CardHeader className="p-4 pb-2">
-        <CardTitle className="flex justify-between font-medium">{title}</CardTitle>
-        {description && <CardDescription>{description}</CardDescription>}
-      </CardHeader>
-      <CardContent className="p-4 pt-0">{children}</CardContent>
+      {hasHeaderContent && (
+        <CardHeader className="p-4 pb-2">
+          {title && <CardTitle className="flex justify-between font-medium">{title}</CardTitle>}
+          {description && <CardDescription>{description}</CardDescription>}
+        </CardHeader>
+      )}
+      <CardContent className={contentClass}>{children}</CardContent>
     </Card>
   );
 }

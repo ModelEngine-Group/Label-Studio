@@ -840,6 +840,10 @@ class ProjectSampleTask(generics.RetrieveAPIView):
             try:
                 label_interface = LabelInterface(label_config)
                 complete_task = label_interface.generate_complete_sample_task(raise_on_failure=True)
+                # set the annotation's user id to the current user instead of -1
+                user_id = request.user.id
+                for annotation in complete_task['annotations']:
+                    annotation['completed_by'] = user_id
                 return Response({'sample_task': complete_task}, status=200)
             except Exception as e:
                 logger.error(

@@ -23,6 +23,7 @@ class TestProjectSampleTask(TestCase):
         """Test that ProjectSampleTask.post successfully creates a complete sample task with annotations and predictions"""
         client = APIClient()
         client.force_authenticate(user=self.project.created_by)
+        user_id = self.project.created_by.id
         label_config = """
         <View>
           <Text name='text' value='$text'/>
@@ -81,7 +82,9 @@ class TestProjectSampleTask(TestCase):
             assert response.status_code == 200
             response_data = response.json()
             assert 'sample_task' in response_data
-            assert response_data['sample_task'] == sample_task
+            sample_task_with_annotator_id_set = sample_task.copy()
+            sample_task_with_annotator_id_set['annotations'][0]['completed_by'] = user_id
+            assert response_data['sample_task'] == sample_task_with_annotator_id_set
 
     def test_sample_task_fallback_when_generate_task_fails(self):
         """Test fallback to project.get_sample_task when LabelInterface.generate_complete_sample_task fails"""
