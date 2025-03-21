@@ -1,10 +1,5 @@
 import { type FC, type MouseEvent, useCallback, useContext, useMemo } from "react";
-import {
-  IconInterpolationAdd,
-  IconInterpolationRemove,
-  IconKeypointAdd,
-  IconKeypointDelete,
-} from "../../../../assets/icons/timeline";
+import { IconInterpolationAdd, IconInterpolationRemove, IconKeypointAdd, IconKeypointDelete } from "@humansignal/ui";
 import { TimelineContext } from "../../Context";
 import { ControlButton } from "../../Controls";
 import type { TimelineExtraControls } from "../../Types";

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import clsx from "clsx";
 import { Dropdown } from "../../common/Dropdown/Dropdown";
 import { useDropdown } from "../../common/Dropdown/DropdownTrigger";
-import { IconEllipsis } from "../../assets/icons";
+import { IconEllipsisVertical } from "@humansignal/icons";
 import styles from "./ContextMenu.module.scss";
 
 export interface ContextMenuContext {
@@ -65,7 +65,7 @@ export const ContextMenuTrigger: React.FC<ContextMenuTriggerProps> = ({ children
           onToggle?.(isOpen);
         }}
       >
-        {children ? children : <IconEllipsis width={28} height={28} />}
+        {children ? children : <IconEllipsisVertical width={28} height={28} />}
       </Dropdown.Trigger>
     </div>
   );

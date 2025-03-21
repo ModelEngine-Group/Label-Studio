@@ -1,7 +1,7 @@
 import { inject } from "mobx-react";
 import { observer } from "mobx-react-lite";
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import { FaCaretDown, FaChevronLeft, FaColumns } from "react-icons/fa";
+import { IconChevronDown, IconChevronLeft, IconGearNewUI } from "@humansignal/icons";
 import { Block, Elem } from "../../utils/bem";
 import { FF_DEV_1170, isFF } from "../../utils/feature-flags";
 import { Button } from "../Common/Button/Button";
@@ -19,7 +19,7 @@ const LabelingHeader = ({ SDK, onClick, isExplorerMode }) => {
       <Space size="large">
         {SDK.interfaceEnabled("backButton") && (
           <Button
-            icon={<FaChevronLeft style={{ marginRight: 4, fontSize: 16 }} />}
+            icon={<IconChevronLeft style={{ marginRight: 4, fontSize: 16 }} />}
             type="link"
             onClick={onClick}
             style={{ fontSize: 18, padding: 0, color: "black" }}
@@ -31,8 +31,8 @@ const LabelingHeader = ({ SDK, onClick, isExplorerMode }) => {
         {isExplorerMode ? (
           <FieldsButton
             wrapper={FieldsButton.Checkbox}
-            icon={<Icon icon={FaColumns} />}
-            trailingIcon={<Icon icon={FaCaretDown} />}
+            icon={<Icon icon={IconGearNewUI} />}
+            trailingIcon={<Icon icon={IconChevronDown} />}
             title={"Fields"}
           />
         ) : null}

@@ -5,7 +5,7 @@ import { PanelBase, type PanelProps } from "../PanelBase";
 import { OutlinerTree } from "./OutlinerTree";
 import { ViewControls } from "./ViewControls";
 import "./OutlinerPanel.scss";
-import { IconInfo } from "../../../assets/icons/outliner";
+import { IconInfo } from "@humansignal/icons";
 
 interface OutlinerPanelProps extends PanelProps {
   regions: any;

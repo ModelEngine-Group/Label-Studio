@@ -27,7 +27,6 @@
     justify-content: space-between;
     background-color: var(--header-background);
     padding: 4px;
-    padding-left: 11px;
 
     &:hover {
       --icon-color: var(--grape_500);
@@ -53,6 +52,7 @@
   &__header-left {
     display: flex;
     align-items: center;
+    gap: var(--spacing-small-x, 4px);
   }
 
   &__header-left {
@@ -177,6 +177,7 @@
 
     svg {
       display: block;
+      height: 12px;
     }
   }
 

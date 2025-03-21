@@ -1,4 +1,4 @@
-import { FaAngleDown } from "react-icons/fa";
+import { IconChevronDown } from "@humansignal/icons";
 import { Block } from "../../../utils/bem";
 import { FF_SELF_SERVE, isFF } from "../../../utils/feature-flags";
 import { ErrorBox } from "../../Common/ErrorBox";
@@ -71,12 +71,11 @@ export const instruments = {
   },
   columns: ({ size }) => {
     const iconProps = {
-      size: 16,
       style: {
         marginRight: 4,
       },
-      icon: FaAngleDown,
-      color: "#566fcf",
+      icon: IconChevronDown,
+      color: "var(--black)",
     };
     return (
       <FieldsButton

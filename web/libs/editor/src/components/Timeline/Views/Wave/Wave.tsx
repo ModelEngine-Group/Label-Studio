@@ -19,7 +19,7 @@ import TimelinePlugin from "wavesurfer.js/src/plugin/timeline";
 import { formatTimeCallback, secondaryLabelInterval, timeInterval } from "./Utils";
 import { clamp, isDefined, isMacOS } from "../../../../utils/utilities";
 import { Range } from "../../../../common/Range/Range";
-import { IconFast, IconSlow, IconZoomIn, IconZoomOut } from "../../../../assets/icons";
+import { IconFast, IconSlow, IconZoomIn, IconZoomOut } from "@humansignal/icons";
 import { Space } from "../../../../common/Space/Space";
 import CursorPlugin from "wavesurfer.js/src/plugin/cursor";
 import { useMemoizedHandlers } from "../../../../hooks/useMemoizedHandlers";

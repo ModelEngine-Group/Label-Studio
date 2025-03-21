@@ -7,7 +7,7 @@ import WebhookList from "./WebhookList";
 import WebhookDetail from "./WebhookDetail";
 import { useProject } from "../../providers/ProjectProvider";
 import { Block, Elem } from "../../utils/bem";
-import { IconInfo } from "../../assets/icons";
+import { IconInfo } from "@humansignal/icons";
 import { useHistory } from "react-router";
 
 const Webhook = () => {

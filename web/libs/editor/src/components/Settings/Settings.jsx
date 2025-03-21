@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import { Modal, Table, Tabs } from "antd";
-import { Checkbox } from "@humansignal/ui";
 import { observer } from "mobx-react";
 
 import { Hotkey } from "../../core/Hotkey";
@@ -11,8 +10,8 @@ import { triggerResizeEvent } from "../../utils/utilities";
 
 import EditorSettings from "../../core/settings/editorsettings";
 import * as TagSettings from "./TagSettings";
-import { LsClose } from "../../assets/icons";
-import { Toggle } from "@humansignal/ui";
+import { IconClose } from "@humansignal/icons";
+import { Checkbox, Toggle } from "@humansignal/ui";
 import { FF_DEV_3873, isFF } from "../../utils/feature-flags";
 
 const HotkeysDescription = () => {
@@ -201,7 +200,7 @@ const DEFAULT_MODAL_SETTINGS = isFF(FF_DEV_3873)
   ? {
       name: "settings-modal",
       title: "Labeling Interface Settings",
-      closeIcon: <LsClose />,
+      closeIcon: <IconClose />,
     }
   : {
       name: "settings-modal-old",

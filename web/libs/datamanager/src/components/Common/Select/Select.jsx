@@ -13,6 +13,7 @@ import { shallowEqualArrays } from "shallow-equal";
 import { BemWithSpecifiContext } from "../../../utils/bem";
 import { isDefined } from "../../../utils/utils";
 import { Dropdown } from "../Dropdown/Dropdown";
+import { IconChevronDown } from "@humansignal/icons";
 import "./Select.scss";
 
 const SelectContext = createContext();
@@ -146,7 +147,9 @@ export const Select = ({ value, defaultValue, size, children, onChange, style, m
         >
           <Elem name="selected">
             <Elem name="value">{selected ?? "Select value"}</Elem>
-            <Elem name="icon" />
+            <Elem name="icon">
+              <IconChevronDown />
+            </Elem>
           </Elem>
         </Dropdown.Trigger>
       </Block>

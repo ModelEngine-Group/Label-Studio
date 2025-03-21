@@ -1,6 +1,5 @@
 import { observer } from "mobx-react";
 import { createContext, forwardRef, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { FaCode } from "react-icons/fa";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { VariableSizeList } from "react-window";
 import InfiniteLoader from "react-window-infinite-loader";
@@ -9,6 +8,7 @@ import { isDefined } from "../../../utils/utils";
 import { Button } from "../Button/Button";
 import { Icon } from "../Icon/Icon";
 import { modal } from "../Modal/Modal";
+import { IconCode, IconGear, IconGearNewUI } from "@humansignal/icons";
 import { Tooltip } from "@humansignal/ui";
 import "./Table.scss";
 import { TableCheckboxCell } from "./TableCheckbox";
@@ -18,7 +18,6 @@ import { TableRow } from "./TableRow/TableRow";
 import { prepareColumns } from "./utils";
 import { cn } from "../../../utils/bem";
 import { FieldsButton } from "../FieldsButton";
-import { LsGear, LsGearNewUI } from "../../../assets/icons";
 import { FF_DEV_3873, FF_LOPS_E_3, isFF } from "../../../utils/feature-flags";
 
 const Decorator = (decoration) => {
@@ -145,7 +144,7 @@ export const Table = observer(
                   body: <TaskSourceView content={out} onTaskLoad={onTaskLoad} sdkType={type} />,
                 });
               }}
-              icon={<Icon icon={FaCode} />}
+              icon={<Icon icon={IconCode} />}
             />
           </Tooltip>
         );
@@ -297,14 +296,14 @@ export const Table = observer(
               <FieldsButton
                 className={columnsSelectorCN.elem("button-new").toString()}
                 wrapper={FieldsButton.Checkbox}
-                icon={<LsGearNewUI />}
+                icon={<IconGearNewUI />}
                 style={{ padding: "0" }}
                 tooltip={"Customize Columns"}
               />
             ) : (
               <FieldsButton
                 wrapper={FieldsButton.Checkbox}
-                icon={<LsGear />}
+                icon={<IconGear />}
                 style={{
                   padding: 0,
                   zIndex: 1000,

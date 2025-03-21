@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./Entities.module.scss";
 import Utils from "../../utils";
 
-import { LsChevron } from "../../assets/icons";
+import { IconChevron } from "@humansignal/ui";
 import { RegionItem } from "./RegionItem";
 
 export const RegionTree = observer(({ regionStore }) => {
@@ -54,7 +54,7 @@ export const RegionTree = observer(({ regionStore }) => {
       blockNode={true}
       defaultExpandAll={true}
       autoExpandParent={true}
-      switcherIcon={<LsChevron opacity="0.25" />}
+      switcherIcon={<IconChevron opacity="0.25" />}
       onDragStart={({ event, node }) => {
         if (node.classification || !canDrag.current) {
           event.preventDefault();

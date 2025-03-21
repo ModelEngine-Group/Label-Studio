@@ -10,7 +10,7 @@ import { DrawingTool } from "../mixins/DrawingTool";
 import { getActualZoomingPosition, getTransformedImageData } from "../utils/image";
 import { drawMask } from "../utils/magic-wand";
 import { guidGenerator } from "../core/Helpers";
-import { IconMagicWandTool } from "../assets/icons";
+import { IconMagicWandTool } from "@humansignal/icons";
 import { Tool } from "../components/Toolbar/Tool";
 
 /**

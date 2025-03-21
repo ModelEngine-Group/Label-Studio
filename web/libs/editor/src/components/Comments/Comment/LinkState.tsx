@@ -3,7 +3,7 @@ import { observer } from "mobx-react";
 import chroma from "chroma-js";
 import { Button } from "antd";
 
-import { IconCommentLinkTo, LsClose } from "../../../assets/icons";
+import { IconCommentLinkTo, IconClose } from "@humansignal/icons";
 import { Block, Elem } from "../../../utils/bem";
 import { NodeIcon } from "../../Node/Node";
 import { RegionLabel } from "../../SidePanels/OutlinerPanel/RegionLabel";
@@ -103,7 +103,7 @@ const LinkedRegion: FC<LinkedRegionProps> = observer(({ region, result, interact
       )}
       {onUnlink && (
         <Elem name="close">
-          <Button size="small" type="text" icon={<LsClose />} onClick={onUnlink} />
+          <Button size="small" type="text" icon={<IconClose />} onClick={onUnlink} />
         </Elem>
       )}
     </Block>

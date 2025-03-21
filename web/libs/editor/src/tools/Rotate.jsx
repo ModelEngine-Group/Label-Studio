@@ -4,7 +4,7 @@ import { types } from "mobx-state-tree";
 import BaseTool from "./Base";
 import ToolMixin from "../mixins/Tool";
 import { Tool } from "../components/Toolbar/Tool";
-import { IconRotateLeftTool, IconRotateRightTool } from "../assets/icons";
+import { IconRotateLeftTool, IconRotateRightTool } from "@humansignal/icons";
 
 const ToolView = observer(({ item }) => {
   return (

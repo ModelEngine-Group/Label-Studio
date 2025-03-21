@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
-import { FaMinus, FaPlus } from "react-icons/fa";
+import { IconPlus, IconMinus } from "@humansignal/icons";
 import { Block, Elem } from "../../../../../utils/bem";
 import { isDefined } from "../../../../../utils/utils";
 import { Oneof } from "../../../Oneof/Oneof";
@@ -206,8 +206,8 @@ const CounterButton = ({ type }) => {
       onMouseDownCapture={(e) => e.preventDefault()}
     >
       <Oneof value={type}>
-        <FaMinus case="decrease" />
-        <FaPlus case="increase" />
+        <IconMinus case="decrease" />
+        <IconPlus case="increase" />
       </Oneof>
     </Elem>
   );

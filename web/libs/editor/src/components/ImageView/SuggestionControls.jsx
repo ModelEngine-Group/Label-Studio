@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Circle, Group, Image, Layer, Rect } from "react-konva";
-import IconCross from "../../assets/icons/png/cross.png";
-import IconCheck from "../../assets/icons/png/check.png";
+import { IconCheck, IconCross } from "@humansignal/icons";
 import Konva from "konva";
 import chroma from "chroma-js";
 import { observer } from "mobx-react";

@@ -1,5 +1,5 @@
 import { inject } from "mobx-react";
-import { LsRefresh } from "../../../assets/icons";
+import { IconRefresh } from "@humansignal/icons";
 import { Button } from "../../Common/Button/Button";
 
 const injector = inject(({ store }) => {
@@ -24,11 +24,11 @@ export const RefreshButton = injector(({ store, needsDataFetch, projectFetch, si
         ...(style ?? {}),
         minWidth: 0,
         padding: 0,
-        width: 32,
+        width: 40,
       }}
       {...rest}
     >
-      {<LsRefresh style={{ width: 20, height: 20 }} />}
+      <IconRefresh width={24} height={24} />
     </Button>
   );
 });

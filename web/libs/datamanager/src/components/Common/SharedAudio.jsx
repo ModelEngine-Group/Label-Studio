@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { FaPause, FaPlay } from "react-icons/fa";
+import { IconTimelinePause, IconTimelinePlay } from "@humansignal/icons";
 import { Button } from "./Button/Button";
 import { Space } from "./Space/Space";
 
@@ -73,7 +73,9 @@ export class SharedAudio extends Component {
 
     return (
       <Space size="small" style={{ width: "100%", alignItems: "center" }} onClick={(e) => e.stopPropagation()}>
-        <Button onClick={paused ? this.play : this.pause}>{paused ? <FaPlay /> : <FaPause />}</Button>
+        <Button onClick={paused ? this.play : this.pause}>
+          {paused ? <IconTimelinePlay /> : <IconTimelinePause />}
+        </Button>
 
         {this.state.error ? (
           <div>Unable to play</div>

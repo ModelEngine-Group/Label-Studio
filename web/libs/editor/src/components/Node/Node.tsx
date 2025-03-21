@@ -5,6 +5,7 @@ import { ApartmentOutlined, AudioOutlined, LineChartOutlined, MessageOutlined } 
 
 import "./Node.scss";
 import { Block, Elem } from "../../utils/bem";
+import { NodeView } from "./NodeView";
 import {
   IconBrushTool,
   IconBrushToolSmart,
@@ -20,9 +21,8 @@ import {
   IconRectangleToolSmart,
   IconText,
   IconWarning,
-} from "../../assets/icons";
-import { IconTimelineRegion } from "../../assets/icons/timeline";
-import { NodeView } from "./NodeView";
+  IconTimelineRegion,
+} from "@humansignal/icons";
 import { Tooltip } from "@humansignal/ui";
 
 const NodeViews = {

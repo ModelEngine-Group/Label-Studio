@@ -3,8 +3,7 @@ import { Button } from "../../components";
 import { Form, Input, Label, Toggle } from "../../components/Form";
 import { Block, cn, Elem } from "../../utils/bem";
 import { cloneDeep } from "lodash";
-import { LsPlus } from "../../assets/icons";
-import { IconCross } from "@humansignal/ui";
+import { IconPlus, IconCross } from "@humansignal/icons";
 import { useAPI } from "../../providers/ApiProvider";
 import "./WebhookPage.scss";
 import { Space } from "../../components/Space/Space";
@@ -147,7 +146,7 @@ const WebhookDetail = ({ webhook, webhooksInfo, fetchWebhooks, onBack, onSelectA
                       type="button"
                       onClick={onAddHeaderClick}
                       className={rootClass.elem("headers-add")}
-                      icon={<LsPlus />}
+                      icon={<IconPlus />}
                     />
                   </Space>
                   {headers.map(([headKey, headValue], index) => {

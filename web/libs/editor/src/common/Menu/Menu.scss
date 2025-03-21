@@ -24,7 +24,7 @@
     height: 32px;
     display: flex;
     cursor: pointer;
-    padding: 0 12px;
+    padding: 0 var(--spacing-small, 8px);
     border-radius: 3px;
     align-items: center;
     box-sizing: border-box;

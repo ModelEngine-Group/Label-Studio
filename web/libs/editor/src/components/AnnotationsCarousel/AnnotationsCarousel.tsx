@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { observer } from "mobx-react";
 
-import { LsChevron } from "../../assets/icons";
+import { IconChevron } from "@humansignal/ui";
 import { Button } from "../../common/Button/Button";
 import { Block, Elem } from "../../utils/bem";
 import { clamp, sortAnnotations } from "../../utils/utilities";
@@ -94,7 +94,7 @@ export const AnnotationsCarousel = observer(({ store, annotationStore }: Annotat
             aria-label="Carousel left"
             onClick={(e: MouseEvent) => !isLeftDisabled && updatePosition(e, true)}
           >
-            <Elem name="arrow" mod={{ left: true }} tag={LsChevron} />
+            <Elem name="arrow" mod={{ left: true }} tag={IconChevron} />
           </Elem>
           <Elem
             tag={Button}
@@ -104,7 +104,7 @@ export const AnnotationsCarousel = observer(({ store, annotationStore }: Annotat
             aria-label="Carousel right"
             onClick={(e: MouseEvent) => !isRightDisabled && updatePosition(e, false)}
           >
-            <Elem name="arrow" mod={{ right: true }} tag={LsChevron} />
+            <Elem name="arrow" mod={{ right: true }} tag={IconChevron} />
           </Elem>
         </Elem>
       )}

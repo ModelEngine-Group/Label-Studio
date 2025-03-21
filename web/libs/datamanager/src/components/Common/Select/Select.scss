@@ -65,33 +65,12 @@
   }
 
   &__icon {
-    width: 16px;
-    height: 16px;
     margin-left: 5px;
     position: relative;
 
-    &::before,
-    &::after {
-      width: 6px;
-      height: 6px;
-      display: block;
-      position: absolute;
-      content: "";
-      border: 1px solid var(--accent_color);
-      border-right: none;
-      border-bottom: none;
-    }
-
-    &::before {
-      top: 0;
-      left: 50%;
-      transform: translate(-50%, 50%) rotate(45deg);
-    }
-
-    &::after {
-      bottom: 0;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(-135deg);
+    svg {
+      width: 16px;
+      height: 16px;
     }
   }
 

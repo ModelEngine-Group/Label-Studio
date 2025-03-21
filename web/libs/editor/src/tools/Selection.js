@@ -1,7 +1,7 @@
 import { observer } from "mobx-react";
 import { types } from "mobx-state-tree";
 
-import { IconMoveTool } from "../assets/icons";
+import { IconMoveTool } from "@humansignal/icons";
 import { Tool } from "../components/Toolbar/Tool";
 import { AnnotationMixin } from "../mixins/AnnotationMixin";
 import ToolMixin from "../mixins/Tool";

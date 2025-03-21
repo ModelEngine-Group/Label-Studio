@@ -3,7 +3,7 @@ import { observer } from "mobx-react";
 import { isAlive } from "mobx-state-tree";
 import { Button } from "../../common/Button/Button";
 import { Node, NodeIcon } from "../Node/Node";
-import { LsCollapse, LsExpand, LsInvisible, LsSparks, LsVisible } from "../../assets/icons";
+import { IconCollapse, IconExpandTool, IconInvisible, IconSparks, IconVisible } from "@humansignal/icons";
 import styles from "./Entities.module.scss";
 import Utils from "../../utils";
 
@@ -48,7 +48,7 @@ const RegionItemDesc = observer(({ item, setDraggable }) => {
         })}
       </Elem>
       <Elem name="collapse" tag={Button} size="small" type="text" onClick={toggleCollapsed}>
-        {collapsed ? <LsExpand /> : <LsCollapse />}
+        {collapsed ? <IconExpandTool /> : <IconCollapse />}
       </Elem>
     </Elem>
   );
@@ -85,7 +85,7 @@ const RegionItemContent = observer(({ idx, item, setDraggable }) => {
           </Elem>
 
           <Elem name="prediction">
-            {item.origin === "prediction" && <LsSparks style={{ width: 16, height: 16 }} />}
+            {item.origin === "prediction" && <IconSparks style={{ width: 16, height: 16 }} />}
           </Elem>
 
           {item.isReadOnly() && <Badge count={"ro"} style={{ backgroundColor: "#ccc" }} />}
@@ -111,7 +111,7 @@ const RegionItemContent = observer(({ idx, item, setDraggable }) => {
               mod={{ active: !item.hidden }}
               onClick={item.toggleHidden}
             >
-              {item.hidden ? <LsInvisible /> : <LsVisible />}
+              {item.hidden ? <IconInvisible /> : <IconVisible />}
             </Elem>
           )}
         </Space>

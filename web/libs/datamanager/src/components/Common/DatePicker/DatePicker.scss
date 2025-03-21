@@ -11,7 +11,7 @@
     }
 
     &_range {
-      grid-auto-columns: 1fr 34px 1fr;
+      grid-auto-columns: 1fr min-content 1fr;
     }
   }
 

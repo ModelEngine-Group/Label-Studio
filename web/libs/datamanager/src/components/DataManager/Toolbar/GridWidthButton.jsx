@@ -1,6 +1,6 @@
 import { inject } from "mobx-react";
 import { useCallback, useState } from "react";
-import { FaMinus, FaPlus } from "react-icons/fa";
+import { IconMinus, IconPlus } from "@humansignal/icons";
 import { Button } from "../../Common/Button/Button";
 import { Icon } from "../../Common/Icon/Icon";
 import { Space } from "../../Common/Space/Space";
@@ -33,13 +33,13 @@ export const GridWidthButton = injector(({ view, gridWidth, size }) => {
       <Button.Group>
         <Button
           size={size}
-          icon={<Icon icon={FaMinus} size="12" color="#595959" />}
+          icon={<Icon icon={IconMinus} size="12" color="#595959" />}
           onClick={() => setGridWidth(width - 1)}
           disabled={width === 3}
         />
         <Button
           size={size}
-          icon={<Icon icon={FaPlus} size="12" color="#595959" />}
+          icon={<Icon icon={IconPlus} size="12" color="#595959" />}
           onClick={() => setGridWidth(width + 1)}
           disabled={width === 10}
         />

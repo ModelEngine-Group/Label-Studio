@@ -1,8 +1,8 @@
 import { useCallback, useContext, useEffect, useState } from "react";
-import { FaEllipsisV } from "react-icons/fa";
 import { Button, Card, Dropdown, Menu } from "../../../components";
 import { ApiContext } from "../../../providers/ApiProvider";
 import { StorageSummary } from "./StorageSummary";
+import { IconEllipsisVertical } from "@humansignal/icons";
 
 export const StorageCard = ({ rootClass, target, storage, onEditStorage, onDeleteStorage, storageTypes }) => {
   const [syncing, setSyncing] = useState(false);
@@ -49,7 +49,7 @@ export const StorageCard = ({ rootClass, target, storage, onEditStorage, onDelet
             </Menu>
           }
         >
-          <Button type="link" style={{ width: 32, height: 32, marginRight: -10 }} icon={<FaEllipsisV />} />
+          <Button type="link" style={{ marginRight: -10 }} icon={<IconEllipsisVertical />} />
         </Dropdown.Trigger>
       }
     >

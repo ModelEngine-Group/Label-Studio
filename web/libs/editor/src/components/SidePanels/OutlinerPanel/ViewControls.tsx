@@ -1,17 +1,15 @@
 import { type FC, useCallback, useContext, useMemo } from "react";
 import {
   IconCursor,
-  IconDetails,
+  IconClockTimeFourOutline,
   IconList,
   IconOutlinerEyeClosed,
   IconOutlinerEyeOpened,
   IconSortDown,
-  IconSortDownNew,
   IconSortUp,
-  IconSortUpNew,
-  IconSpeed,
-  IconTagAlt,
-} from "../../../assets/icons";
+  IconBoundingBox,
+  IconPredictions,
+} from "@humansignal/icons";
 import { Button } from "../../../common/Button/Button";
 import { Dropdown } from "../../../common/Dropdown/Dropdown";
 // eslint-disable-next-line
@@ -48,23 +46,35 @@ export const ViewControls: FC<ViewControlsProps> = observer(
       switch (value) {
         case "manual":
           return {
-            label: "Group Manually",
+            label: (
+              <>
+                <IconList /> Group Manually
+              </>
+            ),
             selectedLabel: isFF(FF_DEV_3873) ? "Manual" : "Manual Grouping",
-            icon: <IconList />,
+            icon: <IconList width={16} height={16} />,
             tooltip: "Manually Grouped",
           };
         case "label":
           return {
-            label: "Group by Label",
+            label: (
+              <>
+                <IconBoundingBox /> Group by Label
+              </>
+            ),
             selectedLabel: isFF(FF_DEV_3873) ? "By Label" : "Grouped by Label",
-            icon: <IconTagAlt />,
+            icon: <IconBoundingBox width={16} height={16} />,
             tooltip: "Grouped by Label",
           };
         case "type":
           return {
-            label: "Group by Tool",
+            label: (
+              <>
+                <IconCursor /> Group by Tool
+              </>
+            ),
             selectedLabel: isFF(FF_DEV_3873) ? "By Tool" : "Grouped by Tool",
-            icon: <IconCursor />,
+            icon: <IconCursor width={16} height={16} />,
             tooltip: "Grouped by Tool",
           };
       }
@@ -74,25 +84,28 @@ export const ViewControls: FC<ViewControlsProps> = observer(
       switch (value) {
         case "date":
           return {
-            label: "Order by Time",
+            label: (
+              <>
+                <IconClockTimeFourOutline /> Order by Time
+              </>
+            ),
             selectedLabel: "By Time",
-            icon: <IconDetails />,
+            icon: <IconClockTimeFourOutline width={16} height={16} />,
           };
         case "score":
           return {
-            label: "Order by Score",
+            label: (
+              <>
+                <IconPredictions /> Order by Score
+              </>
+            ),
             selectedLabel: "By Score",
-            icon: <IconSpeed />,
+            icon: <IconPredictions width={16} height={16} />,
           };
       }
     }, []);
 
-    const renderOrderingDirectionIcon =
-      orderingDirection === "asc" ? (
-        <IconSortUpNew style={{ color: "#898098" }} />
-      ) : (
-        <IconSortDownNew style={{ color: "#898098" }} />
-      );
+    const renderOrderingDirectionIcon = orderingDirection === "asc" ? <IconSortUp /> : <IconSortDown />;
 
     return (
       <Block name="view-controls" mod={{ collapsed: context.locked }}>
@@ -122,7 +135,7 @@ export const ViewControls: FC<ViewControlsProps> = observer(
 );
 
 interface LabelInfo {
-  label: string;
+  label: string | React.ReactNode | JSX.Element;
   selectedLabel: string;
   icon: JSX.Element;
   tooltip?: string;
@@ -269,7 +282,13 @@ const ToggleRegionsVisibilityButton = observer<FC<ToggleRegionsVisibilityButton>
       onClick={toggleRegionsVisibility}
       mod={{ hidden: isAllHidden }}
       aria-label={isAllHidden ? "Show all regions" : "Hide all regions"}
-      icon={isAllHidden ? <IconOutlinerEyeClosed /> : <IconOutlinerEyeOpened />}
+      icon={
+        isAllHidden ? (
+          <IconOutlinerEyeClosed width={16} height={16} />
+        ) : (
+          <IconOutlinerEyeOpened width={16} height={16} />
+        )
+      }
       tooltip={isAllHidden ? "Show all regions" : "Hide all regions"}
       tooltipTheme="dark"
     />

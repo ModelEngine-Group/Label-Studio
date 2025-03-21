@@ -12,8 +12,8 @@ import {
   useMemo,
   useState,
 } from "react";
+import { IconPropertyAngle } from "@humansignal/icons";
 import { Checkbox } from "@humansignal/ui";
-import { IconPropertyAngle } from "../../../assets/icons";
 import { Block, Elem, useBEM } from "../../../utils/bem";
 import { FF_DEV_2715, isFF } from "../../../utils/feature-flags";
 import { TimeDurationControl } from "../../TimeDurationControl/TimeDurationControl";

@@ -1,5 +1,5 @@
 import { type CSSProperties, type FC, useMemo, useRef } from "react";
-import { IconVolumeFull, IconVolumeHalf, IconVolumeMute } from "../../../assets/icons";
+import { IconVolumeFull, IconVolumeHalf, IconVolumeMute } from "@humansignal/icons";
 import { Range } from "../../../common/Range/Range";
 import { WS_VOLUME } from "../../../tags/object/AudioNext/constants";
 import type { TimelineSideControlProps } from "../Types";

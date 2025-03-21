@@ -5,7 +5,7 @@ import { Description } from "../../../components/Description/Description";
 import { Form, Label, Toggle } from "../../../components/Form";
 import { modal } from "../../../components/Modal/Modal";
 import { EmptyState } from "../../../components/EmptyState/EmptyState";
-import { IconModels } from "../../../assets/icons";
+import { IconModels } from "@humansignal/icons";
 import { useAPI } from "../../../providers/ApiProvider";
 import { ProjectContext } from "../../../providers/ProjectProvider";
 import { MachineLearningList } from "./MachineLearningList";

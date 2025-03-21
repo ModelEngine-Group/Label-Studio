@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { IconZoomIn } from "../../../assets/icons";
+import { IconZoomIn } from "@humansignal/icons";
 import { Button } from "../../../common/Button/Button";
 import { Dropdown } from "../../../common/Dropdown/Dropdown";
 import { Menu } from "../../../common/Menu/Menu";

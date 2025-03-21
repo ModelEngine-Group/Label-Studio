@@ -1,8 +1,8 @@
 import { inject } from "mobx-react";
-import { RiErrorWarningFill } from "react-icons/ri";
 import { Button } from "./Button/Button";
 import { Dropdown } from "./Dropdown/Dropdown";
 import { Menu } from "./Menu/Menu";
+import { IconInfo } from "@humansignal/icons";
 
 const ErrorRenderer = (error, i) => {
   return (
@@ -29,7 +29,7 @@ export const ErrorBox = injector(({ errors }) => {
           padding: "0 10px",
           fontSize: 12,
         }}
-        icon={<RiErrorWarningFill color="#ff5a46" size={18} style={{ marginRight: 5 }} />}
+        icon={<IconInfo color="#ff5a46" size={18} style={{ marginRight: 5 }} />}
       >
         Errors occurred
       </Button>

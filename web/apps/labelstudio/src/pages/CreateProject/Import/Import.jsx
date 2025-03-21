@@ -5,7 +5,7 @@ import { cn as scn } from "@humansignal/shad/utils";
 import { CodeBlock, SimpleCard } from "@humansignal/ui";
 import { unique } from "../../../utils/helpers";
 import "./Import.scss";
-import { IconError, IconInfo, IconUpload } from "../../../assets/icons";
+import { IconError, IconFileUpload, IconInfo, IconUpload } from "@humansignal/icons";
 import { useAPI } from "../../../providers/ApiProvider";
 import Input from "libs/datamanager/src/components/Common/Input/Input";
 import { Button } from "apps/labelstudio/src/components";
@@ -420,7 +420,7 @@ export const ImportPage = ({
                     <br />
                     or click to browse
                   </header>
-                  <IconUpload height="64" className={dropzoneClass.elem("icon")} />
+                  <IconFileUpload height="64" className={dropzoneClass.elem("icon")} />
                   <dl>
                     <dt>Text</dt>
                     <dd>{supportedExtensions.text.join(", ")}</dd>

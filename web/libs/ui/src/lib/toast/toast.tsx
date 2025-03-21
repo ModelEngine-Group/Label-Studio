@@ -102,6 +102,7 @@ type ToastContextType = {
 export const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
 export const useToast = () => {
+  if (process.env.NODE_ENV === "test") return null;
   const context = useContext(ToastContext);
 
   // Avoid throwing error in test environment

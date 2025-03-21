@@ -8,7 +8,7 @@ import { observer } from "mobx-react";
 import type React from "react";
 import { useCallback, useState } from "react";
 
-import { IconBan, LsChevron } from "../../assets/icons";
+import { IconBan, IconChevron } from "@humansignal/ui";
 import { Button } from "../../common/Button/Button";
 import { Dropdown } from "../../common/Dropdown/Dropdown";
 import type { CustomButtonType } from "../../stores/CustomButton";
@@ -258,7 +258,7 @@ export const Controls = controlsInjector<{ annotation: MSTAnnotation }>(
                       content={<SubmitOption onClickMethod={store.submitAnnotation} isUpdate={false} />}
                     >
                       <div>
-                        <LsChevron />
+                        <IconChevron />
                       </div>
                     </Dropdown.Trigger>
                   ) : undefined
@@ -299,7 +299,7 @@ export const Controls = controlsInjector<{ annotation: MSTAnnotation }>(
                     content={<SubmitOption onClickMethod={store.updateAnnotation} isUpdate={isUpdate} />}
                   >
                     <div>
-                      <LsChevron />
+                      <IconChevron />
                     </div>
                   </Dropdown.Trigger>
                 ) : undefined

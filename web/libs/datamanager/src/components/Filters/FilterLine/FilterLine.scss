@@ -15,6 +15,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+
+    .button-dm {
+      flex: none;
+      padding: 0;
+    }
   }
 
   &__column {

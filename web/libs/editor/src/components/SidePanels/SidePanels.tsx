@@ -4,7 +4,7 @@ import { Block, Elem } from "../../utils/bem";
 import { DetailsPanel } from "./DetailsPanel/DetailsPanel";
 import { OutlinerPanel } from "./OutlinerPanel/OutlinerPanel";
 
-import { IconDetails, IconHamburger } from "../../assets/icons";
+import { IconDetails, IconHamburger } from "@humansignal/icons";
 import { useMedia } from "../../hooks/useMedia";
 import ResizeObserver from "../../utils/resize-observer";
 import { clamp } from "../../utils/utilities";

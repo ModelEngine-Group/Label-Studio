@@ -1,10 +1,10 @@
 import React from "react";
-import { FaMinus, FaPlus } from "react-icons/fa";
 import { Block, Elem } from "../../../../utils/bem";
 import { Oneof } from "../../../Oneof/Oneof";
 import { FormField } from "../../FormField";
 import { default as Label } from "../Label/Label";
 import "./Counter.scss";
+import { IconMinus, IconPlus } from "@humansignal/icons";
 
 const allowedKeys = ["ArrowUp", "ArrowDown", "Backspace", "Delete", /[0-9]/];
 
@@ -158,8 +158,8 @@ const CounterButton = ({ type }) => {
       onMouseDownCapture={(e) => e.preventDefault()}
     >
       <Oneof value={type}>
-        <FaMinus case="decrease" />
-        <FaPlus case="increase" />
+        <IconMinus case="decrease" />
+        <IconPlus case="increase" />
       </Oneof>
     </Elem>
   );

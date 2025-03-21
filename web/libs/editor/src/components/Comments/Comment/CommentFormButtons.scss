@@ -1,7 +1,10 @@
-
 .comment-form-buttons {
+  display: flex;
+  justify-content: flex-end;
+
   &__buttons {
     display: flex;
+    gap: 8px;
     height: 100%;
     align-items: center;
   }
@@ -17,7 +20,8 @@
     background-color: transparent;
     color: var(--secondary-action-color);
     border-radius: var(--primary-action-border-radius);
-    padding-inline: 8px;
+    height: 32px;
+    width: 32px;
 
     &:hover {
       color: var(--secondary-action-color-hover);

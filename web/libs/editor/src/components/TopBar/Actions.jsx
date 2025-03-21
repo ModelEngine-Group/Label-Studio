@@ -1,5 +1,5 @@
-import { IconCopy, IconInfo, IconViewAll, LsSettings, LsTrash } from "../../assets/icons";
 import { Button } from "../../common/Button/Button";
+import { IconCopy, IconInfo, IconViewAll, IconTrash, IconSettings } from "@humansignal/icons";
 import { Tooltip } from "@humansignal/ui";
 import { Elem } from "../../utils/bem";
 import { isSelfServe } from "../../utils/billing";
@@ -24,11 +24,11 @@ export const Actions = ({ store }) => {
   return (
     <Elem name="section">
       {store.hasInterface("annotations:view-all") && !isBulkMode && (
-        <Tooltip title="View all annotations">
+        <Tooltip title="Compare all annotations">
           <Button
             icon={<IconViewAll />}
             type="text"
-            aria-label="View All"
+            aria-label="Compare all annotations"
             onClick={() => onToggleVisibility()}
             primary={isViewAll}
             style={{
@@ -47,7 +47,7 @@ export const Actions = ({ store }) => {
       {!isViewAll && !isBulkMode && store.hasInterface("annotations:delete") && (
         <Tooltip title="Delete annotation">
           <Button
-            icon={<LsTrash />}
+            icon={<IconTrash />}
             look="danger"
             type="text"
             aria-label="Delete"
@@ -98,7 +98,7 @@ export const Actions = ({ store }) => {
       )}
 
       <Button
-        icon={<LsSettings />}
+        icon={<IconSettings />}
         type="text"
         aria-label="Settings"
         onClick={() => store.toggleSettings()}

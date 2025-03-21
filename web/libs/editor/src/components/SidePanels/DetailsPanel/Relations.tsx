@@ -1,7 +1,14 @@
 import { observer } from "mobx-react";
 import { type FC, useCallback, useMemo, useState } from "react";
-import { IconMenu, IconRelationBi, IconRelationLeft, IconRelationRight, IconTrash } from "../../../assets/icons";
-import { IconEyeClosed, IconEyeOpened } from "../../../assets/icons/timeline";
+import {
+  IconMenu,
+  IconRelationBi,
+  IconRelationLeft,
+  IconRelationRight,
+  IconTrash,
+  IconEyeClosed,
+  IconEyeOpened,
+} from "@humansignal/icons";
 import { Button } from "../../../common/Button/Button";
 import { Block, Elem } from "../../../utils/bem";
 import { wrapArray } from "../../../utils/utilities";
@@ -100,7 +107,11 @@ const RelationItem: FC<{ relation: any }> = observer(({ relation }) => {
                 onClick={relation.toggleVisibility}
                 aria-label={`${relation.visible ? "Hide" : "Show"} Relation`}
               >
-                {relation.visible ? <IconEyeOpened /> : <IconEyeClosed />}
+                {relation.visible ? (
+                  <IconEyeOpened style={{ width: 20, height: 20 }} />
+                ) : (
+                  <IconEyeClosed style={{ width: 20, height: 20 }} />
+                )}
               </Button>
             )}
           </Elem>

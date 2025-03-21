@@ -3,7 +3,7 @@ import { observer } from "mobx-react";
 import { Button } from "../../common/Button/Button";
 import { Block, Elem } from "../../utils/bem";
 import { Space } from "../../common/Space/Space";
-import { LsInvisible, LsVisible } from "../../assets/icons";
+import { IconInvisible, IconVisible } from "@humansignal/ui";
 import { Label } from "../Label/Label";
 import { asVars } from "../../utils/styles";
 import "./LabelItem.scss";
@@ -32,7 +32,7 @@ export const LabelItem = observer(({ item, regions, regionStore }) => {
           name="visibility"
           tag={Button}
           type="text"
-          icon={isHidden ? <LsInvisible /> : <LsVisible />}
+          icon={isHidden ? <IconInvisible /> : <IconVisible />}
           onClick={() => regionStore.setHiddenByLabel(!isHidden, item)}
           mod={{ hidden: isHidden }}
         />

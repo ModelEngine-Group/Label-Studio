@@ -1,6 +1,6 @@
 import React from "react";
 import { createPortal } from "react-dom";
-import { FaTimes } from "react-icons/fa";
+import { IconCross } from "@humansignal/icons";
 import { BemWithSpecifiContext, cn } from "../../../utils/bem";
 import { aroundTransition } from "@humansignal/core/lib/utils/transition";
 import { Button } from "../Button/Button";
@@ -89,7 +89,7 @@ export class Modal extends React.Component {
                     tag={Button}
                     name="close"
                     type="text"
-                    icon={<Icon size="18" color="#617ADA" icon={FaTimes} />}
+                    icon={<Icon size="24" color="#617ADA" icon={IconCross} />}
                   />
                 )}
               </Modal.Header>

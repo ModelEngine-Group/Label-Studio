@@ -1,6 +1,6 @@
 import { inject, observer } from "mobx-react";
 import React, { useEffect, useRef } from "react";
-import { FaAngleDown } from "react-icons/fa";
+import { IconChevronDown } from "@humansignal/icons";
 import { Filters } from "../Filters/Filters";
 import { Badge } from "./Badge/Badge";
 import { Button } from "./Button/Button";
@@ -29,7 +29,7 @@ export const FiltersButton = buttonInjector(
               {activeFiltersNumber}
             </Badge>
           )}
-          <FaAngleDown size="16" style={{ marginLeft: 4 }} color="#566fcf" />
+          <IconChevronDown style={{ marginLeft: 8, marginRight: -7 }} />
         </Button>
       );
     }),

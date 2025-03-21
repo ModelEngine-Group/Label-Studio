@@ -1,11 +1,11 @@
 import { inject } from "mobx-react";
 import React from "react";
-import { FaCaretSquareRight, FaPlus } from "react-icons/fa";
 import { Block, cn, Elem } from "../../utils/bem";
 import { Button } from "../Common/Button/Button";
 import { Icon } from "../Common/Icon/Icon";
 import { Tooltip } from "@humansignal/ui";
 import { FilterLine } from "./FilterLine/FilterLine";
+import { IconChevronRight, IconPlus } from "@humansignal/icons";
 import "./Filters.scss";
 
 const injector = inject(({ store }) => ({
@@ -70,7 +70,7 @@ export const Filters = injector(({ views, currentView, filters }) => {
         )}
       </Elem>
       <Elem name="actions">
-        <Button type="primary" size="small" onClick={() => currentView.createFilter()} icon={<FaPlus />}>
+        <Button type="primary" size="small" onClick={() => currentView.createFilter()} icon={<IconPlus />}>
           Add {filters.length ? "Another Filter" : "Filter"}
         </Button>
 
@@ -82,7 +82,7 @@ export const Filters = injector(({ views, currentView, filters }) => {
               about="Pin to sidebar"
               onClick={() => views.expandFilters()}
               style={{ display: "inline-flex", alignItems: "center" }}
-              icon={<Icon icon={FaCaretSquareRight} size={18} />}
+              icon={<Icon icon={IconChevronRight} size={18} />}
             />
           </Tooltip>
         ) : null}

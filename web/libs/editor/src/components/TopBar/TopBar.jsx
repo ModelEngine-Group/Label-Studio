@@ -1,7 +1,7 @@
 import { observer } from "mobx-react";
 
-import { IconViewAll, LsPlus } from "../../assets/icons";
 import { Button } from "../../common/Button/Button";
+import { IconViewAll, IconPlus } from "@humansignal/icons";
 import { Tooltip } from "@humansignal/ui";
 import { Block, Elem } from "../../utils/bem";
 import { isSelfServe } from "../../utils/billing";
@@ -31,27 +31,28 @@ export const TopBar = observer(({ store }) => {
         <Elem name="group">
           <CurrentTask store={store} />
           {store.hasInterface("annotations:view-all") && (
-            <Tooltip title="View all annotations">
+            <Tooltip title="Compare all annotations">
               <Button
                 className={"topbar__button"}
-                icon={<IconViewAll />}
+                icon={<IconViewAll width={20} height={20} />}
                 type="text"
-                aria-label="View All"
+                aria-label="Compare all annotations"
                 onClick={annotationStore.toggleViewingAllAnnotations}
                 primary={isViewAll}
+                size="medium"
                 style={{
-                  height: 36,
-                  width: 36,
+                  height: 28,
+                  width: 28,
                   padding: 0,
-                  marginRight: isFF(FF_DEV_3873) && 8,
+                  marginRight: "var(--spacing-small, 8px)",
                 }}
               />
             </Tooltip>
           )}
           {store.hasInterface("annotations:add-new") && (
-            <Tooltip alignment="top-left" title="Create a new annotation" style={{ "--offset-x": "11px" }}>
+            <Tooltip title="Create a new annotation" style={{ "--offset-x": "11px" }}>
               <Button
-                icon={<LsPlus />}
+                icon={<IconPlus />}
                 className={"topbar__button"}
                 type="text"
                 aria-label="Create an annotation"
@@ -62,10 +63,10 @@ export const TopBar = observer(({ store }) => {
                   store.annotationStore.selectAnnotation(created.id);
                 }}
                 style={{
-                  height: 36,
-                  width: 36,
+                  height: 28,
+                  width: 28,
                   padding: 0,
-                  marginRight: 4,
+                  marginRight: "var(--spacing-small, 8px)",
                 }}
               />
             </Tooltip>

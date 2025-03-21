@@ -157,32 +157,7 @@ export const RegionDetailsMeta: FC<RegionDetailsMetaProps> = observer(
             </Elem>
           )
         )}
-        {/* <Elem name="section">
-        <Elem name="section-head">
-          Data Display
-        </Elem>
-        <Elem name="section-content">
-          content
-        </Elem>
-      </Elem> */}
       </>
     );
-    // return (
-    //   <>
-    //     {region?.meta?.text && (
-    //       <Elem name="text">
-    //           Meta: <span>{region.meta.text}</span>
-    //           &nbsp;
-    //         <IconTrash
-    //           type="delete"
-    //           style={{ cursor: "pointer" }}
-    //           onClick={() => {
-    //             region.deleteMetaText();
-    //           }}
-    //         />
-    //       </Elem>
-    //     )}
-    //   </>
-    // );
   },
 );

@@ -95,13 +95,13 @@
 
     & .button__icon {
       padding: 0 !important;
-      width: 20px !important;
-      height: 20px !important;
+      width: 28px !important;
+      height: 28px !important;
     }
 
     svg {
-      width: 16px !important;
-      height: 16px !important;
+      width: 20px !important;
+      height: 20px !important;
     }
   }
 
@@ -140,7 +140,8 @@
 
     & .comment-item__resolved {
       opacity: 1;
-      width: 12px;
+      width: 16px;
+      height: 16px;
       margin-right: 4px;
       color: var(--comment-item-icon-color-resolved) !important;
     }

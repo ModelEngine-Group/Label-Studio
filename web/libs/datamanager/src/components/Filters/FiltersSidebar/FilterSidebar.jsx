@@ -1,5 +1,5 @@
 import { inject } from "mobx-react";
-import { FaCaretSquareLeft } from "react-icons/fa";
+import { IconChevronLeft } from "@humansignal/icons";
 import { Block, Elem } from "../../../utils/bem";
 import { Button } from "../../Common/Button/Button";
 import { Icon } from "../../Common/Icon/Icon";
@@ -23,7 +23,7 @@ export const FiltersSidebar = sidebarInjector(({ viewsStore, sidebarEnabled, sid
         <Elem name="extra">
           <Button
             type="link"
-            icon={<Icon icon={FaCaretSquareLeft} size="24" />}
+            icon={<Icon icon={IconChevronLeft} width={24} height={24} />}
             onClick={() => viewsStore.collapseFilters()}
           />
         </Elem>

@@ -2,11 +2,9 @@ import { format, isMatch, isValid } from "date-fns";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { default as DP } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { FaExchangeAlt } from "react-icons/fa";
 import { BemWithSpecifiContext } from "../../../utils/bem";
 import { isDefined } from "../../../utils/utils";
 import { Dropdown } from "../Dropdown/Dropdown";
-import { Icon } from "../Icon/Icon";
 import Input from "../Input/Input";
 import "./DatePicker.global.scss";
 import "./DatePicker.scss";
@@ -129,9 +127,7 @@ export const DatePicker = ({
           />
           {selectRange && (
             <>
-              <Elem name="separator">
-                <Icon icon={FaExchangeAlt} />
-              </Elem>
+              <Elem name="separator">and</Elem>
               <Input
                 size={size}
                 value={endDate || ""}

@@ -10,7 +10,7 @@ import { FilterDropdown } from "./FilterDropdown";
 import "./FilterRow.scss";
 import { type FilterListInterface, Logic } from "./FilterInterfaces";
 import { isDefined } from "../../utils/utilities";
-import { IconDelete } from "../../assets/icons";
+import { IconDelete } from "@humansignal/icons";
 
 interface FilterRowInterface extends FilterListInterface {
   availableFilters: any;

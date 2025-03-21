@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
-import { FaEllipsisV } from "react-icons/fa";
+import { IconEllipsisVertical } from "@humansignal/icons";
 import { cn } from "../../../utils/bem";
 import { Button } from "../Button/Button";
 import { Dropdown } from "../Dropdown/DropdownComponent";
@@ -197,7 +197,7 @@ export const TabsItem = ({
                 type="link"
                 size="small"
                 style={{ padding: "6px", margin: "auto", color: "#999" }}
-                icon={<Icon icon={FaEllipsisV} />}
+                icon={<Icon icon={IconEllipsisVertical} />}
               />
             </div>
           </Dropdown.Trigger>

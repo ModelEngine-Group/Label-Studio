@@ -4,7 +4,7 @@ import { Button } from "antd";
 import { PauseCircleOutlined, PlayCircleOutlined } from "@ant-design/icons";
 import styles from "./Paragraphs.module.scss";
 import { FF_LSDV_E_278, isFF } from "../../../utils/feature-flags";
-import { IconPause, IconPlay } from "../../../assets/icons";
+import { IconPause, IconPlay } from "@humansignal/icons";
 import { useCallback, useEffect, useState } from "react";
 
 const formatTime = (seconds) => {

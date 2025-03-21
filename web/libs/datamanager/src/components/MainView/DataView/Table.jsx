@@ -1,7 +1,6 @@
 import { inject } from "mobx-react";
 import { getRoot } from "mobx-state-tree";
 import { useCallback, useMemo } from "react";
-import { FaQuestionCircle } from "react-icons/fa";
 import { useShortcut } from "../../../sdk/hotkeys";
 import { Block, Elem } from "../../../utils/bem";
 import { FF_DEV_2536, isFF } from "../../../utils/feature-flags";
@@ -12,6 +11,7 @@ import { Spinner } from "../../Common/Spinner";
 import { Table } from "../../Common/Table/Table";
 import { Tag } from "../../Common/Tag/Tag";
 import { Tooltip } from "@humansignal/ui";
+import { IconQuestionOutline } from "@humansignal/icons";
 import { GridView } from "../GridView/GridView";
 import "./Table.scss";
 import { Button } from "../../Common/Button/Button";
@@ -99,7 +99,7 @@ export const DataView = injector(
       if (help && decoration?.help !== false) {
         children.push(
           <Tooltip key="help-tooltip" title={help}>
-            <Icon icon={FaQuestionCircle} style={{ opacity: 0.5 }} />
+            <Icon icon={IconQuestionOutline} style={{ opacity: 0.5 }} />
           </Tooltip>,
         );
       }

@@ -3,7 +3,7 @@ import { observer } from "mobx-react";
 import { Block, Elem } from "../../../utils/bem";
 import { Button } from "../../../common/Button/Button";
 import "./RelationsControls.scss";
-import { IconOutlinerEyeClosed, IconOutlinerEyeOpened, IconSortDownNew, IconSortUpNew } from "../../../assets/icons";
+import { IconOutlinerEyeClosed, IconOutlinerEyeOpened, IconSortUp, IconSortDown } from "@humansignal/icons";
 
 const RelationsControlsComponent: FC<any> = ({ relationStore }) => {
   return (
@@ -39,7 +39,13 @@ const ToggleRelationsVisibilityButton = observer<FC<ToggleRelationsVisibilityBut
       onClick={toggleRelationsVisibility}
       mod={{ hidden: isAllHidden }}
       aria-label={isAllHidden ? "Show all" : "Hide all"}
-      icon={isAllHidden ? <IconOutlinerEyeClosed /> : <IconOutlinerEyeOpened />}
+      icon={
+        isAllHidden ? (
+          <IconOutlinerEyeClosed width={16} height={16} />
+        ) : (
+          <IconOutlinerEyeOpened width={16} height={16} />
+        )
+      }
       tooltip={isAllHidden ? "Show all" : "Hide all"}
       tooltipTheme="dark"
     />
@@ -71,7 +77,7 @@ const ToggleRelationsOrderButton = observer<FC<ToggleRelationsOrderButtonProps>>
       disabled={isDisabled}
       mod={{ order: relationStore.order }}
       aria-label={isAsc ? "Order by oldest" : "Order by newest"}
-      icon={isAsc ? <IconSortUpNew /> : <IconSortDownNew />}
+      icon={isAsc ? <IconSortUp /> : <IconSortDown />}
       tooltip={isAsc ? "Order by oldest" : "Order by newest"}
       tooltipTheme="dark"
     />

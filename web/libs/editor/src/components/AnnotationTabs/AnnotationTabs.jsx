@@ -1,10 +1,10 @@
 import { forwardRef } from "react";
 import { observer } from "mobx-react";
+import { IconBan, IconSparks, IconStar } from "@humansignal/icons";
 import { Userpic } from "@humansignal/ui";
 import { Space } from "../../common/Space/Space";
 import { Block, Elem } from "../../utils/bem";
 import "./AnnotationTabs.scss";
-import { IconBan, LsSparks, LsStar } from "../../assets/icons";
 
 export const EntityTab = observer(
   forwardRef(
@@ -33,7 +33,7 @@ export const EntityTab = observer(
               user={infoIsHidden ? {} : entity.user ?? { email: entity.createdBy }}
               mod={{ prediction }}
             >
-              {prediction && <LsSparks style={{ width: 16, height: 16 }} />}
+              {prediction && <IconSparks style={{ width: 16, height: 16 }} />}
             </Elem>
 
             {!infoIsHidden && (
@@ -42,7 +42,7 @@ export const EntityTab = observer(
               </Elem>
             )}
 
-            {displayGroundTruth && entity.ground_truth && <Elem name="ground-truth" tag={LsStar} />}
+            {displayGroundTruth && entity.ground_truth && <Elem name="ground-truth" tag={IconStar} />}
 
             {entity.skipped && <Elem name="skipped" tag={IconBan} />}
           </Space>

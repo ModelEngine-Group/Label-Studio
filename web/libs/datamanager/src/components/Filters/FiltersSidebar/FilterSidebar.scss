@@ -21,6 +21,7 @@
     display: flex;
     padding: 0 16px;
     align-items: center;
+    gap: var(--spacing-small, 8px);
   }
 
   &__title {
@@ -29,6 +30,9 @@
   }
 
   &__extra {
-    margin-right: 16px;
+    .button-dm {
+      width: 24px;
+      padding: 0;
+    }
   }
 }

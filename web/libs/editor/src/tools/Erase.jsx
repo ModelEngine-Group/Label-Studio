@@ -6,7 +6,7 @@ import ToolMixin from "../mixins/Tool";
 import Canvas from "../utils/canvas";
 import { clamp, findClosestParent } from "../utils/utilities";
 import { DrawingTool } from "../mixins/DrawingTool";
-import { IconEraserTool } from "../assets/icons";
+import { IconEraserTool } from "@humansignal/icons";
 import { Tool } from "../components/Toolbar/Tool";
 import { Range } from "../common/Range/Range";
 

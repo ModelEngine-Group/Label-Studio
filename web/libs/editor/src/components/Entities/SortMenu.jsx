@@ -1,14 +1,14 @@
 import { Menu } from "antd";
 import { observer } from "mobx-react";
 import { ThunderboltOutlined } from "@ant-design/icons";
-import { LsDate } from "../../assets/icons";
+import { IconDate } from "@humansignal/icons";
 import { Block, Elem } from "../../utils/bem";
 import "./SortMenu.scss";
 
 export const SortMenuIcon = ({ sortKey }) => {
   switch (sortKey) {
     case "date":
-      return <LsDate />;
+      return <IconDate />;
     case "score":
       return <ThunderboltOutlined />;
     default:

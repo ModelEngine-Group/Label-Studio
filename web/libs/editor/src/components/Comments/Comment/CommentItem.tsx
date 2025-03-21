@@ -2,7 +2,7 @@ import { observer } from "mobx-react";
 import type React from "react";
 import { type FC, useCallback, useContext, useMemo, useState } from "react";
 import { Tooltip, Userpic } from "@humansignal/ui";
-import { IconCheck, IconEllipsis } from "../../../assets/icons";
+import { IconCheck, IconEllipsis } from "@humansignal/icons";
 import { Button } from "../../../common/Button/Button";
 import { Dropdown } from "../../../common/Dropdown/Dropdown";
 import { Menu } from "../../../common/Menu/Menu";
@@ -271,7 +271,7 @@ export const CommentItem: FC<CommentItemProps> = observer(
                   </Menu>
                 }
               >
-                <Button size="small" type="text" icon={<IconEllipsis />} />
+                <Button size="small" type="text" icon={<IconEllipsis width={20} height={20} />} />
               </Dropdown.Trigger>
             )}
           </Elem>

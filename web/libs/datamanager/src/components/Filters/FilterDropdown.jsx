@@ -1,5 +1,5 @@
 import { observer } from "mobx-react";
-import { FaCaretDown } from "react-icons/fa";
+import { IconChevronDown } from "@humansignal/icons";
 import { Icon } from "../Common/Icon/Icon";
 import { Select } from "../Common/Select/Select";
 import { Tag } from "../Common/Tag/Tag";
@@ -69,7 +69,7 @@ export const FilterDropdown = observer(
         onChange={(value) => onChange(outputFormat?.(value) ?? value)}
         disabled={disabled}
         size="small"
-        suffixIcon={<Icon icon={FaCaretDown} />}
+        suffixIcon={<Icon icon={IconChevronDown} />}
         listItemHeight={20}
         listHeight={600}
         dropdownClassName={dropdownClassName}

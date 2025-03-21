@@ -1,5 +1,4 @@
 import { useCallback, useMemo, useRef, useState } from "react";
-import { LsPlus } from "../../../assets/icons";
 import { Button } from "../../../components";
 import { Description } from "../../../components/Description/Description";
 import { Input } from "../../../components/Form";
@@ -15,8 +14,9 @@ import { PeopleList } from "./PeopleList";
 import "./PeoplePage.scss";
 import { SelectedUser } from "./SelectedUser";
 import { TokenSettingsModal } from "@humansignal/core/blocks/TokenSettingsModal";
-import { InviteLink } from "./InviteLink";
+import { IconPlus } from "@humansignal/icons";
 import { useToast } from "@humansignal/ui";
+import { InviteLink } from "./InviteLink";
 import { debounce } from "@humansignal/core/lib/utils/debounce";
 
 const InvitationModal = ({ link }) => {
@@ -102,7 +102,7 @@ export const PeoplePage = () => {
 
           <Space>
             {isFF(FF_AUTH_TOKENS) && <Button onClick={showApiTokenSettingsModal}>API Tokens Settings</Button>}
-            <Button icon={<LsPlus />} primary onClick={() => setInvitationOpen(true)}>
+            <Button icon={<IconPlus />} primary onClick={() => setInvitationOpen(true)}>
               Add People
             </Button>
           </Space>

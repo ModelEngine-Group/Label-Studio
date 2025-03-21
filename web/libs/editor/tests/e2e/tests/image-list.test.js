@@ -216,7 +216,7 @@ Scenario("View All disables MIG pagination", async ({ I, AtImageView, LabelStudi
   I.see("2 of 4");
 
   I.say("Enable View All mode");
-  I.click('[aria-label="View All"]');
+  I.click('[aria-label="Compare all annotations"]');
 
   I.say("Navigation buttons should be disabled");
   I.seeElement(locate(`${nextSelector}[class$=disabled]`));

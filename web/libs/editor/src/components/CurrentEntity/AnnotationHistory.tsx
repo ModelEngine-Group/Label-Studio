@@ -1,7 +1,6 @@
 import { when } from "mobx";
 import { inject, observer } from "mobx-react";
 import { type FC, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { Tooltip, Userpic } from "@humansignal/ui";
 import {
   IconAnnotationAccepted,
   IconAnnotationImported,
@@ -13,8 +12,9 @@ import {
   IconAnnotationSubmitted,
   IconCheck,
   IconDraftCreated,
-  LsSparks,
-} from "../../assets/icons";
+  IconSparks,
+} from "@humansignal/icons";
+import { Tooltip, Userpic } from "@humansignal/ui";
 import { Space } from "../../common/Space/Space";
 import { Block, Elem } from "../../utils/bem";
 import { humanDateDiff, userDisplayName } from "../../utils/utilities";
@@ -238,7 +238,7 @@ const HistoryItemComponent: FC<{
             username={isPrediction ? entity.createdBy : null}
             mod={{ prediction: isPrediction }}
           >
-            {isPrediction && <LsSparks style={{ width: 16, height: 16 }} />}
+            {isPrediction && <IconSparks style={{ width: 16, height: 16 }} />}
           </Elem>
           <Elem name="name" tag="span">
             {isPrediction ? entity.createdBy : userDisplayName(user)}

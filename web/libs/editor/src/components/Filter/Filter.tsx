@@ -3,7 +3,7 @@ import { Dropdown } from "../../common/Dropdown/Dropdown";
 
 import { type FC, useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "../../common/Button/Button";
-import { IconFilter } from "../../assets/icons";
+import { IconFilter } from "@humansignal/icons";
 
 import "./Filter.scss";
 import type { FilterInterface, FilterListInterface } from "./FilterInterfaces";

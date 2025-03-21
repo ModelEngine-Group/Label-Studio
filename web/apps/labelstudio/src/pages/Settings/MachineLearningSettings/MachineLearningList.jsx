@@ -1,11 +1,11 @@
 import { formatDistanceToNow, format, parseISO } from "date-fns";
 import { useCallback, useContext } from "react";
-import { LsEllipsis } from "../../../assets/icons";
 
 import truncate from "truncate-middle";
 import { Button, Dropdown, Menu } from "../../../components";
 import { confirm } from "../../../components/Modal/Modal";
 import { Oneof } from "../../../components/Oneof/Oneof";
+import { IconEllipsis } from "@humansignal/icons";
 import { Tooltip } from "@humansignal/ui";
 import { ApiContext } from "../../../providers/ApiProvider";
 import { Block, cn } from "../../../utils/bem";
@@ -83,7 +83,7 @@ const BackendCard = ({ backend, onStartTrain, onEdit, onDelete, onTestRequest })
               </Menu>
             }
           >
-            <Button type="link" icon={<LsEllipsis />} style={{ padding: "15px" }} />
+            <Button type="link" icon={<IconEllipsis />} style={{ padding: "15px" }} />
           </Dropdown.Trigger>
         </div>
       </div>

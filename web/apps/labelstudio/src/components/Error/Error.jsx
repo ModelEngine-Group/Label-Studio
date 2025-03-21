@@ -1,6 +1,6 @@
 import { Fragment, useCallback, useMemo, useState } from "react";
 import sanitizeHtml from "sanitize-html";
-import { LsSlack } from "../../assets/icons";
+import { IconSlack } from "@humansignal/icons";
 import { Block, Elem } from "../../utils/bem";
 import { absoluteURL, copyText } from "../../utils/helpers";
 import { Button } from "../Button/Button";
@@ -87,7 +87,7 @@ export const ErrorWrapper = ({
 
       <Elem name="actions">
         <Space spread>
-          <Elem tag={Button} name="action-slack" target="_blank" icon={<LsSlack />} href={SLACK_INVITE_URL}>
+          <Elem tag={Button} name="action-slack" target="_blank" icon={<IconSlack />} href={SLACK_INVITE_URL}>
             Ask on Slack
           </Elem>
 

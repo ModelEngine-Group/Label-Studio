@@ -3,7 +3,7 @@ import { type FC, type MouseEvent, useEffect, useState } from "react";
 import { Block, Elem } from "../../../utils/bem";
 
 import "./AudioControl.scss";
-import { IconSoundConfig, IconSoundMutedConfig } from "../../../assets/icons/timeline";
+import { IconSoundConfig, IconSoundMutedConfig } from "@humansignal/ui";
 import { ControlButton } from "../Controls";
 import { Slider } from "./Slider";
 

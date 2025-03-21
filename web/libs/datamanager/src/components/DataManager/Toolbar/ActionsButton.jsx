@@ -1,6 +1,6 @@
 import { inject, observer } from "mobx-react";
 import { useCallback, useRef } from "react";
-import { FaAngleDown, FaChevronRight, FaTrash } from "react-icons/fa";
+import { IconChevronRight, IconChevronDown, IconTrash } from "@humansignal/icons";
 import { Block, Elem } from "../../../utils/bem";
 import { FF_LOPS_E_3, isFF } from "../../../utils/feature-flags";
 import { Button } from "../../Common/Button/Button";
@@ -89,7 +89,7 @@ export const ActionsButton = injector(
         >
           <Elem name="titleContainer" {...(action.disabled ? { title: action.disabledReason } : {})}>
             <Elem name="title">{action.title}</Elem>
-            {hasChildren ? <Elem name="icon" tag={FaChevronRight} /> : null}
+            {hasChildren ? <Elem name="icon" tag={IconChevronRight} /> : null}
           </Elem>
         </Block>
       );
@@ -117,7 +117,7 @@ export const ActionsButton = injector(
           className={`actionButton${action.isSeparator ? "_isSeparator" : action.isTitle ? "_isTitle" : ""} ${
             action.disabled ? "actionButton_disabled" : ""
           }`}
-          icon={isDeleteAction && <FaTrash />}
+          icon={isDeleteAction && <IconTrash />}
           title={action.disabled ? action.disabledReason : null}
         >
           {action.title}
@@ -136,7 +136,7 @@ export const ActionsButton = injector(
       >
         <Button size={size} disabled={!hasSelected} {...rest}>
           {selectedCount > 0 ? `${selectedCount} ${recordTypeLabel}${selectedCount > 1 ? "s" : ""}` : "Actions"}
-          <FaAngleDown size="16" style={{ marginLeft: 4 }} color="#566fcf" />
+          <IconChevronDown style={{ marginLeft: 4, marginRight: -7 }} />
         </Button>
       </Dropdown.Trigger>
     );

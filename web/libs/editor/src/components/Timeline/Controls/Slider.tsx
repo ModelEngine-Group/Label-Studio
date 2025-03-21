@@ -1,7 +1,7 @@
 import type React from "react";
 import { type FC, useEffect, useRef, useState } from "react";
 import { Tooltip } from "@humansignal/ui";
-import { IconInfoConfig } from "../../../assets/icons/timeline";
+import { IconInfoConfig } from "@humansignal/icons";
 import { Block, Elem } from "../../../utils/bem";
 
 import "./Slider.scss";

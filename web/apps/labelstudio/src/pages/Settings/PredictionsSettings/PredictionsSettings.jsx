@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { Description } from "../../../components/Description/Description";
 import { Divider } from "../../../components/Divider/Divider";
 import { EmptyState } from "../../../components/EmptyState/EmptyState";
-import { IconPredictions } from "../../../assets/icons";
+import { IconPredictions } from "@humansignal/ui";
 import { useAPI } from "../../../providers/ApiProvider";
 import { ProjectContext } from "../../../providers/ProjectProvider";
 import { Spinner } from "../../../components/Spinner/Spinner";

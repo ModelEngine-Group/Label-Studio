@@ -125,6 +125,14 @@
     border-radius: 4px;
     color: var(--sand_700);
     visibility: hidden;
+    padding: var(--spacing-small-x, 4px);
+
+    svg {
+      width: 20px;
+      height: 20px;
+      transform-origin: center;
+      transform: rotate(90deg);
+    }
 
     &:hover {
       color: var(--grape_500);

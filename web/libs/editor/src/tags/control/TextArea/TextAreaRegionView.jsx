@@ -6,7 +6,7 @@ import Button from "antd/lib/button/index";
 import Form from "antd/lib/form/index";
 import Input from "antd/lib/input/index";
 
-import { IconTrash } from "../../../assets/icons";
+import { IconTrash } from "@humansignal/icons";
 import styles from "../../../components/HtxTextBox/HtxTextBox.module.scss";
 import Registry from "../../../core/Registry";
 import { PER_REGION_MODES } from "../../../mixins/PerRegion";

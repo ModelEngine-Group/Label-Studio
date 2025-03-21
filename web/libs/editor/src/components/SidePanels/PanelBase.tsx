@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 import { Block, Elem } from "../../utils/bem";
-import { IconArrowLeft, IconArrowRight, IconOutlinerCollapse, IconOutlinerExpand } from "../../assets/icons";
+import { IconArrowLeft, IconArrowRight, IconOutlinerCollapse, IconOutlinerExpand } from "@humansignal/icons";
 
 import "./PanelBase.scss";
 import type { PanelType } from "./SidePanels";

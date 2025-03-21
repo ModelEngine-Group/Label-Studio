@@ -4,7 +4,7 @@ import { LabelItem } from "./LabelItem";
 import { RegionItem } from "./RegionItem";
 import { observer } from "mobx-react";
 import { useState } from "react";
-import { LsChevron } from "../../assets/icons";
+import { IconChevron } from "@humansignal/ui";
 import { FF_DEV_2755, isFF } from "../../utils/feature-flags";
 
 const { localStorage } = window;
@@ -60,7 +60,7 @@ export const LabelList = observer(({ regionStore }) => {
         defaultExpandAll={true}
         autoExpandParent={true}
         expandedKeys={expandedKeys}
-        switcherIcon={<LsChevron className={styles.switcherIcon} opacity="0.25" />}
+        switcherIcon={<IconChevron className={styles.switcherIcon} opacity="0.25" />}
         onExpand={(internalExpandedKeys, { node }) => {
           const region = treeData.find((region) => region.key === node.key);
           const pos = region.pos;
@@ -79,7 +79,7 @@ export const LabelList = observer(({ regionStore }) => {
       blockNode={true}
       defaultExpandAll={true}
       autoExpandParent={true}
-      switcherIcon={<LsChevron opacity="0.25" />}
+      switcherIcon={<IconChevron opacity="0.25" />}
     />
   );
 });
