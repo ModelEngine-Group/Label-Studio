@@ -1,6 +1,6 @@
 {
-  "message": "fix: OPTIC-1835: Address issue affecting OCR region panel visualization (#7259)",
-  "commit": "486803f13a36fbb99f2fdcb5d3ea25a5a8a8fa66",
-  "date": "2025-03-20T21:26:35.000Z",
+  "message": "feat: DIA-1925: [FE] “View sample raw json” ability in the Data Import page (#7226)",
+  "commit": "6970a351c4792d8e04898079d17e5512227a76bf",
+  "date": "2025-03-21T12:33:54.000Z",
   "branch": "develop"
 }
