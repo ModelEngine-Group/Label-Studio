@@ -81,7 +81,9 @@ module.exports = {
         lsNeutralContentSubtle: "#45433E",
         lsNeutralContentSubtler: "#6B6860",
         lsNeutralContentSubtlest: "#A49F95",
+        lsNeutralSurfaceActive: "#F0EFEB",
         lsBorderSubtle: "#617ADA",
+        lsNeutralBorderBold: "#CAC5B8",
         lsButtonBg: "#4C5FA9",
         lsPositiveSurfaceHover: "#34988D",
 

@@ -18,9 +18,10 @@ export const Inner = () => {
   const refresh = useRefresh();
   const { project } = useProject();
   const [waiting, setWaitingStatus] = useState(false);
+  const [sample, setSample] = useState(null);
   const api = useAPI();
 
-  const { uploading, uploadDisabled, finishUpload, fileIds, pageProps } = useImportPage(project);
+  const { uploading, uploadDisabled, finishUpload, fileIds, pageProps, uploadSample } = useImportPage(project);
 
   const backToDM = useCallback(() => {
     const path = location.pathname.replace(ImportModal.path, "");
@@ -46,11 +47,17 @@ export const Inner = () => {
   }, [modal, project, fileIds, backToDM]);
 
   const onFinish = useCallback(async () => {
+    await uploadSample(
+      sample,
+      () => setWaitingStatus(true),
+      () => setWaitingStatus(false),
+    );
+
     const imported = await finishUpload();
 
     if (!imported) return;
     backToDM();
-  }, [backToDM, finishUpload]);
+  }, [backToDM, finishUpload, sample]);
 
   return (
     <Modal
@@ -78,11 +85,13 @@ export const Inner = () => {
       </Modal.Header>
       <ImportPage
         project={project}
-        {...pageProps}
+        sample={sample}
+        onSampleDatasetSelect={setSample}
         projectConfigured={Object.keys(project.parsed_label_config ?? {}).length > 0}
         openLabelingConfig={() => {
           history.push(`/projects/${project.id}/settings/labeling`);
         }}
+        {...pageProps}
       />
     </Modal>
   );

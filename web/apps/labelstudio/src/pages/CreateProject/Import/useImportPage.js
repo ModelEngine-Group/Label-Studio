@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useAPI } from "../../../providers/ApiProvider";
 import { unique } from "../../../utils/helpers";
+import { importFiles } from "./utils";
 
 const DEFAULT_COLUMN = "$undefined$";
 
-export const useImportPage = (project) => {
+export const useImportPage = (project, sample) => {
   const [uploading, setUploadingStatus] = React.useState(false);
   const [fileIds, setFileIds] = React.useState([]);
   const [_columns, _setColumns] = React.useState([]);
@@ -35,6 +36,21 @@ export const useImportPage = (project) => {
     return imported;
   };
 
+  const uploadSample = useCallback(
+    async (sample, onStart, onFinish) => {
+      onStart?.();
+      const url = sample.url;
+      const body = new URLSearchParams({ url });
+      await importFiles({
+        files: [{ name: url }],
+        body,
+        project,
+      });
+      onFinish?.();
+    },
+    [project],
+  );
+
   const pageProps = {
     onWaiting: setUploadingStatus,
     // onDisableSubmit: onDisableSubmit,
@@ -46,5 +62,5 @@ export const useImportPage = (project) => {
     dontCommitToProject: true,
   };
 
-  return { columns, uploading, uploadDisabled, finishUpload, fileIds, pageProps };
+  return { columns, uploading, uploadDisabled, finishUpload, fileIds, pageProps, uploadSample };
 };

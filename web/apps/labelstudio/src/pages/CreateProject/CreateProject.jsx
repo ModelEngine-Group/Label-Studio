@@ -89,6 +89,8 @@ export const CreateProject = ({ onClose, redirect = true }) => {
   const [name, setName] = React.useState("");
   const [error, setError] = React.useState();
   const [description, setDescription] = React.useState("");
+  const [sample, setSample] = React.useState(null);
+
   const setStep = React.useCallback((step) => {
     _setStep(step);
     const eventNameMap = {
@@ -103,7 +105,7 @@ export const CreateProject = ({ onClose, redirect = true }) => {
     setError(null);
   }, [name]);
 
-  const { columns, uploading, uploadDisabled, finishUpload, pageProps } = useImportPage(project);
+  const { columns, uploading, uploadDisabled, finishUpload, pageProps, uploadSample } = useImportPage(project, sample);
 
   const rootClass = cn("create-project");
   const tabClass = rootClass.elem("tab");
@@ -132,6 +134,10 @@ export const CreateProject = ({ onClose, redirect = true }) => {
     if (!imported) return;
 
     setWaitingStatus(true);
+
+    if (sample) {
+      await uploadSample(sample);
+    }
     const response = await api.callApi("updateProject", {
       params: {
         pk: project.id,
@@ -211,8 +217,10 @@ export const CreateProject = ({ onClose, redirect = true }) => {
         <ImportPage
           project={project}
           show={step === "import"}
-          {...pageProps}
+          sample={sample}
+          onSampleDatasetSelect={setSample}
           openLabelingConfig={() => setStep("config")}
+          {...pageProps}
         />
         <ConfigPage
           project={project}
