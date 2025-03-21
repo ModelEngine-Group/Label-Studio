@@ -33,7 +33,9 @@
     "test:watch": "yarn test:unit --all --watch",
     "test:watch:affected": "yarn test --watch",
     "postinstall": "npx -y copy-files-from-to",
-    "design-tokens": "nx design-tokens ui"
+    "design-tokens": "nx design-tokens ui",
+    "storybook:serve": "nx storybook storybook",
+    "storybook:build": "nx build-storybook storybook"
   },
   "husky": {
     "hooks": {

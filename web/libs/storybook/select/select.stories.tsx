@@ -10,6 +10,7 @@ import {
 } from "../../ui/src/shad/components/ui/select.tsx";
 
 const meta: Meta<typeof Select> = {
+  title: "UI/Select",
   component: Select,
   render: ({ form, ...args }) => {
     return (

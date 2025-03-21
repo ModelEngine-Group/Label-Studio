@@ -7,7 +7,7 @@ import {
   IconPin,
   IconTerminal,
   IconDoor,
-  IconGitHub,
+  IconGithub,
   IconSettings,
   IconSlack,
 } from "@humansignal/icons";
@@ -208,7 +208,7 @@ export const Menubar = ({ enabled, defaultOpened, defaultPinned, children, onSid
                 <Menu.Item
                   label="GitHub"
                   href="https://github.com/HumanSignal/label-studio"
-                  icon={<IconGitHub />}
+                  icon={<IconGithub />}
                   target="_blank"
                   rel="noreferrer"
                 />

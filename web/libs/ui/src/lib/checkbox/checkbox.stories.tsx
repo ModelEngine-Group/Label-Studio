@@ -4,7 +4,7 @@ import { action } from "@storybook/addon-actions";
 
 const meta: Meta<typeof Checkbox> = {
   component: Checkbox,
-  title: "Checkbox",
+  title: "UI/Checkbox",
   tags: ["autodocs"],
   argTypes: {
     checked: { control: "boolean" },
