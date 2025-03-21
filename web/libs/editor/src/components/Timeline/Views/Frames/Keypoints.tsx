@@ -67,8 +67,18 @@ export const Keypoints: FC<KeypointsProps> = ({ idx, region, startOffset, render
     [region.id, onSelectRegion],
   );
 
+  // will work only for TimelineRegions; sequence for them is 2 or even 1 point (1 for instants)
+  const range = timeline ? sequence.map((s) => s.frame) : [];
+
   return (
-    <Block name="keypoints" style={styles} mod={{ selected, timeline }} data-id={region.id}>
+    <Block
+      name="keypoints"
+      style={styles}
+      mod={{ selected, timeline }}
+      data-id={region.id}
+      data-start={range[0]}
+      data-end={range[1]}
+    >
       <Elem name="label" onClick={onSelectRegionHandler}>
         <Elem name="name">{label}</Elem>
         <Elem name="data">

@@ -202,8 +202,8 @@ const TimelineComponent: FC<TimelineProps> = ({
         onAddRegion={(reg) => handlers.onAddRegion?.(reg)}
         onDeleteRegion={(id) => handlers.onDeleteRegion?.(id)}
         onSelectRegion={(e, id, select) => handlers.onSelectRegion?.(e, id, select)}
-        onStartDrawing={(frame) => handlers.onStartDrawing?.(frame)}
-        onFinishDrawing={() => handlers.onFinishDrawing?.()}
+        onStartDrawing={(options) => handlers.onStartDrawing?.(options)}
+        onFinishDrawing={(options) => handlers.onFinishDrawing?.(options)}
         onSpeedChange={(speed) => handlers.onSpeedChange?.(speed)}
         onZoom={props.onZoom}
       />

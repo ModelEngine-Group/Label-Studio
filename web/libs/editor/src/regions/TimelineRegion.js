@@ -40,6 +40,10 @@ function rangeToSequence(range) {
   ];
 }
 
+/**
+ * TimelineRegion, a region on the video timeline.
+ * @see Timeline/Views/Frames#onFrameScrub() - this method creates a region by drawing on the timeline
+ */
 const Model = types
   .model("TimelineRegionModel", {
     type: "timelineregion",
@@ -94,13 +98,22 @@ const Model = types
       return true;
     },
     /**
-     * Set ranges for the region, for now only one frame,
+     * Set range for the region, only one frame for now,
      * could be extended to multiple frames in a future in a form of (...ranges)
      * @param {number[]} [start, end] Start and end frames
+     * @param {Object} [options]
+     * @param {"new" | "edit" | undefined} [options.mode] Do we dynamically change the region ("new" one or "edit" existing one) or just edit it precisely (undefined)?
+     *        In first two cases we need to update undo history only once
      */
-    setRanges([start, end]) {
-      // we need only one item in undo history, so we'll update current one during drawing
-      self.parent.annotation.history.setReplaceNextUndoState();
+    setRange([start, end], { mode } = {}) {
+      if (mode === "new") {
+        // we need to update existing history item while drawing a new region
+        self.parent.annotation.history.setReplaceNextUndoState();
+      } else if (mode === "edit") {
+        // we need to skip updating history item while editing existing region and record the state when we finish editing
+        /** @see Video#finishDrawing() */
+        self.parent.annotation.history.setSkipNextUndoState();
+      }
       self.ranges = [{ start, end }];
     },
   }));

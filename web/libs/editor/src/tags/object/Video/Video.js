@@ -289,19 +289,38 @@ const Model = types
         return self.regs.find((reg) => reg.cleanId === id);
       },
 
-      /** Create a new timeline region at a given `frame` (only of labels are selected) */
-      startDrawing(frame) {
+      /**
+       * Create a new timeline region at a given `frame` (only if labels are selected) or edit an existing one if `region` is provided
+       * @param {Object} options
+       * @param {number} options.frame current frame under the cursor
+       * @param {string} options.region region id to search for it in the store; used to edit existing region
+       * @returns {Object} created region
+       */
+      startDrawing({ frame, region: id }) {
+        if (id) {
+          const region = self.annotation.regions.find((r) => r.cleanId === id);
+          const range = region?.ranges?.[0];
+          return range && [range.start, range.end].includes(frame) ? region : null;
+        }
         const control = self.timelineControl;
         // labels should be selected or allow to create region without labels
-        if (!control?.selectedLabels?.length && !control?.allowempty) return;
+        if (!control?.selectedLabels?.length && !control?.allowempty) return null;
 
         self.drawingRegion = self.addTimelineRegion({ frame, enabled: false });
 
         return self.drawingRegion;
       },
 
-      finishDrawing() {
+      /**
+       * Finish drawing a region and save its final state to the store if it was edited
+       * @param {Object} options
+       * @param {string} options.mode "new" if we are creating a new region, "edit" if we are editing an existing one
+       */
+      finishDrawing({ mode }) {
         self.drawingRegion = null;
+        if (mode === "edit") {
+          self.annotation.history.recordNow();
+        }
       },
     };
   });
