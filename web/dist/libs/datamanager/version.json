@@ -1,6 +1,6 @@
 {
-  "message": "feat: LEAP-1924: Allow to edit Timeline span by drag-n-drop (#7251)",
-  "commit": "c0dab3be4d26d1fc2a45eca650ff61a9ff20d8eb",
-  "date": "2025-03-21T15:40:59.000Z",
+  "message": "feat: OPTIC-1810: Further unification of icons using Storybook to identify and iterate the work (#7261)",
+  "commit": "7e882c71e7fb2c1083cd221f949a3923ff4b5993",
+  "date": "2025-03-21T17:14:46.000Z",
   "branch": "develop"
 }
