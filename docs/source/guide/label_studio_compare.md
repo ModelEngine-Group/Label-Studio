@@ -114,6 +114,12 @@ Label Studio is available to everyone as open source software (Label Studio Comm
     <td style="text-align:center">✅</td>
   </tr>
   <tr>
+    <td><b>AI assistant</b><br/><a href="https://docs.humansignal.com/guide/ask_ai">Use an LLM trained by HumanSignal to help you create and refine templates.</a></td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
     <td><b>Project membership</b><br/><a href="https://docs.humansignal.com/guide/project_settings_lse#Members">Only users who are added as members to a project can view it. </a></td>
     <td style="text-align:center">❌</td>
     <td style="text-align:center">✅</td>
@@ -151,6 +157,12 @@ Label Studio is available to everyone as open source software (Label Studio Comm
     <td><b>Simplified interface for Annotators</b><br/>Annotator-specific labeling view that only shows assigned tasks.</td>
     <td style="text-align:center">❌</td>
     <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td><b>Bulk labeling</b><br/><a href="https://docs.humansignal.com/guide/labeling#Bulk-labeling">Classify data in batches.</a></td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">❌</td>
     <td style="text-align:center">✅</td>
   </tr>
    <tr>
@@ -244,6 +256,12 @@ Label Studio is available to everyone as open source software (Label Studio Comm
     <td style="text-align:center">✅</td>
   </tr>
   <tr>
+    <td><b>Annotation history</b><br/>View annotation history from the labeling interface.</td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
     <td colspan="4" style="text-align:center"><b>Quality Workflows</b></td>
   </tr>
   <tr>
@@ -280,6 +298,18 @@ Label Studio is available to everyone as open source software (Label Studio Comm
     <td><b>Overlap configuration</b><br/><a href="https://docs.humansignal.com/guide/project_settings_lse#Quality">Set how many annotators must label each sample.</a></td>
     <td style="text-align:center">❌</td>
     <td style="text-align:center">✅</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td><b>Pause annotators</b><br/><a href="https://docs.humansignal.com/guide/quality#Pause-an-annotator">Pause an individual annotator's progress manually or based on pre-defined behaviors.</a></td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">✅</td>
+  </tr>
+  <tr>
+    <td><b>Annotation limits</b><br/><a href="https://docs.humansignal.com/guide/project_settings_lse#annotation-limit">Set a limit on how many annotations a user can submit within a project before their work is paused.</a></td>
+    <td style="text-align:center">❌</td>
+    <td style="text-align:center">❌</td>
     <td style="text-align:center">✅</td>
   </tr>
   <tr>
@@ -328,6 +358,3 @@ Label Studio is available to everyone as open source software (Label Studio Comm
     <td style="text-align:center">✅</td>
   </tr>
 </table>
-
-
-  
