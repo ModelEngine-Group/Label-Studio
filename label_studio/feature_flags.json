@@ -921,7 +921,7 @@
     },
     "fflag__feature_develop__prompts__dia_1829_jwt_token_auth": {
       "key": "fflag__feature_develop__prompts__dia_1829_jwt_token_auth",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -943,7 +943,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 3,
+      "version": 4,
       "deleted": false
     },
     "fflag__feature_develop__prompts__dia_1868_azure_ai_foundry": {
@@ -975,7 +975,7 @@
     },
     "fflag_all_feat_dia_1777_ls_homepage_short": {
       "key": "fflag_all_feat_dia_1777_ls_homepage_short",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -997,7 +997,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 2,
+      "version": 3,
       "deleted": false
     },
     "fflag_feat_all_dia_13_structured_data_support_short": {
