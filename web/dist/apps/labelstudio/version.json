@@ -1,6 +1,6 @@
 {
-  "message": "fix: OPTIC-1850: 'n is not a function' RUNTIME error occur on ls-develop when user tries to create a project (#7273)",
-  "commit": "1114b3b93eb948368f830f9ad0c10225ca288a39",
-  "date": "2025-03-25T10:21:16.000Z",
+  "message": "fix: DIA-1925: fix payload for sample task in data import (#7276)",
+  "commit": "5fbf4df499d7fe0542cd751b1b51380aa961b7d4",
+  "date": "2025-03-25T17:11:11.000Z",
   "branch": "develop"
 }
