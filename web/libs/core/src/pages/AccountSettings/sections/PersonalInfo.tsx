@@ -92,7 +92,9 @@ export const PersonalInfo = () => {
     [user?.id],
   );
 
-  useEffect(() => setIsInProgress(userInProgress), [userInProgress]);
+  useEffect(() => {
+    setIsInProgress(userInProgress);
+  }, [userInProgress]);
 
   useEffect(() => {
     setFname(user?.first_name);

@@ -60,8 +60,12 @@ const DraftState: FC<{
   const [hasUnsavedChanges, setChanges] = useState(false);
 
   // turn it on when changes just made; off when they we saved
-  useEffect(() => setChanges(true), [annotation.history.history.length]);
-  useEffect(() => setChanges(false), [annotation.draftSaved]);
+  useEffect(() => {
+    setChanges(true);
+  }, [annotation.history.history.length]);
+  useEffect(() => {
+    setChanges(false);
+  }, [annotation.draftSaved]);
 
   if (!hasChanges && !annotation.versions.draft) return null;
 
