@@ -975,7 +975,7 @@
     },
     "fflag_all_feat_dia_1777_ls_homepage_short": {
       "key": "fflag_all_feat_dia_1777_ls_homepage_short",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -997,7 +997,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 4,
+      "version": 5,
       "deleted": false
     },
     "fflag_feat_all_dia_13_structured_data_support_short": {

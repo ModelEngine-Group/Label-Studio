@@ -77,7 +77,7 @@ stages:
     response:
       status_code: 302
       headers:
-        location: "/projects/" # redirect to projects page rather than malicious.com
+        location: "/" # redirect to home page rather than malicious.com
 
   - name: malicious_login
     request:
@@ -89,4 +89,4 @@ stages:
     response:
       status_code: 302
       headers:
-        location: "/projects/" # redirect to projects page rather than malicious.com
+        location: "/" # redirect to home page rather than malicious.com
