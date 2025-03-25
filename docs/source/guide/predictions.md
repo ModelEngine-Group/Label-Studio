@@ -14,10 +14,24 @@ parent_enterprise: "tasks"
 
 If you have predictions generated for your dataset from a model, either as pre-annotated tasks or pre-labeled tasks, you can import the predictions with your dataset into Label Studio for review and correction. Label Studio automatically displays the pre-annotations that you import on the Labeling page for each task. 
 
+You can import pre-annotated tasks into Label Studio [using the UI](tasks.html#Import-data-from-the-Label-Studio-UI) or [using the API](/api#operation/projects_import_create). 
+
 !!! note 
     To generate interactive pre-annotations with a machine learning model while labeling, see [Set up machine learning with Label Studio](ml.html).
 
-You can import pre-annotated tasks into Label Studio [using the UI](tasks.html#Import-data-from-the-Label-Studio-UI) or [using the API](/api#operation/projects_import_create). 
+<div class="opensource-only">
+
+!!! error enterprise
+    Label Studio Enterprise customers have access to a powerful tool called Prompts. With Prompts, you can leverage LLMs to automatically generate predictions for your Label Studio tasks. For more information, see [Prompts](https://docs.humansignal.com/guide/prompts_overview).
+
+</div>
+
+<div class="enterprise-only">
+
+!!! info Tip
+    With Prompts, you can leverage LLMs to automatically generate predictions for your Label Studio tasks. For more information, see [Prompts](prompts_overview).
+
+</div>
 
 
 ## Prepare pre-annotations for Label Studio 

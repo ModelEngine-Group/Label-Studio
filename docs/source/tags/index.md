@@ -16,6 +16,20 @@ You can use XML-like tags in Label Studio to configure the labeling interface. L
 
 When you [set up your labeling interface](/guide/setup.html), you can choose to use tags to create a custom labeling interface. When you create a custom labeling interface, you must pay attention to the structure of your task data and set up the configuration accordingly.
 
+<div class="opensource-only">
+
+!!! error enterprise
+    Label Studio Enterprise has the option include custom scripts as part of your labeling interface. Custom scripts allow you to use Javascript to extend your interface and customize annotator workflows. For more information, see [Custom Scripts](https://docs.humansignal.com/guide/scripts).
+
+</div>
+
+<div class="enterprise-only">
+
+!!! info Tip
+    You can also implement custom scripts as part of your labeling interface. Custom scripts allow you to use Javascript to extend your interface and customize annotator workflows. For more information, see [Custom Scripts](/guide/scripts).
+
+</div>
+
 ### Connecting elements
 
 All control and object tags require a **name** parameter. Every control tag also requires a **toName** parameter that matches the **name** parameter of the object tag in the configuration.

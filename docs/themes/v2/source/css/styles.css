@@ -1542,6 +1542,10 @@ h1+.admonition {
   content: url(../images/design/enterprise-icon.svg);
 }
 
+.admonition + .admonition, .admonition + div.opensource-only, .admonition + div.enterprise-only {
+    margin-top: 1.5em
+}
+
 .content-markdown iframe {
   margin: 3em 0;
   aspect-ratio: 16/9;
