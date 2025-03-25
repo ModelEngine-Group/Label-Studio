@@ -1,6 +1,6 @@
 {
-  "message": "feat: DIA-1924: \"Import sample data\" ability in the Data Import page (#7206)",
-  "commit": "4075937f4b2bf286e8cad366fd46b39c8426c55a",
-  "date": "2025-03-21T18:39:51.000Z",
+  "message": "fix: OPTIC-1850: 'n is not a function' RUNTIME error occur on ls-develop when user tries to create a project (#7273)",
+  "commit": "1114b3b93eb948368f830f9ad0c10225ca288a39",
+  "date": "2025-03-25T10:21:16.000Z",
   "branch": "develop"
 }
