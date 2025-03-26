@@ -1,6 +1,6 @@
 {
-  "message": "fix: OPTIC-1857: User can NOT import data from Import modal from DataManager page (#7280)",
-  "commit": "7d195ef862868fc7759389d656a49c7679402969",
-  "date": "2025-03-26T14:11:34.000Z",
+  "message": "chore: OPTIC-1842: Update the css variables for colors to support RGB and drop the primitive prefixes on all variables (#7269)",
+  "commit": "b01f10bdba66de553fe97090c27fc64523bc8db5",
+  "date": "2025-03-26T14:29:29.000Z",
   "branch": "develop"
 }
