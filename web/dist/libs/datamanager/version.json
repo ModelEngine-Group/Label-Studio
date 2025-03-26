@@ -1,6 +1,6 @@
 {
-  "message": "chore: OPTIC-1842: Update the css variables for colors to support RGB and drop the primitive prefixes on all variables (#7269)",
-  "commit": "b01f10bdba66de553fe97090c27fc64523bc8db5",
-  "date": "2025-03-26T14:29:29.000Z",
+  "message": "refactor: OPTIC-927: remove FF_DEV_2432 feature flag (#7229)",
+  "commit": "113d3389fee805f3dbc3dd51f9fd189637b6b4da",
+  "date": "2025-03-26T16:24:07.000Z",
   "branch": "develop"
 }
