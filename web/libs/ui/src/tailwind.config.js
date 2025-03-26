@@ -11,6 +11,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // DO NOT USE THESE COLORS
+        // Refer to the Figma tokens instead
+        // These are values from the old tailwind.config.js and Shadcn/UI introduction
         current: "currentColor",
         transparent: "transparent",
         stroke: "#EEEEEE",
@@ -66,54 +69,10 @@ module.exports = {
           foreground: "hsl(var(--card-foreground))",
         },
 
-        // LS color space
-        lsPrimaryIcon: "#617ADA",
-        lsPrimaryContent: "#4C5FA9",
-        lsPrimaryEmphasisSubtle: "#F0F3FE",
-        lsPrimaryBackground: "#F0F3FE",
-        lsPrimaryOnBackground: "#2B3660",
-        lsSubtitle: "#6B6860",
-        lsNeutralSurface: "#F9F8F6",
-        lsNeutralBorder: "#E1DED5",
-        lsNeutralBorderSubtle: "#E1DED5",
-        lsBorderLightest: "#D4DBFB",
-        lsNeutralContent: "#262522",
-        lsNeutralContentSubtle: "#45433E",
-        lsNeutralContentSubtler: "#6B6860",
-        lsNeutralContentSubtlest: "#A49F95",
-        lsNeutralSurfaceActive: "#F0EFEB",
-        lsBorderSubtle: "#617ADA",
-        lsNeutralBorderBold: "#CAC5B8",
-        lsButtonBg: "#4C5FA9",
-        lsPositiveSurfaceHover: "#34988D",
-
-        // Accents
-        lsAccentMangoSubtle: "#FFEED0",
-        lsAccentMangoBold: "#EB9C14",
-        lsAccentGrapeSubtle: "#D4DBFB",
-
         // Add all colors from tokens
         ...tokens.colors,
       },
       fontSize: {
-        metatitle: ["12px", "20px"],
-        sectiontitle: ["14px", "22px"],
-        regular: ["16px", "26px"],
-        metatitle3: ["18px", "26px"],
-        metatitle2: ["20px", "32px"],
-        para2: ["22px", "35px"],
-        itemtitle: ["26px", "32px"],
-        itemtitle2: ["24px", "32px"],
-        hero: ["44px", "58px"],
-        sectiontitle3: ["44px", "55px"],
-        sectiontitle2: ["40px", "52px"],
-        sectiontitle4: ["34px", "48px"],
-        // LS styles
-        lsLabelMedium: ["16px", "24px"],
-        lsLabelSmall: ["14px", "8px"],
-        lsLabelSmaller: ["12px", "16px"],
-        lsLabelSmallest: ["11px", "16px"],
-
         // Add all font sizes from tokens
         ...tokens.typography.fontSize,
       },

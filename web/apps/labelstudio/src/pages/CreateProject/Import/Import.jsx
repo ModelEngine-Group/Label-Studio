@@ -440,7 +440,7 @@ export const ImportPage = ({
                     type="button"
                     look="link"
                     onClick={openConfig}
-                    className="border-none bg-none p-0 m-0 text-lsPrimaryContent underline"
+                    className="border-none bg-none p-0 m-0 text-primary-content underline"
                   >
                     labeling configuration
                   </button>{" "}

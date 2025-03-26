@@ -122,10 +122,10 @@ module.exports = {
 
 ## Dark Mode
 
-The CSS variables support dark mode with the `data-theme="dark"` attribute:
+The CSS variables support dark mode with the `data-color-scheme="dark"` attribute:
 
 ```html
-<body data-theme="dark">
+<body data-color-scheme="dark">
   <!-- Dark theme will be applied -->
 </body>
 ```

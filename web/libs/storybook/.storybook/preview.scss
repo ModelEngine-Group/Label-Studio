@@ -1,1 +1,9 @@
 @import '../../ui/src/styles';
+
+body {
+  height: 100vh;
+}
+
+#storybook-root {
+  height: 100%;
+}

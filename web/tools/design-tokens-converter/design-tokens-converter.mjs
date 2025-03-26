@@ -119,7 +119,7 @@ function processPrimitiveSpacing(spacingObj, result) {
     if (spacingObj[key].$type === "number" && spacingObj[key].$value !== undefined) {
       const name = key.replace("$", "");
       const value = spacingObj[key].$value;
-      const cssVarName = `--spacing-primitive-${name}`;
+      const cssVarName = `--spacing-${name}`;
 
       // Add to CSS variables
       result.cssVariables.light.push(`${cssVarName}: ${convertToRem(value)};`);
@@ -149,7 +149,7 @@ function processPrimitiveTypography(typographyObj, result) {
       ) {
         const name = key.replace("$", "");
         const value = typographyObj["$font-size"][key].$value;
-        const cssVarName = `--font-size-primitive-${name}`;
+        const cssVarName = `--font-size-${name}`;
 
         // Add to CSS variables
         result.cssVariables.light.push(`${cssVarName}: ${convertToRem(value)};`);
@@ -175,7 +175,7 @@ function processPrimitiveTypography(typographyObj, result) {
       ) {
         const name = key.replace("$", "");
         const value = typographyObj["$font-weight"][key].$value;
-        const cssVarName = `--font-weight-primitive-${name}`;
+        const cssVarName = `--font-weight-${name}`;
 
         // Add to CSS variables
         result.cssVariables.light.push(`${cssVarName}: ${value};`);
@@ -201,7 +201,7 @@ function processPrimitiveTypography(typographyObj, result) {
       ) {
         const name = key.replace("$", "");
         const value = typographyObj["$line-height"][key].$value;
-        const cssVarName = `--line-height-primitive-${name}`;
+        const cssVarName = `--line-height-${name}`;
 
         // Add to CSS variables
         result.cssVariables.light.push(`${cssVarName}: ${convertToRem(value)};`);
@@ -227,7 +227,7 @@ function processPrimitiveTypography(typographyObj, result) {
       ) {
         const name = key.replace("$", "");
         const value = typographyObj["$letter-spacing"][key].$value;
-        const cssVarName = `--letter-spacing-primitive-${name}`;
+        const cssVarName = `--letter-spacing-${name}`;
 
         // Add to CSS variables
         result.cssVariables.light.push(`${cssVarName}: ${convertToRem(value)};`);
@@ -255,7 +255,7 @@ function processPrimitiveCornerRadius(cornerRadiusObj, result) {
     if (cornerRadiusObj[key].$type === "number" && cornerRadiusObj[key].$value !== undefined) {
       const name = key.replace("$", "");
       const value = cornerRadiusObj[key].$value;
-      const cssVarName = `--corner-radius-primitive-${name}`;
+      const cssVarName = `--corner-radius-${name}`;
 
       let resolvedValue;
       if (typeof value === "string" && value.startsWith("{") && value.endsWith("}")) {
@@ -266,7 +266,7 @@ function processPrimitiveCornerRadius(cornerRadiusObj, result) {
         if (parts[0] === "@primitives") {
           const collectionKey = parts[1].replace("$", "");
           const valueKey = parts[2].replace("$", "");
-          resolvedValue = `var(--${collectionKey}-primitive-${valueKey})`;
+          resolvedValue = `var(--${collectionKey}-${valueKey})`;
           result.cssVariables.light.push(`${cssVarName}: ${resolvedValue};`);
         } else {
           // Otherwise, try to resolve the value normally
@@ -495,7 +495,7 @@ function processCornerRadiusTokens(cornerRadiusObj, result, variables) {
         if (parts[0] === "@primitives") {
           const collectionKey = parts[1].replace("$", "");
           const valueKey = parts[2].replace("$", "");
-          resolvedValue = `var(--${collectionKey}-primitive-${valueKey})`;
+          resolvedValue = `var(--${collectionKey}-${valueKey})`;
           result.cssVariables.light.push(`${cssVarName}: ${resolvedValue};`);
         } else {
           // Otherwise, try to resolve the value normally
@@ -542,9 +542,21 @@ function processColorTokens(colorObj, parentPath, result, variables) {
         ) {
           const lightValue = resolveColor(colorObj[key].$variable_metadata.modes.light, variables);
           result.cssVariables.light.push(`${cssVarName}: ${lightValue};`);
+
+          // Add raw RGB values for colors with "outline" or "shadow" or is part of the primary color family in the name
+          if (name.includes("outline") || name.includes("shadow") || name.includes("primary")) {
+            const rawRgbValues = hexToRgbRaw(colorObj[key].$variable_metadata.modes.light, variables);
+            result.cssVariables.light.push(`${cssVarName}-raw: ${rawRgbValues};`);
+          }
         } else {
           const resolvedValue = resolveColor(value, variables);
           result.cssVariables.light.push(`${cssVarName}: ${resolvedValue};`);
+
+          // Add raw RGB values for colors with "outline" or "shadow" or is part of the primary color family in the name
+          if (name.includes("outline") || name.includes("shadow") || name.includes("primary")) {
+            const rawRgbValues = hexToRgbRaw(value, variables);
+            result.cssVariables.light.push(`${cssVarName}-raw: ${rawRgbValues};`);
+          }
         }
 
         // Add to CSS variables for dark mode
@@ -555,6 +567,12 @@ function processColorTokens(colorObj, parentPath, result, variables) {
         ) {
           const darkValue = resolveColor(colorObj[key].$variable_metadata.modes.dark, variables);
           result.cssVariables.dark.push(`${cssVarName}: ${darkValue};`);
+
+          // Add raw RGB values for colors with "outline" or "shadow" or is part of the primary color family in the name for dark mode
+          if (name.includes("outline") || name.includes("shadow") || name.includes("primary")) {
+            const rawRgbValues = hexToRgbRaw(colorObj[key].$variable_metadata.modes.dark, variables);
+            result.cssVariables.dark.push(`${cssVarName}-raw: ${rawRgbValues};`);
+          }
         }
 
         // Add to JavaScript tokens
@@ -582,10 +600,30 @@ function processPrimitiveColors(primitiveColors, result, variables) {
         if (primitiveColors[colorFamily][shade].$type === "color" && primitiveColors[colorFamily][shade].$value) {
           const name = `${familyName}-${shade}`;
           const value = primitiveColors[colorFamily][shade].$value;
-          const cssVarName = `--color-primitive-${name}`;
+          const cssVarName = `--color-${name}`;
 
-          // Add to CSS variables
-          result.cssVariables.light.push(`${cssVarName}: ${value};`);
+          // Add to CSS variables, converting to RGB format for opacity support
+          const rgbValue = hexToRgb(value);
+          result.cssVariables.light.push(`${cssVarName}: ${rgbValue};`);
+
+          // Add raw RGB values for primitives to support translucent colors
+          // if dark mode is available
+          if (
+            primitiveColors[colorFamily][shade].$variable_metadata &&
+            primitiveColors[colorFamily][shade].$variable_metadata.modes &&
+            primitiveColors[colorFamily][shade].$variable_metadata.modes.dark
+          ) {
+            const rawRgbValues = hexToRgbRaw(value);
+            result.cssVariables.light.push(`${cssVarName}-raw: ${rawRgbValues};`);
+
+            const darkValue = primitiveColors[colorFamily][shade].$variable_metadata.modes.dark;
+            const darkRgbValue = hexToRgb(darkValue);
+            result.cssVariables.dark.push(`${cssVarName}: ${darkRgbValue};`);
+
+            // Add raw RGB values for dark mode
+            const darkRawRgbValues = hexToRgbRaw(darkValue);
+            result.cssVariables.dark.push(`${cssVarName}-raw: ${darkRawRgbValues};`);
+          }
 
           // Add to JavaScript tokens
           if (!result.jsTokens.colors.primitive) {
@@ -605,6 +643,75 @@ function processPrimitiveColors(primitiveColors, result, variables) {
 }
 
 /**
+ * Convert hex color to RGB format for opacity support
+ * @param {string} hex - Hex color code
+ * @returns {string} - RGB color format as rgb(r, g, b) or raw r g b
+ * @param {boolean} raw - Whether to return the raw RGB values
+ */
+function hexToRgb(hex, raw = false) {
+  // Check if it's already in rgb/rgba format
+  if (hex.startsWith("rgb")) {
+    return raw ? hex.replace("rgb(", "").replace(")", "") : hex;
+  }
+
+  // Remove # if present
+  hex = hex.replace(/^#/, "");
+
+  // Parse the hex values
+  let r;
+  let g;
+  let b;
+  if (hex.length === 3) {
+    // Convert 3-digit hex to 6-digit
+    r = Number.parseInt(hex[0] + hex[0], 16);
+    g = Number.parseInt(hex[1] + hex[1], 16);
+    b = Number.parseInt(hex[2] + hex[2], 16);
+  } else if (hex.length === 6) {
+    r = Number.parseInt(hex.substring(0, 2), 16);
+    g = Number.parseInt(hex.substring(2, 4), 16);
+    b = Number.parseInt(hex.substring(4, 6), 16);
+  } else {
+    // Invalid hex, return as is
+    return hex;
+  }
+
+  // Return RGB format
+  return raw ? `${r} ${g} ${b}` : `rgb(${r} ${g} ${b})`;
+}
+
+/**
+ * Convert hex color to raw RGB values for translucent color support
+ * @param {string} hex - Hex color code or reference
+ * @param {Object} variables - Variables for resolving references
+ * @returns {string} - Raw RGB values as "r g b"
+ */
+function hexToRgbRaw(hex, variables) {
+  // If it's a reference, try to resolve it
+  if (typeof hex === "string" && hex.startsWith("{") && hex.endsWith("}") && variables) {
+    const resolvedValue = resolveReference(hex, variables);
+    if (resolvedValue !== hex) {
+      return hexToRgbRaw(resolvedValue);
+    }
+  }
+
+  // Check if it's already in rgb/rgba format
+  if (typeof hex === "string" && hex.startsWith("rgb")) {
+    // Extract the RGB values from the rgb() format
+    const match = hex.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+    if (match) {
+      return `${match[1]} ${match[2]} ${match[3]}`;
+    }
+    return hex;
+  }
+
+  if (typeof hex === "string") {
+    return hexToRgb(hex, true);
+  }
+
+  return hex;
+}
+
+/**
  * Resolve color values, handling references to other variables
  * @param {String} value - The color value to resolve
  * @param {Object} variables - The variables object for reference resolution
@@ -620,10 +727,15 @@ function resolveColor(value, variables, asCssVariable = true) {
     const parts = reference.split(".");
 
     if (asCssVariable) {
+      // Remove 'primitive' from CSS variable references
+      if (reference.startsWith("@primitives.$color")) {
+        return `var(--color-${reference.replace("@primitives.$color.", "").replace(/[$\.]/g, "-").substring(1)})`;
+      }
       return `var(--color-${reference
-        .replace("@primitives.", "primitive")
+        .replace("@primitives.", "")
         .replace("$color.", "")
-        .replace(/[$\.]/g, "-")})`;
+        .replace(/[$\.]/g, "-")
+        .substring(1)})`;
     }
 
     // Navigate through the object to find the referenced value
@@ -633,18 +745,22 @@ function resolveColor(value, variables, asCssVariable = true) {
         current = current[part];
       } else {
         // If we can't resolve, return the CSS variable equivalent
+        if (reference.startsWith("@primitives.$color")) {
+          return `var(--color-${reference.replace("@primitives.$color.", "").replace(/[$\.]/g, "-").substring(1)})`;
+        }
         return `var(--color-${reference.replace(/[@$\.]/g, "-").substring(1)})`;
       }
     }
 
     if (current.$value) {
-      return current.$value;
+      return hexToRgb(current.$value);
     }
 
     return value;
   }
 
-  return value;
+  // Convert direct color values to RGB
+  return hexToRgb(value);
 }
 
 /**
@@ -734,7 +850,7 @@ function generateCssContent(result) {
   content += "}\n\n";
 
   // Dark mode variables
-  content += '[data-theme="dark"] {\n';
+  content += '[data-color-scheme="dark"] {\n';
   result.cssVariables.dark.forEach((variable) => {
     content += `  ${variable}\n`;
   });
