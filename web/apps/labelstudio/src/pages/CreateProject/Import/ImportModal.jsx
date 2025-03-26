@@ -47,11 +47,13 @@ export const Inner = () => {
   }, [modal, project, fileIds, backToDM]);
 
   const onFinish = useCallback(async () => {
-    await uploadSample(
-      sample,
-      () => setWaitingStatus(true),
-      () => setWaitingStatus(false),
-    );
+    if (sample) {
+      await uploadSample(
+        sample,
+        () => setWaitingStatus(true),
+        () => setWaitingStatus(false),
+      );
+    }
 
     const imported = await finishUpload();
 
