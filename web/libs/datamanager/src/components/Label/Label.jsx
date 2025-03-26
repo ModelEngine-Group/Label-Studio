@@ -72,21 +72,31 @@ export const Labeling = injector(
     }, []);
 
     useEffect(() => {
-      if (!isLabelStream) SDK.on("taskSelected", initLabeling);
+      const onTaskSelected = () => {
+        // Destroy LSF and initialize it again to avoid issues with the LSF instance
+        // being unavailable when the component is remounted.
+        // This is to best align the cases where LSF is initialized by a page load
+        // or a task navigation, and avoid issues with the task initialization not properly
+        // allowing deep linking to work due to the LSF instance being destroyed right before
+        // the task would be loaded.
+        SDK.destroyLSF();
+        initLabeling();
+      };
+
+      if (!isLabelStream) SDK.on("taskSelected", onTaskSelected);
 
       return () => {
-        if (!isLabelStream) SDK.off("taskSelected", initLabeling);
+        if (!isLabelStream) SDK.off("taskSelected", onTaskSelected);
       };
     }, []);
 
     useEffect(() => {
       if ((!SDK.lsf && store.dataStore.selected) || isLabelStream) {
         initLabeling();
-      }
-    }, []);
 
-    useEffect(() => {
-      return () => SDK.destroyLSF();
+        // destroy LSF when component unmounts and was initialized by this component and not the "taskSelected" event
+        return () => SDK.destroyLSF();
+      }
     }, []);
 
     const onResize = useCallback((width) => {
