@@ -5,7 +5,6 @@ import ToolMixin from "../mixins/Tool";
 import { MultipleClicksDrawingTool } from "../mixins/DrawingTool";
 import { NodeViews } from "../components/Node/Node";
 import { observe } from "mobx";
-import { FF_DEV_2432, isFF } from "../utils/feature-flags";
 
 const _Tool = types
   .model("PolygonTool", {
@@ -23,7 +22,7 @@ const _Tool = types
       get getActivePolygon() {
         const poly = self.currentArea;
 
-        if (isFF(FF_DEV_2432) && poly && !isAlive(poly)) return null;
+        if (poly && !isAlive(poly)) return null;
         if (poly && poly.closed) return null;
         if (poly === undefined) return null;
         if (poly && poly.type !== "polygonregion") return null;
@@ -118,28 +117,20 @@ const _Tool = types
       startDrawing(x, y) {
         const point = self.control?.getSnappedPoint({ x, y });
 
-        if (isFF(FF_DEV_2432)) {
-          self.mode = "drawing";
-          self.currentArea = self.createRegion(self.createRegionOptions({ x: point.x, y: point.y }), true);
-          self.setDrawing(true);
-          self.applyActiveStates(self.currentArea);
-        } else {
-          Super.startDrawing(point.x, point.y);
-        }
+        self.mode = "drawing";
+        self.currentArea = self.createRegion(self.createRegionOptions({ x: point.x, y: point.y }), true);
+        self.setDrawing(true);
+        self.applyActiveStates(self.currentArea);
       },
 
       _finishDrawing() {
-        if (isFF(FF_DEV_2432)) {
-          const { currentArea, control } = self;
+        const { currentArea, control } = self;
 
-          self.currentArea.notifyDrawingFinished();
-          self.setDrawing(false);
-          self.currentArea = null;
-          self.mode = "viewing";
-          self.annotation.afterCreateResult(currentArea, control);
-        } else {
-          Super._finishDrawing();
-        }
+        self.currentArea.notifyDrawingFinished();
+        self.setDrawing(false);
+        self.currentArea = null;
+        self.mode = "viewing";
+        self.annotation.afterCreateResult(currentArea, control);
       },
 
       setDrawing(drawing) {
@@ -148,16 +139,12 @@ const _Tool = types
       },
 
       deleteRegion() {
-        if (isFF(FF_DEV_2432)) {
-          const { currentArea } = self;
+        const { currentArea } = self;
 
-          self.setDrawing(false);
-          self.currentArea = null;
-          if (currentArea) {
-            currentArea.deleteRegion();
-          }
-        } else {
-          Super.deleteRegion();
+        self.setDrawing(false);
+        self.currentArea = null;
+        if (currentArea) {
+          currentArea.deleteRegion();
         }
       },
     };

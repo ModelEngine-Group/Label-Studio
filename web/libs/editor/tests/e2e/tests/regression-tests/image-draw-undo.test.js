@@ -59,8 +59,10 @@ const createShape = {
         ...opts,
         action: "drawByClickingPoints",
         params: [[...points, points[0]]],
+        undoSteps: points.length + 1,
         result: {
           points,
+          closed: true,
         },
       };
     },
@@ -142,7 +144,10 @@ Scenario("Drawing shapes and undoing after that", async ({ I, LabelStudio, AtSid
     AtImageView[region.action](...region.params);
     AtSidebar.seeRegions(1);
     I.say(`Try to undo ${region.shape}`);
-    I.pressKey(["CommandOrControl", "Z"]);
+    const undoSteps = region.undoSteps ?? 1;
+    for (let i = 0; i < undoSteps; i++) {
+      I.pressKey(["CommandOrControl", "Z"]);
+    }
     AtSidebar.seeRegions(0);
   }
 }).retry(2);

@@ -49,6 +49,7 @@ const createShape = {
         params: [points],
         result: {
           points,
+          closed: true,
         },
       };
     },
@@ -68,6 +69,7 @@ const createShape = {
             [x + DEFAULT_DIMENSIONS.polygon.length, y],
             [x + DEFAULT_DIMENSIONS.polygon.length / 2, y + Math.sin(Math.PI / 3) * DEFAULT_DIMENSIONS.polygon.length],
           ],
+          closed: true,
         },
       };
     },

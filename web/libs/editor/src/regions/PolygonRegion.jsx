@@ -19,7 +19,7 @@ import { KonvaRegionMixin } from "../mixins/KonvaRegion";
 import { observer } from "mobx-react";
 import { createDragBoundFunc } from "../utils/image";
 import { ImageViewContext } from "../components/ImageView/ImageViewContext";
-import { FF_DEV_2432, FF_DEV_3793, isFF } from "../utils/feature-flags";
+import { FF_DEV_3793, isFF } from "../utils/feature-flags";
 import { fixMobxObserve } from "../utils/utilities";
 import { RELATIVE_STAGE_HEIGHT, RELATIVE_STAGE_WIDTH } from "../components/ImageView/Image";
 
@@ -117,7 +117,6 @@ const Model = types
             index,
           }));
         }
-        if (!isFF(FF_DEV_2432)) self.closed = self.points.length > 2;
         self.checkSizes();
       },
 
@@ -307,13 +306,11 @@ const Model = types
        * @return {PolygonRegionResult}
        */
       serialize() {
-        if (!isFF(FF_DEV_2432) && self.points.length < 3) return null;
-
         const value = {
           points: isFF(FF_DEV_3793)
             ? self.points.map((p) => [p.x, p.y])
             : self.points.map((p) => [self.convertXToPerc(p.x), self.convertYToPerc(p.y)]),
-          ...(isFF(FF_DEV_2432) ? { closed: self.closed } : {}),
+          closed: self.closed,
         };
 
         return self.parent.createSerializedResult(self, value);
@@ -610,7 +607,7 @@ const HtxPolygonView = ({ item, setShapeRef }) => {
   }, [item.bboxCoords.left, item.bboxCoords.top]);
 
   useEffect(() => {
-    if (isFF(FF_DEV_2432) && !item.closed) item.control.tools.Polygon.resumeUnfinishedRegion(item);
+    if (!item.closed) item.control.tools.Polygon.resumeUnfinishedRegion(item);
   }, [item.closed]);
 
   if (!item.parent) return null;

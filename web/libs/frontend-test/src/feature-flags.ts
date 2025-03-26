@@ -15,8 +15,6 @@ export const FF_DEV_1536 = "ff_front_dev_1536_taxonomy_user_labels_150222_long";
 // New Audio 2.0 UI
 export const FF_DEV_1713 = "ff_front_DEV_1713_audio_ui_150222_short";
 
-export const FF_DEV_2432 = "ff_front_dev_2432_auto_save_polygon_draft_210622_short";
-
 export const FF_DEV_2669 = "ff_front_dev_2669_paragraph_author_filter_210622_short";
 
 // Change the rotate tool from bbox

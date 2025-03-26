@@ -84,6 +84,7 @@ const shapes = {
         params: [[...points, points[0]]],
         result: {
           points,
+          closed: true,
         },
       };
     },
@@ -219,6 +220,7 @@ Data(shapesTable.filter(({ shapeName }) => shapes[shapeName].hasMoveToolTransfor
     I.pressKey(Shape.hotKey);
     drawShapeByBbox(Shape, 50, 50, 100, 100, AtImageView);
     AtSidebar.seeRegions(1);
+    AtSidebar.dontSeeElement(AtSidebar._incompleteStateBadge);
 
     // Select the shape
     AtImageView.clickAt(100, 100);
@@ -276,6 +278,7 @@ Data(shapesTable.filter(({ shapeName }) => shapes[shapeName].hasMoveToolTransfor
     I.pressKey(Shape.hotKey);
     drawShapeByBbox(Shape, 50, 50, 300, 300, AtImageView);
     AtSidebar.seeRegions(1);
+    AtSidebar.dontSeeElement(AtSidebar._incompleteStateBadge);
 
     // Select the shape
     AtImageView.clickAt(100, 100);

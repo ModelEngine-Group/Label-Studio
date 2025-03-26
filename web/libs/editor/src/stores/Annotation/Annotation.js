@@ -11,7 +11,6 @@ import Result from "../../regions/Result";
 import Utils from "../../utils";
 import {
   FF_DEV_1284,
-  FF_DEV_2432,
   FF_DEV_3391,
   FF_LLM_EPIC,
   FF_LSDV_3009,
@@ -659,12 +658,12 @@ const _Annotation = types
 
       self.names.forEach((tag) => tag.needsUpdate && tag.needsUpdate());
       self.updateAppearenceFromState();
-      if (isFF(FF_DEV_2432)) {
-        const areas = Array.from(self.areas.values());
-        const filtered = areas.filter((area) => area.isDrawing);
+      const areas = Array.from(self.areas.values());
+      // It should find just one unfinished region, but just in case we work with array
+      const filtered = areas.filter((area) => area.isDrawing);
 
-        self.regionStore.selection._updateResultsFromRegions(filtered);
-      }
+      // Update UI to reflect the state of an unfinished region in case if it exists
+      if (filtered.length) self.regionStore.selection._updateResultsFromRegions(filtered);
     },
     updateAppearenceFromState() {
       self.areas.forEach((area) => area.updateAppearenceFromState?.());

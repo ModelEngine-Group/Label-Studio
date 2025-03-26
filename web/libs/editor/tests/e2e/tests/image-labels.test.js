@@ -67,6 +67,7 @@ const createShape = {
         params: [[...points, points[0]]],
         result: {
           points,
+          closed: true,
         },
       };
     },

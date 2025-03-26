@@ -30,6 +30,7 @@ const result = [
         [48.13333333333333, 32.93768545994065],
       ],
       polygonlabels: ["Hello"],
+      closed: true,
     },
   },
   {
@@ -48,6 +49,7 @@ const result = [
         [88.69294605809128, 60.508083140877595],
         [87.75933609958506, 87.06697459584295],
       ],
+      closed: true,
       polygonlabels: ["World"],
     },
   },

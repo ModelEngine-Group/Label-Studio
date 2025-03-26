@@ -27,10 +27,6 @@ const CONFIG_MULTIPLE = `
 </View>
 `;
 
-const FLAGS = {
-  ff_front_dev_2432_auto_save_polygon_draft_210622_short: true,
-};
-
 Scenario("Drafts for unfinished polygons", async ({ I, LabelStudio, AtLabels, AtImageView }) => {
   I.amOnPage("/");
   LabelStudio.init({
@@ -42,8 +38,6 @@ Scenario("Drafts for unfinished polygons", async ({ I, LabelStudio, AtLabels, At
       onSubmitDraft: saveDraftLocally,
     },
   });
-  LabelStudio.setFeatureFlags(FLAGS);
-
   AtImageView.waitForImage();
 
   await AtImageView.lookForStage();
