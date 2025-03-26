@@ -20,6 +20,11 @@ on:
         description: "Attach Artifact to Release"
         type: string
         required: false
+      release_type:
+        description: "Release type (release or nightly)"
+        type: string
+        required: false
+        default: "release"
     outputs:
       pipy-artifact-url:
         description: "PyPI Artifact URL"
@@ -46,10 +51,19 @@ on:
         description: "Attach Artifact to Release"
         type: string
         required: false
+      release_type:
+        description: "Release type (release or nightly)"
+        type: choice
+        required: false
+        default: "release"
+        options:
+          - "release"
+          - "nightly"
 
 env:
   PYTHON_VERSION_FILE: "pyproject.toml"
   FRONTEND_MONOREPO_DIR: "web"
+  NODE: "18"
 
 jobs:
   pypi:
@@ -81,6 +95,13 @@ jobs:
           version=$(sed "s/^v//g" <<< ${PROVIDED_VERSION})
           ./toml set '${{ env.PYTHON_VERSION_FILE }}' project.version "$version" > pyproject.toml.new
           mv -f pyproject.toml.new pyproject.toml
+
+      - name: Manage package name for nightly release
+        if: ${{ inputs.release_type == 'nightly' }}
+        run: |
+          set -euo pipefail
+          ./toml set '${{ env.PYTHON_VERSION_FILE }}' project.name "label-studio-nightly" > pyproject.toml.nightly
+          mv -f pyproject.toml.nightly pyproject.toml
 
       - name: Setup frontend environment
         uses: ./.github/actions/setup-frontend-environment
@@ -141,7 +162,7 @@ jobs:
         run: poetry build
 
       - name: Attach artifacts to release
-        if: inputs.release-id
+        if: inputs.release-id && inputs.release_type == 'release'
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GIT_PAT }}
@@ -161,6 +182,7 @@ jobs:
             }
 
       - name: Check SDK version is not git sha
+        if: inputs.release_type == 'release'
         run: grep 'label-studio-sdk\s*=\s*"[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*"' pyproject.toml
 
       - name: Check Build
@@ -176,7 +198,7 @@ jobs:
 
       - name: Get PyPI package details
         id: pypi-package-details
-        if: inputs.upload_to_pypi
+        if: inputs.upload_to_pypi && inputs.release_type == 'release'
         uses: actions/github-script@v7
         env:
           VERSION: ${{ inputs.version }}
@@ -221,7 +243,7 @@ jobs:
           fi
 
       - name: Upload to artifact
-        if: always()
+        if: always() && inputs.release_type == 'release'
         uses: actions/upload-artifact@v4
         with:
           name: Dist

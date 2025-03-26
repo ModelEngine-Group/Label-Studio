@@ -1,0 +1,35 @@
+name: "Build PyPI Nightly"
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'  # Run at midnight UTC every day
+
+jobs:
+  calculate-version:
+    name: "Calculate Version"
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'HumanSignal'
+    outputs:
+      version: ${{ steps.set-nightly-version.outputs.version }}
+    steps:
+      - name: Set nightly version
+        id: set-nightly-version
+        run: |
+          set -e
+          version=$(curl -s "https://raw.githubusercontent.com/HumanSignal/label-studio/refs/heads/${{ github.event.repository.default_branch }}/pyproject.toml" | grep '^version' | cut -d'"' -f2)
+          version="${version%dev*}dev$(date +'%Y%m%d')"
+          echo "version=${version}" >> $GITHUB_OUTPUT
+
+  build-pypi:
+    name: "Build"
+    if: github.repository_owner == 'HumanSignal'
+    permissions:
+      contents: write
+    uses: ./.github/workflows/build_pypi.yml
+    with:
+      version: ${{ steps.set-nightly-version.outputs.version }}
+      ref: ${{ github.ref_name }}
+      upload_to_pypi: true
+      release_type: nightly
+    secrets: inherit
