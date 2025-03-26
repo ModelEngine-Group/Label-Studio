@@ -31,4 +31,4 @@ jobs:
             > Command | Description
             > --- | ---
             > /ff update | Update feature flags
-          reaction-type: hooray
+          reactions: hooray
