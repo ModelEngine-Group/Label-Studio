@@ -1,6 +1,6 @@
 {
-  "message": "fix: DIA-1925: fix payload for sample task in data import (#7276)",
-  "commit": "5fbf4df499d7fe0542cd751b1b51380aa961b7d4",
-  "date": "2025-03-25T17:11:11.000Z",
+  "message": "fix: OPTIC-1857: User can NOT import data from Import modal from DataManager page (#7280)",
+  "commit": "7d195ef862868fc7759389d656a49c7679402969",
+  "date": "2025-03-26T14:11:34.000Z",
   "branch": "develop"
 }
