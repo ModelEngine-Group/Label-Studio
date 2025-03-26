@@ -198,6 +198,7 @@ export const AppStore = types
     },
 
     setTask: flow(function* ({ taskID, annotationID, pushState }) {
+      console.trace("setTask");
       if (pushState !== false) {
         History.navigate({
           task: taskID,
