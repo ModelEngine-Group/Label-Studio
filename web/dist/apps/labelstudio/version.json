@@ -1,6 +1,6 @@
 {
-  "message": "fix: OPTIC-1858: Avoid the possible condition which would destroy the LSF instance right before it requires it to load a task (#7291)",
-  "commit": "c1994611525ae711a75efe219b6a0fb56587fb87",
-  "date": "2025-03-26T20:48:41.000Z",
+  "message": "Ls release 1.17.0 optic 1858 (#7292)",
+  "commit": "1f849a9daa8130f978b564bea23468fe56e13e5b",
+  "date": "2025-03-26T21:25:19.000Z",
   "branch": "ls-release/1.17.0"
 }
