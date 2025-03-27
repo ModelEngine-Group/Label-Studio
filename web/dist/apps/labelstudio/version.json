@@ -1,6 +1,6 @@
 {
-  "message": "fix: OPTIC-1858: Ensure datamanager initialization properly reacts to change and has correct dependencies (#7295)",
-  "commit": "dee8f5e96d3ac5cba52aef33234ae301fd05c752",
-  "date": "2025-03-27T14:10:46.000Z",
+  "message": "fix: OPTIC-1858: Wait for LSF to be initialized (#7296)",
+  "commit": "e1551af8b13caa231fda3d672c3449a65c26279b",
+  "date": "2025-03-27T14:51:07.000Z",
   "branch": "ls-release/1.17.0"
 }
