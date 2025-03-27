@@ -921,7 +921,7 @@
     },
     "fflag__feature_develop__prompts__dia_1829_jwt_token_auth": {
       "key": "fflag__feature_develop__prompts__dia_1829_jwt_token_auth",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -2717,7 +2717,7 @@
     },
     "fflag_feat_front_optic_1746_improve_global_error_messages_short": {
       "key": "fflag_feat_front_optic_1746_improve_global_error_messages_short",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],

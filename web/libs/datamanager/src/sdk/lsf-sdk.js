@@ -45,7 +45,7 @@ const DEFAULT_INTERFACES = [
 
 let LabelStudioDM;
 
-const resolveLabelStudio = async () => {
+const resolveLabelStudio = () => {
   if (LabelStudioDM) {
     return LabelStudioDM;
   }
@@ -223,9 +223,9 @@ export class LSFWrapper {
   }
 
   /** @private */
-  async initLabelStudio(settings) {
+  initLabelStudio(settings) {
     try {
-      const LSF = await resolveLabelStudio();
+      const LSF = resolveLabelStudio();
 
       this.lsfInstance = new LSF(this.root, settings);
 

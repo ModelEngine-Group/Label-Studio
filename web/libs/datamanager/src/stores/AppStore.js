@@ -198,7 +198,6 @@ export const AppStore = types
     },
 
     setTask: flow(function* ({ taskID, annotationID, pushState }) {
-      console.trace("setTask");
       if (pushState !== false) {
         History.navigate({
           task: taskID,
@@ -206,6 +205,16 @@ export const AppStore = types
           interaction: null,
           region: null,
         });
+      } else if (isFF(FF_REGION_VISIBILITY_FROM_URL)) {
+        const { task, region, annotation } = History.getParams();
+        History.navigate(
+          {
+            task,
+            region,
+            annotation,
+          },
+          true,
+        );
       }
 
       if (!isDefined(taskID)) return;
