@@ -1,6 +1,6 @@
 {
-  "message": "Ls release 1.17.0 optic 1858 (#7293)",
-  "commit": "379f399d5cb6082072c470f3cbd09362de3000c2",
-  "date": "2025-03-26T22:07:32.000Z",
+  "message": "fix: OPTIC-1858: Ensure datamanager initialization properly reacts to change and has correct dependencies (#7295)",
+  "commit": "dee8f5e96d3ac5cba52aef33234ae301fd05c752",
+  "date": "2025-03-27T14:10:46.000Z",
   "branch": "ls-release/1.17.0"
 }
