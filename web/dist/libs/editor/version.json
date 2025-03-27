@@ -1,6 +1,6 @@
 {
-  "message": "fix: OPTIC-1858: Wait for LSF to be initialized (#7296)",
-  "commit": "e1551af8b13caa231fda3d672c3449a65c26279b",
-  "date": "2025-03-27T14:51:07.000Z",
+  "message": "fix: OPTIC-1858: Wait for LSF and currentAnnotation to be available before completing task init (#7297)",
+  "commit": "ea0b657d8486c0b1500da04fc19028cab28d3d23",
+  "date": "2025-03-27T16:27:12.000Z",
   "branch": "ls-release/1.17.0"
 }
