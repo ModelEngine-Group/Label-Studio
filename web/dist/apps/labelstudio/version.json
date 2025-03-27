@@ -1,6 +1,6 @@
 {
-  "message": "refactor: OPTIC-927: remove FF_DEV_2432 feature flag (#7229)",
-  "commit": "113d3389fee805f3dbc3dd51f9fd189637b6b4da",
-  "date": "2025-03-26T16:24:07.000Z",
+  "message": "chore: OPTIC-1337 Update tooltips March 27 2025 (#7286)",
+  "commit": "5dc94efb7955ce0d90e1c6135fd642c0c19e02ec",
+  "date": "2025-03-27T20:36:56.000Z",
   "branch": "develop"
 }
