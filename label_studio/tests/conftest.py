@@ -467,7 +467,7 @@ def project_choices():
     return {'label_config': label, 'title': 'test'}
 
 
-def setup_project(client, project_template, do_auth=True):
+def setup_project(client, project_template, do_auth=True, legacy_api_tokens_enabled=False):
     """Create new test@gmail.com user, login via client, create test project.
     Project configs are thrown over params and automatically grabs from functions names started with 'project_'
 
@@ -487,6 +487,9 @@ def setup_project(client, project_template, do_auth=True):
 
     create_business(user)
     org = Organization.create_organization(created_by=user, title=user.first_name)
+    if legacy_api_tokens_enabled:
+        org.jwt.legacy_api_tokens_enabled = True
+        org.jwt.save()
     user.active_organization = org
     user.save()
 
@@ -522,7 +525,7 @@ def setup_project_dialog(client):
 
 @pytest.fixture
 def setup_project_for_token(client):
-    return setup_project(client, project_dialog, do_auth=False)
+    return setup_project(client, project_dialog, do_auth=False, legacy_api_tokens_enabled=True)
 
 
 @pytest.fixture
@@ -560,6 +563,8 @@ def business_client(client):
 
     user.save()
     org = Organization.create_organization(created_by=user, title=user.first_name)
+    org.jwt.legacy_api_tokens_enabled = True
+    org.jwt.save()
     client.business = business if business else SimpleNamespace(admin=user)
     client.team = None if business else SimpleNamespace(id=1)
     client.admin = user
