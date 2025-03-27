@@ -24,11 +24,12 @@ jobs:
   build-pypi:
     name: "Build"
     if: github.repository_owner == 'HumanSignal'
+    needs: calculate-version
     permissions:
       contents: write
     uses: ./.github/workflows/build_pypi.yml
     with:
-      version: ${{ steps.set-nightly-version.outputs.version }}
+      version: ${{ needs.calculate-version.outputs.version }}
       ref: ${{ github.ref_name }}
       upload_to_pypi: true
       release_type: nightly
