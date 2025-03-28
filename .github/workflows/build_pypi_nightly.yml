@@ -73,7 +73,7 @@ jobs:
             const latestTag = tags.data[0].name;
             const message = `# Nightly Build
 
-            This is an automated nightly build that is recreated every night with the latest changes from the `${{ github.event.repository.default_branch }}` branch.
+            This is an automated nightly build that is recreated every night with the latest changes from the \`${{ github.event.repository.default_branch }}\` branch.
 
             ## Installation
 
