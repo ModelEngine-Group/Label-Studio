@@ -42,7 +42,9 @@ class JWTSettings(models.Model):
         """Only organization owners/admins can modify JWT settings."""
         if not self.organization.has_permission(user):
             return False
-        return user.is_owner or (hasattr(user, 'is_administrator') and user.is_administrator)
+        is_owner = user.is_owner if hasattr(user, 'is_owner') else (user.id == self.organization.created_by.id)
+        is_administrator = hasattr(user, 'is_administrator') and user.is_administrator
+        return is_owner or is_administrator
 
     def has_permission(self, user):
         """Only organization owners/admins can modify JWT settings."""
