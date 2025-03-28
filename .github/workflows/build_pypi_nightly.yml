@@ -33,7 +33,7 @@ jobs:
         id: previous-nightly
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GIT_PAT }}
           script: |
             const { repo, owner } = context.repo;
             try {
@@ -62,7 +62,7 @@ jobs:
         id: create_release
         uses: softprops/action-gh-release@v2.2.1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GIT_PAT }}
           tag_name: nightly
           name: "Nightly"
           generate_release_notes: true
