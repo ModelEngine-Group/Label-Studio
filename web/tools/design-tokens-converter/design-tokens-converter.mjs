@@ -526,11 +526,11 @@ function processCornerRadiusTokens(cornerRadiusObj, result, variables) {
 function processColorTokens(colorObj, parentPath, result, variables) {
   for (const key in colorObj) {
     if (typeof colorObj[key] === "object" && !Array.isArray(colorObj[key])) {
-      const newPath = parentPath ? `${parentPath}-${key.replace("$", "")}` : key.replace("$", "");
+      const newPath = parentPath ? `${parentPath}-${key.replace(/\$/g, "")}` : key.replace(/\$/g, "");
 
       // If this is a color token with value and type
       if (colorObj[key].$type === "color" && colorObj[key].$value) {
-        const name = parentPath ? `${parentPath}-${key.replace("$", "")}` : key.replace("$", "");
+        const name = parentPath ? `${parentPath}-${key.replace(/\$/g, "")}` : key.replace(/\$/g, "");
         const value = colorObj[key].$value;
         const cssVarName = `--color-${name.replace(/\$/g, "")}`;
 
