@@ -30,6 +30,7 @@ from django.conf import settings
 from django.core.validators import MaxLengthValidator, MinLengthValidator
 from django.db import models, transaction
 from django.db.models import Avg, BooleanField, Case, Count, JSONField, Max, Q, Sum, Value, When
+from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from label_studio_sdk._extensions.label_studio_tools.core.label_config import parse_config
 from labels_manager.models import Label
@@ -997,23 +998,30 @@ class Project(ProjectMixin, models.Model):
 
         return self.get_ml_backends(state=MLBackendState.CONNECTED)
 
-    def get_all_storage_objects(self, type_='import'):
+    @cached_property
+    def get_all_import_storage_objects(self):
         from io_storages.models import get_storage_classes
 
-        if hasattr(self, '_storage_objects'):
-            return self._storage_objects
-
         storage_objects = []
-        for storage_class in get_storage_classes(type_):
+        for storage_class in get_storage_classes('import'):
             storage_objects += list(storage_class.objects.filter(project=self))
 
-        self._storage_objects = storage_objects
+        return storage_objects
+
+    @cached_property
+    def get_all_export_storage_objects(self):
+        from io_storages.models import get_storage_classes
+
+        storage_objects = []
+        for storage_class in get_storage_classes('export'):
+            storage_objects += list(storage_class.objects.filter(project=self))
+
         return storage_objects
 
     def resolve_storage_uri(self, url: str) -> Optional[Mapping[str, Any]]:
         from io_storages.functions import get_storage_by_url
 
-        storage_objects = self.get_all_storage_objects()
+        storage_objects = self.get_all_import_storage_objects
         storage = get_storage_by_url(url, storage_objects)
 
         if storage:

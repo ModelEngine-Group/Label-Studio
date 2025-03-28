@@ -415,7 +415,7 @@ class Task(TaskMixin, models.Model):
         project = self.project
 
         if not storage:
-            storage_objects = project.get_all_storage_objects(type_='import')
+            storage_objects = project.get_all_import_storage_objects
             storage = get_storage_by_url(url, storage_objects)
 
         if storage:
@@ -440,7 +440,7 @@ class Task(TaskMixin, models.Model):
                 protected_data[key] = value
             return protected_data
         else:
-            storage_objects = project.get_all_storage_objects(type_='import')
+            storage_objects = project.get_all_import_storage_objects
 
             # try resolve URLs via storage associated with that task
             for field in task_data:
