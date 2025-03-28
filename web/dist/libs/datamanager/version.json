@@ -1,6 +1,6 @@
 {
-  "message": "fix: DIA-2097: [FE] Create Project modal closes automatically when user is at Home Page (#7272)",
-  "commit": "99b97f41d745dde583542db6af4ddc032bf1f2d4",
-  "date": "2025-03-28T11:37:43.000Z",
+  "message": "fix: OPTIC-1859: Incomplete string escaping causing warnings for dependabot for design-tokens-converter (#7300)",
+  "commit": "db3b7fcf4bc80b246dcebb697596a0444a2d0bda",
+  "date": "2025-03-28T12:59:34.000Z",
   "branch": "develop"
 }
