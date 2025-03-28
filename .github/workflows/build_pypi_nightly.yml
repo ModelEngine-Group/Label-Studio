@@ -64,14 +64,12 @@ jobs:
           github-token: ${{ secrets.GIT_PAT }}
           script: |
             const { repo, owner } = context.repo;
-            const tags = await github.rest.repos.listTags({
+            const latestRelease = await github.rest.repos.getLatestRelease({
               owner,
-              repo,
-              per_page: 100
+              repo
             });
-            const latestNonNightlyTag = tags.data.find(tag => tag.name !== 'nightly');
-            const latestTag = tags.data[0].name;
-            const message = `# Nightly Build
+            const latestTag = latestRelease.data.tag_name;
+            const message = `# Nightly Build ${{ needs.calculate-version.outputs.version }}
 
             This is an automated nightly build that is recreated every night with the latest changes from the \`${{ github.event.repository.default_branch }}\` branch.
 
@@ -89,8 +87,7 @@ jobs:
             - This release is automatically recreated every night with the latest changes
 
             ## Changes
-            Changes since ${latestTag}:
-            https://github.com/${owner}/${repo}/compare/${latestTag}...nightly`;
+            Changes since ${latestTag}: https://github.com/${owner}/${repo}/compare/${latestTag}...nightly`;
             const fs = require('fs');
             fs.writeFileSync('${{ github.workspace }}-CHANGELOG.txt', message);
 
@@ -106,27 +103,6 @@ jobs:
           draft: false
           prerelease: true
           append_body: false
-
-      - name: Delete release assets
-        if: steps.create_release.outputs.id
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GIT_PAT }}
-          script: |
-            const { repo, owner } = context.repo;
-            const release_id = '${{ steps.create_release.outputs.id }}';
-            const assets = await github.rest.repos.listReleaseAssets({
-              owner,
-              repo,
-              release_id
-            });
-            for (const asset of assets.data) {
-              await github.rest.repos.deleteReleaseAsset({
-                owner,
-                repo,
-                asset_id: asset.id
-              });
-            }
 
   build-pypi:
     name: "Build"
