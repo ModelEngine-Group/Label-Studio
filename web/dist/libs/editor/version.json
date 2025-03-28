@@ -1,6 +1,6 @@
 {
-  "message": "fix: OPTIC-1858: Wait for LSF and currentAnnotation to be available before completing task init (#7297)",
-  "commit": "ea0b657d8486c0b1500da04fc19028cab28d3d23",
-  "date": "2025-03-27T16:27:12.000Z",
+  "message": "fix: DIA-2096: don't use is_owner in LSO (#7277) (#7304)",
+  "commit": "7dc083f49b88976ab300f108b5e40bd29ba88fd8",
+  "date": "2025-03-28T15:53:02.000Z",
   "branch": "ls-release/1.17.0"
 }
