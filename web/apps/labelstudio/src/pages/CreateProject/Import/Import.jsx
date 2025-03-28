@@ -216,7 +216,7 @@ export const ImportPage = ({
       }
       return files;
     },
-    [project],
+    [project?.id],
   );
 
   const onStart = () => {
@@ -332,7 +332,7 @@ export const ImportPage = ({
         }
       });
     }
-  }, [project, loadFilesList]);
+  }, [project?.id, loadFilesList]);
 
   const urlRef = useRef();
 

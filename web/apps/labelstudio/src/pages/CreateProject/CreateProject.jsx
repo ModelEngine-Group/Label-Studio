@@ -78,7 +78,7 @@ const ProjectName = ({ name, setName, onSaveName, onSubmit, error, description, 
     </form>
   );
 
-export const CreateProject = ({ onClose, redirect = true }) => {
+export const CreateProject = ({ onClose }) => {
   const [step, _setStep] = React.useState("name"); // name | import | config
   const [waiting, setWaitingStatus] = React.useState(false);
 
@@ -171,18 +171,21 @@ export const CreateProject = ({ onClose, redirect = true }) => {
     setError(err.validation_errors?.title);
   };
 
-  const onDelete = React.useCallback(async () => {
-    setWaitingStatus(true);
-    if (project)
-      await api.callApi("deleteProject", {
-        params: {
-          pk: project.id,
-        },
-      });
-    setWaitingStatus(false);
-    redirect && history.replace("/projects");
-    onClose?.();
-  }, [project, redirect]);
+  const onDelete = React.useCallback(() => {
+    const performClose = async () => {
+      setWaitingStatus(true);
+      if (project)
+        await api.callApi("deleteProject", {
+          params: {
+            pk: project.id,
+          },
+        });
+      setWaitingStatus(false);
+      updateProject(null);
+      onClose?.();
+    };
+    performClose();
+  }, [project]);
 
   return (
     <Modal onHide={onDelete} closeOnClickOutside={false} allowToInterceptEscape fullscreen visible bare>

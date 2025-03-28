@@ -9,6 +9,7 @@ import { useState } from "react";
 import { CreateProject } from "../CreateProject/CreateProject";
 import { InviteLink } from "../Organization/PeoplePage/InviteLink";
 import { Heading, Sub } from "@humansignal/typography";
+import { useHistory } from "react-router";
 
 const PROJECTS_TO_SHOW = 10;
 
@@ -52,6 +53,7 @@ type Action = (typeof actions)[number]["type"];
 
 export const HomePage: Page = () => {
   const api = useAPI();
+  const history = useHistory();
   const [creationDialogOpen, setCreationDialogOpen] = useState(false);
   const [invitationOpen, setInvitationOpen] = useState(false);
   const { data, isFetching, isSuccess, isError } = useQuery({
@@ -169,7 +171,7 @@ export const HomePage: Page = () => {
           </div>
         </section>
       </div>
-      {creationDialogOpen && <CreateProject redirect={false} onClose={() => setCreationDialogOpen(false)} />}
+      {creationDialogOpen && <CreateProject onClose={() => setCreationDialogOpen(false)} />}
       <InviteLink opened={invitationOpen} onClosed={() => setInvitationOpen(false)} />
     </main>
   );

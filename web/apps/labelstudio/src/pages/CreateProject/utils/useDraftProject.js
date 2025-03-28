@@ -1,6 +1,6 @@
 import { projectAtom } from "apps/labelstudio/src/providers/ProjectProvider";
 import { useAtom } from "jotai";
-import React from "react";
+import React, { useEffect } from "react";
 import { useAPI } from "../../../providers/ApiProvider";
 
 export const useDraftProject = () => {
@@ -27,11 +27,12 @@ export const useDraftProject = () => {
         title: projectName,
       },
     });
+    console.log({ draft });
 
     if (draft) setProject(draft);
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchDraftProject();
   }, []);
 
