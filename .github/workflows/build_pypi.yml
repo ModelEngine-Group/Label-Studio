@@ -96,13 +96,6 @@ jobs:
           ./toml set '${{ env.PYTHON_VERSION_FILE }}' project.version "$version" > pyproject.toml.new
           mv -f pyproject.toml.new pyproject.toml
 
-      - name: Manage package name for nightly release
-        if: ${{ inputs.release_type == 'nightly' }}
-        run: |
-          set -euo pipefail
-          ./toml set '${{ env.PYTHON_VERSION_FILE }}' project.name "label-studio-nightly" > pyproject.toml.nightly
-          mv -f pyproject.toml.nightly pyproject.toml
-
       - name: Setup frontend environment
         uses: ./.github/actions/setup-frontend-environment
         with:
