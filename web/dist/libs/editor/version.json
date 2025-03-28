@@ -1,6 +1,6 @@
 {
-  "message": "fix: OPTIC-1859: Incomplete string escaping causing warnings for dependabot for design-tokens-converter (#7300)",
-  "commit": "db3b7fcf4bc80b246dcebb697596a0444a2d0bda",
-  "date": "2025-03-28T12:59:34.000Z",
+  "message": "fix: OPTIC-1858: Wait for the store and currentAnnotation before proceeding to complete task initialization in Datamanager Quickview (#7299)",
+  "commit": "0c2c0d84d7070e65b403dc39ce914a61df6bca10",
+  "date": "2025-03-28T13:07:14.000Z",
   "branch": "develop"
 }
