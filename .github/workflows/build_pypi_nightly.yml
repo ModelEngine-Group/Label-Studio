@@ -78,9 +78,9 @@ jobs:
             ## Installation
 
             You can install this nightly build by downloading the wheel package from the release assets and installing it:
-            ```bash
+            \`\`\`bash
             pip install label_studio-*-py3-none-any.whl
-            ```
+            \`\`\`
 
             ## Important Notes
             - This is a development build and may contain bugs or incomplete features
