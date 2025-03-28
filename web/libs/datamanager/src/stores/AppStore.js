@@ -237,33 +237,45 @@ export const AppStore = types
         select: !!taskID && !!annotationID,
       });
 
-      taskPromise.then(() => {
-        const annotation = self.LSF?.currentAnnotation;
-        const id = annotation?.pk ?? annotation?.id;
+      // wait for the task to be loaded and LSF to be initialized
+      yield taskPromise.then(async () => {
+        // wait for self.LSF to be initialized with currentAnnotation
+        let maxWait = 1000;
+        while (!self.LSF?.currentAnnotation && maxWait > 0) {
+          await new Promise((resolve) => setTimeout(resolve, 1));
+          maxWait -= 1;
+        }
 
-        self.LSF?.setLSFTask(self.taskStore.selected, id);
+        if (self.LSF) {
+          const annotation = self.LSF?.currentAnnotation;
+          const id = annotation?.pk ?? annotation?.id;
 
-        if (isFF(FF_REGION_VISIBILITY_FROM_URL)) {
-          const { annotation: annIDFromUrl, region: regionIDFromUrl } = History.getParams();
-          const annotationStore = self.LSF?.lsf?.annotationStore;
+          self.LSF?.setLSFTask(self.taskStore.selected, id);
 
-          if (annIDFromUrl && annotationStore) {
-            const lsfAnnotation = [...annotationStore.annotations, ...annotationStore.predictions].find((a) => {
-              return a.pk === annIDFromUrl || a.id === annIDFromUrl;
-            });
+          if (isFF(FF_REGION_VISIBILITY_FROM_URL)) {
+            const { annotation: annIDFromUrl, region: regionIDFromUrl } = History.getParams();
+            const annotationStore = self.LSF?.lsf?.annotationStore;
 
-            if (lsfAnnotation) {
-              const annID = lsfAnnotation.pk ?? lsfAnnotation.id;
-              self.LSF?.setLSFTask(self.taskStore.selected, annID, undefined, lsfAnnotation.type === "prediction");
+            if (annIDFromUrl && annotationStore) {
+              const lsfAnnotation = [...annotationStore.annotations, ...annotationStore.predictions].find((a) => {
+                return a.pk === annIDFromUrl || a.id === annIDFromUrl;
+              });
+
+              if (lsfAnnotation) {
+                const annID = lsfAnnotation.pk ?? lsfAnnotation.id;
+                self.LSF?.setLSFTask(self.taskStore.selected, annID, undefined, lsfAnnotation.type === "prediction");
+              }
+            }
+            if (regionIDFromUrl) {
+              const currentAnn = self.LSF?.currentAnnotation;
+              // Focus on the region by hiding all other regions
+              currentAnn?.regionStore?.setRegionVisible(regionIDFromUrl);
+              // Select the region so outliner details are visible
+              currentAnn?.regionStore?.selectRegionByID(regionIDFromUrl);
             }
           }
-          if (regionIDFromUrl) {
-            const currentAnn = self.LSF?.currentAnnotation;
-            // Focus on the region by hiding all other regions
-            currentAnn?.regionStore?.setRegionVisible(regionIDFromUrl);
-            // Select the region so outliner details are visible
-            currentAnn?.regionStore?.selectRegionByID(regionIDFromUrl);
-          }
+        } else {
+          console.error("LSF not initialized properly");
         }
 
         self.setLoadingData(false);

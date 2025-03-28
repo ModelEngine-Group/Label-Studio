@@ -59,7 +59,7 @@ const buildLink = (path, params) => {
 };
 
 export const DataManagerPage = ({ ...props }) => {
-  const dependencies = useMemo(loadDependencies);
+  const dependencies = useMemo(loadDependencies, []);
   const toast = useContext(ToastContext);
   const root = useRef();
   const params = useParams();
@@ -191,32 +191,18 @@ export const DataManagerPage = ({ ...props }) => {
       dataManagerRef.current.destroy();
       dataManagerRef.current = null;
     }
-  }, [dataManagerRef]);
+  }, []);
 
   useEffect(() => {
     Promise.all(dependencies)
       .then(() => setLoading(false))
       .then(init);
+  }, [init]);
 
+  useEffect(() => {
+    // destroy the data manager when the component is unmounted
     return () => destroyDM();
-  }, [root, init]);
-
-  if (loading) {
-    return (
-      <div
-        style={{
-          flex: 1,
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Spinner size={64} />
-      </div>
-    );
-  }
+  }, []);
 
   return crashed ? (
     <Block name="crash">
@@ -225,7 +211,15 @@ export const DataManagerPage = ({ ...props }) => {
       <Button to="/projects">Back to projects</Button>
     </Block>
   ) : (
-    <Block ref={root} name="datamanager" />
+    <>
+      {loading && (
+        <div className="flex-1 absolute inset-0 flex items-center justify-center">
+          <Spinner size={64} />
+        </div>
+      )}
+      {/* Allow this to exist before the DataManager is initialized as the async app.fetchData call eventually calls startLabeling, and that requires the root element to exist */}
+      <Block ref={root} name="datamanager" />
+    </>
   );
 };
 
