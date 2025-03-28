@@ -65,7 +65,7 @@ jobs:
           token: ${{ secrets.GIT_PAT }}
           tag_name: nightly
           name: "Nightly"
-          generate_release_notes: true
+          generate_release_notes: false
           draft: false
           prerelease: true
           append_body: false
