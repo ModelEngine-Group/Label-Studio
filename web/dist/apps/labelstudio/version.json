@@ -1,6 +1,6 @@
 {
-  "message": "chore: OPTIC-1337 Update tooltips March 27 2025 (#7286)",
-  "commit": "5dc94efb7955ce0d90e1c6135fd642c0c19e02ec",
-  "date": "2025-03-27T20:36:56.000Z",
+  "message": "fix: DIA-2097: [FE] Create Project modal closes automatically when user is at Home Page (#7272)",
+  "commit": "99b97f41d745dde583542db6af4ddc032bf1f2d4",
+  "date": "2025-03-28T11:37:43.000Z",
   "branch": "develop"
 }
