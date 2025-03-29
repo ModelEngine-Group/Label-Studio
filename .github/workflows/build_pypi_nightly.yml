@@ -77,9 +77,17 @@ jobs:
 
             ## Installation
 
-            You can install this nightly build by downloading the wheel package from the release assets and installing it:
+            You can install this nightly build by downloading the wheel package (the file ending in `.whl`) from the "Assets" section below this description. 
+            After downloading, you can install it using the following commands from your terminal:
+
+            For Windows:
             \`\`\`bash
-            pip install label_studio-*-py3-none-any.whl
+            pip install %USERPROFILE%\Downloads\label_studio-${{ needs.calculate-version.outputs.version }}-py3-none-any.whl
+            \`\`\`
+
+            For macOS/Linux:
+            \`\`\`bash
+            pip install ~/Downloads/label_studio-${{ needs.calculate-version.outputs.version }}-py3-none-any.whl
             \`\`\`
 
             ## Important Notes
