@@ -77,7 +77,7 @@ jobs:
 
             ## Installation
 
-            You can install this nightly build by downloading the wheel package (the file ending in `.whl`) from the "Assets" section below this description. 
+            You can install this nightly build by downloading the wheel package (the file ending in \`.whl\`) from the \`Assets\` section below this description. 
             After downloading, you can install it using the following commands from your terminal:
 
             For Windows:
@@ -128,3 +128,23 @@ jobs:
       release_type: nightly
       release-id: ${{ needs.create-nightly-release.outputs.release_id }}
     secrets: inherit
+
+  notify_slack_on_failure:
+      name: "Notify Slack on Failure"
+      needs:
+        - build-pypi
+        - create-nightly-release
+      runs-on: ubuntu-latest
+      if: failure()
+      steps:
+        - name: Send Notification to Slack
+          id: slack_notify_ops_release
+          uses: slackapi/slack-github-action@v1.27
+          with:
+            channel-id: '${{ vars.SLACK_CH_RELEASE_TRAIN }}'
+            slack-message: |
+              ❌ Nightly PyPI build failed! <!subteam^${{ vars.SLACK_GR_DEVOPS }}>
+
+              ><https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|[Workflow run]>
+          env:
+            SLACK_BOT_TOKEN: ${{ secrets.SLACK_LSE_BOT_TOKEN }}
