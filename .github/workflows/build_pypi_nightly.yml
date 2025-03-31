@@ -82,7 +82,7 @@ jobs:
 
             For Windows:
             \`\`\`bash
-            pip install %USERPROFILE%\Downloads\label_studio-${{ needs.calculate-version.outputs.version }}-py3-none-any.whl
+            pip install %USERPROFILE%\\Downloads\\label_studio-${{ needs.calculate-version.outputs.version }}-py3-none-any.whl
             \`\`\`
 
             For macOS/Linux:
