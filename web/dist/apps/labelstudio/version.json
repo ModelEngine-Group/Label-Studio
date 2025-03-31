@@ -1,6 +1,6 @@
 {
-  "message": "fix: OPTIC-1858: Wait for the store and currentAnnotation before proceeding to complete task initialization in Datamanager Quickview (#7299)",
-  "commit": "0c2c0d84d7070e65b403dc39ce914a61df6bca10",
-  "date": "2025-03-28T13:07:14.000Z",
+  "message": "ci: OPTIC-1873: Update biome to last version (#7290)",
+  "commit": "b94718aa80353c9fa17999a586bc7e8f7ea2ac52",
+  "date": "2025-03-31T16:24:29.000Z",
   "branch": "develop"
 }
