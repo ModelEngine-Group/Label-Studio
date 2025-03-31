@@ -30,7 +30,7 @@ export const EntityTab = observer(
               tag={Userpic}
               showUsername
               username={prediction ? entity.createdBy : null}
-              user={infoIsHidden ? {} : entity.user ?? { email: entity.createdBy }}
+              user={infoIsHidden ? {} : (entity.user ?? { email: entity.createdBy })}
               mod={{ prediction }}
             >
               {prediction && <IconSparks style={{ width: 16, height: 16 }} />}

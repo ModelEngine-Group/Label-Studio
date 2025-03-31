@@ -124,11 +124,11 @@ export const PanelBase: FC<PanelBaseProps> = ({
   const style = useMemo(() => {
     const dynamicStyle = visible
       ? {
-          height: detached ? height ?? "100%" : "100%",
-          width: expanded ? "100%" : width ?? DEFAULT_PANEL_WIDTH,
+          height: detached ? (height ?? "100%") : "100%",
+          width: expanded ? "100%" : (width ?? DEFAULT_PANEL_WIDTH),
         }
       : {
-          width: detached ? width ?? DEFAULT_PANEL_WIDTH : "100%",
+          width: detached ? (width ?? DEFAULT_PANEL_WIDTH) : "100%",
           height: detached ? PANEL_HEADER_HEIGHT_PADDED : undefined, // header height + 1px margin top and bottom,
         };
 
@@ -152,7 +152,7 @@ export const PanelBase: FC<PanelBaseProps> = ({
       detached: locked ? false : detached,
       resizing: isDefined(resizing),
       hidden: !visible,
-      alignment: detached ? "left" : alignment ?? "left",
+      alignment: detached ? "left" : (alignment ?? "left"),
       disabled: locked,
     };
   }, [alignment, visible, detached, resizing, locked]);

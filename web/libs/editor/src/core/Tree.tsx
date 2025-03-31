@@ -58,7 +58,7 @@ function tagIntoObject(node: Element, taskData: Record<string, any>, replaces?: 
   const props = attrsToProps(node, replaces);
   const type = node.tagName.toLowerCase();
   const indexFlag = props.indexflag ?? "{{idx}}";
-  const id = isFF(FF_DEV_3391) ? node.getAttribute("name") ?? guidGenerator() : guidGenerator();
+  const id = isFF(FF_DEV_3391) ? (node.getAttribute("name") ?? guidGenerator()) : guidGenerator();
   const data: ConfigNode = {
     ...props,
     id,

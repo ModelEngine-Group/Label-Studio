@@ -589,7 +589,7 @@ export class Visualizer extends Events<VisualizerEvents> {
     const waveformHeight =
       Math.max(
         this.originalWaveHeight,
-        this.waveHeight * (this.splitChannels ? this.audio?.channelCount ?? 1 : 1) + this.timelineHeight,
+        this.waveHeight * (this.splitChannels ? (this.audio?.channelCount ?? 1) : 1) + this.timelineHeight,
       ) - this.timelineHeight;
 
     if (this.baseWaveHeight !== waveformHeight) {

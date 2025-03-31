@@ -14,7 +14,7 @@ type StateResult<T> = [T, (value: T) => void];
 export const useLocalStorageState = <T>(keyName: string, defaultValue: T, options: Options<T> = {}): StateResult<T> => {
   const localStorageState = localStorage.getItem(keyName);
   const defaultState = localStorageState
-    ? options.fromString?.(localStorageState) ?? (localStorageState as unknown as T)
+    ? (options.fromString?.(localStorageState) ?? (localStorageState as unknown as T))
     : defaultValue;
 
   const [state, setState] = useState<T>(defaultState);

@@ -196,7 +196,7 @@ const HtxKeyPointView = ({ item, setShapeRef }) => {
     includeFill: true,
     defaultFillColor: "#000",
     defaultStrokeColor: "#fff",
-    defaultOpacity: item.style ?? item.tag ? 0.6 : 1,
+    defaultOpacity: (item.style ?? item.tag) ? 0.6 : 1,
     // avoid size glitching when user select/unselect region
     sameStrokeWidthForSelected: true,
   });

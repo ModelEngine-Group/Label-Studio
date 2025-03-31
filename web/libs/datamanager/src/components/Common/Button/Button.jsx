@@ -5,7 +5,7 @@ import "./Button.scss";
 
 export const Button = forwardRef(
   ({ children, type, extra, className, href, size, waiting, icon, tag, look, ...rest }, ref) => {
-    const finalTag = tag ?? href ? "a" : "button";
+    const finalTag = (tag ?? href) ? "a" : "button";
 
     const mods = {
       size,
@@ -51,7 +51,7 @@ export const Button = forwardRef(
               {children}
             </Elem>
           ) : (
-            children ?? null
+            (children ?? null)
           )}
           {isDefined(extra) ? <Elem name="extra">{extra}</Elem> : null}
         </>

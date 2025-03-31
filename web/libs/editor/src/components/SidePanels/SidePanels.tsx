@@ -192,7 +192,7 @@ const SidePanelsComponent: FC<SidePanelsProps> = ({ currentEntity, panelsHidden,
     const panel = panelData[name];
     const parentWidth = rootRef.current?.clientWidth ?? 0;
     const height = panel.detached
-      ? visible ?? panel.visible
+      ? (visible ?? panel.visible)
         ? panel.height
         : PANEL_HEADER_HEIGHT_PADDED
       : panel.height;

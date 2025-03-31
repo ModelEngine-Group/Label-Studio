@@ -20,7 +20,7 @@ export class Modal extends React.Component {
       title: props.title,
       body: props.body,
       footer: props.footer,
-      visible: props.animateAppearance ? false : props.visible ?? false,
+      visible: props.animateAppearance ? false : (props.visible ?? false),
       transition: props.visible ? "visible" : null,
     };
   }

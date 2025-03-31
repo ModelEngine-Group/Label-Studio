@@ -221,7 +221,7 @@ const PlayableAndSyncable = types
         if (value.start === undefined) return {};
 
         const start = clamp(value.start ?? 0, 0, self.audioDuration);
-        const _end = value.duration ? start + value.duration : value.end ?? self.audioDuration;
+        const _end = value.duration ? start + value.duration : (value.end ?? self.audioDuration);
         const end = clamp(_end, start, self.audioDuration);
 
         return { start, end };

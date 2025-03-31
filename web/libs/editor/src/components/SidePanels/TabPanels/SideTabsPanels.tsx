@@ -215,7 +215,7 @@ const SideTabsPanelsComponent: FC<SidePanelsProps> = ({
     (key: string, top: number, left: number, visible?: boolean) => {
       const panel = panelData[key];
       const parentWidth = rootRef.current?.clientWidth ?? 0;
-      const visibleHeight = visible ?? panel.visible ? panel.height : PANEL_HEADER_HEIGHT;
+      const visibleHeight = (visible ?? panel.visible) ? panel.height : PANEL_HEADER_HEIGHT;
       const detachedHeight = panel.detached ? visibleHeight : panel.height;
       const adjustedHeight =
         panel.height === rootRef.current?.clientHeight || !panel.detached ? DEFAULT_PANEL_HEIGHT : detachedHeight;

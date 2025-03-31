@@ -88,11 +88,11 @@ export const PanelTabsBase: FC<BaseProps> = ({
   const style = useMemo(() => {
     const dynamicStyle = visible
       ? {
-          height: locked ? DEFAULT_PANEL_HEIGHT : collapsed ? "100%" : height ?? "100%",
-          width: locked ? "100%" : !collapsed ? width ?? "100%" : PANEL_HEADER_HEIGHT,
+          height: locked ? DEFAULT_PANEL_HEIGHT : collapsed ? "100%" : (height ?? "100%"),
+          width: locked ? "100%" : !collapsed ? (width ?? "100%") : PANEL_HEADER_HEIGHT,
         }
       : {
-          width: collapsed ? "100%" : width ?? DEFAULT_PANEL_WIDTH,
+          width: collapsed ? "100%" : (width ?? DEFAULT_PANEL_WIDTH),
           height: collapsed ? "100%" : PANEL_HEADER_HEIGHT,
         };
 
@@ -115,7 +115,7 @@ export const PanelTabsBase: FC<BaseProps> = ({
     return {
       detached: locked ? false : detached,
       hidden: !visible,
-      alignment: detached ? "left" : alignment ?? "left",
+      alignment: detached ? "left" : (alignment ?? "left"),
       disabled: locked,
       collapsed,
       dragTop: dragTop && attachedKeys && attachedKeys[0] === key,

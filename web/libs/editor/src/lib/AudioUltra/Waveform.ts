@@ -214,7 +214,7 @@ export class Waveform extends Events<WaveformEventTypes> {
     params.decoderType = params.decoderType ?? "webaudio";
     // Need to restrict ffmpeg to html5 player as it doesn't support webaudio
     // because of chunked decoding raw Float32Arrays and no AudioBuffer support
-    params.playerType = params.decoderType === "ffmpeg" ? "html5" : params.playerType ?? "html5";
+    params.playerType = params.decoderType === "ffmpeg" ? "html5" : (params.playerType ?? "html5");
 
     this.src = params.src;
     this.params = params;

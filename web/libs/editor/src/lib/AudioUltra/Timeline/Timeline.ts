@@ -53,7 +53,7 @@ export class Timeline {
     this.fontSize = options?.fontSize ?? this.fontSize;
     this.fontFamily = options?.fontFamily ?? this.fontFamily;
     this.height =
-      options?.height ?? defaults.timelinePlacement ? options?.height ?? defaults.timelineHeight : this.height;
+      (options?.height ?? defaults.timelinePlacement) ? (options?.height ?? defaults.timelineHeight) : this.height;
     this.initHeight = this.height;
     this.gridWidth = options?.gridWidth ?? this.gridWidth;
     this.fontColor = options?.fontColor ? rgba(options?.fontColor) : this.fontColor;
