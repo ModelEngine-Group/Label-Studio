@@ -1,0 +1,54 @@
+name: "External Check"
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+    branches:
+      - develop
+      - 'ls-release/**'
+  workflow_dispatch:
+    inputs:
+      sha:
+        required: true
+        type: string
+      conclusion:
+        required: false
+        type: string
+        default: "success" # Can be one of: action_required, cancelled, failure, neutral, success, skipped, stale, timed_out
+
+jobs:
+  external_check:
+    name: "External Check"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: hmarr/debug-action@v3.0.0
+
+      - name: Create Check
+        if: inputs.sha
+        uses: actions/github-script@v7
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CHECK_NAME: "External Check"
+          SHA: ${{ inputs.sha }}
+          CONCLUSION: ${{ inputs.conclusion || 'success' }}
+        with:
+          script: |
+            const { repo, owner } = context.repo;
+            const check_name = process.env.CHECK_NAME;
+            const sha = process.env.SHA;
+            const conclusion = process.env.CONCLUSION;
+            const { data: check } = await github.rest.checks.create({
+              owner,
+              repo,
+              name: check_name,
+              head_sha: sha,
+              status: 'completed',
+              conclusion: conclusion,
+              output: {
+                title: check_name,
+              }
+            });
