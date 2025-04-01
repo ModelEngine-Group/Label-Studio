@@ -1,6 +1,6 @@
 {
-  "message": "ci: OPTIC-1873: Update biome to last version (#7290)",
-  "commit": "b94718aa80353c9fa17999a586bc7e8f7ea2ac52",
-  "date": "2025-03-31T16:24:29.000Z",
+  "message": "fix: DIA-1907: [FE] TypeError: Failed to fetch (#7289)",
+  "commit": "294067c677b27ed405527ff49958cec461353351",
+  "date": "2025-04-01T11:13:22.000Z",
   "branch": "develop"
 }
