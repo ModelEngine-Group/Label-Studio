@@ -54,5 +54,6 @@ jobs:
               conclusion: conclusion,
               output: {
                 title: check_name,
+                summary: check_name,
               }
             });
