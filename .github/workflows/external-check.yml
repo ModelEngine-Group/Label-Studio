@@ -20,6 +20,10 @@ on:
         type: string
         default: "success" # Can be one of: action_required, cancelled, failure, neutral, success, skipped, stale, timed_out
 
+permissions:
+  contents: read
+  checks: write
+
 jobs:
   external_check:
     name: "External Check"
