@@ -57,3 +57,4 @@ jobs:
                 summary: check_name,
               }
             });
+            core.info(`Check created: ${check.html_url}`);
