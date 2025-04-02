@@ -186,8 +186,8 @@ function ProjectSimpleCard({
 }: {
   project: APIProject;
 }) {
-  const finished = project.queue_done ?? 0;
-  const total = project.queue_total ?? 0;
+  const finished = project.finished_task_number ?? 0;
+  const total = project.task_number ?? 0;
   const progress = (total > 0 ? finished / total : 0) * 100;
   const white = "#FFFFFF";
   const color = project.color && project.color !== white ? project.color : "#E1DED5";
