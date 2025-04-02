@@ -10,6 +10,7 @@ import { CreateProject } from "../CreateProject/CreateProject";
 import { InviteLink } from "../Organization/PeoplePage/InviteLink";
 import { Heading, Sub } from "@humansignal/typography";
 import { useHistory } from "react-router";
+import { Link } from "react-router-dom";
 
 const PROJECTS_TO_SHOW = 10;
 
@@ -193,7 +194,11 @@ function ProjectSimpleCard({
   const color = project.color && project.color !== white ? project.color : "#E1DED5";
 
   return (
-    <a href={`/projects/${project.id}`} className="block even:bg-neutral-surface rounded-sm overflow-hidden">
+    <Link
+      to={`/projects/${project.id}`}
+      className="block even:bg-neutral-surface rounded-sm overflow-hidden"
+      data-external
+    >
       <div
         className="grid grid-cols-[minmax(0,1fr)_150px] p-2 py-3 items-center border-l-[3px]"
         style={{ borderLeftColor: color }}
@@ -208,6 +213,6 @@ function ProjectSimpleCard({
           <div className="bg-positive-surface-hover h-full" style={{ maxWidth: `${progress}%` }} />
         </div>
       </div>
-    </a>
+    </Link>
   );
 }
