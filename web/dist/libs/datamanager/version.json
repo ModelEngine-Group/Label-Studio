@@ -1,6 +1,6 @@
 {
-  "message": "fix: DIA-1907: [FE] TypeError: Failed to fetch (#7289)",
-  "commit": "294067c677b27ed405527ff49958cec461353351",
-  "date": "2025-04-01T11:13:22.000Z",
+  "message": "fix: DIA-2121: Project statistics on home page for LSO displays annotator's view rather than admin's view (#7314)",
+  "commit": "3e69fe0f7608c4adcc40b89dfbb817cc90eb989c",
+  "date": "2025-04-02T05:29:57.000Z",
   "branch": "develop"
 }
