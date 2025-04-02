@@ -1,6 +1,6 @@
 {
-  "message": "fix: DIA-2120: Clicking on project item from home page is not always responsive (#7313)",
-  "commit": "08f436b4dab488f5c37f8a61d7ae60f2b3d2115d",
-  "date": "2025-04-02T13:04:55.000Z",
+  "message": "feat: DIA-2075: [FE] Homepage projects list perf optimization (#7281)",
+  "commit": "852d53c32fb96f6c831d3fcddc30a9e31d011d2f",
+  "date": "2025-04-02T15:11:48.000Z",
   "branch": "develop"
 }
