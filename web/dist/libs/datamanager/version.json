@@ -1,6 +1,6 @@
 {
-  "message": "fix: DIA-2121: Project statistics on home page for LSO displays annotator's view rather than admin's view (#7314)",
-  "commit": "3e69fe0f7608c4adcc40b89dfbb817cc90eb989c",
-  "date": "2025-04-02T05:29:57.000Z",
+  "message": "fix: DIA-2120: Clicking on project item from home page is not always responsive (#7313)",
+  "commit": "08f436b4dab488f5c37f8a61d7ae60f2b3d2115d",
+  "date": "2025-04-02T13:04:55.000Z",
   "branch": "develop"
 }
