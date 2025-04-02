@@ -53,6 +53,7 @@ With Prompts, you can:
 | **Vertex AI** | gemini-2.0-flash-exp <br>gemini-1.5-flash <br>gemini-1.5-pro   |
 | **Anthropic** | claude-3-5-haiku <br>claude-3-5-sonnet    |
 | **Azure OpenAI** | [Azure OpenAI chat-based models](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models) <br><br>**Note:** We recommend against using GPT 3.5 models, as these can sometimes be prone to rate limit errors and are not compatible with Image data.  |
+| **Azure AI Foundry** | We support all Azure AI Foundry models.   |
 | **Custom** | [Custom LLM](prompts_create#Add-OpenAI-Azure-OpenAI-or-a-custom-model) |
 
 </div>

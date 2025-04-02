@@ -31,7 +31,7 @@ You can see what API keys you have and add new ones by clicking **API Keys** in 
 
 ![Screenshot of the API keys button](/images/prompts/model_keys.png)
 
-## OpenAI API key
+## OpenAI
 
 You can only have one OpenAI key per organization. This grants you access to set of whitelisted models. For a list of these models, see [Supported base models](prompts_overview#Supported-base-models). 
 
@@ -41,7 +41,7 @@ You can find your OpenAI API key on the [API key page](https://platform.openai.c
 
 Once added, all supported models will appear in the base model drop-down when you [draft your prompt](prompts_draft).
 
-## Gemini API key
+## Gemini
 
 You can only have one Gemini key per organization. This grants you access to set of whitelisted models. For a list of these models, see [Supported base models](prompts_overview#Supported-base-models). 
 
@@ -49,7 +49,7 @@ For information on getting a Gemini API key, see [Get a Gemini API key](https://
 
 Once added, all supported models will appear in the base model drop-down when you [draft your prompt](prompts_draft).
 
-## Vertex AI JSON credentials
+## Vertex AI
 
 You can only have one Vertex AI key per organization. This grants you access to set of whitelisted models. For a list of these models, see [Supported base models](prompts_overview#Supported-base-models). 
 
@@ -59,7 +59,7 @@ The JSON credentials are required. You can also optionally provide the project I
 
 Once added, all supported models will appear in the base model drop-down when you [draft your prompt](prompts_draft).
 
-## Anthropic API key
+## Anthropic
 
 You can only have one Anthropic key per organization. This grants you access to set of whitelisted models. For a list of these models, see [Supported base models](prompts_overview#Supported-base-models). 
 
@@ -67,7 +67,7 @@ For information on getting an Anthropic API key, see [Anthropic - Accessing the 
 
 Once added, all supported models will appear in the base model drop-down when you [draft your prompt](prompts_draft).
 
-## Azure OpenAI key
+## Azure OpenAI
 
 Each Azure OpenAI key is tied to a specific deployment, and each deployment comprises a single OpenAI model. So if you want to use multiple models through Azure, you will need to create a deployment for each model and then add each key to Label Studio. 
 
@@ -97,6 +97,23 @@ When adding the key to Label Studio, you are asked for the following information
 You can find all this information in the **Details** section of the deployment in Azure OpenAI Studio. 
 
 ![Screenshot of the Azure deployment details](/images/prompts/azure_deployment.png)
+
+## Azure AI Foundry
+
+Use the Azure AI Foundry model catalog to deploy a model: [AI Foundry docs](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/model-catalog-overview).
+
+Once deployed, navigate to the Details page of the deployed model. The information you will need to set up the connection to Label Studio is under **Endpoint**:
+
+![Screenshot of the AI Foundry endpoint details](/images/prompts/ai-foundry.png)
+
+When adding the key to Label Studio, you are asked for the following information:
+
+| Field | Description|
+| --- | --- |
+| **Model** | The is model name. This is provided as a parameter with your endpoint information (see the screenshot above). |
+| **Endpoint** | This is the **Target URI** provided by AI Foundry.  |
+| **API key** | This is the **Key** provided by AI Foundry. |
+
 
 ## Custom LLM
 
