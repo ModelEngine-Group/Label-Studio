@@ -28,3 +28,5 @@ export const userDisplayName = (user: Record<string, string> = {}) => {
         .trim()
     : username || email;
 };
+
+export { cn } from "@humansignal/ui/shad/utils/index";

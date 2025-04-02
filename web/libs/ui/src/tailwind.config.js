@@ -174,6 +174,12 @@ module.exports = {
         // Add all border radii from tokens
         ...tokens.cornerRadius,
       },
+      backgroundPosition: {
+        "shimmer-start": "left -2em top 0",
+      },
+      backgroundSize: {
+        "shimmer-size": "2em 100%",
+      },
       keyframes: {
         line: {
           "0%, 100%": { transform: "translateY(100%)" },
@@ -187,6 +193,10 @@ module.exports = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        shimmer: {
+          from: { "background-position": "left -2em top 0" },
+          to: { "background-position": "right -2em top 0" },
+        },
       },
       animation: {
         line1: "line 3s linear infinite",
@@ -194,6 +204,7 @@ module.exports = {
         line3: "line 9s linear infinite",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        shimmer: "shimmer 1.3s ease infinite",
       },
     },
   },
