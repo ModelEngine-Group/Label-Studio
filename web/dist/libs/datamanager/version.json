@@ -1,6 +1,6 @@
 {
-  "message": "fix: DIA-2096: don't use is_owner in LSO (#7277) (#7304)",
-  "commit": "7dc083f49b88976ab300f108b5e40bd29ba88fd8",
-  "date": "2025-03-28T15:53:02.000Z",
+  "message": "fix: DIA-2121: Project statistics on home page for LSO displays annotator's view rather than admin's view (#7314)",
+  "commit": "9061958c3c44030dcbf6832a609b7bf2396515d3",
+  "date": "2025-04-02T05:29:57.000Z",
   "branch": "ls-release/1.17.0"
 }
