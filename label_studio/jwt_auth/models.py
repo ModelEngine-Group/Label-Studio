@@ -2,6 +2,7 @@ from datetime import timedelta
 from typing import Any
 
 from annoying.fields import AutoOneToOneField
+from core.utils.common import is_community
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from organizations.models import Organization
@@ -39,9 +40,19 @@ class JWTSettings(models.Model):
         return self.organization.has_permission(user)
 
     def has_modify_permission(self, user):
-        """Only organization owners/admins can modify JWT settings."""
+        """Determine who can modify JWT settings.
+
+        In label studio enterprise: Only organization owners/admins can modify JWT settings.
+        In label studio open-source: Any organization member can modify JWT settings.
+        """
         if not self.organization.has_permission(user):
             return False
+
+        # open-source
+        if is_community():
+            return True
+
+        # enterprise
         is_owner = user.is_owner if hasattr(user, 'is_owner') else (user.id == self.organization.created_by.id)
         is_administrator = hasattr(user, 'is_administrator') and user.is_administrator
         return is_owner or is_administrator
