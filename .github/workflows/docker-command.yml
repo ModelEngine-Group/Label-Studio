@@ -117,4 +117,4 @@ jobs:
             > Command | Description
             > --- | ---
             > /docker build | Build and push custom docker image
-          reaction-type: hooray
+          reactions: hooray

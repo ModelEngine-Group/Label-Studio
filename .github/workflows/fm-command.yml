@@ -31,4 +31,4 @@ jobs:
             > Command | Description
             > --- | ---
             > /fm sync | Sync upstream prs and merge with pull request base
-          reaction-type: hooray
+          reactions: hooray

@@ -20,6 +20,11 @@ on:
         description: "Attach Artifact to Release"
         type: string
         required: false
+      release_type:
+        description: "Release type (release or nightly)"
+        type: string
+        required: false
+        default: "release"
     outputs:
       pipy-artifact-url:
         description: "PyPI Artifact URL"
@@ -46,10 +51,19 @@ on:
         description: "Attach Artifact to Release"
         type: string
         required: false
+      release_type:
+        description: "Release type (release or nightly)"
+        type: choice
+        required: false
+        default: "release"
+        options:
+          - "release"
+          - "nightly"
 
 env:
   PYTHON_VERSION_FILE: "pyproject.toml"
   FRONTEND_MONOREPO_DIR: "web"
+  NODE: "18"
 
 jobs:
   pypi:
@@ -161,6 +175,7 @@ jobs:
             }
 
       - name: Check SDK version is not git sha
+        if: inputs.release_type == 'release'
         run: grep 'label-studio-sdk\s*=\s*"[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*"' pyproject.toml
 
       - name: Check Build
@@ -176,7 +191,7 @@ jobs:
 
       - name: Get PyPI package details
         id: pypi-package-details
-        if: inputs.upload_to_pypi
+        if: inputs.upload_to_pypi && inputs.release_type == 'release'
         uses: actions/github-script@v7
         env:
           VERSION: ${{ inputs.version }}
@@ -211,6 +226,7 @@ jobs:
           result=true
           for file in $(find "${DIST_DIR}" -maxdepth 1 -type f); do
             size=$(du -m "$file" | cut -f1)
+            echo "${file}(${size}Mb)"
             if [ $size -ge $THRESHOLD ]; then
               echo "::error::${file}(${size}Mb) exceeds size threshold(${THRESHOLD}Mb)"
               result=false
@@ -221,7 +237,7 @@ jobs:
           fi
 
       - name: Upload to artifact
-        if: always()
+        if: always() && inputs.release_type == 'release'
         uses: actions/upload-artifact@v4
         with:
           name: Dist

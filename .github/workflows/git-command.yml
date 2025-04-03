@@ -85,4 +85,4 @@ jobs:
             > Command | Description
             > --- | ---
             > /git merge `branch` | Merge branch `branch` into current branch
-          reaction-type: hooray
+          reactions: hooray

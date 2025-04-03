@@ -401,7 +401,7 @@ jobs:
 
           version="${RELEASE_BRANCH/#ls-release\//}"
 
-          previous_tag=$(git tag --sort=-committerdate | head -n1)
+          previous_tag=$(git tag --sort=-committerdate | grep -v nightly | head -n1)
 
           echo "previous_tag_name=tags/${previous_tag}" >> $GITHUB_OUTPUT
 

@@ -19,4 +19,4 @@ jobs:
             > Command | Description
             > --- | ---
             > /frontend [\<args\> ...] | Actions with frontend. Type `/frontend help` for an additional help.
-          reaction-type: hooray
+          reactions: hooray

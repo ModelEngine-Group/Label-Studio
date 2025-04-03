@@ -100,4 +100,4 @@ jobs:
             > Command | Description
             > --- | ---
             > /jira create [task|bug|story] `PROJECT` | Create a Jira issue in project `PROJECT`
-          reaction-type: hooray
+          reactions: hooray
