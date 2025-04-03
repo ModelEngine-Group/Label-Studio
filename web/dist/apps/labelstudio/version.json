@@ -1,6 +1,6 @@
 {
-  "message": "feat: DIA-2075: [FE] Homepage projects list perf optimization (#7281)",
-  "commit": "852d53c32fb96f6c831d3fcddc30a9e31d011d2f",
-  "date": "2025-04-02T15:11:48.000Z",
+  "message": "fix: DIA-1431: [FE] Storage type dropdown sometimes loads as blank (on Add/ Edit Source Storage modal) (#7322)",
+  "commit": "4f60206e2e35087e7a7d84517a3c64eaea9e1d61",
+  "date": "2025-04-03T11:21:58.000Z",
   "branch": "develop"
 }
