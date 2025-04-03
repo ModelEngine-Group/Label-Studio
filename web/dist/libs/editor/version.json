@@ -1,6 +1,6 @@
 {
-  "message": "fix: DIA-2121: Project statistics on home page for LSO displays annotator's view rather than admin's view (#7314)",
-  "commit": "9061958c3c44030dcbf6832a609b7bf2396515d3",
-  "date": "2025-04-02T05:29:57.000Z",
+  "message": "ci: sync actions",
+  "commit": "674ba65402204770a4d8c8db3ac240e2fae985cb",
+  "date": "2025-04-03T14:21:02.000Z",
   "branch": "ls-release/1.17.0"
 }
