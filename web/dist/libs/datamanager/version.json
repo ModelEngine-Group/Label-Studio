@@ -1,6 +1,6 @@
 {
-  "message": "ci: sync actions",
-  "commit": "674ba65402204770a4d8c8db3ac240e2fae985cb",
-  "date": "2025-04-03T14:21:02.000Z",
+  "message": "fix: DIA-2122: allow all LSO users to modify JWT settings (#7323)",
+  "commit": "b73bbddbbb1d448388142482c788daf02802df1a",
+  "date": "2025-04-03T22:09:55.000Z",
   "branch": "ls-release/1.17.0"
 }
