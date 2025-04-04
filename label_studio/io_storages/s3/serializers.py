@@ -1,5 +1,6 @@
 """This file and its contents are licensed under the Apache License 2.0. Please see the included NOTICE for copyright information and LICENSE for a copy of the license.
 """
+import logging
 import os
 
 from botocore.exceptions import ClientError, ParamValidationError
@@ -8,6 +9,8 @@ from io_storages.s3.models import S3ExportStorage, S3ImportStorage
 from io_storages.serializers import ExportStorageSerializer, ImportStorageSerializer
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+
+logger = logging.getLogger(__name__)
 
 
 class S3StorageSerializerMixin:
@@ -63,7 +66,8 @@ class S3StorageSerializerMixin:
             ):
                 raise ValidationError('Cannot find bucket {bucket_name} in S3'.format(bucket_name=storage.bucket))
         except TypeError as e:
-            raise ValidationError(f'It seems access keys are incorrect: {e}')
+            logger.info(f'It seems access keys are incorrect: {e}', exc_info=True)
+            raise ValidationError('It seems access keys are incorrect')
         return data
 
 
