@@ -383,10 +383,7 @@ class ImportAPI(generics.CreateAPIView):
         # check project permissions
         project = generics.get_object_or_404(Project.objects.for_user(self.request.user), pk=self.kwargs['pk'])
 
-        if (
-            flag_set('fflag_feat_all_lsdv_4915_async_task_import_13042023_short', request.user)
-            and settings.VERSION_EDITION != 'Community'
-        ):
+        if settings.VERSION_EDITION != 'Community':
             return self.async_import(request, project, preannotated_from_fields, commit_to_project, return_task_ids)
         else:
             return self.sync_import(request, project, preannotated_from_fields, commit_to_project, return_task_ids)

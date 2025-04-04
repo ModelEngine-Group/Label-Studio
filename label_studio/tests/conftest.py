@@ -674,8 +674,6 @@ def async_import_off():
     from core.feature_flags import flag_set
 
     def fake_flag_set(*args, **kwargs):
-        if args[0] == 'fflag_feat_all_lsdv_4915_async_task_import_13042023_short':
-            return False
         return flag_set(*args, **kwargs)
 
     with mock.patch('data_import.api.flag_set', wraps=fake_flag_set):
