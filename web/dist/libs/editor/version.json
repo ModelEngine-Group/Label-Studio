@@ -1,6 +1,6 @@
 {
-  "message": "fix: DIA-1431: [FE] Storage type dropdown sometimes loads as blank (on Add/ Edit Source Storage modal) (#7322)",
-  "commit": "4f60206e2e35087e7a7d84517a3c64eaea9e1d61",
-  "date": "2025-04-03T11:21:58.000Z",
+  "message": "feat: OPTIC-1886: AskAi Joyride (#7327)",
+  "commit": "bd7c9f912f3c87f272c1e06f0403da15e0192a7e",
+  "date": "2025-04-04T15:54:36.000Z",
   "branch": "develop"
 }
