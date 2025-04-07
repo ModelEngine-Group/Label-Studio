@@ -29,6 +29,7 @@ export type APIProxyOptions<T extends {}> = {
   mockDisabled?: boolean;
   sharedParams?: Record<string, any>;
   alwaysExpectJSON?: boolean;
+  onRequestFinished?: (res: Response) => void;
 };
 
 export type ResponseMeta = {

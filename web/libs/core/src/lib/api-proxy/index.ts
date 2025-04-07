@@ -52,6 +52,8 @@ export class APIProxy<T extends {}> {
 
   methods = {} as ApiMethods<T>;
 
+  onRequestFinished?: (res: Response) => void;
+
   constructor(options: APIProxyOptions<T>) {
     this.commonHeaders = options.commonHeaders ?? {};
     this.gateway = this.resolveGateway(options.gateway);
@@ -60,6 +62,7 @@ export class APIProxy<T extends {}> {
     this.mockDisabled = options.mockDisabled ?? false;
     this.sharedParams = options.sharedParams ?? {};
     this.alwaysExpectJSON = options.alwaysExpectJSON ?? true;
+    this.onRequestFinished = options.onRequestFinished;
 
     this.resolveMethods(options.endpoints);
   }
@@ -250,6 +253,7 @@ export class APIProxy<T extends {}> {
           }
         }
 
+        this.onRequestFinished?.(rawResponse);
         if (raw) return rawResponse;
 
         responseMeta = {
