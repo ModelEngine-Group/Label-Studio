@@ -48,8 +48,6 @@ You can also see a high-level summary of your contributions.
 
 </div>
 
-<div class="enterprise-only">
-
 ## Personal access token
 
 !!! note
@@ -59,15 +57,11 @@ Click **Create** to generate an access token. When creating a token, ensure you 
 
 While personal access tokens work seamlessly with the Label Studio SDK, if you are using HTTP API requests, you will need to take extra steps. See [Personal access tokens and the API](access_tokens#Personal-access-tokens-and-the-API). 
 
-</div>
-
 <div class="enterprise-only">
 
 You organization administrators may optionally set an expiration date for all personal access tokens. 
 
 </div>
-
-<div class="enterprise-only">
 
 ## Legacy token
 
@@ -78,17 +72,7 @@ This token is pre-generated for you to use. Legacy tokens are easier to use for 
 
 Click **Renew** to generate a new token. Any existing scripts using your old token will lose their authorization and will need to be updated to include your new token. 
 
-</div>
 
-<div class="opensource-only">
-
-## Access token
-
-If you want to use the API, use this token to authenticate your API requests.
-
-Click **Renew** to generate a new token. Any existing scripts using your old token will lose their authorization and will need to be updated to include your new token. 
-
-</div>
 
 
 
