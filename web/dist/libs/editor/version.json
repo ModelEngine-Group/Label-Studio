@@ -1,6 +1,6 @@
 {
-  "message": "feat: OPTIC-1886: AskAi Joyride (#7327)",
-  "commit": "bd7c9f912f3c87f272c1e06f0403da15e0192a7e",
-  "date": "2025-04-04T15:54:36.000Z",
+  "message": "fix: DIA-2071: [BE,FE] AttributeError: 'AnonymousUser' object has no attribute 'active_organization' (#7311)",
+  "commit": "8785410f32bf8ff40e17d1d54dcd9c98d12e5024",
+  "date": "2025-04-07T11:54:58.000Z",
   "branch": "develop"
 }
