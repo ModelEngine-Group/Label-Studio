@@ -473,7 +473,7 @@ Go to your S3 bucket and then **Permissions > Bucket Policy** in the AWS managem
             "Sid": "DenyAccessUnlessFromSaaSIPsForListAndGet",
             "Effect": "Deny",
             "Principal": {
-                "AWS": "arn:aws:iam::490065312183:user/rw_bucket"
+                "AWS": "arn:aws:iam::490065312183:role/label-studio-app-production"
             },
             "Action": [
                 "s3:ListBucket",
