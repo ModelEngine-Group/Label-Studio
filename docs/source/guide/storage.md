@@ -302,13 +302,19 @@ If you want to use a revocable method to grant Label Studio access to your Amazo
 !!! note "Notice for Label Studio Cloud users"
     <ul><li><p>On <strong>April 7th 2025</strong>, new storage connections will require an update to the AWS principal in your IAM role policy.</p>
 
-    <p>You must replace this: <code>"arn:aws:iam::490065312183:user/rw_bucket"</code></p>
+    <p>If you set up your IAM role prior to April 7th, 2025 and you have already been using it with Label Studio, you must <b>add</b> the following to your principal list before you can set up new storage connection in Label Studio projects: 
         
-    <p>With this: <code>"arn:aws:iam::490065312183:role/label-studio-app-production"</code></p>
+    <p><code>"arn:aws:iam::490065312183:role/label-studio-app-production"</code></p>
+
+    <p>For example:</p>
+
+    <p><img src="/images/storages/s3-trust-policy.png" alt="screenshot"></p>
+
+    <p>(See step 3 below.)</p>
         
-    <p>(See step 3 below for more information.)</p>
+    <p>Adding the new principal ensures you can create new connections. <b>Keeping the old principal ensures that pre-existing storage connections can continue to load data.</b> </p>
         
-    <p>Existing S3 IAM role-based-access storages added to Label Studio will continue to work as is without any changes necessary.</p></li>
+    <p>Existing S3 IAM role-based-access storages added to Label Studio will continue to work as is without any changes necessary. This change is only required if you are setting up new connections.</p></li>
     
     <li><p>On <strong>July 7th 2025</strong>, we will no longer support the legacy IAM user, and all policies should be updated to the new IAM role.</p></li></ul> 
 
@@ -345,7 +351,7 @@ Set up an IAM role in Amazon AWS to use with Label Studio.
 ```
 
 !!! attention
-    If your bucket is already connected to a Label Studio project, and that connection was created before April 7, 2025,  you will need to add the new role (listed above) along with your old user to continue using your existing project. 
+    If your bucket is already connected to a Label Studio project, and that connection was created before April 7, 2025,  you will need to add the new role (listed above) along with your old user to continue using your existing project. You also must maintain the old role so that pre-existing projects can continue to load data from AWS. 
 
 4. After you create the IAM role, note the Amazon Resource Name (ARN) of the role. You need it to set up the S3 source storage in Label Studio.
 5. Assign role policies to the role to allow it to access your S3 bucket. Replace `<your_bucket_name>` with your S3 bucket name. Use the following role policy for S3 source storage:
