@@ -139,6 +139,7 @@
     "@storybook/addon-links": "7.6.10",
     "@storybook/addon-styling-webpack": "1.0.0",
     "@storybook/core-server": "7.6.10",
+    "@storybook/icons": "^1.4.0",
     "@storybook/react-webpack5": "7.6.10",
     "@storybook/test": "^8.5.0",
     "@storybook/test-runner": "^0.13.0",

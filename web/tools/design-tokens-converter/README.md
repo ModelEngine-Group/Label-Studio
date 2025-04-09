@@ -79,7 +79,7 @@ module.exports = {
 /* Spacing */
 .padded {
   padding: var(--spacing-base);
-  margin: var(--spacing-large);
+  margin: var(--spacing-wide);
 }
 
 /* Typography */

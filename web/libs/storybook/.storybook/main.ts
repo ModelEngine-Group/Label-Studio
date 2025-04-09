@@ -10,6 +10,7 @@ const config: StorybookConfig = {
     "@storybook/addon-interactions",
     "@nx/react/plugins/storybook",
     "@chromatic-com/storybook",
+    "../addons/theme-toggle/register",
   ],
 
   webpackFinal(config) {
