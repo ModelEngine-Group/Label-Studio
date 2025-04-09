@@ -1018,6 +1018,21 @@ class Project(ProjectMixin, models.Model):
 
         return storage_objects
 
+    @cached_property
+    def multipage_labeling_values(self):
+        """
+        Check if the project's label config contains an Image tag with a valueList attribute,
+        which indicates multipage labeling.
+        """
+        config = self.get_parsed_config()
+        values = []
+        for tag in config.values():
+            for object_tag in tag.get('inputs', []):
+                if object_tag.get('type') == 'Image':
+                    if object_tag.get('valueList') is not None:
+                        values.append(object_tag.get('valueList'))
+        return values
+
     def resolve_storage_uri(self, url: str) -> Optional[Mapping[str, Any]]:
         from io_storages.functions import get_storage_by_url
 

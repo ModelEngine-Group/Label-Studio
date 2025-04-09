@@ -1180,6 +1180,9 @@ class PredictionMeta(models.Model):
                 completion_tokens_count=data.get('completion_tokens'),
                 total_tokens_count=data.get('prompt_tokens', 0) + data.get('completion_tokens', 0),
                 inference_time=data.get('inference_time'),
+                extra={
+                    'message_counts': data.get('message_counts', {}),
+                },
             )
             if isinstance(prediction, Prediction):
                 prediction_meta.prediction = prediction
