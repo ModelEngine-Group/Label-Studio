@@ -179,7 +179,12 @@ def get_not_solved_tasks_qs(
 
         # otherwise, filtering out completed tasks is sufficient
         else:
-            not_solved_tasks = not_solved_tasks.filter(is_labeled=False)
+            # ignore tasks that are already labeled for onboarding mode
+            if not (
+                flag_set('fflag_feat_all_leap_1825_annotator_evaluation_short', user='auto')
+                and project.show_ground_truth_first
+            ):
+                not_solved_tasks = not_solved_tasks.filter(is_labeled=False)
 
     if not flag_set('fflag_fix_back_lsdv_4523_show_overlap_first_order_27022023_short'):
         # show tasks with overlap > 1 first (unless tasks are already prioritized on agreement)

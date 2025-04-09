@@ -276,6 +276,15 @@ class Task(TaskMixin, models.Model):
         """
         from projects.functions.next_task import get_next_task_logging_level
 
+        if self.project.show_ground_truth_first and flag_set(
+            'fflag_feat_all_leap_1825_annotator_evaluation_short', user='auto'
+        ):
+            # in show_ground_truth_first mode(onboarding)
+            # we ignore overlap setting for ground_truth tasks
+            # https://humansignal.atlassian.net/browse/LEAP-1963
+            if self.annotations.filter(ground_truth=True).exists():
+                return False
+
         q = self.get_lock_exclude_query(user)
 
         num_locks = self.num_locks_user(user=user)
