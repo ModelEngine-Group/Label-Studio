@@ -22,16 +22,28 @@ export function SampleDatasetSelect({
 
   const onSelect = useCallback(
     (value: string) => {
+      if ("__lsa" in window) {
+        __lsa("sample.select", { dataset: value });
+      }
       onSampleApplied(samples.find((s) => s.url === value));
     },
     [samples, onSampleApplied],
   );
 
+  const onClick = () => {
+    if ("__lsa" in window) {
+      __lsa("sample.open");
+    }
+  };
+
   return (
     <div className="flex gap-3 items-center">
       <span className="text-neutral-content-subtler">or use a sample dataset</span>
-      <Select value={sample?.url ?? null} onValueChange={onSelect}>
-        <SelectTrigger className="!h-10 min-w-52 rounded-sm border-neutral-border-bold data-[placeholder]:!text-[#000] data-[placeholder]:text-[16px] text-[16px] [&_svg]:stroke-[#000]">
+      <Select value={sample?.url ?? undefined} onValueChange={onSelect}>
+        <SelectTrigger
+          className="!h-10 min-w-52 rounded-sm border-neutral-border-bold data-[placeholder]:!text-[#000] data-[placeholder]:text-[16px] text-[16px] [&_svg]:stroke-[#000]"
+          onClick={onClick}
+        >
           {title}
         </SelectTrigger>
         <SelectContent className="z-99999 w-fit min-w-[400px] p-2">

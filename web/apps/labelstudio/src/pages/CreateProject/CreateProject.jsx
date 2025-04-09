@@ -137,9 +137,9 @@ export const CreateProject = ({ onClose }) => {
 
     setWaitingStatus(true);
 
-    if (sample) {
-      await uploadSample(sample);
-    }
+    if (sample) await uploadSample(sample);
+
+    __lsa("create_project.create", { sample: sample?.url });
     const response = await api.callApi("updateProject", {
       params: {
         pk: project.id,
