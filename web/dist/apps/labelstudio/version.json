@@ -1,6 +1,6 @@
 {
-  "message": "feat: DIA-2130: Add tracking to Sample datasets flow (#7351)",
-  "commit": "2bc0db2b41b6eadadf21cedae6ec8c8bd4ec278f",
-  "date": "2025-04-09T18:15:03.000Z",
+  "message": "chore: OPTIC-1935: Generate all required css variables from design tokens (#7352)",
+  "commit": "5e0ae305f7292c9de23d0f9ceda34a698ccafe56",
+  "date": "2025-04-09T18:25:03.000Z",
   "branch": "develop"
 }
