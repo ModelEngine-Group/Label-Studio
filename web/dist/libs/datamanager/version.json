@@ -1,6 +1,6 @@
 {
-  "message": "fix: DIA-2071: [BE,FE] AttributeError: 'AnonymousUser' object has no attribute 'active_organization' (#7311)",
-  "commit": "8785410f32bf8ff40e17d1d54dcd9c98d12e5024",
-  "date": "2025-04-07T11:54:58.000Z",
+  "message": "fix: LEAP-1919: update origin on editing classifications results (#7312)",
+  "commit": "0ee26ca54ea448e6314df85505ed10e640e1bcdc",
+  "date": "2025-04-09T14:43:35.000Z",
   "branch": "develop"
 }
