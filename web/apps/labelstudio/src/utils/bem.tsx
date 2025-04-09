@@ -54,6 +54,7 @@ type CNComponentProps = {
   className?: string;
   component?: CNTagName;
   style?: CSSProperties;
+  rawClassName?: string;
 } & DOMAttributes<HTMLElement>;
 
 export type BemComponent = FunctionComponent<CNComponentProps>;
@@ -179,13 +180,18 @@ export const cn = (block: string, options: CNOptions = {}): CN => {
 export const BemWithSpecifiContext = (context: Context<CN | null>) => {
   const LocalContext = context ?? createContext<CN | null>(null);
 
-  const Block: BemComponent = forwardRef(({ tag = "div", name, mod, mix, ...rest }, ref) => {
+  const Block: BemComponent = forwardRef(({ tag = "div", name, mod, mix, rawClassName, ...rest }, ref) => {
     const rootClass = cn(name);
     const finalMix = ([] as [CNMix?]).concat(mix).filter((cnm) => !!cnm);
-    const className = rootClass
-      .mod(mod)
-      .mix(...(finalMix as CNMix[]), rest.className)
-      .toClassName();
+    const className = [
+      rootClass
+        .mod(mod)
+        .mix(...(finalMix as CNMix[]), rest.className)
+        .toClassName(),
+      rawClassName,
+    ]
+      .filter(Boolean)
+      .join(" ");
     const finalProps = { ...rest, ref, className } as any;
 
     return <LocalContext.Provider value={rootClass}>{createElement(tag, finalProps)}</LocalContext.Provider>;
@@ -193,17 +199,22 @@ export const BemWithSpecifiContext = (context: Context<CN | null>) => {
 
   Block.displayName = "Block";
 
-  const Elem: BemComponent = forwardRef(({ component, block, name, mod, mix, ...rest }, ref) => {
+  const Elem: BemComponent = forwardRef(({ component, block, name, mod, mix, rawClassName, ...rest }, ref) => {
     const blockCtx = useContext(LocalContext);
 
     const finalMix = ([] as [CNMix?]).concat(mix).filter((cnm) => !!cnm);
     const finalTag = rest.tag ?? "div";
 
-    const className = (block ? cn(block) : blockCtx)!
-      .elem(name)
-      .mod(mod)
-      .mix(...(finalMix as CNMix[]), rest.className)
-      .toClassName();
+    const className = [
+      (block ? cn(block) : blockCtx)!
+        .elem(name)
+        .mod(mod)
+        .mix(...(finalMix as CNMix[]), rest.className)
+        .toClassName(),
+      rawClassName,
+    ]
+      .filter(Boolean)
+      .join(" ");
 
     const finalProps: any = { ...rest, ref, className };
 

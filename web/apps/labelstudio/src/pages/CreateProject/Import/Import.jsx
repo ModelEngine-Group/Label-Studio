@@ -3,7 +3,6 @@ import { SampleDatasetSelect } from "@humansignal/core/blocks/SampleDatasetSelec
 import { IconError, IconFileUpload, IconInfo, IconTrash, IconUpload } from "@humansignal/icons";
 import { Badge } from "@humansignal/shad/components/ui/badge";
 import { cn as scn } from "@humansignal/shad/utils";
-import { CodeBlock, SimpleCard } from "@humansignal/ui";
 import { Button } from "apps/labelstudio/src/components";
 import { useAtomValue } from "jotai";
 import Input from "libs/datamanager/src/components/Common/Input/Input";
@@ -16,6 +15,7 @@ import { sampleDatasetAtom } from "../utils/atoms";
 import "./Import.scss";
 import samples from "./samples.json";
 import { importFiles } from "./utils";
+import { CodeBlock, SimpleCard, Spinner } from "@humansignal/ui";
 
 const importClass = cn("upload_page");
 const dropzoneClass = cn("dropzone");
@@ -389,52 +389,118 @@ export const ImportPage = ({
 
       <main>
         <Upload sendFiles={sendFiles} project={project}>
-          {!showList && (
-            <div className="flex gap-4 justify-center items-start">
-              <label htmlFor="file-input">
-                <div className={dropzoneClass.elem("content")}>
-                  <header>
-                    Drag & drop files here
-                    <br />
-                    or click to browse
-                  </header>
-                  <IconFileUpload height="64" className={dropzoneClass.elem("icon")} />
-                  <dl>
-                    <dt>Text</dt>
-                    <dd>{supportedExtensions.text.join(", ")}</dd>
-                    <dt>Audio</dt>
-                    <dd>{supportedExtensions.audio.join(", ")}</dd>
-                    <dt>Video</dt>
-                    <dd>mpeg4/H.264 webp, webm* {/* Keep in sync with supportedExtensions.video */}</dd>
-                    <dt>Images</dt>
-                    <dd>{supportedExtensions.image.join(", ")}</dd>
-                    <dt>HTML</dt>
-                    <dd>{supportedExtensions.html.join(", ")}</dd>
-                    <dt>Time Series</dt>
-                    <dd>{supportedExtensions.timeSeries.join(", ")}</dd>
-                    <dt>Common Formats</dt>
-                    <dd>{supportedExtensions.common.join(", ")}</dd>
-                  </dl>
-                  <b>
-                    * – Support depends on the browser
-                    <br />* – Direct media uploads have{" "}
-                    <a href="https://labelstud.io/guide/tasks.html#Import-data-from-the-Label-Studio-UI">limitations</a>{" "}
-                    and we strongly recommend using{" "}
-                    <a href="https://labelstud.io/guide/storage.html" target="_blank" rel="noreferrer">
-                      Cloud Storage
-                    </a>{" "}
-                    instead
-                  </b>
-                </div>
-              </label>
+          <div className={scn("flex gap-4 min-h-full", { "justify-center": !showList })}>
+            {!showList && (
+              <div className="flex gap-4 justify-center items-start">
+                <label htmlFor="file-input">
+                  <div className={dropzoneClass.elem("content")}>
+                    <header>
+                      Drag & drop files here
+                      <br />
+                      or click to browse
+                    </header>
+                    <IconFileUpload height="64" className={dropzoneClass.elem("icon")} />
+                    <dl>
+                      <dt>Text</dt>
+                      <dd>{supportedExtensions.text.join(", ")}</dd>
+                      <dt>Audio</dt>
+                      <dd>{supportedExtensions.audio.join(", ")}</dd>
+                      <dt>Video</dt>
+                      <dd>mpeg4/H.264 webp, webm* {/* Keep in sync with supportedExtensions.video */}</dd>
+                      <dt>Images</dt>
+                      <dd>{supportedExtensions.image.join(", ")}</dd>
+                      <dt>HTML</dt>
+                      <dd>{supportedExtensions.html.join(", ")}</dd>
+                      <dt>Time Series</dt>
+                      <dd>{supportedExtensions.timeSeries.join(", ")}</dd>
+                      <dt>Common Formats</dt>
+                      <dd>{supportedExtensions.common.join(", ")}</dd>
+                    </dl>
+                    <b>
+                      * – Support depends on the browser
+                      <br />* – Direct media uploads have{" "}
+                      <a href="https://labelstud.io/guide/tasks.html#Import-data-from-the-Label-Studio-UI">
+                        limitations
+                      </a>{" "}
+                      and we strongly recommend using{" "}
+                      <a href="https://labelstud.io/guide/storage.html" target="_blank" rel="noreferrer">
+                        Cloud Storage
+                      </a>{" "}
+                      instead
+                    </b>
+                  </div>
+                </label>
+              </div>
+            )}
+
+            {showList && (
+              <div className="w-1/2">
+                <table>
+                  <tbody>
+                    {sample && (
+                      <tr key={sample.url}>
+                        <td>
+                          <div className="flex items-center gap-2">
+                            {sample.title}
+                            <Badge variant="info" className="h-5 text-xs rounded-sm">
+                              Sample
+                            </Badge>
+                          </div>
+                        </td>
+                        <td>{sample.description}</td>
+                        <td>
+                          <Button
+                            size="icon"
+                            look="destructive"
+                            rawClassName="h-6 w-6 p-0"
+                            onClick={() => onSampleDatasetSelect(undefined)}
+                          >
+                            <IconTrash className="w-3 h-3" />
+                          </Button>
+                        </td>
+                      </tr>
+                    )}
+                    {files.uploading.map((file, idx) => (
+                      <tr key={`${idx}-${file.name}`}>
+                        <td>{file.name}</td>
+                        <td colSpan={2}>
+                          <span className={importClass.elem("file-status").mod({ uploading: true })} />
+                        </td>
+                      </tr>
+                    ))}
+                    {files.uploaded.map((file) => (
+                      <tr key={file.file}>
+                        <td>{file.file}</td>
+                        <td>
+                          <span className={importClass.elem("file-status")} />
+                        </td>
+                        <td>{file.size}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            <div className="w-[650px]">
               {projectConfigured && ff.isFF(ff.FF_SAMPLE_DATASETS) ? (
-                <CodeBlock
-                  title="Expected input preview"
-                  code={sampleConfig?.data ?? ""}
-                  className="w-full max-w-[650px]"
-                />
+                <SimpleCard title="Expected input preview" className="w-[650px] h-full">
+                  {sampleConfig.data ? (
+                    <CodeBlock
+                      title="Expected input preview"
+                      code={sampleConfig?.data ?? ""}
+                      className="w-[650px] h-full"
+                    />
+                  ) : sampleConfig.isLoading ? (
+                    <div className="w-full flex justify-center py-12">
+                      <Spinner className="h-6 w-6" />
+                    </div>
+                  ) : sampleConfig.isError ? (
+                    <div className="w-full pt-4 text-lg text-negative-content">Unable to load sample data</div>
+                  ) : null}
+                </SimpleCard>
               ) : ff.isFF(ff.FF_SAMPLE_DATASETS) ? (
-                <SimpleCard title="Expected input preview" className="w-full max-w-[650px]">
+                <SimpleCard title="Expected input preview" className="w-[650px] h-full">
                   Set up your{" "}
                   <button
                     type="button"
@@ -448,54 +514,7 @@ export const ImportPage = ({
                 </SimpleCard>
               ) : null}
             </div>
-          )}
-
-          {showList && (
-            <table>
-              <tbody>
-                {sample && (
-                  <tr key={sample.url}>
-                    <td>
-                      <div className="flex items-center gap-2">
-                        {sample.title}
-                        <Badge variant="info" className="h-5 text-xs rounded-sm">
-                          Sample
-                        </Badge>
-                      </div>
-                    </td>
-                    <td>{sample.description}</td>
-                    <td>
-                      <Button
-                        size="icon"
-                        look="destructive"
-                        style={{ height: 26, width: 26, padding: 0 }}
-                        onClick={() => onSampleDatasetSelect(undefined)}
-                      >
-                        <IconTrash style={{ width: 12, height: 12 }} />
-                      </Button>
-                    </td>
-                  </tr>
-                )}
-                {files.uploading.map((file, idx) => (
-                  <tr key={`${idx}-${file.name}`}>
-                    <td>{file.name}</td>
-                    <td colSpan={2}>
-                      <span className={importClass.elem("file-status").mod({ uploading: true })} />
-                    </td>
-                  </tr>
-                ))}
-                {files.uploaded.map((file) => (
-                  <tr key={file.file}>
-                    <td>{file.file}</td>
-                    <td>
-                      <span className={importClass.elem("file-status")} />
-                    </td>
-                    <td>{file.size}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+          </div>
         </Upload>
       </main>
 

@@ -5,7 +5,7 @@ import { FormSubmissionContext } from "../Form/FormContext";
 import "./Button.scss";
 
 export const Button = React.forwardRef(
-  ({ children, type, extra, className, size, waiting, icon, tag, look, ...rest }, ref) => {
+  ({ children, type, extra, className, rawClassName, size, waiting, icon, tag, look, ...rest }, ref) => {
     const finalTag = tag ?? (rest.href ? "a" : "button");
 
     const mods = {
@@ -47,7 +47,16 @@ export const Button = React.forwardRef(
     }, [icon, size]);
 
     return (
-      <Block name="button-ls" mod={mods} mix={className} ref={ref} tag={finalTag} type={type} {...rest}>
+      <Block
+        name="button-ls"
+        mod={mods}
+        mix={className}
+        ref={ref}
+        tag={finalTag}
+        type={type}
+        rawClassName={rawClassName}
+        {...rest}
+      >
         <>
           {iconElem && (
             <Elem tag="span" name="icon">
