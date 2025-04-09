@@ -133,6 +133,7 @@ const ClassificationBase = types
       // update result in the store with current set value
       updateResult() {
         if (self.result) {
+          self.result.area.updateOriginOnEdit();
           self.result.area.setValue(self);
         } else {
           if (self.perregion) {

@@ -283,10 +283,14 @@ const RegionsMixin = types
         e && e.stopPropagation();
       },
 
-      notifyDrawingFinished({ destroy = false } = {}) {
+      updateOriginOnEdit() {
         if (self.origin === "prediction") {
           self.origin = "prediction-changed";
         }
+      },
+
+      notifyDrawingFinished({ destroy = false } = {}) {
+        self.updateOriginOnEdit();
 
         // everything below is related to dynamic preannotations
         if (!self.shouldNotifyDrawingFinished) return;

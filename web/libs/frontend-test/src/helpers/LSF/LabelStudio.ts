@@ -70,6 +70,15 @@ class LSParamsBuilder {
     return task.annotations;
   }
 
+  private get _predictions() {
+    const task = this._task;
+
+    if (!task.predictions) {
+      task.predictions = [];
+    }
+    return task.predictions;
+  }
+
   config(config) {
     this.params.config = config;
     return this;
@@ -88,6 +97,10 @@ class LSParamsBuilder {
   }
   withAnnotation(annotation) {
     this._annotations.push(annotation);
+    return this;
+  }
+  withPrediction(prediction) {
+    this._predictions.push(prediction);
     return this;
   }
   withResult(result) {
