@@ -148,9 +148,9 @@ You can use **Settings > Quality > Annotation Limit** to set limits on how many 
 
 #### Behavior-based triggers
 
-If you have [custom scripts](scripts) enabled, you can automatically pause an annotator based on certain behaviors and then customize the message that appears on their screen. 
+If you have [plugins](plugins) enabled, you can automatically pause an annotator based on certain behaviors and then customize the message that appears on their screen. 
 
-For more information, see [Custom script examples - Pause an annotator](script_examples#Pause-an-annotator).
+For more information, see [Plugin examples - Pause an annotator](plugin_examples#Pause-an-annotator).
 
 
 ## Verify model and annotator performance

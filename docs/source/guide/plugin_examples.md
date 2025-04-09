@@ -1,22 +1,22 @@
 ---
-title: Custom script examples
-short: Custom script examples
+title: Custom plugin examples
+short: Custom plugin examples
 tier: enterprise
 type: guide
 order: 0
 order_enterprise: 109
 section: "Create & Manage Projects"
-parent: "scripts"
-parent_enterprise: "scripts"
+parent: "plugins"
+parent_enterprise: "plugins"
 date: 2024-07-30 13:31:47
 ---
 
-The following examples work when [custom scripts](scripts) are enabled. 
+The following examples work when [plugins](plugins) are enabled. 
 
-For details on implementing your own custom scripts, see [Label Studio Interface (LSI)](scripts#Label-Studio-Interface-LSI) and [Frontend API implementation details](scripts#Frontend-API-implementation-details). 
+For details on implementing your own plugins, see [Label Studio Interface (LSI)](scripts#Label-Studio-Interface-LSI) and [Frontend API implementation details](scripts#Frontend-API-implementation-details). 
 
 !!! info Tip
-    You can find additional script examples in our [label-studio-custom-scripts repo](https://github.com/HumanSignal/label-studio-custom-scripts).
+    You can find additional examples in our [label-studio-plugins repo](https://github.com/HumanSignal/label-studio-plugins).
 
 ## Plotly
 
@@ -27,7 +27,7 @@ Plotly should be loaded first from CDN: https://cdn.plot.ly/plotly-2.26.0.min.js
 
 ![Screenshot of Plotly graph in Label Studio](/images/project/plotly.png)
 
-#### Script
+#### Plugin
 
 ```javascript
 await LSI.import('https://cdn.plot.ly/plotly-2.26.0.min.js', 'sha384-xuh4dD2xC9BZ4qOrUrLt8psbgevXF2v+K+FrXxV4MlJHnWKgnaKoh74vd/6Ik8uF',);
@@ -91,15 +91,15 @@ For example:
 
 ## Custom validation
 
-In this example, the script checks to ensure that the annotation does not include obscenity or disallowed words. 
+In this example, the plugin checks to ensure that the annotation does not include obscenity or disallowed words. 
 
-The following script displays a modal if a user tries to submit an annotation with the word “hate” added to any audio transcription. 
+The following plugin displays a modal if a user tries to submit an annotation with the word “hate” added to any audio transcription. 
 
 Note that this is a "soft" block, meaning that the user can dismiss the modal and still proceed. For an example of a "hard" block, see [Check that TextArea input is valid JSON](#Check-that-TextArea-input-is-valid-JSON) below. 
 
 ![Screenshot of custom validation modal in Label Studio](/images/project/script_validation.png)
 
-#### Script
+#### Plugin
 
 ```javascript
 // Use Label Studio Interface to subscribe to events
@@ -168,11 +168,11 @@ LSI.on("beforeSaveAnnotation", (store, ann) => {
 
 ## Bulk text labeling with regex
 
-This script automatically applies the same label to all matching text spans. For example, if you apply the `PER` label to the text span `Smith`, this script will automatically find all instances of `Smith` in the text and apply the `PER` label to them. 
+This plugin automatically applies the same label to all matching text spans. For example, if you apply the `PER` label to the text span `Smith`, this plugin will automatically find all instances of `Smith` in the text and apply the `PER` label to them. 
 
 ![Screenshot of bulk text labeling](/images/project/autolabeling.gif)
 
-#### Script
+#### Plugin
 
 ```javascript
 LSI.on('entityCreate', region => {
@@ -248,23 +248,23 @@ LSI.on('entityCreate', region => {
 
 ## Bulk creation and deletion operations with keyboard shortcut
 
-This script adds bulk operations for creating and deleting regions (annotations) based on the state of the **Shift** key:
+This plugin adds bulk operations for creating and deleting regions (annotations) based on the state of the **Shift** key:
 
 1. **Shift Key Tracking**
-    - The script tracks the state of the Shift key using `keydown` and `keyup` event listeners. A boolean variable `isShiftKeyPressed` is set to `true` when the Shift key is pressed and `false` when it is released.
+    - The plugin tracks the state of the Shift key using `keydown` and `keyup` event listeners. A boolean variable `isShiftKeyPressed` is set to `true` when the Shift key is pressed and `false` when it is released.
 2. **Bulk Deletion of Regions**
-    - When a region (annotation) is deleted and the Shift key is pressed, the script identifies all regions with the same text and label as the deleted region.
+    - When a region (annotation) is deleted and the Shift key is pressed, the plugin identifies all regions with the same text and label as the deleted region.
     - It then deletes all these matching regions to facilitate bulk deletion.
 3. **Bulk Creation of Regions**
-    - When a region is created and the Shift key is pressed, the script searches for all occurrences of the created region's text within the document.
+    - When a region is created and the Shift key is pressed, the plugin searches for all occurrences of the created region's text within the document.
     - It creates new regions for each occurrence of the text, ensuring that no duplicate regions are created (i.e., regions with overlapping start and end offsets are avoided).
-    - The script also prevents tagging of single characters to avoid unnecessary annotations.
+    - The plugin also prevents tagging of single characters to avoid unnecessary annotations.
 4. **Debouncing Bulk Operations**
-    - To prevent rapid consecutive bulk operations, the script uses a debouncing mechanism with a timeout of 1 second. This ensures that bulk operations are not triggered too frequently.
+    - To prevent rapid consecutive bulk operations, the plugin uses a debouncing mechanism with a timeout of 1 second. This ensures that bulk operations are not triggered too frequently.
 
 ![Screenshot of bulk actions with keyboard shortcut](/images/project/bulk_actions.gif)
 
-#### Script
+#### Plugin
 
 ```javascript
  // Track the state of the shift key
@@ -407,13 +407,13 @@ This script adds bulk operations for creating and deleting regions (annotations)
 
 ## Check that TextArea input is valid JSON 
 
-This script parses the contexts of a TextArea field to check for valid JSON. If the JSON is invalid, it shows an error and prevents the annotation from being saved.
+This plugin parses the contexts of a TextArea field to check for valid JSON. If the JSON is invalid, it shows an error and prevents the annotation from being saved.
 
 This is an example of a "hard" block, meaning that the user must resolve the issue before they can proceed. For an example of a "soft" block, see [Custom validation](#Custom-validation) above. 
 
 ![Screenshot of JSON error message](/images/project/script_json.png)
 
-#### Script
+#### Plugin
 
 ```javascript
  LSI.on("beforeSaveAnnotation", (store, annotation) => {
@@ -479,11 +479,11 @@ This is an example of a "hard" block, meaning that the user must resolve the iss
 
 This labeling configuration arranges three video players vertically, making it easier to view and annotate each video frame. 
 
-The script ensures the videos are synced, with one player showing one frame forward, and another player the previous frame. 
+The plugin ensures the videos are synced, with one player showing one frame forward, and another player the previous frame. 
 
 ![Screenshot of JSON error message](/images/project/video_sync.png)
 
-#### Script
+#### Plugin
 
 ```javascript
 // Wait for the Label Studio Interface to be ready
@@ -606,7 +606,7 @@ The `TimelineLabels` tag is connected to the second video (`video0`), allowing a
 
 You can manually [pause an annotator](quality#Pause-an-annotator) to prevent stop them from completing tasks and revoke their project access. 
 
-This script automatically pauses an annotator who breaks any of the following rules and customizes the message that appears:
+This plugin automatically pauses an annotator who breaks any of the following rules and customizes the message that appears:
 
 * Too many duplicate values `timesInARow(3)`:
 
@@ -634,7 +634,7 @@ To unpause an annotator, use the [Members dashboard](quality#Pause-an-annotator)
 
     ![Screenshot of hover](/images/project/scripts_pause_hover.png)
 
-#### Script
+#### Plugin
 
 ```javascript
 /****** CONFIGURATION FOR PAUSING RULES ******/

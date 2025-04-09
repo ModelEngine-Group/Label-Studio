@@ -47,6 +47,18 @@ status = 301
 force = true
 
 [[redirects]]
+from = "/guide/scripts"
+to = "/guide/plugins"
+status = 301
+force = true
+
+[[redirects]]
+from = "/guide/script_examples"
+to = "/guide/plugin_examples"
+status = 301
+force = true
+
+[[redirects]]
 from = "/"
 to = "/guide"
 status = 301

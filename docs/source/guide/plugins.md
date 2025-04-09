@@ -1,11 +1,11 @@
 ---
-title: Custom scripts for projects
-short: Custom scripts
+title: Plugins for projects
+short: Plugins
 tier: enterprise
 type: guide
 order: 0
 order_enterprise: 108
-meta_title: Custom Scripts
+meta_title: Plugins
 meta_description: Use JavaScript to customize your labeling interface. 
 section: "Create & Manage Projects"
 date: 2024-07-30 10:39:03
@@ -13,26 +13,22 @@ date: 2024-07-30 10:39:03
 
 
 !!! note
-    Custom scripts are not available unless enabled. There are [important security considerations](#Security-notes-constraints-and-limitations) to understand before requesting access. To enable custom scripts for your organization, contact your account manager. 
+    Plugins are not available unless enabled. There are [important security considerations](#Security-notes-constraints-and-limitations) to understand before requesting access. To enable plugins for your organization, contact your account manager. 
 
-You can extend your Labeling Configuration by implementing a custom JavaScript script.  
+You can extend your Labeling Configuration by implementing a custom JavaScript plugin.  
 
-Custom scripts are defined in the project settings under the Labeling Interface section: 
+Plugins are defined in the project settings under the Labeling Interface section: 
 
 ![Screenshot of script option](/images/project/scripts.png)
 
 !!! note
-    Only users who are in the Admin, Owner, or Manager role can access the project settings to configure custom scripts. 
-
-See the following video for a brief overview and demonstration of custom scripts:
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/Spwg81kJdGo?si=miRkS7DDYe9aLyUw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    Only users who are in the Admin, Owner, or Manager role can access the project settings to configure plugins. 
 
 ## Use cases
 
-Custom scripts allow you to enhance and tailor your labeling interface and workflow. For example:
+Plugins allow you to enhance and tailor your labeling interface and workflow. For example:
 
-* **General validation** – Custom scripts can be used to implement various validation checks to ensure the quality and consistency of annotations. 
+* **General validation** – Plugins can be used to implement various validation checks to ensure the quality and consistency of annotations. 
 
     Examples: Data integrity checks, logical consistency checks, completeness checks. 
 
@@ -48,51 +44,51 @@ Custom scripts allow you to enhance and tailor your labeling interface and workf
 
     Examples: Feedback loops for annotators, conditional routing/assignment, progressive sampling, notifications regarding project progress. 
 
-For examples of how some of these use cases can be implemented, see [Custom script examples](script_examples). 
+For examples of how some of these use cases can be implemented, see [Custom plugin examples](plugin_examples). 
 
-## How custom scripts work
+## How plugins work
 
-Custom scripts are authored in JavaScript and are project-specific. They are limited to specific tasks and the annotation workflow and cannot, for example, be used to create new pages or otherwise extend the core functionality of Label Studio. 
+Plugins are authored in JavaScript and are project-specific. They are limited to specific tasks and the annotation workflow and cannot, for example, be used to create new pages or otherwise extend the core functionality of Label Studio. 
 
 ### Execution
 
-Custom scripts are executed each time the annotation is displayed.  For example, when you open a task, move between tasks, create a new annotation, switch between annotations, create a new annotation, and view older versions of the annotation. 
+Plugins are executed each time the annotation is displayed.  For example, when you open a task, move between tasks, create a new annotation, switch between annotations, create a new annotation, and view older versions of the annotation. 
 
-This means that for each annotation you can add specific behavior. However, it also means that if you don’t plan accordingly when constructing your script logic, you could end up with repetitive actions.
+This means that for each annotation you can add specific behavior. However, it also means that if you don’t plan accordingly when constructing your plugin logic, you could end up with repetitive actions.
 
 To avoid multiple event subscriptions (and, consequently, multiple handler triggers), it is best to use `LSI.on()` because the handlers that are added using this method will be unsubscribed after the current annotation is closed. For more information on LSI, [see below](#Label-Studio-Interface-LSI). 
 
 !!! note
-    Because custom scripts can be executed multiple times for the same annotation, you need to take measures to avoid issues such as infinite loops, memory leaks, and application crashes. For this reason, we recommend that each script run cleans up the previous run, meaning that event handlers should be stored in a global register along with their parameters so that they can be checked, stopped, or adjusted. Every handler should check whether it is still running over the current version of annotation/data in case it has changed.
+    Because plugins can be executed multiple times for the same annotation, you need to take measures to avoid issues such as infinite loops, memory leaks, and application crashes. For this reason, we recommend that each script run cleans up the previous run, meaning that event handlers should be stored in a global register along with their parameters so that they can be checked, stopped, or adjusted. Every handler should check whether it is still running over the current version of annotation/data in case it has changed.
 
     However, handlers attached via `LSI.on()` are safe and will automatically handle this clean up process.
 
 !!! info Tip
-    Custom scripts are executed within an asynchronous function, so you can use `await` as necessary. 
+    Plugins are executed within an asynchronous function, so you can use `await` as necessary. 
 
 ### Troubleshooting and debugging
 
-It is important to test and refine scripts using a test project first to avoid any disruptions on live projects. 
+It is important to test and refine plugins using a test project first to avoid any disruptions on live projects. 
 
 Note the following:
 
-* Use the Console tab in your web browser’s developer tools to check for errors and verify the script is running. 
-* You can also check the Network tab (script information is returned with the `/project/:id` API call).
-* You can add [`debugger`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/debugger) to your script to have a convenient breakpoint to debug the script using your web browser’s developer tools. 
+* Use the Console tab in your web browser’s developer tools to check for errors and verify the plugin is running. 
+* You can also check the Network tab (plugin information is returned with the `/project/:id` API call).
+* You can add [`debugger`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/debugger) to your script to have a convenient breakpoint to debug the plugin using your web browser’s developer tools. 
 
 ### Security notes, constraints, and limitations
 
-Custom scripts are a powerful tool to help you fully customize your labeling workflow. In doing so you are running arbitrary JavaScript code on each annotator’s machine, which comes with certain risks. 
+Plugins are a powerful tool to help you fully customize your labeling workflow. In doing so you are running arbitrary JavaScript code on each annotator’s machine, which comes with certain risks. 
 
-Because of this, you must opt-in before enabling custom scripts for your organization, and we urge you to use this feature with caution.
+Because of this, you must opt-in before enabling plugins for your organization, and we urge you to use this feature with caution.
 
-To enable custom scripts for your organization, you cannot have members that are in multiple organizations. This is enforced through application logic and is necessary for data security. The most common reason for this is when users have accounts in an expired free trial, but can also happen if you are using multiple organizations for project management or if you have an initial proof of concept or testing org. 
+To enable plugins for your organization, you cannot have members that are in multiple organizations. This is enforced through application logic and is necessary for data security. The most common reason for this is when users have accounts in an expired free trial, but can also happen if you are using multiple organizations for project management or if you have an initial proof of concept or testing org. 
 
 ## Label Studio Interface (LSI)
 
-The Label Studio Interface (LSI) is a helper object that is designed to be used with custom scripts. 
+The Label Studio Interface (LSI) is a helper object that is designed to be used with plugins. 
 
-LSI simplifies access to some data and can perform special actions that only make sense within the framework of custom scripts.
+LSI simplifies access to some data and can perform special actions that only make sense within the framework of plugins.
 
 ### Instance methods
 
@@ -119,7 +115,7 @@ Subscription to listen to events related to the Label Studio Frontend. Handlers 
 For a list of all available events, see our [Frontend reference](frontend_reference#Available-events).
 
 !!! note
-    Top-level events such as `labelStudioLoad` and `storageInitialized` cannot be used with custom scripts, as they execute before the script is initialized.
+    Top-level events such as `labelStudioLoad` and `storageInitialized` cannot be used with plugins, as they execute before the script is initialized.
 
 | Parameter &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Type     | Description          |
 |--------------------------|--------------------|--------------------------|
@@ -148,7 +144,7 @@ A getter that returns all regions of the current annotation.
 
 ## Frontend API implementation details
 
-The following implementation details may be useful when creating your own custom scripts. 
+The following implementation details may be useful when creating your own plugins. 
 
 !!! note
     While these details are relatively stable, we make no guarantees that they will not change in the future. 

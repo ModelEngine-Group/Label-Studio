@@ -213,7 +213,7 @@ This events group contains top-level events. Those events are not related to any
 Label Studio instance is loaded. 
 
 !!! warning
-    This event does not work in custom scripts.
+    This event does not work in plugins.
 
 **Event handler arguments**
 
@@ -226,7 +226,7 @@ Label Studio instance is loaded.
 The internal storage is initialized.
 
 !!! warning
-    This event does not work in custom scripts.
+    This event does not work in plugins.
 
 **Event handler arguments**
 

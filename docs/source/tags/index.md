@@ -19,14 +19,14 @@ When you [set up your labeling interface](/guide/setup.html), you can choose to 
 <div class="opensource-only">
 
 !!! error enterprise
-    Label Studio Enterprise has the option include custom scripts as part of your labeling interface. Custom scripts allow you to use Javascript to extend your interface and customize annotator workflows. For more information, see [Custom Scripts](https://docs.humansignal.com/guide/scripts).
+    Label Studio Enterprise has the option include plugins as part of your labeling interface. Plugins allow you to use Javascript to extend your interface and customize annotator workflows. For more information, see [Plugins](https://docs.humansignal.com/guide/plugins).
 
 </div>
 
 <div class="enterprise-only">
 
 !!! info Tip
-    You can also implement custom scripts as part of your labeling interface. Custom scripts allow you to use Javascript to extend your interface and customize annotator workflows. For more information, see [Custom Scripts](/guide/scripts).
+    You can also implement plugins as part of your labeling interface. Plugins allow you to use Javascript to extend your interface and customize annotator workflows. For more information, see [Plugins](/guide/plugins).
 
 </div>
 
