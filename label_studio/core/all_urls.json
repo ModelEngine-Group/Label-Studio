@@ -1590,6 +1590,150 @@
         "decorators": ""
     },
     {
+        "url": "/admin/ml_models/modelinterface/",
+        "module": "django.contrib.admin.options.changelist_view",
+        "name": "admin:ml_models_modelinterface_changelist",
+        "decorators": ""
+    },
+    {
+        "url": "/admin/ml_models/modelinterface/add/",
+        "module": "django.contrib.admin.options.add_view",
+        "name": "admin:ml_models_modelinterface_add",
+        "decorators": ""
+    },
+    {
+        "url": "/admin/ml_models/modelinterface/<path:object_id>/history/",
+        "module": "django.contrib.admin.options.history_view",
+        "name": "admin:ml_models_modelinterface_history",
+        "decorators": ""
+    },
+    {
+        "url": "/admin/ml_models/modelinterface/<path:object_id>/delete/",
+        "module": "django.contrib.admin.options.delete_view",
+        "name": "admin:ml_models_modelinterface_delete",
+        "decorators": ""
+    },
+    {
+        "url": "/admin/ml_models/modelinterface/<path:object_id>/change/",
+        "module": "django.contrib.admin.options.change_view",
+        "name": "admin:ml_models_modelinterface_change",
+        "decorators": ""
+    },
+    {
+        "url": "/admin/ml_models/modelinterface/<path:object_id>/",
+        "module": "django.views.generic.base.RedirectView",
+        "name": "",
+        "decorators": ""
+    },
+    {
+        "url": "/admin/ml_models/thirdpartymodelversion/",
+        "module": "django.contrib.admin.options.changelist_view",
+        "name": "admin:ml_models_thirdpartymodelversion_changelist",
+        "decorators": ""
+    },
+    {
+        "url": "/admin/ml_models/thirdpartymodelversion/add/",
+        "module": "django.contrib.admin.options.add_view",
+        "name": "admin:ml_models_thirdpartymodelversion_add",
+        "decorators": ""
+    },
+    {
+        "url": "/admin/ml_models/thirdpartymodelversion/<path:object_id>/history/",
+        "module": "django.contrib.admin.options.history_view",
+        "name": "admin:ml_models_thirdpartymodelversion_history",
+        "decorators": ""
+    },
+    {
+        "url": "/admin/ml_models/thirdpartymodelversion/<path:object_id>/delete/",
+        "module": "django.contrib.admin.options.delete_view",
+        "name": "admin:ml_models_thirdpartymodelversion_delete",
+        "decorators": ""
+    },
+    {
+        "url": "/admin/ml_models/thirdpartymodelversion/<path:object_id>/change/",
+        "module": "django.contrib.admin.options.change_view",
+        "name": "admin:ml_models_thirdpartymodelversion_change",
+        "decorators": ""
+    },
+    {
+        "url": "/admin/ml_models/thirdpartymodelversion/<path:object_id>/",
+        "module": "django.views.generic.base.RedirectView",
+        "name": "",
+        "decorators": ""
+    },
+    {
+        "url": "/admin/ml_models/modelrun/",
+        "module": "django.contrib.admin.options.changelist_view",
+        "name": "admin:ml_models_modelrun_changelist",
+        "decorators": ""
+    },
+    {
+        "url": "/admin/ml_models/modelrun/add/",
+        "module": "django.contrib.admin.options.add_view",
+        "name": "admin:ml_models_modelrun_add",
+        "decorators": ""
+    },
+    {
+        "url": "/admin/ml_models/modelrun/<path:object_id>/history/",
+        "module": "django.contrib.admin.options.history_view",
+        "name": "admin:ml_models_modelrun_history",
+        "decorators": ""
+    },
+    {
+        "url": "/admin/ml_models/modelrun/<path:object_id>/delete/",
+        "module": "django.contrib.admin.options.delete_view",
+        "name": "admin:ml_models_modelrun_delete",
+        "decorators": ""
+    },
+    {
+        "url": "/admin/ml_models/modelrun/<path:object_id>/change/",
+        "module": "django.contrib.admin.options.change_view",
+        "name": "admin:ml_models_modelrun_change",
+        "decorators": ""
+    },
+    {
+        "url": "/admin/ml_models/modelrun/<path:object_id>/",
+        "module": "django.views.generic.base.RedirectView",
+        "name": "",
+        "decorators": ""
+    },
+    {
+        "url": "/admin/ml_model_providers/modelproviderconnection/",
+        "module": "django.contrib.admin.options.changelist_view",
+        "name": "admin:ml_model_providers_modelproviderconnection_changelist",
+        "decorators": ""
+    },
+    {
+        "url": "/admin/ml_model_providers/modelproviderconnection/add/",
+        "module": "django.contrib.admin.options.add_view",
+        "name": "admin:ml_model_providers_modelproviderconnection_add",
+        "decorators": ""
+    },
+    {
+        "url": "/admin/ml_model_providers/modelproviderconnection/<path:object_id>/history/",
+        "module": "django.contrib.admin.options.history_view",
+        "name": "admin:ml_model_providers_modelproviderconnection_history",
+        "decorators": ""
+    },
+    {
+        "url": "/admin/ml_model_providers/modelproviderconnection/<path:object_id>/delete/",
+        "module": "django.contrib.admin.options.delete_view",
+        "name": "admin:ml_model_providers_modelproviderconnection_delete",
+        "decorators": ""
+    },
+    {
+        "url": "/admin/ml_model_providers/modelproviderconnection/<path:object_id>/change/",
+        "module": "django.contrib.admin.options.change_view",
+        "name": "admin:ml_model_providers_modelproviderconnection_change",
+        "decorators": ""
+    },
+    {
+        "url": "/admin/ml_model_providers/modelproviderconnection/<path:object_id>/",
+        "module": "django.views.generic.base.RedirectView",
+        "name": "",
+        "decorators": ""
+    },
+    {
         "url": "/admin/<app_label>/",
         "module": "django.contrib.admin.sites.app_index",
         "name": "admin:app_list",
