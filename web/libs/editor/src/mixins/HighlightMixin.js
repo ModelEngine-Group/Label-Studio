@@ -7,9 +7,13 @@ import { isDefined } from "../utils/utilities";
 const HIGHLIGHT_CN = "htx-highlight";
 const HIGHLIGHT_NO_LABEL_CN = "htx-no-label";
 const LABEL_COLOR_ALPHA = 0.3;
+const LABEL_COLOR_ALPHA_ACTIVE = 0.8;
 
 export const HighlightMixin = types
   .model()
+  .volatile(() => ({
+    _spans: null,
+  }))
   .views((self) => ({
     get _hasSpans() {
       // @todo is it possible that only some spans are connected?
@@ -29,6 +33,10 @@ export const HighlightMixin = types
         classNames.push(HIGHLIGHT_NO_LABEL_CN);
       }
 
+      if (self.selected) {
+        classNames.push(STATE_CLASS_MODS.active);
+      }
+
       // in this case labels presence can't be changed from settings — manual mode
       if (isDefined(self.parent.showlabels)) {
         classNames.push("htx-manual-label");
@@ -36,22 +44,32 @@ export const HighlightMixin = types
 
       return classNames;
     },
-    get styles() {
-      const { className } = self;
-      const activeColorOpacity = 0.8;
-      const color = self.getLabelColor();
-      const initialActiveColor = Utils.Colors.rgbaChangeAlpha(color, activeColorOpacity);
-
+    /**
+     * Generate styles for region and active region, but with a lighter background is that's a resized region,
+     * so the selection of the same color will give the original color of active region.
+     * @see getColors
+     * @param {string} className
+     * @param {object} colors see `getColors()`
+     * @param {boolean} resize lighter background for resized region or original one for active region
+     * @returns {string} styles to apply to the region
+     */
+    generateStyles(className, colors, resize = false) {
       return `
         .${className} {
-          background-color: ${color} !important;
+          background-color: ${colors.background} !important;
           border: 1px dashed transparent;
         }
         .${className}.${STATE_CLASS_MODS.active}:not(.${STATE_CLASS_MODS.hidden}) {
-          color: ${Utils.Colors.contrastColor(initialActiveColor)} !important;
-          background-color: ${initialActiveColor} !important;
+          color: ${colors.activeText} !important;
+          background-color: ${resize ? colors.resizeBackground : colors.activeBackground} !important;
         }
       `;
+    },
+    get styles() {
+      return this.generateStyles(self.className, self.getColors());
+    },
+    get resizeStyles() {
+      return this.generateStyles(self.className, self.getColors(), true);
     },
   }))
   .actions((self) => ({
@@ -73,8 +91,15 @@ export const HighlightMixin = types
       return void 0;
     },
 
-    updateHighlightedText() {
-      if (!self.text) {
+    /**
+     * Get text from object tag by region offsets and set it to the region.
+     * Normally it would only set it initially for better performance.
+     * But when we edit the region we need to update it on every change.
+     * @param {object} options
+     * @param {boolean} options.force - always update the text
+     */
+    updateHighlightedText({ force = false } = {}) {
+      if (!self.text || force) {
         self.text = self.parent.getTextFromGlobalOffsets(self.globalOffsets);
       }
     },
@@ -82,10 +107,16 @@ export const HighlightMixin = types
     updateSpans() {
       // @TODO: Is `_hasSpans` some artifact from the old version?
       if (self._hasSpans || self._spans?.length) {
-        const lastSpan = self._spans[self._spans.length - 1];
+        const firstSpan = self._spans[0];
+        const lastSpan = self._spans.at(-1);
+        const offsets = self.globalOffsets;
 
         // @TODO: Should we manage it in domManager?
+        // update label tag (index + attached labels) which sits in the last span
         Utils.Selection.applySpanStyles(lastSpan, { index: self.region_index, label: self.getLabels() });
+        // store offsets in spans for further comparison if region got resized
+        firstSpan.setAttribute("data-start", offsets.start);
+        lastSpan.setAttribute("data-end", offsets.end);
       }
     },
 
@@ -101,20 +132,54 @@ export const HighlightMixin = types
         self.parent?.removeSpansInGlobalOffsets(self._spans, self.globalOffsets);
       }
       self.parent?.removeStyles([self.identifier]);
+      self._spans = null;
     },
 
     /**
      * Update region's appearance if the label was changed
      */
     updateAppearenceFromState() {
-      if (!self._spans?.length) {
-        return;
+      if (!self._spans?.length) return;
+
+      if (self.parent?.canResizeSpans) {
+        const start = self._spans[0].getAttribute("data-start");
+        const end = self._spans.at(-1).getAttribute("data-end");
+        const offsets = self.globalOffsets;
+
+        // if spans have different offsets stored, then we resized the region and need to recreate spans
+        if (isDefined(start) && (+start !== offsets.start || +end !== offsets.end)) {
+          self.removeHighlight();
+          self.applyHighlight();
+        } else {
+          self.parent.setStyles?.({ [self.identifier]: self.styles });
+          self.updateSpans();
+        }
+      } else {
+        self.parent.setStyles?.({ [self.identifier]: self.styles });
+        self.updateSpans();
       }
+    },
 
-      const lastSpan = self._spans[self._spans.length - 1];
+    /**
+     * Attach resize handles to the first and last spans. `area` is used to be less possible to be
+     * in user's document. They are not fully valid inside spans, but they work.
+     */
+    attachHandles() {
+      const classes = [STATE_CLASS_MODS.leftHandle, STATE_CLASS_MODS.rightHandle];
+      const spanStart = self._spans[0];
+      const spanEnd = self._spans.at(-1);
 
-      self.parent.setStyles?.({ [self.identifier]: self.styles });
-      Utils.Selection.applySpanStyles(lastSpan, { index: self.region_index, label: self.getLabels() });
+      classes.forEach((resizeClass, index) => {
+        // html element that can't be encountered in a usual html
+        const handleArea = document.createElement("area");
+
+        handleArea.classList.add(resizeClass);
+        index === 0 ? spanStart.prepend(handleArea) : spanEnd.append(handleArea);
+      });
+    },
+
+    detachHandles() {
+      self._spans?.forEach((span) => span.querySelectorAll("area").forEach((area) => area.remove()));
     },
 
     /**
@@ -127,8 +192,10 @@ export const HighlightMixin = types
 
       const first = self._spans?.[0];
 
-      if (!first) {
-        return;
+      if (!first) return;
+
+      if (self.parent?.canResizeSpans) {
+        self.attachHandles();
       }
 
       if (first.scrollIntoViewIfNeeded) {
@@ -143,6 +210,10 @@ export const HighlightMixin = types
      */
     afterUnselectRegion() {
       self.removeClass(STATE_CLASS_MODS.active);
+
+      if (self.parent?.canResizeSpans) {
+        self.detachHandles();
+      }
     },
 
     /**
@@ -153,7 +224,7 @@ export const HighlightMixin = types
     },
 
     /**
-     * Draw region outline
+     * Draw region outline on hover
      * @param {boolean} val
      */
     setHighlight(val) {
@@ -177,10 +248,27 @@ export const HighlightMixin = types
       return [index, text].filter(Boolean).join(":");
     },
 
-    getLabelColor() {
+    // @todo should not this be a view?
+    getColors() {
       const labelColor = self.parent.highlightcolor || (self.style || self.tag || defaultStyle).fillcolor;
 
-      return Utils.Colors.convertToRGBA(labelColor ?? "#DA935D", LABEL_COLOR_ALPHA);
+      const background = Utils.Colors.convertToRGBA(labelColor ?? "#DA935D", LABEL_COLOR_ALPHA);
+      const activeBackground = Utils.Colors.convertToRGBA(labelColor ?? "#DA935D", LABEL_COLOR_ALPHA_ACTIVE);
+      // Extended/reduced parts of the region should be colored differently in a lighter color.
+      // With extension it's simple, because it's the browser selection, so we just set a different color to it.
+      // But to color the reduced part we use opacity of overlayed blocks — region hightlight and browser selection,
+      // and multiplication of them should be the same as original activeBackground.
+      // Region color should also be different from the original one, and for simplicity we use just one color.
+      // So this color should have an opacity twice closer to 1 than the original one: 1 - (1 - alpha) * 2
+      const resizeBackground = Utils.Colors.convertToRGBA(labelColor ?? "#DA935D", 2 * LABEL_COLOR_ALPHA_ACTIVE - 1);
+      const activeText = Utils.Colors.contrastColor(activeBackground);
+
+      return {
+        background,
+        activeBackground,
+        resizeBackground,
+        activeText,
+      };
     },
 
     find(span) {
@@ -230,5 +318,7 @@ export const STATE_CLASS_MODS = {
   highlighted: "__highlighted",
   collapsed: "__collapsed",
   hidden: "__hidden",
+  rightHandle: "__resize_right",
+  leftHandle: "__resize_left",
   noLabel: HIGHLIGHT_NO_LABEL_CN,
 };

@@ -1,6 +1,7 @@
 import { type FormEventHandler, useCallback, useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import { InputFile, ToastType, useToast, Userpic } from "@humansignal/ui";
+// @todo we should not use anything from `apps` in `libs`
 import { API } from "apps/labelstudio/src/providers/ApiProvider";
 import styles from "../AccountSettings.module.scss";
 import { useCurrentUserAtom } from "@humansignal/core/lib/hooks/useCurrentUser";

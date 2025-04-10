@@ -72,3 +72,8 @@ export const FF_SAMPLE_DATASETS = "fflag_feat_dia_1920_project_creation_sample_d
  * Optimizes the way projects list is loaded
  */
 export const FF_USE_NEW_PROJECTS_COUNTS_API = "fflag_feat_front_optic_1351_use_new_projects_counts_api_short";
+
+/**
+ * Allow to resize spans in Text tag
+ */
+export const FF_ADJUSTABLE_SPANS = "fflag_feat_front_leap_1973_adjustable_spans_090425_short";
