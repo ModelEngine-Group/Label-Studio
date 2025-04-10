@@ -2310,6 +2310,33 @@
       "version": 3,
       "deleted": false
     },
+    "fflag_feat_front_leap_1973_adjustable_spans_090425_short": {
+      "key": "fflag_feat_front_leap_1973_adjustable_spans_090425_short",
+      "on": false,
+      "prerequisites": [],
+      "targets": [],
+      "contextTargets": [],
+      "rules": [],
+      "fallthrough": {
+        "variation": 0
+      },
+      "offVariation": 1,
+      "variations": [
+        true,
+        false
+      ],
+      "clientSideAvailability": {
+        "usingMobileKey": false,
+        "usingEnvironmentId": false
+      },
+      "clientSide": false,
+      "salt": "7c699fb3534c4dd694aa9d59256e0f15",
+      "trackEvents": false,
+      "trackEventsFallthrough": false,
+      "debugEventsUntilDate": null,
+      "version": 2,
+      "deleted": false
+    },
     "fflag_feat_front_leap_482_self_serve_short": {
       "key": "fflag_feat_front_leap_482_self_serve_short",
       "on": false,
@@ -3606,8 +3633,8 @@
       "version": 6,
       "deleted": false
     },
-    "fflag_fix_back_optic-1380_dashboard_task_chart_grouped_by_completed_at_reviewed_at_short": {
-      "key": "fflag_fix_back_optic-1380_dashboard_task_chart_grouped_by_completed_at_reviewed_at_short",
+    "fflag_fix_back_optic_1380_dashboard_task_chart_grouped_by_completed_at_reviewed_at_short": {
+      "key": "fflag_fix_back_optic_1380_dashboard_task_chart_grouped_by_completed_at_reviewed_at_short",
       "on": false,
       "prerequisites": [],
       "targets": [],
@@ -3626,7 +3653,7 @@
         "usingEnvironmentId": false
       },
       "clientSide": false,
-      "salt": "9150c31b05f546dc8256c0335e5a9b3a",
+      "salt": "5d10b576ced444f9ae782e07cd3d5ef2",
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
@@ -4266,6 +4293,33 @@
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
       "version": 3,
+      "deleted": false
+    },
+    "fflag_optic_all_optic_1938_storage_proxy": {
+      "key": "fflag_optic_all_optic_1938_storage_proxy",
+      "on": false,
+      "prerequisites": [],
+      "targets": [],
+      "contextTargets": [],
+      "rules": [],
+      "fallthrough": {
+        "variation": 0
+      },
+      "offVariation": 1,
+      "variations": [
+        true,
+        false
+      ],
+      "clientSideAvailability": {
+        "usingMobileKey": false,
+        "usingEnvironmentId": false
+      },
+      "clientSide": false,
+      "salt": "1e0f07f7fc144f2dbce9df4460434415",
+      "trackEvents": false,
+      "trackEventsFallthrough": false,
+      "debugEventsUntilDate": null,
+      "version": 2,
       "deleted": false
     },
     "fix_backend_dev_3134_exclude_deactivated_users": {
