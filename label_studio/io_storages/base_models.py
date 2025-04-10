@@ -496,6 +496,12 @@ def export_sync_background(storage_class, storage_id, **kwargs):
     storage.save_all_annotations()
 
 
+@job('low', timeout=settings.RQ_LONG_JOB_TIMEOUT)
+def export_sync_only_new_background(storage_class, storage_id, **kwargs):
+    storage = storage_class.objects.get(id=storage_id)
+    storage.save_only_new_annotations()
+
+
 def storage_background_failure(*args, **kwargs):
     # job is used in rqworker failure, extract storage id from job arguments
     if isinstance(args[0], rq.job.Job):
@@ -545,15 +551,13 @@ class ExportStorage(Storage, ProjectStorageMixin):
     def save_annotation(self, annotation):
         raise NotImplementedError
 
-    def save_all_annotations(self):
+    def save_annotations(self, annotations: models.QuerySet[Annotation]):
         annotation_exported = 0
-        total_annotations = Annotation.objects.filter(project=self.project).count()
+        total_annotations = annotations.count()
         self.info_set_in_progress()
         self.cached_user = self.project.organization.created_by
 
-        for annotation in Annotation.objects.filter(project=self.project).iterator(
-            chunk_size=settings.STORAGE_EXPORT_CHUNK_SIZE
-        ):
+        for annotation in annotations.iterator(chunk_size=settings.STORAGE_EXPORT_CHUNK_SIZE):
             annotation.cached_user = self.cached_user
             self.save_annotation(annotation)
 
@@ -563,12 +567,31 @@ class ExportStorage(Storage, ProjectStorageMixin):
 
         self.info_set_completed(last_sync_count=annotation_exported, total_annotations=total_annotations)
 
-    def sync(self):
+    def save_all_annotations(self):
+        self.save_annotations(Annotation.objects.filter(project=self.project))
+
+    def save_only_new_annotations(self):
+        """Do not update existing annotations, only ensure that all annotations have an ExportStorageLink"""
+        # Get the storage-specific ExportStorageLink model
+        storage_link_model = self.links.model
+        new_annotations = Annotation.objects.filter(project=self.project).exclude(
+            id__in=storage_link_model.objects.filter(storage=self, annotation__project=self.project).values(
+                'annotation_id'
+            )
+        )
+        self.save_annotations(new_annotations)
+
+    def sync(self, save_only_new_annotations: bool = False):
+        if save_only_new_annotations:
+            export_sync_fn = export_sync_only_new_background
+        else:
+            export_sync_fn = export_sync_background
+
         if redis_connected():
             queue = django_rq.get_queue('low')
             self.info_set_queued()
             sync_job = queue.enqueue(
-                export_sync_background,
+                export_sync_fn,
                 self.__class__,
                 self.id,
                 job_timeout=settings.RQ_LONG_JOB_TIMEOUT,
@@ -582,7 +605,7 @@ class ExportStorage(Storage, ProjectStorageMixin):
             try:
                 logger.info(f'Start syncing storage {self}')
                 self.info_set_queued()
-                export_sync_background(self.__class__, self.id)
+                export_sync_fn(self.__class__, self.id)
             except Exception:
                 storage_background_failure(self)
 
