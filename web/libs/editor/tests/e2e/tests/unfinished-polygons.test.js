@@ -38,7 +38,7 @@ Scenario("Drafts for unfinished polygons", async ({ I, LabelStudio, AtLabels, At
       onSubmitDraft: saveDraftLocally,
     },
   });
-  AtImageView.waitForImage();
+  LabelStudio.waitForObjectsReady();
 
   await AtImageView.lookForStage();
 
@@ -69,7 +69,7 @@ Scenario("Saving polygon drawing steps to history", async ({ I, LabelStudio, AtL
     },
   });
 
-  AtImageView.waitForImage();
+  LabelStudio.waitForObjectsReady();
 
   await AtImageView.lookForStage();
 
@@ -142,7 +142,7 @@ Scenario("Init an annotation with old format of closed polygon result", async ({
     ],
   });
 
-  AtImageView.waitForImage();
+  LabelStudio.waitForObjectsReady();
 
   const result = await LabelStudio.serialize();
 
@@ -206,7 +206,7 @@ Scenario("Init an annotation with result of new format of polygon results", asyn
     ],
   });
 
-  AtImageView.waitForImage();
+  LabelStudio.waitForObjectsReady();
 
   I.say("check loaded regions");
   let result = await LabelStudio.serialize();
@@ -258,7 +258,7 @@ Scenario("Removing a polygon by going back through history", async ({ I, LabelSt
     },
   });
 
-  AtImageView.waitForImage();
+  LabelStudio.waitForObjectsReady();
 
   await AtImageView.lookForStage();
 
@@ -328,7 +328,7 @@ Scenario("Continue annotating after closing region from draft", async ({ I, Labe
     ],
   });
 
-  AtImageView.waitForImage();
+  LabelStudio.waitForObjectsReady();
   await AtImageView.lookForStage();
   const canvasSize = await AtImageView.getCanvasSize();
 
@@ -366,7 +366,7 @@ Scenario("Change label on unfinished polygons", async ({ I, LabelStudio, AtLabel
   });
   LabelStudio.setFeatureFlags(FLAGS);
 
-  AtImageView.waitForImage();
+  LabelStudio.waitForObjectsReady();
 
   await AtImageView.lookForStage();
 
@@ -432,7 +432,7 @@ Data(selectedLabelsVariants).Scenario(
       ],
     });
 
-    AtImageView.waitForImage();
+    LabelStudio.waitForObjectsReady();
     await AtImageView.lookForStage();
     const canvasSize = await AtImageView.getCanvasSize();
 
@@ -464,7 +464,7 @@ selectedPolygonAfterCreatingVariants.add([true, "With set setting"]);
 
 Data(selectedPolygonAfterCreatingVariants).Scenario(
   "Select polygon after creating from unfinished draft",
-  async ({ I, LabelStudio, AtImageView, AtSidebar, AtSettings, current }) => {
+  async ({ I, LabelStudio, AtImageView, AtOutliner, AtSettings, current }) => {
     const { shouldSelect, description } = current;
 
     I.say(description);
@@ -511,7 +511,7 @@ Data(selectedPolygonAfterCreatingVariants).Scenario(
       AtSettings.close();
     }
 
-    AtImageView.waitForImage();
+    LabelStudio.waitForObjectsReady();
     await AtImageView.lookForStage();
     const canvasSize = await AtImageView.getCanvasSize();
 
@@ -520,25 +520,25 @@ Data(selectedPolygonAfterCreatingVariants).Scenario(
 
     I.say(`check that region ${shouldSelect ? "is" : "is not"} selected`);
     if (shouldSelect) {
-      AtSidebar.seeSelectedRegion();
+      AtOutliner.seeSelectedRegion();
     } else {
-      AtSidebar.dontSeeSelectedRegion();
+      AtOutliner.dontSeeSelectedRegion();
     }
 
     I.say("unselect regions");
     I.pressKey("u");
-    AtSidebar.dontSeeSelectedRegion();
+    AtOutliner.dontSeeSelectedRegion();
 
     I.say("go back through the history");
     I.pressKey(["CommandOrControl", "Z"]);
-    AtSidebar.dontSeeSelectedRegion();
+    AtOutliner.dontSeeSelectedRegion();
 
     I.say("repeat creation and checking");
     AtImageView.drawByClick(canvasSize.width * 0.1, canvasSize.height * 0.1);
     if (shouldSelect) {
-      AtSidebar.seeSelectedRegion();
+      AtOutliner.seeSelectedRegion();
     } else {
-      AtSidebar.dontSeeSelectedRegion();
+      AtOutliner.dontSeeSelectedRegion();
     }
   },
 );

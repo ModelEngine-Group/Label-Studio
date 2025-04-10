@@ -117,9 +117,9 @@ module.exports = {
     const channelBBox = await I.grabElementBoundingRect(this._channelSelector);
 
     I.moveMouse(channelBBox.x + channelBBox.width * x, channelBBox.y + channelBBox.height * y);
-    I.pressKeyDown("Control");
+    I.pressKeyDown("CommandOrControl");
     I.mouseWheel({ deltaY });
-    I.pressKeyUp("Control");
+    I.pressKeyUp("CommandOrControl");
   },
 
   /**

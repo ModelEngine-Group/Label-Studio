@@ -15,10 +15,6 @@
   align-items: stretch;
   background-color: var(--main-bg-color);
 
-  &__auto_height {
-    height: auto;
-  }
-
   &_fullscreen {
     position: absolute;
     background: var(--sand_0);
@@ -39,20 +35,11 @@
 .wrapper {
   flex: 1;
   display: grid;
-  grid-template-columns: calc(100% - 320px) 320px;
+  grid-template-columns: 100%;
   grid-template-rows: 1fr;
   align-items: stretch;
   max-width: 100%;
   height: calc(100% - var(--sticky-items-offset));
-
-  &_view_all,
-  &_outliner {
-    grid-template-columns: 100%;
-
-    & .menu {
-      padding-bottom: 8px;
-    }
-  }
 
   &_bsp {
     display: block;
@@ -60,6 +47,10 @@
 
   &_showingBottomBar {
     --bottombar-height: 48px;
+  }
+
+  & .menu {
+    padding-bottom: 8px;
   }
 }
 

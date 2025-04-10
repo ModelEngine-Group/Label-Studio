@@ -79,7 +79,6 @@ export { ReactComponent as IconCrossCircleFilledRed } from "./cross-circle-fille
 export { ReactComponent as IconCrossNoPadding } from "./cross-no-padding.svg";
 export { ReactComponent as IconCursor } from "./cursor.svg";
 export { ReactComponent as IconDatasets } from "./datasets.svg";
-export { ReactComponent as IconDate } from "./date.svg";
 export { ReactComponent as IconDelete } from "./delete.svg";
 export { ReactComponent as IconDetails } from "./details.svg";
 export { ReactComponent as IconDocument } from "./document.svg";
@@ -135,7 +134,6 @@ export { ReactComponent as IconInfoOutline } from "./info-outline.svg";
 export { ReactComponent as IconInterpolationAdd } from "./interpolation-add.svg";
 export { ReactComponent as IconInterpolationDisabled } from "./interpolation-disabled.svg";
 export { ReactComponent as IconInterpolationRemove } from "./interpolation-remove.svg";
-export { ReactComponent as IconInvisible } from "./invisible.svg";
 export { ReactComponent as IconIO } from "./io.svg";
 export { ReactComponent as IconKeypointAdd } from "./keypoint-add.svg";
 export { ReactComponent as IconKeypointDelete } from "./keypoint-delete.svg";
@@ -236,7 +234,6 @@ export { ReactComponent as IconUploadOutline } from "./cloud-upload-outline.svg"
 export { ReactComponent as IconUserAdd } from "./user-add.svg";
 export { ReactComponent as IconViewAll } from "./view-all.svg";
 export { ReactComponent as IconVisa } from "./visa.svg";
-export { ReactComponent as IconVisible } from "./visible.svg";
 export { ReactComponent as IconVolumeFull } from "./volume-full.svg";
 export { ReactComponent as IconVolumeHalf } from "./volume-half.svg";
 export { ReactComponent as IconVolumeMute } from "./volume-mute.svg";

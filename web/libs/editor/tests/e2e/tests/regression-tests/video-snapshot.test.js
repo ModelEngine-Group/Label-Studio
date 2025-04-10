@@ -2,7 +2,7 @@ const assert = require("assert");
 
 Feature("Video region snapshots").tag("@regress");
 
-Scenario("Restoring video regions from snapshots", async ({ I, LabelStudio, AtSidebar }) => {
+Scenario("Restoring video regions from snapshots", async ({ I, LabelStudio, AtOutliner }) => {
   I.amOnPage("/");
   LabelStudio.init({
     annotations: [
@@ -55,8 +55,8 @@ Scenario("Restoring video regions from snapshots", async ({ I, LabelStudio, AtSi
   {
     I.say("Check restoring the snapshot from history");
     LabelStudio.clearModalIfPresent();
-    AtSidebar.seeRegions(1);
-    AtSidebar.clickRegion(1);
+    AtOutliner.seeRegions(1);
+    AtOutliner.clickRegion(1);
     I.say("delete region");
     I.pressKey("Backspace");
     I.say("undo action");

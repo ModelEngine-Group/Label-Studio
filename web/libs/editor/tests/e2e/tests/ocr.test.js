@@ -30,7 +30,7 @@ const H3_POINTS = [
   [1.40625, 55.226824457593686],
 ];
 
-Scenario("Basic scenario", async ({ I, LabelStudio, AtImageView, AtSettings, AtLabels, AtSidebar }) => {
+Scenario("Basic scenario", async ({ I, LabelStudio, AtImageView, AtSettings, AtLabels, AtOutliner }) => {
   I.amOnPage("/");
 
   LabelStudio.init({
@@ -40,7 +40,7 @@ Scenario("Basic scenario", async ({ I, LabelStudio, AtImageView, AtSettings, AtL
       preserveSelectedTool: false,
     },
   });
-  AtImageView.waitForImage();
+  LabelStudio.waitForObjectsReady();
   AtSettings.open();
   AtSettings.setGeneralSettings({
     [AtSettings.GENERAL_SETTINGS.AUTO_SELECT_REGION]: true,
@@ -54,8 +54,8 @@ Scenario("Basic scenario", async ({ I, LabelStudio, AtImageView, AtSettings, AtL
   AtImageView.drawByClickingPoints(
     [...H3_POINTS, H3_POINTS[0]].map(([x, y]) => [(x * canvasSize.width) / 100, (y * canvasSize.height) / 100]),
   );
-  AtSidebar.seeRegions(1);
-  AtSidebar.seeElement('[placeholder="Recognized Text"]');
+  AtOutliner.seeRegions(1);
+  AtOutliner.seeElement('[placeholder="Recognized Text"]');
   const Text = 'The "H3" header';
 
   I.pressKey("Enter");
@@ -163,12 +163,9 @@ const REGIONS = [
 Scenario(
   "Drawing multiple blank regions and then attaching labels",
   async ({ I, LabelStudio, AtImageView, AtSettings, AtLabels, AtOutliner }) => {
-    LabelStudio.setFeatureFlags({
-      ff_front_1170_outliner_030222_short: true,
-    });
     I.amOnPage("/");
     LabelStudio.init({ config: createConfig(), data });
-    AtImageView.waitForImage();
+    LabelStudio.waitForObjectsReady();
     AtSettings.open();
     AtSettings.setGeneralSettings({
       [AtSettings.GENERAL_SETTINGS.SHOW_LABELS]: true,
@@ -214,7 +211,7 @@ Scenario(
     session("Deserialization", () => {
       I.amOnPage("/");
       LabelStudio.init({ config: createConfig(), data, annotations: [{ id: "test", result: results }] });
-      AtImageView.waitForImage();
+      LabelStudio.waitForObjectsReady();
       AtOutliner.seeRegions(regions.length);
       for (const [idx, region] of Object.entries(regions)) {
         if (region.text) {

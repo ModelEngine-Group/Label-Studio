@@ -11,7 +11,7 @@ imageExamples.add([require("../../../examples/image-polygons"), "Hello"]);
 
 Data(imageExamples).Scenario(
   "Image Readonly Annotations",
-  async ({ I, current, LabelStudio, AtSidebar, AtImageView }) => {
+  async ({ I, current, LabelStudio, AtOutliner, AtImageView }) => {
     I.amOnPage("/");
     const { config, result, data } = current.example;
     const regions = result.filter((r) => {
@@ -32,13 +32,13 @@ Data(imageExamples).Scenario(
 
     LabelStudio.init(params);
 
-    await AtImageView.waitForImage();
+    LabelStudio.waitForObjectsReady();
     await AtImageView.lookForStage();
 
     I.say(`Running against ${current.example.title}`);
     I.say("Check region is selectable");
-    AtSidebar.seeRegions(regions.length);
-    AtSidebar.clickRegion(current.regionName);
+    AtOutliner.seeRegions(regions.length);
+    AtOutliner.clickRegion(current.regionName);
 
     I.say("No tranformer available");
     const isTransformerExist = await AtImageView.isTransformerExist();
@@ -53,7 +53,7 @@ Data(imageExamples).Scenario(
     AtImageView.dragRegion(regions, (r, i) => i === 0);
 
     I.say("Results are equal after modification attempt");
-    AtSidebar.seeRegions(regions.length);
+    AtOutliner.seeRegions(regions.length);
     await LabelStudio.resultsNotChanged(result, 1);
 
     I.pressKey("u");
@@ -78,6 +78,6 @@ Data(imageExamples).Scenario(
         break;
     }
 
-    AtSidebar.seeRegions(regions.length);
+    AtOutliner.seeRegions(regions.length);
   },
 );

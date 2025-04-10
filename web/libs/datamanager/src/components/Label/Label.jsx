@@ -3,7 +3,6 @@ import { observer } from "mobx-react-lite";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { IconChevronDown, IconChevronLeft, IconGearNewUI } from "@humansignal/icons";
 import { Block, Elem } from "../../utils/bem";
-import { FF_DEV_1170, isFF } from "../../utils/feature-flags";
 import { Button } from "../Common/Button/Button";
 import { FieldsButton } from "../Common/FieldsButton";
 import { Icon } from "../Common/Icon/Icon";
@@ -95,8 +94,6 @@ export const Labeling = injector(
       window.dispatchEvent(new Event("resize"));
     }, []);
 
-    const outlinerEnabled = isFF(FF_DEV_1170);
-
     return (
       <Block name="label-view" mod={{ loading }}>
         {SDK.interfaceEnabled("labelingHeader") && (
@@ -124,13 +121,7 @@ export const Labeling = injector(
 
           <Elem name="lsf-wrapper" mod={{ mode: isExplorerMode ? "explorer" : "labeling" }}>
             {loading && <Elem name="waiting" mod={{ animated: true }} />}
-            <Elem
-              ref={lsfRef}
-              id="label-studio-dm"
-              name="lsf-container"
-              key="label-studio"
-              mod={{ outliner: outlinerEnabled }}
-            />
+            <Elem ref={lsfRef} id="label-studio-dm" name="lsf-container" key="label-studio" />
           </Elem>
         </Elem>
       </Block>

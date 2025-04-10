@@ -1,4 +1,4 @@
-const { initLabelStudio, serialize, convertToFixed, getSizeConvertor } = require("./helpers");
+const { serialize, convertToFixed, getSizeConvertor } = require("./helpers");
 
 const assert = require("assert");
 
@@ -172,16 +172,18 @@ const createShape = {
   },
 };
 
-Scenario("Creating regions by various gestures", async ({ I, AtImageView, AtSidebar }) => {
+Scenario("Creating regions by various gestures", async ({ I, LabelStudio, AtImageView, AtOutliner, AtPanels }) => {
   const params = {
     config: getConfigWithShapes(Object.keys(createShape)),
     data: { image: IMAGE },
   };
+  const AtDetailsPanel = AtPanels.usePanel(AtPanels.PANEL.DETAILS);
 
   I.amOnPage("/");
-  await I.executeScript(initLabelStudio, params);
-  AtImageView.waitForImage();
-  AtSidebar.seeRegions(0);
+  LabelStudio.init(params);
+  AtDetailsPanel.collapsePanel();
+  LabelStudio.waitForObjectsReady();
+  AtOutliner.seeRegions(0);
   const canvasSize = await AtImageView.getCanvasSize();
   const convertToImageSize = getSizeConvertor(canvasSize.width, canvasSize.height);
   const cellSize = { width: 100, height: 100 };
@@ -211,7 +213,7 @@ Scenario("Creating regions by various gestures", async ({ I, AtImageView, AtSide
   for (const [idx, region] of Object.entries(regions)) {
     I.pressKey(region.hotKey);
     AtImageView[region.action](...region.params);
-    AtSidebar.seeRegions(+idx + 1);
+    AtOutliner.seeRegions(+idx + 1);
   }
   const result = await I.executeScript(serialize);
 

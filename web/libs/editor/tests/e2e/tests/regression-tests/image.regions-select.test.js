@@ -100,7 +100,7 @@ function convertParamsToPixels(params, canvasSize, key = "width") {
 
 Data(shapesTable).Scenario(
   "Selecting after creation",
-  async ({ I, AtImageView, AtSidebar, Labels, Regions, LabelStudio, current }) => {
+  async ({ I, AtImageView, AtOutliner, Labels, Regions, LabelStudio, current }) => {
     const params = {
       config: getConfigWithShape(current.shape, current.props),
       data: { image: IMAGE },
@@ -110,8 +110,8 @@ Data(shapesTable).Scenario(
     LabelStudio.init(params);
     LabelStudio.enableSetting("Select regions after creating");
 
-    AtImageView.waitForImage();
-    AtSidebar.seeRegions(0);
+    LabelStudio.waitForObjectsReady();
+    AtOutliner.seeRegions(0);
     await AtImageView.lookForStage();
     const canvasSize = await AtImageView.getCanvasSize();
 
@@ -121,7 +121,7 @@ Data(shapesTable).Scenario(
       AtImageView[current.action](...convertParamsToPixels(region.params, canvasSize));
     }
     // Check regions to be sure there is something to unselect already
-    AtSidebar.seeRegions(current.regions.length);
+    AtOutliner.seeRegions(current.regions.length);
     Regions.unselectWithHotkey();
     if (current.shape === "Brush") {
       // Switching to the move tool
@@ -129,6 +129,6 @@ Data(shapesTable).Scenario(
     }
 
     await AtImageView.clickOnRegion(0);
-    AtSidebar.seeSelectedRegion();
+    AtOutliner.seeSelectedRegion();
   },
 );

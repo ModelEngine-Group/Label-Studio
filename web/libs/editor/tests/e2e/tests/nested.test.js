@@ -1,4 +1,4 @@
-const { initLabelStudio, serialize, selectText } = require("./helpers");
+const { serialize, selectText } = require("./helpers");
 
 const assert = require("assert");
 
@@ -78,14 +78,14 @@ const configComplicated = `
 const reviewText =
   "Not much to write about here, but it does exactly what it's supposed to. filters out the pop sounds. now my recordings are much more crisp. it is one of the lowest prices pop filters on amazon so might as well buy it, they honestly work the same despite their pricing,";
 
-Scenario("Check simple nested Choices for Text", async ({ I }) => {
+Scenario("Check simple nested Choices for Text", async ({ I, LabelStudio }) => {
   const params = {
     config: configSimple,
     data: { reviewText },
   };
 
   I.amOnPage("/");
-  I.executeScript(initLabelStudio, params);
+  LabelStudio.init(params);
 
   I.see("Positive");
   I.dontSee("Emotional");
@@ -100,14 +100,14 @@ Scenario("Check simple nested Choices for Text", async ({ I }) => {
   assert.deepEqual(result[1].value, { choices: ["Emotional"] });
 });
 
-Scenario("Check good nested Choice for Text", async ({ I, AtLabels, AtSidebar }) => {
+Scenario("Check good nested Choice for Text", async ({ I, LabelStudio, AtLabels, AtOutliner }) => {
   const params = {
     config: configComplicated,
     data: { reviewText },
   };
 
   I.amOnPage("/");
-  I.executeScript(initLabelStudio, params);
+  LabelStudio.init(params);
 
   I.click("Positive");
   I.see("Laughter");
@@ -122,16 +122,13 @@ Scenario("Check good nested Choice for Text", async ({ I, AtLabels, AtSidebar })
     rangeStart: 51,
     rangeEnd: 55,
   });
-  AtSidebar.seeRegions(1);
+  AtOutliner.seeRegions(1);
   I.dontSee("Female");
 
-  // the only element of regions tree list
-  const regionInList = locate(".lsf-entities__regions").find(".ant-list-item");
-
   // select this region
-  I.click(regionInList);
+  AtOutliner.clickRegion(1);
 
-  AtSidebar.seeRegions(1);
+  AtOutliner.seeRegions(1);
   I.see("More details"); // View with visibleWhen
 
   I.click("Female");

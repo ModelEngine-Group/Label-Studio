@@ -46,7 +46,13 @@ const createShape = {
         ...opts,
         action: "drawByDrag",
         params: [x + width / 2, y + height / 2, width / 2, height / 2],
-        result: { radiusX: width / 2, radiusY: height / 2, rotation: 0, x: x + width / 2, y: y + height / 2 },
+        result: {
+          radiusX: width / 2,
+          radiusY: height / 2,
+          rotation: 0,
+          x: x + width / 2,
+          y: y + height / 2,
+        },
       };
     },
   },
@@ -107,16 +113,19 @@ const createShape = {
   // },
 };
 
-Scenario("Drawing with ctrl pressed", async ({ I, LabelStudio, AtSidebar, AtImageView }) => {
+Scenario("Drawing with ctrl pressed", async ({ I, LabelStudio, AtOutliner, AtImageView, AtPanels }) => {
   const params = {
     config: getConfigWithShapes(Object.keys(createShape), 'strokewidth="5"'),
     data: { image: IMAGE },
   };
+  const AtDetailsPanel = AtPanels.usePanel(AtPanels.PANEL.DETAILS);
 
   I.amOnPage("/");
   LabelStudio.init(params);
-  AtImageView.waitForImage();
-  AtSidebar.seeRegions(0);
+  AtDetailsPanel.collapsePanel();
+  AtDetailsPanel.seeExpandButton();
+  LabelStudio.waitForObjectsReady();
+  AtOutliner.seeRegions(0);
   const canvasSize = await AtImageView.getCanvasSize();
   const size = Math.min(canvasSize.width, canvasSize.height);
   const convertToImageSize = Helpers.getSizeConvertor(canvasSize.width, canvasSize.height);
@@ -144,21 +153,22 @@ Scenario("Drawing with ctrl pressed", async ({ I, LabelStudio, AtSidebar, AtImag
     const [outerRegion, innerRegion] = regionPair;
 
     LabelStudio.init(params);
-    AtImageView.waitForImage();
-    AtSidebar.seeRegions(0);
+    LabelStudio.waitForObjectsReady();
+    AtOutliner.seeRegions(0);
+    AtDetailsPanel.seeExpandButton();
     I.say(`Drawing ${innerRegion.shape} on ${outerRegion.shape}`);
     await AtImageView.lookForStage();
     I.pressKey(outerRegion.hotKey);
     AtImageView[outerRegion.action](...outerRegion.params);
-    AtSidebar.seeRegions(1);
+    AtOutliner.seeRegions(1);
     I.pressKey(["u"]);
     I.pressKey(innerRegion.hotKey);
-    I.pressKeyDown("Control");
+    I.pressKeyDown("CommandOrControl");
     AtImageView[innerRegion.action](...innerRegion.params);
-    I.pressKeyUp("Control");
+    I.pressKeyUp("CommandOrControl");
     const result = await LabelStudio.serialize();
 
-    AtSidebar.seeRegions(2);
+    AtOutliner.seeRegions(2);
     for (let i = 0; i < 2; i++) {
       if (regionPair[i].result) {
         Asserts.deepEqualWithTolerance(result[i].value, convertToImageSize(regionPair[i].result));
@@ -167,7 +177,7 @@ Scenario("Drawing with ctrl pressed", async ({ I, LabelStudio, AtSidebar, AtImag
   }
 });
 
-Scenario("How it works without ctrl", async ({ I, LabelStudio, AtSidebar, AtImageView }) => {
+Scenario("How it works without ctrl", async ({ I, LabelStudio, AtOutliner, AtImageView }) => {
   const params = {
     config: getConfigWithShapes(Object.keys(createShape)),
     data: { image: IMAGE },
@@ -178,8 +188,8 @@ Scenario("How it works without ctrl", async ({ I, LabelStudio, AtSidebar, AtImag
 
   I.amOnPage("/");
   LabelStudio.init(params);
-  AtImageView.waitForImage();
-  AtSidebar.seeRegions(0);
+  LabelStudio.waitForObjectsReady();
+  AtOutliner.seeRegions(0);
   const canvasSize = await AtImageView.getCanvasSize();
   const size = Math.min(canvasSize.width, canvasSize.height);
   const regionPairs = [];
@@ -211,8 +221,8 @@ Scenario("How it works without ctrl", async ({ I, LabelStudio, AtSidebar, AtImag
     if (innerRegion.shape === "Brush") continue;
 
     LabelStudio.init(params);
-    AtImageView.waitForImage();
-    AtSidebar.seeRegions(0);
+    LabelStudio.waitForObjectsReady();
+    AtOutliner.seeRegions(0);
     I.say(`Drawing ${innerRegion.shape} on ${outerRegion.shape}`);
     I.pressKey(["u"]);
     await AtImageView.lookForStage();
@@ -221,6 +231,6 @@ Scenario("How it works without ctrl", async ({ I, LabelStudio, AtSidebar, AtImag
     I.pressKey(["u"]);
     I.pressKey(innerRegion.hotKey);
     AtImageView[innerRegion.action](...innerRegion.params);
-    AtSidebar.seeRegions(1);
+    AtOutliner.seeRegions(1);
   }
 });

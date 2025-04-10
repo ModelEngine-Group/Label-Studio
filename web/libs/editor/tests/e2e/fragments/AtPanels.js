@@ -19,9 +19,8 @@ class Panel {
   rightZone = ".lsf-sidepanels__wrapper_align_right";
 
   collapsingToggle = ".lsf-panel__toggle";
-  collapsedToggle = ".lsf-panel__toggle_enabled";
-  collapseButton = `${this.collapsingToggle}${this.collapsedToggle}`;
-  expandButton = `${this.collapsingToggle}:not(${this.collapsedToggle})`;
+  collapseButton = `${this.collapsingToggle}[data-tooltip*="Collapse"]`;
+  expandButton = `${this.collapsingToggle}[data-tooltip*="Expand"]`;
 
   resizeTopLeft = '[data-resize="top-left"]';
   resizeTopRight = '[data-resize="top-right"]';
@@ -61,6 +60,8 @@ class Panel {
   }
   collapsePanel() {
     I.click(this.locate(this.collapsingToggle));
+    // Allow some tags to rerender and get new sizes before we can continue testing things
+    I.wait(1);
   }
   expandPanel() {
     I.click(this.locate(this.header));

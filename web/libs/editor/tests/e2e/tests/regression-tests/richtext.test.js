@@ -11,7 +11,7 @@ const createConfig = (tag = "Text", granularity = "symbol") => {
 </View>`;
 };
 
-Scenario("Broken limits", async ({ I, LabelStudio, AtSidebar }) => {
+Scenario("Broken limits", async ({ I, LabelStudio, AtOutliner }) => {
   I.amOnPage("/");
   LabelStudio.init({
     annotations: [
@@ -31,25 +31,27 @@ Scenario("Broken limits", async ({ I, LabelStudio, AtSidebar }) => {
     config: createConfig(),
     data: { text: "First line\nSecond line" },
   });
-  AtSidebar.seeRegions(1);
-  AtSidebar.clickRegion("1");
+  LabelStudio.waitForObjectsReady();
+  AtOutliner.seeRegions(1);
+  AtOutliner.clickRegion(1);
   // The potential errors should be caught by `errorsCollector` plugin
 });
 
-Scenario("The selection in degenerate cases", async ({ I, LabelStudio, AtSidebar, AtRichText }) => {
+Scenario("The selection in degenerate cases", async ({ I, LabelStudio, AtOutliner, AtRichText }) => {
   I.amOnPage("/");
   LabelStudio.init({
     annotations: [{ id: "test", result: [] }],
     config: createConfig(),
     data: { text: "\n\nThird line" },
   });
-  AtSidebar.seeRegions(0);
+  LabelStudio.waitForObjectsReady();
+  AtOutliner.seeRegions(0);
   I.pressKey("1");
   await AtRichText.selectTextByGlobalOffset(0, 2);
   // The potential errors should be caught by `errorsCollector` plugin
 });
 
-Scenario("Exactly 1 word", async ({ I, LabelStudio, AtSidebar, AtRichText }) => {
+Scenario("Exactly 1 word", async ({ I, LabelStudio, AtOutliner, AtRichText }) => {
   I.amOnPage("/");
   LabelStudio.init({
     annotations: [
@@ -61,15 +63,16 @@ Scenario("Exactly 1 word", async ({ I, LabelStudio, AtSidebar, AtRichText }) => 
     config: createConfig("Text", "word"),
     data: { text: "Somé wórds\n\nwíth\n\nmultiline" },
   });
-  AtSidebar.seeRegions(0);
+  LabelStudio.waitForObjectsReady();
+  AtOutliner.seeRegions(0);
   I.pressKey("1");
   AtRichText.dblClickOnWord("Somé");
-  AtSidebar.see("Somé");
-  AtSidebar.dontSee("Somé wórds");
+  AtOutliner.see("Somé");
+  AtOutliner.dontSee("Somé wórds");
   // The potential errors should be caught by `errorsCollector` plugin
 });
 
-Scenario("Trim spaces around the word", async ({ I, LabelStudio, AtSidebar, AtRichText }) => {
+Scenario("Trim spaces around the word", async ({ I, LabelStudio, AtOutliner, AtRichText }) => {
   I.amOnPage("/");
   LabelStudio.init({
     annotations: [
@@ -81,13 +84,14 @@ Scenario("Trim spaces around the word", async ({ I, LabelStudio, AtSidebar, AtRi
     config: createConfig("Text", "word"),
     data: { text: "One two three four five six" },
   });
-  AtSidebar.seeRegions(0);
+  LabelStudio.waitForObjectsReady();
+  AtOutliner.seeRegions(0);
   I.pressKey("1");
   AtRichText.dblClickOnWord("four");
-  AtSidebar.see("four");
+  AtOutliner.see("four");
   I.pressKey("1");
   await AtRichText.selectTextByGlobalOffset(3, 8);
-  AtSidebar.see("two");
+  AtOutliner.see("two");
   const result = await LabelStudio.serialize();
 
   assert.strictEqual(result[0].value.text, "four");
@@ -95,7 +99,7 @@ Scenario("Trim spaces around the word", async ({ I, LabelStudio, AtSidebar, AtRi
   // The potential errors should be caught by `errorsCollector` plugin
 });
 
-Scenario("Trim spaces with BRs", async ({ I, LabelStudio, AtSidebar, AtRichText }) => {
+Scenario("Trim spaces with BRs", async ({ I, LabelStudio, AtOutliner, AtRichText }) => {
   I.amOnPage("/");
   LabelStudio.init({
     annotations: [
@@ -107,17 +111,18 @@ Scenario("Trim spaces with BRs", async ({ I, LabelStudio, AtSidebar, AtRichText 
     config: createConfig("Text", "word"),
     data: { text: "Three\n\n\nBRs\n\n\ntrim test" },
   });
-  AtSidebar.seeRegions(0);
+  LabelStudio.waitForObjectsReady();
+  AtOutliner.seeRegions(0);
   I.pressKey("1");
   await AtRichText.selectTextByGlobalOffset(5, 14);
-  AtSidebar.see("BRs");
+  AtOutliner.see("BRs");
   const result = await LabelStudio.serialize();
 
   assert.strictEqual(result[0].value.text, "BRs");
   // The potential errors should be caught by `errorsCollector` plugin
 });
 
-Scenario("Overlap checks", async ({ I, LabelStudio, AtSidebar, AtRichText }) => {
+Scenario("Overlap checks", async ({ I, LabelStudio, AtOutliner, AtRichText }) => {
   I.amOnPage("/");
   LabelStudio.init({
     annotations: [
@@ -129,17 +134,18 @@ Scenario("Overlap checks", async ({ I, LabelStudio, AtSidebar, AtRichText }) => 
     config: createConfig(),
     data: { text: "Halfword" },
   });
-  AtSidebar.seeRegions(0);
+  LabelStudio.waitForObjectsReady();
+  AtOutliner.seeRegions(0);
   I.pressKey("1");
   await AtRichText.selectTextByGlobalOffset(0, 4);
-  AtSidebar.see("Half");
+  AtOutliner.see("Half");
   I.pressKey("1");
   await AtRichText.selectTextByGlobalOffset(4, 8);
   I.seeNumberOfElements(AtRichText.locate("span.htx-highlight"), 2);
   // The potential errors should be caught by `errorsCollector` plugin
 });
 
-Scenario("Non-standard characters in words", async ({ I, LabelStudio, AtSidebar, AtRichText }) => {
+Scenario("Non-standard characters in words", async ({ I, LabelStudio, AtOutliner, AtRichText }) => {
   I.amOnPage("/");
   LabelStudio.init({
     annotations: [
@@ -151,15 +157,16 @@ Scenario("Non-standard characters in words", async ({ I, LabelStudio, AtSidebar,
     config: createConfig("Text", "word"),
     data: { text: "Somé wórds" },
   });
-  AtSidebar.seeRegions(0);
+  LabelStudio.waitForObjectsReady();
+  AtOutliner.seeRegions(0);
   I.pressKey("1");
   await AtRichText.selectTextByGlobalOffset(0, 5);
-  AtSidebar.seeRegions(1);
-  AtSidebar.see("Somé");
+  AtOutliner.seeRegions(1);
+  AtOutliner.see("Somé");
   // The potential errors should be caught by `errorsCollector` plugin
 });
 
-Scenario("Should not select words from next line", async ({ I, LabelStudio, AtSidebar, AtRichText }) => {
+Scenario("Should not select words from next line", async ({ I, LabelStudio, AtOutliner, AtRichText }) => {
   I.amOnPage("/");
   LabelStudio.init({
     annotations: [
@@ -171,16 +178,17 @@ Scenario("Should not select words from next line", async ({ I, LabelStudio, AtSi
     config: createConfig("Text", "word"),
     data: { text: "Оne\nline" },
   });
-  AtSidebar.seeRegions(0);
+  LabelStudio.waitForObjectsReady();
+  AtOutliner.seeRegions(0);
   I.pressKey("1");
   AtRichText.setSelection(AtRichText.locateText(), 0, AtRichText.locateRoot(), 2);
-  AtSidebar.seeRegions(1);
-  AtSidebar.see("Оne");
-  AtSidebar.dontSee("line");
+  AtOutliner.seeRegions(1);
+  AtOutliner.see("Оne");
+  AtOutliner.dontSee("line");
   // The potential errors should be caught by `errorsCollector` plugin
 });
 
-Scenario("Trying to select alt attr", async ({ I, LabelStudio, AtSidebar, AtRichText }) => {
+Scenario("Trying to select alt attr", async ({ I, LabelStudio, AtOutliner, AtRichText }) => {
   I.amOnPage("/");
   LabelStudio.init({
     annotations: [
@@ -192,14 +200,15 @@ Scenario("Trying to select alt attr", async ({ I, LabelStudio, AtSidebar, AtRich
     config: createConfig("HyperText", "word"),
     data: { text: "The bad <img alt='image'> we got here" },
   });
-  AtSidebar.seeRegions(0);
+  LabelStudio.waitForObjectsReady();
+  AtOutliner.seeRegions(0);
   I.pressKey("1");
   AtRichText.dblClickOnElement('img[alt="image"]');
-  AtSidebar.seeRegions(0);
+  AtOutliner.seeRegions(0);
   // The potential errors should be caught by `errorsCollector` plugin
 });
 
-Scenario("Neighboring nested regions misplacement", async ({ I, LabelStudio, AtSidebar, AtRichText }) => {
+Scenario("Neighboring nested regions misplacement", async ({ I, LabelStudio, AtOutliner, AtRichText }) => {
   I.amOnPage("/");
   LabelStudio.init({
     annotations: [
@@ -257,19 +266,20 @@ Scenario("Neighboring nested regions misplacement", async ({ I, LabelStudio, AtS
 </View>`,
     data: { text: "<div>Catfish</div>" },
   });
-  AtSidebar.seeRegions(3);
+  LabelStudio.waitForObjectsReady();
+  AtOutliner.seeRegions(3);
 
   within({ frame: ".lsf-richtext__iframe" }, () => {
     I.seeElement(locate(".htx-highlight + .htx-highlight").withText("fish"));
   });
   I.say("Delete last region");
-  AtSidebar.clickRegion(3);
+  AtOutliner.clickRegion(3);
   I.pressKey("Backspace");
 
   I.say("Create this region again manually");
   I.pressKey("2");
   AtRichText.selectTextByGlobalOffset(3, 7);
-  AtSidebar.seeRegions(3);
+  AtOutliner.seeRegions(3);
   within({ frame: ".lsf-richtext__iframe" }, () => {
     I.seeElement(locate(".htx-highlight + .htx-highlight").withText("fish"));
   });
@@ -307,7 +317,7 @@ Scenario("Neighboring nested regions misplacement", async ({ I, LabelStudio, AtS
     },
   ]);
 
-  Data(startBeforeEndParams).Scenario("Start before end problem", async ({ I, LabelStudio, AtSidebar, current }) => {
+  Data(startBeforeEndParams).Scenario("Start before end problem", async ({ I, LabelStudio, AtOutliner, current }) => {
     const { tag, content, range } = current;
 
     I.amOnPage("/");
@@ -338,7 +348,7 @@ Scenario("Neighboring nested regions misplacement", async ({ I, LabelStudio, AtS
       data: { text: content },
     });
     LabelStudio.waitForObjectsReady();
-    AtSidebar.seeRegions(1);
+    AtOutliner.seeRegions(1);
 
     switch (tag.toLowerCase()) {
       case "text": {

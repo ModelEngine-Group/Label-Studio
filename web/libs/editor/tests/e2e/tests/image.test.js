@@ -1,4 +1,4 @@
-const { initLabelStudio, serialize, waitForImage } = require("./helpers");
+const { serialize } = require("./helpers");
 
 const assert = require("assert");
 
@@ -65,31 +65,32 @@ const annotationWithPerRegion = {
 const image =
   "https://htx-pub.s3.us-east-1.amazonaws.com/examples/images/nick-owuor-astro-nic-visuals-wDifg5xc9Z4-unsplash.jpg";
 
-Scenario("Check Rect region for Image", async ({ I, AtImageView, AtSidebar }) => {
+Scenario("Check Rect region for Image", async ({ I, LabelStudio, AtImageView, AtOutliner, AtPanels }) => {
   const params = {
     config,
     data: { image },
     annotations: [annotationMoonwalker],
   };
+  const AtDetailsPanel = AtPanels.usePanel(AtPanels.PANEL.DETAILS);
 
   I.amOnPage("/");
-  I.executeScript(initLabelStudio, params);
+  LabelStudio.init(params);
+  AtDetailsPanel.collapsePanel();
 
-  AtImageView.waitForImage();
+  LabelStudio.waitForObjectsReady();
   await AtImageView.lookForStage();
-  I.executeScript(waitForImage);
-  AtSidebar.seeRegions(1);
+  AtOutliner.seeRegions(1);
   // select first and only region
-  I.click(locate('[aria-label="region"]'));
-  I.see("Labels:");
+  AtOutliner.clickRegion(1);
+  AtOutliner.seeSelectedRegion();
 
   // click on region's rect on the canvas
   AtImageView.clickAt(330, 80);
   I.wait(1);
-  I.dontSee("Labels:");
+  AtOutliner.dontSeeSelectedRegion();
 });
 
-Scenario("Image with perRegion tags", async ({ I, AtImageView, AtSidebar }) => {
+Scenario("Image with perRegion tags", async ({ I, LabelStudio, AtOutliner }) => {
   let result;
   const params = {
     config: perRegionConfig,
@@ -98,14 +99,13 @@ Scenario("Image with perRegion tags", async ({ I, AtImageView, AtSidebar }) => {
   };
 
   I.amOnPage("/");
-  I.executeScript(initLabelStudio, params);
+  LabelStudio.init(params);
 
-  AtImageView.waitForImage();
-  I.executeScript(waitForImage);
-  AtSidebar.seeRegions(1);
+  LabelStudio.waitForObjectsReady();
+  AtOutliner.seeRegions(1);
   // select first and only region
-  I.click(locate('[aria-label="region"]'));
-  I.see("Labels:");
+  AtOutliner.clickRegion(1);
+  AtOutliner.seeSelectedRegion();
 
   // check that there is deserialized text for this region; and without doubles
   I.seeNumberOfElements(locate("mark").withText("blah"), 1);
@@ -154,10 +154,11 @@ outOfBoundsFFs.add([false]);
 
 Data(outOfBoundsFFs).Scenario(
   "Can't create rectangles outside of canvas",
-  async ({ I, AtLabels, AtSidebar, AtImageView, LabelStudio, current }) => {
+  async ({ I, AtLabels, AtOutliner, AtImageView, LabelStudio, AtPanels, current }) => {
     LabelStudio.setFeatureFlags({
       fflag_fix_front_dev_3793_relative_coords_short: current.FF_DEV_3793,
     });
+    const AtDetailsPanel = AtPanels.usePanel(AtPanels.PANEL.DETAILS);
 
     I.amOnPage("/");
 
@@ -170,8 +171,9 @@ Data(outOfBoundsFFs).Scenario(
         predictions: [],
       },
     });
+    AtDetailsPanel.collapsePanel();
 
-    await AtImageView.waitForImage();
+    LabelStudio.waitForObjectsReady();
     await AtImageView.lookForStage();
 
     const stage = AtImageView.stageBBox();
@@ -192,7 +194,7 @@ Data(outOfBoundsFFs).Scenario(
     AtLabels.clickLabel("Planet");
     AtImageView.drawByDrag(stage.width - 100, stage.height - 100, stage.width + 100, stage.height + 100);
 
-    AtSidebar.seeRegions(4);
+    AtOutliner.seeRegions(4);
 
     const result = await LabelStudio.serialize();
 
@@ -218,10 +220,11 @@ Data(outOfBoundsFFs).Scenario(
 
 Data(outOfBoundsFFs).Scenario(
   "Can't create ellipses outside of canvas",
-  async ({ I, AtLabels, AtSidebar, AtImageView, LabelStudio, current }) => {
+  async ({ I, AtLabels, AtOutliner, AtImageView, LabelStudio, AtPanels, current }) => {
     LabelStudio.setFeatureFlags({
       fflag_fix_front_dev_3793_relative_coords_short: current.FF_DEV_3793,
     });
+    const AtDetailsPanel = AtPanels.usePanel(AtPanels.PANEL.DETAILS);
 
     I.amOnPage("/");
 
@@ -234,8 +237,9 @@ Data(outOfBoundsFFs).Scenario(
         predictions: [],
       },
     });
+    AtDetailsPanel.collapsePanel();
 
-    await AtImageView.waitForImage();
+    LabelStudio.waitForObjectsReady();
     await AtImageView.lookForStage();
 
     const stage = AtImageView.stageBBox();
@@ -256,7 +260,7 @@ Data(outOfBoundsFFs).Scenario(
       AtImageView.drawByDrag(...ellipse);
     }
 
-    AtSidebar.seeRegions(4);
+    AtOutliner.seeRegions(4);
 
     const result = await LabelStudio.serialize();
     const radiusX = (100 / stage.width) * 100;

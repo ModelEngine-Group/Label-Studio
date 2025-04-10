@@ -2,7 +2,7 @@ Feature("Hotkeys").tag("@regress");
 
 const AUDIO_URL = "/public/files/barradeen-emotional.mp3";
 
-Scenario("Hotkeys on re-initing lsf", async ({ I, LabelStudio, AtAudioView, AtSidebar }) => {
+Scenario("Hotkeys on re-initing lsf", async ({ I, LabelStudio, AtAudioView, AtOutliner }) => {
   const params = {
     annotations: [{ id: "test", result: [] }],
     config: `<View>
@@ -32,7 +32,7 @@ Scenario("Hotkeys on re-initing lsf", async ({ I, LabelStudio, AtAudioView, AtSi
   LabelStudio.init(params);
   await AtAudioView.waitForAudio();
 
-  AtSidebar.seeRegions(0);
+  AtOutliner.seeRegions(0);
 
   I.say("Draw region");
 
@@ -40,12 +40,12 @@ Scenario("Hotkeys on re-initing lsf", async ({ I, LabelStudio, AtAudioView, AtSi
   I.pressKey("1");
   AtAudioView.dragAudioElement(50, 300);
   I.pressKey("u");
-  AtSidebar.seeRegions(1);
+  AtOutliner.seeRegions(1);
 
   I.say("Try to delete it by backspace hotkey");
   AtAudioView.clickAt(150);
   I.pressKey("Backspace");
-  AtSidebar.seeRegions(0);
+  AtOutliner.seeRegions(0);
 
   I.say("Reset selected labels");
   I.pressKey("u");
@@ -57,12 +57,12 @@ Scenario("Hotkeys on re-initing lsf", async ({ I, LabelStudio, AtAudioView, AtSi
     AtAudioView.dragAudioElement(50 + 50 * k, 30);
     I.pressKey("u");
   }
-  AtSidebar.seeRegions(5);
+  AtOutliner.seeRegions(5);
 
   I.say("Try to delete all regions by ctrl+backspace hotkey");
 
   I.pressKey(["CommandOrControl", "Backspace"]);
   I.acceptPopup();
 
-  AtSidebar.seeRegions(0);
+  AtOutliner.seeRegions(0);
 });

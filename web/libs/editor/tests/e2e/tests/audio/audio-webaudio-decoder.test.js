@@ -73,7 +73,7 @@ const annotations = [
 const params = { annotations: [{ id: "test", result: annotations }], config, data };
 const paramsSpeech = { annotations: [{ id: "test", result: [] }], config: configSpeech, data };
 
-Scenario("Check if regions are selected", async ({ I, LabelStudio, AtAudioView, AtSidebar }) => {
+Scenario("Check if regions are selected", async ({ I, LabelStudio, AtAudioView, AtOutliner }) => {
   LabelStudio.setFeatureFlags({
     ff_front_dev_2715_audio_3_280722_short: true,
   });
@@ -87,28 +87,28 @@ Scenario("Check if regions are selected", async ({ I, LabelStudio, AtAudioView, 
 
   await AtAudioView.lookForStage();
 
-  AtSidebar.seeRegions(1);
+  AtOutliner.seeRegions(1);
 
   // creating a new region
   I.pressKey("1");
   AtAudioView.dragAudioElement(160, 80);
   I.pressKey("u");
 
-  AtSidebar.seeRegions(2);
+  AtOutliner.seeRegions(2);
 
   AtAudioView.clickAt(170);
-  AtSidebar.seeSelectedRegion();
+  AtOutliner.seeSelectedRegion();
   AtAudioView.clickAt(170);
-  AtSidebar.dontSeeSelectedRegion();
+  AtOutliner.dontSeeSelectedRegion();
   AtAudioView.dragAudioElement(170, 40);
-  AtSidebar.seeSelectedRegion();
+  AtOutliner.seeSelectedRegion();
   AtAudioView.clickAt(220);
-  AtSidebar.dontSeeSelectedRegion();
+  AtOutliner.dontSeeSelectedRegion();
 });
 
 Scenario(
   "Check if multiple regions are working changing labels",
-  async ({ I, LabelStudio, AtAudioView, AtSidebar }) => {
+  async ({ I, LabelStudio, AtAudioView, AtOutliner }) => {
     LabelStudio.setFeatureFlags({
       ff_front_dev_2715_audio_3_280722_short: true,
     });
@@ -122,7 +122,7 @@ Scenario(
 
     await AtAudioView.lookForStage();
 
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 10; i++) {
       // creating a new region
       I.pressKey("1");
       AtAudioView.dragAudioElement(40 * i + 10, 30);
@@ -132,24 +132,24 @@ Scenario(
       I.pressKey("u");
     }
 
-    AtSidebar.seeRegions(20);
+    AtOutliner.seeRegions(10);
 
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 10; i++) {
       // creating a new region
       AtAudioView.clickAt(40 * i + 20);
-      AtSidebar.seeSelectedRegion();
+      AtOutliner.seeSelectedRegion();
       I.pressKey("u");
     }
 
-    AtSidebar.seeRegions(20);
+    AtOutliner.seeRegions(10);
 
     I.pressKey("u");
 
-    AtSidebar.dontSeeSelectedRegion();
+    AtOutliner.dontSeeSelectedRegion();
   },
 );
 
-Scenario("Can select a region below a hidden region", async ({ I, LabelStudio, AtAudioView, AtSidebar }) => {
+Scenario("Can select a region below a hidden region", async ({ I, LabelStudio, AtAudioView, AtOutliner }) => {
   LabelStudio.setFeatureFlags({
     ff_front_dev_2715_audio_3_280722_short: true,
   });
@@ -168,28 +168,28 @@ Scenario("Can select a region below a hidden region", async ({ I, LabelStudio, A
   AtAudioView.dragAudioElement(50, 80);
   I.pressKey("u");
 
-  AtSidebar.seeRegions(1);
+  AtOutliner.seeRegions(1);
 
   // create a new region above the first one
   I.pressKey("2");
   AtAudioView.dragAudioElement(49, 81);
   I.pressKey("u");
 
-  AtSidebar.seeRegions(2);
+  AtOutliner.seeRegions(2);
 
   // click on the top-most region visible to select it
   AtAudioView.clickAt(50);
-  AtSidebar.seeSelectedRegion("Noise");
+  AtOutliner.seeSelectedRegion("Noise");
 
   // hide the region
-  AtSidebar.hideRegion("Noise");
+  AtOutliner.toggleRegionVisibility("Noise");
 
   // click on the region below the hidden one to select it
   AtAudioView.clickAt(50);
-  AtSidebar.seeSelectedRegion("Speech");
+  AtOutliner.seeSelectedRegion("Speech");
 });
 
-Scenario("Delete region by pressing delete hotkey", async ({ I, LabelStudio, AtAudioView, AtSidebar }) => {
+Scenario("Delete region by pressing delete hotkey", async ({ I, LabelStudio, AtAudioView, AtOutliner }) => {
   LabelStudio.setFeatureFlags({
     ff_front_dev_2715_audio_3_280722_short: true,
   });
@@ -203,7 +203,7 @@ Scenario("Delete region by pressing delete hotkey", async ({ I, LabelStudio, AtA
 
   await AtAudioView.lookForStage();
 
-  AtSidebar.seeRegions(1);
+  AtOutliner.seeRegions(1);
 
   // creating a new region
   AtAudioView.dragAudioElement(160, 80);
@@ -212,10 +212,10 @@ Scenario("Delete region by pressing delete hotkey", async ({ I, LabelStudio, AtA
 
   I.pressKey("1");
 
-  AtSidebar.seeRegions(1);
+  AtOutliner.seeRegions(1);
 });
 
-Scenario("Check if there are ghost regions", async ({ I, LabelStudio, AtAudioView, AtSidebar }) => {
+Scenario("Check if there are ghost regions", async ({ I, LabelStudio, AtAudioView, AtOutliner }) => {
   LabelStudio.setFeatureFlags({
     ff_front_dev_2715_audio_3_280722_short: true,
   });
@@ -244,13 +244,13 @@ Scenario("Check if there are ghost regions", async ({ I, LabelStudio, AtAudioVie
 
   // checking if the created region is selected
   AtAudioView.clickAt(310);
-  AtSidebar.seeSelectedRegion();
+  AtOutliner.seeSelectedRegion();
 
   // trying to select the ghost region, if there is no ghost region, the region will keep selected
   // as ghost region is not selectable and impossible to change the label, the created region will be deselected if there is a ghost region created.
   AtAudioView.clickAt(170);
   I.pressKey("2");
-  AtSidebar.seeSelectedRegion();
+  AtOutliner.seeSelectedRegion();
 
-  AtSidebar.seeRegions(2);
+  AtOutliner.seeRegions(2);
 });

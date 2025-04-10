@@ -36,7 +36,7 @@ Feature("Smoke test through all the examples");
 examples.slice(1).forEach((example) =>
   Scenario(
     example.title || "Noname smoke test",
-    async ({ I, LabelStudio, AtImageView, AtAudioView, AtSidebar, AtTopbar }) => {
+    async ({ I, LabelStudio, AtOutliner, AtTopbar, AtDetails, AtAudioView }) => {
       LabelStudio.setFeatureFlags({
         ff_front_dev_2715_audio_3_280722_short: true,
       });
@@ -56,13 +56,11 @@ examples.slice(1).forEach((example) =>
 
       LabelStudio.init(params);
 
-      AtSidebar.seeRegions(count);
+      AtOutliner.seeRegions(count);
 
       let restored;
 
-      if (Utils.xmlTreeHasTag(configTree, "Image")) {
-        AtImageView.waitForImage();
-      }
+      LabelStudio.waitForObjectsReady();
 
       if (Utils.xmlFindBy(configTree, (node) => node["#name"] === "Audio")) {
         await AtAudioView.waitForAudio();
@@ -78,15 +76,15 @@ examples.slice(1).forEach((example) =>
       assertWithTolerance(restored, result);
 
       if (count) {
-        I.click(".ant-list-item");
+        AtOutliner.clickRegion(1);
         // I.click('Delete Entity') - it founds something by tooltip, but not a button
         // so click the bin button in entity's info block
-        I.click(".lsf-entity-buttons span[aria-label=delete]");
-        AtSidebar.seeRegions(count - 1);
-        I.click(".lsf-history-buttons__action[aria-label=Reset]");
-        AtSidebar.seeRegions(count);
+        AtDetails.clickDeleteRegion();
+        AtOutliner.seeRegions(count - 1);
+        AtTopbar.clickAria("Reset");
+        AtOutliner.seeRegions(count);
         // Reset is undoable
-        I.click(".lsf-history-buttons__action[aria-label=Undo]");
+        AtTopbar.clickAria("Undo");
 
         // so after all these manipulations first region should be deleted
         restored = await I.executeScript(serialize);
@@ -96,13 +94,13 @@ examples.slice(1).forEach((example) =>
         );
       }
       // Click on annotation copy button
-      AtTopbar.click('[aria-label="Copy Annotation"]');
+      AtTopbar.clickAria("Copy Annotation");
 
       // Check if new annotation exists
       AtTopbar.seeAnnotationAt(2);
 
       // Check for regions count
-      AtSidebar.seeRegions(count);
+      AtOutliner.seeRegions(count);
 
       await I.executeScript(() => {
         window.LabelStudio.destroyAll();

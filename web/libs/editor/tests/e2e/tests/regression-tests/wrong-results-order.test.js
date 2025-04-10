@@ -1,6 +1,6 @@
 Feature("Wrong ordered results deserialization").tag("@regress");
 
-Scenario("Combining results of per-region  textarea and richtext regions.", async ({ I, LabelStudio, AtSidebar }) => {
+Scenario("Combining results of per-region  textarea and richtext regions.", async ({ I, LabelStudio, AtOutliner }) => {
   I.amOnPage("/");
 
   LabelStudio.init({
@@ -45,5 +45,5 @@ Scenario("Combining results of per-region  textarea and richtext regions.", asyn
     data: { text: "Just a text" },
   });
 
-  AtSidebar.seeRegions(1);
+  AtOutliner.seeRegions(1);
 });

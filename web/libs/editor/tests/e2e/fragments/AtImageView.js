@@ -32,6 +32,10 @@ module.exports = {
     return locator ? paginationLocator.find(locator) : paginationLocator;
   },
 
+  locateToolByCode(toolCode) {
+    return locate(`[aria-label=${toolCode}-tool]`);
+  },
+
   percToX(xPerc) {
     return (this._stageBBox.width * xPerc) / 100;
   },
@@ -106,6 +110,11 @@ module.exports = {
 
   setZoom(scale, x, y) {
     I.executeScript(Helpers.setZoom, [scale, x, y]);
+    I.wait(1);
+  },
+
+  async getZoomProps() {
+    return await I.executeScript(Helpers.getZoomProps);
   },
 
   /**
@@ -332,6 +341,14 @@ module.exports = {
   selectMoveTool() {
     I.say("Select move tool");
     I.pressKey("V");
+  },
+
+  selectToolByCode(toolCode) {
+    I.click(this.locateToolByCode(toolCode));
+  },
+
+  hasSelectedTool(toolCode) {
+    I.seeElement(`.lsf-tool_active${this.locateToolByCode(toolCode).toString()}`);
   },
 
   async multiImageGoForwardWithHotkey() {

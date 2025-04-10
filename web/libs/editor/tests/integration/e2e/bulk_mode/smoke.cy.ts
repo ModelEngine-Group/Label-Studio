@@ -17,13 +17,7 @@ import {
 } from "@humansignal/frontend-test/helpers/LSF";
 import { RichText } from "@humansignal/frontend-test/helpers/LSF/RichText";
 import { beforeEach } from "mocha";
-import {
-  FF_BULK_ANNOTATION,
-  FF_DEV_3873,
-  FF_DEV_4081,
-  FF_LSDV_4583,
-  FF_DEV_1170,
-} from "../../../../src/utils/feature-flags";
+import { FF_BULK_ANNOTATION, FF_DEV_3873, FF_LSDV_4583 } from "../../../../src/utils/feature-flags";
 import {
   allTagsConfig,
   allTagsSampleData,
@@ -36,7 +30,6 @@ import {
 
 beforeEach(() => {
   LabelStudio.addFeatureFlagsOnPageLoad({
-    [FF_DEV_1170]: true,
     [FF_BULK_ANNOTATION]: true,
   });
 });
@@ -50,9 +43,6 @@ for (const isFFDev3873 of [true, false]) {
       });
     });
     it("should show per object classifications", () => {
-      LabelStudio.addFeatureFlagsOnPageLoad({
-        [FF_DEV_4081]: true,
-      });
       LabelStudio.params()
         .config(allTagsConfig)
         .withInterface("annotation:bulk")

@@ -4,7 +4,7 @@ const imageExamples = new DataTable(["example", "regionName"]);
 
 imageExamples.add([require("../../../examples/text-html"), "Date"]);
 
-Data(imageExamples).Scenario("NER Readonly Results", async ({ I, current, LabelStudio, AtSidebar }) => {
+Data(imageExamples).Scenario("NER Readonly Results", async ({ I, current, LabelStudio, AtOutliner }) => {
   I.amOnPage("/");
   const { config, result: r, data } = current.example;
 
@@ -26,17 +26,17 @@ Data(imageExamples).Scenario("NER Readonly Results", async ({ I, current, LabelS
   });
 
   I.say("Check region is selectable");
-  AtSidebar.seeRegions(regions.length);
+  AtOutliner.seeRegions(regions.length);
 
   I.say("Attempt to delete a readonly region");
-  AtSidebar.clickRegion("Date");
+  AtOutliner.clickRegion("Date");
   I.pressKey("Backspace");
   I.say("Results are equal after deletion attempt");
   await LabelStudio.resultsNotChanged(result);
 
   // Person
   I.say("Attempt to delete a non-readonly region");
-  AtSidebar.clickRegion("Person");
+  AtOutliner.clickRegion("Person");
   I.pressKey("Backspace");
   I.say("Results are not equal after deletion attempt");
   await LabelStudio.resultsChanged(result);
@@ -45,5 +45,5 @@ Data(imageExamples).Scenario("NER Readonly Results", async ({ I, current, LabelS
   I.say("Can draw new shape");
   I.pressKey("1");
 
-  AtSidebar.seeRegions(regions.length);
+  AtOutliner.seeRegions(regions.length);
 });

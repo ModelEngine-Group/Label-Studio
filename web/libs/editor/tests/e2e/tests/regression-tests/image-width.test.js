@@ -12,7 +12,7 @@ const config = `
 
 Scenario(
   "Setting width 50% shouldn't break canvas size on resize of working area",
-  async ({ I, LabelStudio, AtImageView, AtSidebar }) => {
+  async ({ I, LabelStudio, AtImageView, AtOutliner }) => {
     const params = {
       config,
       data: { image: IMAGE },
@@ -20,8 +20,8 @@ Scenario(
 
     I.amOnPage("/");
     LabelStudio.init(params);
-    AtImageView.waitForImage();
-    AtSidebar.seeRegions(0);
+    LabelStudio.waitForObjectsReady();
+    AtOutliner.seeRegions(0);
     await AtImageView.lookForStage();
     let canvasSize = await AtImageView.getCanvasSize();
     let imageSize = await AtImageView.getImageSize();

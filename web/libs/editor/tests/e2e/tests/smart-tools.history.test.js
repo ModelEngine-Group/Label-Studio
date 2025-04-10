@@ -512,7 +512,7 @@ function getRectangleSuggestions(reg, group) {
   window.labelStudio.store.loadSuggestions(new Promise((resolve) => resolve(suggestions)), (x) => x);
 }
 
-Scenario("Undo regions auto-annotated from predictions", async ({ I, LabelStudio, AtImageView, AtSidebar }) => {
+Scenario("Undo regions auto-annotated from predictions", async ({ I, LabelStudio, AtImageView, AtOutliner }) => {
   I.amOnPage("/");
   LabelStudio.init({
     config: createRectangleConfig({
@@ -533,8 +533,8 @@ Scenario("Undo regions auto-annotated from predictions", async ({ I, LabelStudio
   LabelStudio.setFeatureFlags({
     fflag_fix_front_dev_1284_auto_detect_undo_281022_short: true,
   });
-  AtImageView.waitForImage();
-  AtSidebar.seeRegions(0);
+  LabelStudio.waitForObjectsReady();
+  AtOutliner.seeRegions(0);
   await AtImageView.lookForStage();
   I.say("Select magic tool");
   I.pressKey("M");
@@ -542,26 +542,27 @@ Scenario("Undo regions auto-annotated from predictions", async ({ I, LabelStudio
   I.say("Draw region over 5 potential suggestion area");
   AtImageView.drawByDrag(19, 192, 140, 150);
   I.say("Get that suggestions as result instead of drawn region");
-  AtSidebar.seeRegions(5);
+  AtOutliner.seeRegions(5);
   I.seeElement(':not([disabled])[aria-label="Undo"]');
   I.seeElement('[disabled][aria-label="Redo"]');
   I.say("Go back through history");
-  I.pressKey(["ctrl", "z"]);
+  I.pressKey(["CommandOrControl", "z"]);
   I.say("Should see nothing");
-  AtSidebar.seeRegions(0);
+  AtOutliner.seeRegions(0);
   I.seeElement('[disabled][aria-label="Undo"]');
   I.seeElement(':not([disabled])[aria-label="Redo"]');
   I.say("Go forward through history");
-  I.pressKey(["ctrl", "shift", "z"]);
+  I.pressKey(["CommandOrControl", "shift", "z"]);
   I.say("Regions must be restored");
-  AtSidebar.seeRegions(5);
+  AtOutliner.seeRegions(5);
   I.seeElement(':not([disabled])[aria-label="Undo"]');
   I.seeElement('[disabled][aria-label="Redo"]');
 });
 
 Scenario(
   "Undo if there are no regions auto-annotated from predictions",
-  async ({ I, LabelStudio, AtImageView, AtSidebar }) => {
+  async ({ I, LabelStudio, AtImageView, AtOutliner, AtPanels }) => {
+    const AtDetailsPanel = AtPanels.usePanel(AtPanels.PANEL.DETAILS);
     I.amOnPage("/");
     LabelStudio.init({
       config: createRectangleConfig({
@@ -582,8 +583,9 @@ Scenario(
     LabelStudio.setFeatureFlags({
       fflag_fix_front_dev_1284_auto_detect_undo_281022_short: true,
     });
-    AtImageView.waitForImage();
-    AtSidebar.seeRegions(0);
+    AtDetailsPanel.collapsePanel();
+    LabelStudio.waitForObjectsReady();
+    AtOutliner.seeRegions(0);
     await AtImageView.lookForStage();
     I.say("Select magic tool");
     I.pressKey("M");
@@ -591,32 +593,32 @@ Scenario(
     I.say("Draw region over area without potential suggestions");
     AtImageView.drawByDrag(600, 200, 7, 7);
     I.say("Get an empty list of regions as the result instead of drawn region");
-    AtSidebar.seeRegions(0);
+    AtOutliner.seeRegions(0);
     I.seeElement(':not([disabled])[aria-label="Undo"]');
     I.seeElement('[disabled][aria-label="Redo"]');
     I.say("Go back through history");
-    I.pressKey(["ctrl", "z"]);
+    I.pressKey(["CommandOrControl", "z"]);
     I.say("Should see nothing");
-    AtSidebar.seeRegions(0);
+    AtOutliner.seeRegions(0);
     I.seeElement('[disabled][aria-label="Undo"]');
     I.seeElement(':not([disabled])[aria-label="Redo"]');
     I.say("Go forward through history");
-    I.pressKey(["ctrl", "shift", "z"]);
+    I.pressKey(["CommandOrControl", "shift", "z"]);
     I.say("And see nothing again");
-    AtSidebar.seeRegions(0);
+    AtOutliner.seeRegions(0);
     I.seeElement(':not([disabled])[aria-label="Undo"]');
     I.seeElement('[disabled][aria-label="Redo"]');
 
     I.say("Go back through history");
-    I.pressKey(["ctrl", "z"]);
+    I.pressKey(["CommandOrControl", "z"]);
     I.say("Should see nothing");
-    AtSidebar.seeRegions(0);
+    AtOutliner.seeRegions(0);
     I.seeElement('[disabled][aria-label="Undo"]');
     I.seeElement(':not([disabled])[aria-label="Redo"]');
     I.say("Draw region over area without potential suggestions");
     AtImageView.drawByDrag(600, 200, 7, 7);
     I.say("Get an empty list of regions as the result instead of drawn region");
-    AtSidebar.seeRegions(0);
+    AtOutliner.seeRegions(0);
 
     I.say("There should be one history step");
     I.seeElement(':not([disabled])[aria-label="Undo"]');

@@ -113,7 +113,7 @@ const DataStore = Data(Object.keys(createShape));
 
 DataStore.Scenario(
   "Preventing applying labels of mismatch types",
-  async ({ I, LabelStudio, AtImageView, AtSidebar, AtLabels, current }) => {
+  async ({ I, LabelStudio, AtImageView, AtOutliner, AtLabels, AtPanels, current }) => {
     const shape = current;
     const config = createConfig({
       shapes: [shape],
@@ -124,11 +124,13 @@ DataStore.Scenario(
       config,
       data: { image: IMAGE },
     };
+    const AtDetailsPanel = AtPanels.usePanel(AtPanels.PANEL.DETAILS);
 
     I.amOnPage("/");
     LabelStudio.init(params);
-    AtImageView.waitForImage();
-    AtSidebar.seeRegions(0);
+    AtDetailsPanel.collapsePanel();
+    LabelStudio.waitForObjectsReady();
+    AtOutliner.seeRegions(0);
     const canvasSize = await AtImageView.getCanvasSize();
     const size = Math.min(canvasSize.width, canvasSize.height);
     const offset = size * 0.05;
@@ -169,8 +171,8 @@ DataStore.Scenario(
       const toolSelector = `[aria-label=${toKebabCase(`${shape}-tool`)}]`;
 
       LabelStudio.init(params);
-      AtImageView.waitForImage();
-      AtSidebar.seeRegions(0);
+      LabelStudio.waitForObjectsReady();
+      AtOutliner.seeRegions(0);
       I.click(toolSelector);
       await AtImageView.lookForStage();
       I.say(`${shape}: Drawing.`);
@@ -178,7 +180,7 @@ DataStore.Scenario(
       regions.forEach((region, idx) => {
         toolSelectors[idx](shape, 0);
         AtImageView[region.action](...region.params);
-        AtSidebar.seeRegions(idx + 1);
+        AtOutliner.seeRegions(idx + 1);
         I.pressKey(["u"]);
       });
 
@@ -188,7 +190,7 @@ DataStore.Scenario(
       const currentLabelName = `${shape}Append`;
 
       regions.forEach((region, idx) => {
-        AtSidebar.clickRegion(+idx + 1);
+        AtOutliner.clickRegion(+idx + 1);
         AtLabels.clickLabel(currentLabelName);
         I.pressKey(["u"]);
       });
@@ -199,7 +201,7 @@ DataStore.Scenario(
 
       regions.forEach((region, idx) => {
         I.say(`Click label ${idx}`);
-        AtSidebar.clickRegion(+idx + 1);
+        AtOutliner.clickRegion(+idx + 1);
         AtLabels.clickLabel("Label");
       });
 

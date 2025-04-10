@@ -102,7 +102,7 @@ const SCENARIO_PARAMS = {
 
 Data(scenarioDataTable).Scenario(
   "Skip duplicate values on entering",
-  async ({ I, LabelStudio, AtSidebar, Modals, current }) => {
+  async ({ I, LabelStudio, AtOutliner, Modals, current }) => {
     const scenarioKey = current.scenarioKey;
     const { data, config, annotations, shouldSelectRegion, fieldSelector, text, textAlt, textOther } =
       SCENARIO_PARAMS[scenarioKey];
@@ -115,7 +115,7 @@ Data(scenarioDataTable).Scenario(
     });
     LabelStudio.waitForObjectsReady();
 
-    if (shouldSelectRegion) AtSidebar.clickRegion(1);
+    if (shouldSelectRegion) AtOutliner.clickRegion(1);
 
     I.fillField(fieldSelector, text);
     I.pressKey("Enter");
@@ -155,7 +155,7 @@ Data(scenarioDataTable).Scenario(
   },
 );
 
-Scenario("Independent skip duplicate values", async ({ I, LabelStudio, AtSidebar, Modals }) => {
+Scenario("Independent skip duplicate values", async ({ I, LabelStudio, AtOutliner, Modals }) => {
   I.amOnPage("/");
   LabelStudio.init({
     data: { letter: "Aa" },
@@ -200,26 +200,26 @@ Scenario("Independent skip duplicate values", async ({ I, LabelStudio, AtSidebar
 
   Modals.dontSeeWarning(SKIP_DUPLICATES_ERROR);
 
-  AtSidebar.clickRegion(1);
+  AtOutliner.clickRegion(1);
 
   I.fillField('[name="perRegion"]', "A");
   I.pressKey("Enter");
 
   Modals.dontSeeWarning(SKIP_DUPLICATES_ERROR);
 
-  I.fillField(AtSidebar.locateSelectedRegion(".lsf-textarea-tag__form input"), "A");
+  I.fillField(AtOutliner.locateSelectedItem(".lsf-textarea-tag__form input"), "A");
   I.pressKey("Enter");
 
   Modals.dontSeeWarning(SKIP_DUPLICATES_ERROR);
 
-  AtSidebar.clickRegion(2);
+  AtOutliner.clickRegion(2);
 
   I.fillField('[name="perRegion"]', "A");
   I.pressKey("Enter");
 
   Modals.dontSeeWarning(SKIP_DUPLICATES_ERROR);
 
-  I.fillField(AtSidebar.locateSelectedRegion(".lsf-textarea-tag__form input"), "A");
+  I.fillField(AtOutliner.locateSelectedItem(".lsf-textarea-tag__form input"), "A");
   I.pressKey("Enter");
 
   Modals.dontSeeWarning(SKIP_DUPLICATES_ERROR);
@@ -227,9 +227,6 @@ Scenario("Independent skip duplicate values", async ({ I, LabelStudio, AtSidebar
 
 Scenario("Skip duplicate values on editing", async ({ I, LabelStudio, AtOutliner, Modals }) => {
   I.amOnPage("/");
-  LabelStudio.setFeatureFlags({
-    ff_front_1170_outliner_030222_short: true,
-  });
   LabelStudio.init({
     data: { letter: "Aa" },
     config: `<View>

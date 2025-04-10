@@ -15,6 +15,7 @@ module.exports = {
   _resultBlockSelector: ".lsf-detailed-region__result",
   _resultTitleSelector: ".ant-typography",
   _resultValueSelector: ".lsf-region-meta__value",
+  _sectionHeadSelector: ".lsf-details__section-head",
   locateDetailPanel() {
     return locate(this._rootSelector);
   },
@@ -105,5 +106,12 @@ module.exports = {
   },
   clickCreateRelation() {
     I.click(this.locate('[aria-label="Create Relation"]'));
+  },
+  clickDeleteRegion() {
+    I.click(this.locate('[aria-label="Delete selected region"]'));
+  },
+
+  seeRelations(count) {
+    I.seeElement(this.locate(this._sectionHeadSelector).withText(`Relations (${count})`));
   },
 };

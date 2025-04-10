@@ -104,7 +104,7 @@ const createShape = {
   },
 };
 
-Scenario("Drawing shapes and undoing after that", async ({ I, LabelStudio, AtSidebar, AtImageView }) => {
+Scenario("Drawing shapes and undoing after that", async ({ I, LabelStudio, AtOutliner, AtImageView }) => {
   const params = {
     config: getConfigWithShapes(Object.keys(createShape), 'strokewidth="5"'),
     data: { image: IMAGE },
@@ -112,8 +112,8 @@ Scenario("Drawing shapes and undoing after that", async ({ I, LabelStudio, AtSid
 
   I.amOnPage("/");
   LabelStudio.init(params);
-  AtImageView.waitForImage();
-  AtSidebar.seeRegions(0);
+  LabelStudio.waitForObjectsReady();
+  AtOutliner.seeRegions(0);
   const canvasSize = await AtImageView.getCanvasSize();
   const size = Math.min(canvasSize.width, canvasSize.height);
   const regions = [];
@@ -136,18 +136,18 @@ Scenario("Drawing shapes and undoing after that", async ({ I, LabelStudio, AtSid
   // Running a test scenario for each shape type
   for (const region of regions) {
     LabelStudio.init(params);
-    AtImageView.waitForImage();
-    AtSidebar.seeRegions(0);
+    LabelStudio.waitForObjectsReady();
+    AtOutliner.seeRegions(0);
     I.say(`Drawing ${region.shape}`);
     await AtImageView.lookForStage();
     I.pressKey(region.hotKey);
     AtImageView[region.action](...region.params);
-    AtSidebar.seeRegions(1);
+    AtOutliner.seeRegions(1);
     I.say(`Try to undo ${region.shape}`);
     const undoSteps = region.undoSteps ?? 1;
     for (let i = 0; i < undoSteps; i++) {
       I.pressKey(["CommandOrControl", "Z"]);
     }
-    AtSidebar.seeRegions(0);
+    AtOutliner.seeRegions(0);
   }
 }).retry(2);

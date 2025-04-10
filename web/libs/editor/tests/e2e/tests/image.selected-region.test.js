@@ -1,9 +1,10 @@
 /* global Feature, Scenario */
 
-const { doDrawingAction, initLabelStudio, waitForImage } = require("./helpers");
-const assert = require("assert");
+const { doDrawingAction } = require("./helpers");
 
 Feature("Test Image Region Stay Selected Between Tools");
+
+const OUTLINER_PANEL_WIDTH = 319;
 
 const PLANET = {
   color: "#00FF00",
@@ -35,7 +36,7 @@ const data = {
     "https://htx-pub.s3.us-east-1.amazonaws.com/examples/images/nick-owuor-astro-nic-visuals-wDifg5xc9Z4-unsplash.jpg",
 };
 
-async function testRegion(testType, toolAccelerator, I, LabelStudio, AtImageView, AtSidebar) {
+async function testRegion(testType, toolAccelerator, I, LabelStudio, AtImageView, AtOutliner) {
   const params = {
     config,
     data,
@@ -44,40 +45,51 @@ async function testRegion(testType, toolAccelerator, I, LabelStudio, AtImageView
 
   I.amOnPage("/");
 
-  I.executeScript(initLabelStudio, params);
+  LabelStudio.init(params);
 
-  AtImageView.waitForImage();
+  LabelStudio.waitForObjectsReady();
   await AtImageView.lookForStage();
-  I.executeScript(waitForImage);
 
   I.say(`Select ${testType} & planet class`);
   I.pressKey(toolAccelerator);
   I.pressKey("1");
 
   I.say("There should be no regions initially");
-  AtSidebar.seeRegions(0);
+  AtOutliner.seeRegions(0);
 
   I.say(`${testType} initial region`);
-  await doDrawingAction(I, { msg: `Initial ${testType}`, fromX: 150, fromY: 110, toX: 150 + 50, toY: 110 + 50 });
+  await doDrawingAction(I, {
+    msg: `Initial ${testType}`,
+    fromX: OUTLINER_PANEL_WIDTH + 150,
+    fromY: 110,
+    toX: OUTLINER_PANEL_WIDTH + 150 + 50,
+    toY: 110 + 50,
+  });
 
   I.say("There should now be a single region");
-  AtSidebar.seeRegions(1);
+  AtOutliner.seeRegions(1);
 
   I.say(`Using Eraser on ${testType} region`);
   I.pressKey("E");
   I.usePlaywrightTo("Erasing", async ({ browser, browserContext, page }) => {
-    await page.mouse.move(150, 150);
+    await page.mouse.move(OUTLINER_PANEL_WIDTH + 150, 150);
     await page.mouse.down();
-    await page.mouse.move(150 + 100, 150);
+    await page.mouse.move(OUTLINER_PANEL_WIDTH + 150 + 100, 150);
     await page.mouse.up();
   });
 
   I.say(`Doing another ${testType} with same class after erasing`);
   I.pressKey(toolAccelerator);
-  await doDrawingAction(I, { msg: `${testType} after erasing`, fromX: 280, fromY: 480, toX: 280 + 50, toY: 480 + 50 });
+  await doDrawingAction(I, {
+    msg: `${testType} after erasing`,
+    fromX: OUTLINER_PANEL_WIDTH + 280,
+    fromY: 480,
+    toX: OUTLINER_PANEL_WIDTH + 280 + 50,
+    toY: 480 + 50,
+  });
 
   I.say("There should still only be one region");
-  AtSidebar.seeRegions(1);
+  AtOutliner.seeRegions(1);
 
   I.say("Zooming and selecting pan tool");
   I.click('button[aria-label="zoom-in"]');
@@ -88,20 +100,23 @@ async function testRegion(testType, toolAccelerator, I, LabelStudio, AtImageView
   I.pressKey(toolAccelerator);
   await doDrawingAction(I, {
     msg: `${testType} after zoom and pan selected`,
-    fromX: 400,
+    fromX: OUTLINER_PANEL_WIDTH + 400,
     fromY: 200,
-    toX: 400 + 15,
+    toX: OUTLINER_PANEL_WIDTH + 400 + 15,
     toY: 400 + 15,
   });
 
   I.say("There should still only be one region");
-  AtSidebar.seeRegions(1);
+  AtOutliner.seeRegions(1);
 }
 
-Scenario("Selected brush region should stay between tools", async ({ I, LabelStudio, AtImageView, AtSidebar }) => {
-  await testRegion("brush", "B", I, LabelStudio, AtImageView, AtSidebar);
+Scenario("Selected brush region should stay between tools", async ({ I, LabelStudio, AtImageView, AtOutliner }) => {
+  await testRegion("brush", "B", I, LabelStudio, AtImageView, AtOutliner);
 });
 
-Scenario("Selected Magic Wand region should stay between tools", async ({ I, LabelStudio, AtImageView, AtSidebar }) => {
-  await testRegion("magicwand", "W", I, LabelStudio, AtImageView, AtSidebar);
-});
+Scenario(
+  "Selected Magic Wand region should stay between tools",
+  async ({ I, LabelStudio, AtImageView, AtOutliner }) => {
+    await testRegion("magicwand", "W", I, LabelStudio, AtImageView, AtOutliner);
+  },
+);

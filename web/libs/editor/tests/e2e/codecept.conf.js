@@ -89,6 +89,10 @@ module.exports.config = {
     //   enabled: true,
     //   coverageDir: 'output/coverage',
     // },
+    disableDefaultInit: {
+      require: "./plugins/disableDefaultInit.js",
+      enabled: true,
+    },
     featureFlags: {
       require: "./plugins/featureFlags.js",
       enabled: true,

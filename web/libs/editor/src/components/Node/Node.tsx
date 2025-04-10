@@ -1,11 +1,10 @@
 import type { FC } from "react";
-import { getRoot, getType } from "mobx-state-tree";
+import { getType } from "mobx-state-tree";
 import { observer } from "mobx-react";
 import { ApartmentOutlined, AudioOutlined, LineChartOutlined, MessageOutlined } from "@ant-design/icons";
 
-import "./Node.scss";
-import { Block, Elem } from "../../utils/bem";
 import { NodeView } from "./NodeView";
+import "./Node.scss";
 import {
   IconBrushTool,
   IconBrushToolSmart,
@@ -20,10 +19,8 @@ import {
   IconRectangleTool,
   IconRectangleToolSmart,
   IconText,
-  IconWarning,
   IconTimelineRegion,
 } from "@humansignal/icons";
-import { Tooltip } from "@humansignal/ui";
 
 const NodeViews = {
   // fake view for virtual node representing label group
@@ -127,50 +124,6 @@ const NodeViews = {
   }),
 };
 
-const NodeDebug: FC<any> = observer(({ className, node }) => {
-  const name = useNodeName(node);
-
-  if (!(name in NodeViews)) console.error(`No ${name} in NodeView`);
-
-  const { getContent, fullContent } = NodeViews[name];
-  const labelName = node.labelName;
-
-  return (
-    <Block name="node" className={[className].filter(Boolean).join(" ")}>
-      {labelName}
-      <br />
-      {getContent(node)}
-      {fullContent && fullContent(node)}
-    </Block>
-  );
-});
-
-const Node: FC<any> = observer(({ className, node }) => {
-  const name = useNodeName(node);
-
-  if (!name || !(name in NodeViews)) {
-    console.error(`No ${name} in NodeView`);
-    return null;
-  }
-
-  const { getContent } = NodeViews[name];
-  const labelName = node.labelName;
-
-  return (
-    <Block name="node" tag="span" className={className}>
-      {labelName}
-      {node.isDrawing && (
-        <Elem tag="span" name="incomplete">
-          <Tooltip title={`Incomplete ${node.type?.replace("region", "") ?? "region"}`}>
-            <IconWarning />
-          </Tooltip>
-        </Elem>
-      )}{" "}
-      {getContent(node)}
-    </Block>
-  );
-});
-
 const NodeIcon: FC<any> = observer(({ node, ...props }) => {
   const name = useNodeName(node);
 
@@ -184,29 +137,6 @@ const NodeIcon: FC<any> = observer(({ node, ...props }) => {
   return <Icon {...props} />;
 });
 
-const NodeMinimal: FC<any> = observer(({ node }) => {
-  const { sortedRegions: regions } = useRegionStore(node);
-  const index = regions.indexOf(node);
-  const name = useNodeName(node);
-
-  if (!(name in NodeViews)) {
-    console.error(`No ${name} in NodeView`);
-    return null;
-  }
-
-  const { name: text, icon } = NodeViews[name];
-
-  return (
-    <Block name="node-minimal" tag="span">
-      {index >= 0 && <Elem name="counter">{index + 1}</Elem>}
-
-      <Elem name="icon" tag={icon} />
-
-      {text}
-    </Block>
-  );
-});
-
 const useNodeName = (node: any) => {
   // @todo sometimes node is control tag, not a region
   // @todo and for new taxonomy it can be plain object
@@ -214,10 +144,4 @@ const useNodeName = (node: any) => {
   return getType(node).name as keyof typeof NodeViews;
 };
 
-const useRegionStore = (node: any) => {
-  const root = getRoot(node);
-
-  return (root as any).annotationStore.selected.regionStore;
-};
-
-export { Node, NodeDebug, NodeIcon, NodeMinimal, NodeViews };
+export { NodeIcon, NodeViews };

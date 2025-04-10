@@ -1,13 +1,4 @@
-const {
-  initLabelStudio,
-  waitForImage,
-  getSizeConvertor,
-  convertToFixed,
-  clickKonva,
-  polygonKonva,
-  dragKonva,
-  serialize,
-} = require("./helpers");
+const { getSizeConvertor, convertToFixed, clickKonva, polygonKonva, dragKonva, serialize } = require("./helpers");
 
 const assert = require("assert");
 
@@ -125,7 +116,7 @@ const shapes = [
 ];
 
 // eslint-disable-next-line no-undef,codeceptjs/no-skipped-tests
-xScenario("Simple shapes on Image", async ({ I, AtImageView, AtSidebar }) => {
+xScenario("Simple shapes on Image", async ({ I, LabelStudio, AtOutliner }) => {
   for (const shape of shapes) {
     const params = {
       config: getConfigWithShape(shape.shape, shape.props),
@@ -134,11 +125,9 @@ xScenario("Simple shapes on Image", async ({ I, AtImageView, AtSidebar }) => {
     };
 
     I.amOnPage("/");
-    await I.executeScript(initLabelStudio, params);
-    // canvas won't be initialized fully before the image loads
-    await I.executeScript(waitForImage);
-    AtImageView.waitForImage();
-    AtSidebar.seeRegions(0);
+    LabelStudio.init(params);
+    LabelStudio.waitForObjectsReady();
+    AtOutliner.seeRegions(0);
 
     for (const region of shape.regions) {
       // draw the shape using corresponding helper and params

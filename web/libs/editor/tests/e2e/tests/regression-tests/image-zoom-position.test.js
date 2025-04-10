@@ -77,14 +77,13 @@ Data(relativeCoordsFF).Scenario(
     };
 
     LabelStudio.setFeatureFlags({
-      ff_front_1170_outliner_030222_short: true,
       fflag_fix_front_dev_3377_image_regions_shift_on_resize_280922_short: true,
       fflag_fix_front_dev_3793_relative_coords_short: FF3793.enabled,
     });
 
     I.amOnPage("/");
     LabelStudio.init(params);
-    AtImageView.waitForImage();
+    LabelStudio.waitForObjectsReady();
     AtOutliner.seeRegions(2);
 
     await AtImageView.lookForStage();
@@ -243,7 +242,6 @@ Scenario(
     };
 
     LabelStudio.setFeatureFlags({
-      ff_front_1170_outliner_030222_short: true,
       fflag_fix_front_dev_3377_image_regions_shift_on_resize_280922_short: true,
     });
 
@@ -258,7 +256,7 @@ Scenario(
         ...params,
         data: { image: imageUrl },
       });
-      await AtImageView.waitForImage();
+      LabelStudio.waitForObjectsReady();
 
       AtImageView.selectPanTool();
       I.click("[aria-label='zoom-in']");

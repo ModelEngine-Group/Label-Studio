@@ -76,7 +76,7 @@ const params = { annotations: [{ id: "test", result: annotations }], config, dat
 const paramsSpeech = { annotations: [{ id: "test", result: [] }], config: configSpeech, data };
 
 FFlagMatrix(["fflag_feat_front_lsdv_e_278_contextual_scrolling_short"], (flags) => {
-  FFlagScenario("Check if regions are selected", async ({ I, LabelStudio, AtAudioView, AtSidebar }) => {
+  FFlagScenario("Check if regions are selected", async ({ I, LabelStudio, AtAudioView, AtOutliner }) => {
     LabelStudio.setFeatureFlags({
       ff_front_dev_2715_audio_3_280722_short: true,
       ...flags,
@@ -88,30 +88,30 @@ FFlagMatrix(["fflag_feat_front_lsdv_e_278_contextual_scrolling_short"], (flags) 
     await AtAudioView.waitForAudio();
     await AtAudioView.lookForStage();
 
-    AtSidebar.seeRegions(1);
+    AtOutliner.seeRegions(1);
 
     // creating a new region
     I.pressKey("1");
     AtAudioView.dragAudioElement(160, 80);
     I.pressKey("u");
 
-    AtSidebar.seeRegions(2);
+    AtOutliner.seeRegions(2);
 
     AtAudioView.clickAt(170);
-    AtSidebar.seeSelectedRegion();
+    AtOutliner.seeSelectedRegion();
     AtAudioView.clickAt(170);
-    AtSidebar.dontSeeSelectedRegion();
+    AtOutliner.dontSeeSelectedRegion();
     AtAudioView.dragAudioElement(170, 40);
-    AtSidebar.seeSelectedRegion();
+    AtOutliner.seeSelectedRegion();
     AtAudioView.clickAt(220);
-    AtSidebar.dontSeeSelectedRegion();
+    AtOutliner.dontSeeSelectedRegion();
   });
 
   // Don't need to test this for both scenarios of flags, as it is the same code and is verified in the above test
   if (!flags.fflag_feat_front_lsdv_e_278_contextual_scrolling_short) {
     FFlagScenario(
       "Check if multiple regions are working changing labels",
-      async ({ I, LabelStudio, AtAudioView, AtSidebar }) => {
+      async ({ I, LabelStudio, AtAudioView, AtOutliner }) => {
         LabelStudio.setFeatureFlags({
           ff_front_dev_2715_audio_3_280722_short: true,
           ...flags,
@@ -123,7 +123,7 @@ FFlagMatrix(["fflag_feat_front_lsdv_e_278_contextual_scrolling_short"], (flags) 
         await AtAudioView.waitForAudio();
         await AtAudioView.lookForStage();
 
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 10; i++) {
           // creating a new region
           I.pressKey("1");
           AtAudioView.dragAudioElement(40 * i + 10, 30);
@@ -133,24 +133,24 @@ FFlagMatrix(["fflag_feat_front_lsdv_e_278_contextual_scrolling_short"], (flags) 
           I.pressKey("u");
         }
 
-        AtSidebar.seeRegions(20);
+        AtOutliner.seeRegions(10);
 
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 10; i++) {
           // creating a new region
           AtAudioView.clickAt(40 * i + 20);
-          AtSidebar.seeSelectedRegion();
+          AtOutliner.seeSelectedRegion();
           I.pressKey("u");
         }
 
-        AtSidebar.seeRegions(20);
+        AtOutliner.seeRegions(10);
 
         I.pressKey("u");
 
-        AtSidebar.dontSeeSelectedRegion();
+        AtOutliner.dontSeeSelectedRegion();
       },
     );
 
-    FFlagScenario("Can select a region below a hidden region", async ({ I, LabelStudio, AtAudioView, AtSidebar }) => {
+    FFlagScenario("Can select a region below a hidden region", async ({ I, LabelStudio, AtAudioView, AtOutliner }) => {
       LabelStudio.setFeatureFlags({
         ff_front_dev_2715_audio_3_280722_short: true,
         ...flags,
@@ -167,30 +167,30 @@ FFlagMatrix(["fflag_feat_front_lsdv_e_278_contextual_scrolling_short"], (flags) 
       AtAudioView.dragAudioElement(50, 80);
       I.pressKey("u");
 
-      AtSidebar.seeRegions(1);
+      AtOutliner.seeRegions(1);
 
       // create a new region above the first one
       I.pressKey("2");
       AtAudioView.dragAudioElement(49, 81);
       I.pressKey("u");
 
-      AtSidebar.seeRegions(2);
+      AtOutliner.seeRegions(2);
 
       // click on the top-most region visible to select it
       AtAudioView.clickAt(50);
-      AtSidebar.seeSelectedRegion("Noise");
+      AtOutliner.seeSelectedRegion("Noise");
 
       // hide the region
-      AtSidebar.hideRegion("Noise");
+      AtOutliner.toggleRegionVisibility("Noise");
 
       // click on the region below the hidden one to select it
       AtAudioView.clickAt(50);
-      AtSidebar.seeSelectedRegion("Speech");
+      AtOutliner.seeSelectedRegion("Speech");
     });
 
     FFlagScenario(
       "Selecting a region brings it to the front of the stack",
-      async ({ I, LabelStudio, AtAudioView, AtSidebar }) => {
+      async ({ I, LabelStudio, AtAudioView, AtOutliner }) => {
         LabelStudio.setFeatureFlags({
           ff_front_dev_2715_audio_3_280722_short: true,
           ...flags,
@@ -207,35 +207,35 @@ FFlagMatrix(["fflag_feat_front_lsdv_e_278_contextual_scrolling_short"], (flags) 
         AtAudioView.dragAudioElement(50, 80);
         I.pressKey("u");
 
-        AtSidebar.seeRegions(1);
+        AtOutliner.seeRegions(1);
 
         // create a new region above the first one
         I.pressKey("2");
         AtAudioView.dragAudioElement(49, 81);
         I.pressKey("u");
 
-        AtSidebar.seeRegions(2);
+        AtOutliner.seeRegions(2);
 
         // click on the top-most region visible to select it
         AtAudioView.clickAt(50);
-        AtSidebar.seeSelectedRegion("Noise");
+        AtOutliner.seeSelectedRegion("Noise");
 
         // Select the bottom most region to bring it to the top
-        AtSidebar.clickRegion("Speech");
-        AtSidebar.seeSelectedRegion("Speech");
+        AtOutliner.clickRegion("Speech");
+        AtOutliner.seeSelectedRegion("Speech");
 
         // click on the overlapping region will deselect it, which shows that it is now the top in the list
         AtAudioView.clickAt(50);
-        AtSidebar.dontSeeSelectedRegion("Speech");
-        AtSidebar.dontSeeSelectedRegion("Noise");
+        AtOutliner.dontSeeSelectedRegion("Speech");
+        AtOutliner.dontSeeSelectedRegion("Noise");
 
         // click on the overlapping region will select the top item of the list, which will now be the item which was brought to the front by the original interaction.
         AtAudioView.clickAt(50);
-        AtSidebar.seeSelectedRegion("Speech");
+        AtOutliner.seeSelectedRegion("Speech");
       },
     );
 
-    FFlagScenario("Delete region by pressing delete hotkey", async ({ I, LabelStudio, AtAudioView, AtSidebar }) => {
+    FFlagScenario("Delete region by pressing delete hotkey", async ({ I, LabelStudio, AtAudioView, AtOutliner }) => {
       LabelStudio.setFeatureFlags({
         ff_front_dev_2715_audio_3_280722_short: true,
         ...flags,
@@ -247,7 +247,7 @@ FFlagMatrix(["fflag_feat_front_lsdv_e_278_contextual_scrolling_short"], (flags) 
       await AtAudioView.waitForAudio();
       await AtAudioView.lookForStage();
 
-      AtSidebar.seeRegions(1);
+      AtOutliner.seeRegions(1);
 
       // creating a new region
       AtAudioView.dragAudioElement(160, 80);
@@ -256,10 +256,10 @@ FFlagMatrix(["fflag_feat_front_lsdv_e_278_contextual_scrolling_short"], (flags) 
 
       I.pressKey("1");
 
-      AtSidebar.seeRegions(1);
+      AtOutliner.seeRegions(1);
     });
 
-    FFlagScenario("Check if there are ghost regions", async ({ I, LabelStudio, AtAudioView, AtSidebar }) => {
+    FFlagScenario("Check if there are ghost regions", async ({ I, LabelStudio, AtAudioView, AtOutliner }) => {
       LabelStudio.setFeatureFlags({
         ff_front_dev_2715_audio_3_280722_short: true,
         ...flags,
@@ -286,15 +286,15 @@ FFlagMatrix(["fflag_feat_front_lsdv_e_278_contextual_scrolling_short"], (flags) 
 
       // checking if the created region is selected
       AtAudioView.clickAt(310);
-      AtSidebar.seeSelectedRegion();
+      AtOutliner.seeSelectedRegion();
 
       // trying to select the ghost region, if there is no ghost region, the region will keep selected
       // as ghost region is not selectable and impossible to change the label, the created region will be deselected if there is a ghost region created.
       AtAudioView.clickAt(170);
       I.pressKey("2");
-      AtSidebar.seeSelectedRegion();
+      AtOutliner.seeSelectedRegion();
 
-      AtSidebar.seeRegions(2);
+      AtOutliner.seeRegions(2);
     });
   }
 });

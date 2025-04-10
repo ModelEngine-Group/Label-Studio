@@ -2,12 +2,6 @@ const assert = require("assert");
 
 Feature("Richtext regions interactions");
 
-Before(({ LabelStudio }) => {
-  LabelStudio.setFeatureFlags({
-    ff_front_1170_outliner_030222_short: true,
-  });
-});
-
 Scenario(
   "Setting correct cursor on regions in relation creating mode",
   async ({ I, LabelStudio, AtOutliner, AtDetails }) => {

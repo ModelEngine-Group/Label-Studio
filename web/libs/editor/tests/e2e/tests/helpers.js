@@ -207,7 +207,7 @@ const waitForAudio = async () => {
 const waitForObjectsReady = async () => {
   await new Promise((resolve) => {
     const watchObjectsReady = () => {
-      const isReady = window.Htx.annotationStore.selected.objects.every((object) => object.isReady);
+      const isReady = window.Htx?.annotationStore?.selected?.objects.every((object) => object.isReady);
 
       if (isReady) {
         resolve(true);
@@ -579,8 +579,25 @@ const getImageFrameSize = () => {
 };
 const setZoom = ([scale, x, y]) => {
   return new Promise((resolve) => {
-    Htx.annotationStore.selected.objects.find((o) => o.type === "image").setZoom(scale, x, y);
+    Htx.annotationStore.selected.objects.find((o) => o.type === "image").setZoom(scale);
+    Htx.annotationStore.selected.objects.find((o) => o.type === "image").setZoomPosition(x, y);
     setTimeout(resolve, 30);
+  });
+};
+
+const getZoomProps = () => {
+  return new Promise((resolve) => {
+    const image = Htx.annotationStore.selected.objects.find((o) => o.type === "image");
+    setTimeout(() => {
+      resolve({
+        stageZoom: image.stageZoom,
+        stageZoomX: image.stageZoomX,
+        stageZoomY: image.stageZoomY,
+        currentZoom: image.currentZoom,
+        zoomScale: image.zoomScale,
+        maxScale: image.maxScale,
+      });
+    }, 30);
   });
 };
 
@@ -890,6 +907,7 @@ module.exports = {
   getRegionAbsoultePosition,
   setKonvaLayersOpacity,
   setZoom,
+  getZoomProps,
   whereIsPixel,
   countKonvaShapes,
   isTransformerExist,

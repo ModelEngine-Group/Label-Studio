@@ -13,7 +13,7 @@ const config = `
 
 Scenario(
   "Transforming the region on the border of zoomed image",
-  async ({ I, LabelStudio, AtImageView, AtSidebar }) => {
+  async ({ I, LabelStudio, AtImageView, AtOutliner }) => {
     const params = {
       config,
       data: { image: IMAGE },
@@ -22,8 +22,8 @@ Scenario(
     I.amOnPage("/");
 
     LabelStudio.init(params);
-    AtImageView.waitForImage();
-    AtSidebar.seeRegions(0);
+    LabelStudio.waitForObjectsReady();
+    AtOutliner.seeRegions(0);
 
     // Zoom in
     I.click("[aria-label='zoom-in']");
@@ -38,10 +38,10 @@ Scenario(
     I.pressKeyUp("Shift");
     // Create the region at the right border of the image
     AtImageView.drawByDrag(width - 30, height / 2, 20, height / 2 - 10);
-    AtSidebar.seeRegions(1);
+    AtOutliner.seeRegions(1);
     // Select this region
     AtImageView.clickAt(width - 20, height / 2 + 10);
-    AtSidebar.seeSelectedRegion();
+    AtOutliner.seeSelectedRegion();
     // Rotate by the rotator anchor (heuristically calculated coordinates)
     AtImageView.drawThroughPoints(
       [
@@ -61,7 +61,7 @@ Scenario(
 
 Scenario(
   "Transforming the region on the border of zoomed image after window resize",
-  async ({ I, LabelStudio, AtImageView, AtSidebar }) => {
+  async ({ I, LabelStudio, AtImageView, AtOutliner }) => {
     const wWidth = 1200;
     const wHeight = 900;
     const wWidthSmall = 1000;
@@ -75,8 +75,8 @@ Scenario(
     I.resizeWindow(wWidthSmall, wHeight);
 
     LabelStudio.init(params);
-    AtImageView.waitForImage();
-    AtSidebar.seeRegions(0);
+    LabelStudio.waitForObjectsReady();
+    AtOutliner.seeRegions(0);
 
     // Zoom in
     I.click("[aria-label='zoom-in']");
@@ -92,10 +92,10 @@ Scenario(
 
     // Create the region at the right border of the image
     AtImageView.drawByDrag(width - 30, height / 2, 20, height / 2);
-    AtSidebar.seeRegions(1);
+    AtOutliner.seeRegions(1);
     // Select this region
     AtImageView.clickAt(width - 20, height / 2 + 10);
-    AtSidebar.seeSelectedRegion();
+    AtOutliner.seeSelectedRegion();
 
     I.resizeWindow(wWidth, wHeight);
 

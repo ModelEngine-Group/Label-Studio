@@ -1,4 +1,3 @@
-const { initLabelStudio } = require("./helpers");
 const assert = require("assert");
 
 const config = ({ timeformat }) => `
@@ -120,7 +119,7 @@ Object.entries(scenarios).forEach(([title, scenario]) =>
     // const configTree = Utils.parseXml(config);
 
     await I.amOnPage("/");
-    await I.executeScript(initLabelStudio, params);
+    LabelStudio.init(params);
 
     scenario.assert(I);
   }),
@@ -179,11 +178,11 @@ Scenario("TimeSeries with optimized data", async ({ I, LabelStudio, AtTimeSeries
   await doNotSeeProblems();
 
   I.say("try to get errors by zooming in by mouse wheel");
-  I.pressKeyDown("Control");
+  I.pressKeyDown("CommandOrControl");
   for (let i = 0; i < 10; i++) {
     await AtTimeSeries.zoomByMouse(-100, { x: 0.98 });
   }
-  I.pressKeyUp("Control");
+  I.pressKeyUp("CommandOrControl");
   await doNotSeeProblems();
 
   I.say("try to get errors by moving handle to the extreme position");

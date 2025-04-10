@@ -1,5 +1,4 @@
 const assert = require("assert");
-const { initLabelStudio } = require("./helpers");
 
 const config = `
 <View>
@@ -41,7 +40,7 @@ Scenario("Check Collapse, Header and Style", async ({ I }) => {
   const clickCollapse = (text) => I.click(locate(".ant-collapse-header").withText(text));
 
   await I.amOnPage("/");
-  I.executeScript(initLabelStudio, { config, data });
+  LabelStudio.init({ config, data });
   I.see("FAQ");
   I.say("Every panel is hidden at the beginning and no duplicates");
   I.dontSee("Main questions");

@@ -26,6 +26,7 @@ Scenario("Annotation button should keep border width on hover", async ({ I, Labe
       },
     ],
   });
+  LabelStudio.waitForObjectsReady();
 
   const borderWidth = await I.executeScript(() => {
     const el = document.querySelector(".lsf-annotation-button:nth-child(2)");

@@ -203,9 +203,9 @@ module.exports = {
 
     I.clickAt(stageBBox.x + stageBBox.width * x, stageBBox.y + stageBBox.height * y); // click to focus the canvas
 
-    I.pressKeyDown("Control");
+    I.pressKeyDown("CommandOrControl");
     I.mouseWheel({ deltaY });
-    I.pressKeyUp("Control");
+    I.pressKeyUp("CommandOrControl");
   },
 
   /**

@@ -105,9 +105,9 @@ Scenario("Image list rendering", async ({ I, LabelStudio, AtImageView }) => {
   };
 
   I.amOnPage("/");
-  await LabelStudio.init(params);
+  LabelStudio.init(params);
 
-  await AtImageView.waitForImage();
+  LabelStudio.waitForObjectsReady();
   await AtImageView.lookForStage();
 
   I.seeElement(`img[src="${data.images[0]}"]`);
@@ -124,9 +124,9 @@ Scenario("Image list with page navigation", async ({ I, AtImageView, LabelStudio
   const nextPageButton = locate(".lsf-pagination__btn.lsf-pagination__btn_arrow-right");
 
   I.amOnPage("/");
-  await LabelStudio.init(params);
+  LabelStudio.init(params);
 
-  await AtImageView.waitForImage();
+  LabelStudio.waitForObjectsReady();
   await AtImageView.lookForStage();
 
   I.say("Loading first image");
@@ -159,9 +159,9 @@ Scenario("Image list with hotkey navigation", async ({ I, AtImageView, LabelStud
   };
 
   I.amOnPage("/");
-  await LabelStudio.init(params);
+  LabelStudio.init(params);
 
-  await AtImageView.waitForImage();
+  LabelStudio.waitForObjectsReady();
   await AtImageView.lookForStage();
 
   I.say("Loading first image");
@@ -200,14 +200,13 @@ Scenario("View All disables MIG pagination", async ({ I, AtImageView, LabelStudi
 
   // FFs for a proper interface with View All button
   LabelStudio.setFeatureFlags({
-    ff_front_1170_outliner_030222_short: true,
     fflag_feat_front_dev_3873_labeling_ui_improvements_short: true,
   });
 
   I.amOnPage("/");
-  await LabelStudio.init(params);
+  LabelStudio.init(params);
 
-  await AtImageView.waitForImage();
+  LabelStudio.waitForObjectsReady();
   await AtImageView.lookForStage();
 
   I.say("Move to next page to have a changed state");
@@ -243,9 +242,9 @@ Scenario(
     };
 
     I.amOnPage("/");
-    await LabelStudio.init(params);
+    LabelStudio.init(params);
 
-    await AtImageView.waitForImage();
+    LabelStudio.waitForObjectsReady();
     await AtImageView.lookForStage();
 
     I.say("Result must be exactly the same as we're not modifying anything");
@@ -263,12 +262,12 @@ Scenario("Image list exports correct data", async ({ I, LabelStudio, AtImageView
   I.amOnPage("/");
   LabelStudio.init(params);
 
-  await AtImageView.waitForImage();
+  LabelStudio.waitForObjectsReady();
   await AtImageView.lookForStage();
 
   AtImageView.multiImageGoForwardWithHotkey();
 
-  await AtImageView.waitForImage();
+  LabelStudio.waitForObjectsReady();
   await AtImageView.lookForStage();
   I.seeElement(`img[src="${data.images[1]}"]`);
 
@@ -285,20 +284,20 @@ Scenario("Regions are not changes when duplicating an annotation", async ({ I, L
   I.amOnPage("/");
   LabelStudio.init(params);
 
-  await AtImageView.waitForImage();
+  LabelStudio.waitForObjectsReady();
   await AtImageView.lookForStage();
 
   I.say("Attempting to duplicate an annotaion");
   I.click('[aria-label="Copy Annotation"]');
 
-  await AtImageView.waitForImage();
+  LabelStudio.waitForObjectsReady();
   await AtImageView.lookForStage();
 
   I.say("Confirm that result is not changed");
   await LabelStudio.resultsNotChanged(result);
 });
 
-Scenario("No errors during brush export in MIG", async ({ I, LabelStudio, AtImageView, AtLabels }) => {
+Scenario("No errors during brush export in MIG", async ({ I, LabelStudio, AtImageView, AtLabels, AtPanels }) => {
   const params = {
     config: brushConfig,
     data,
@@ -312,11 +311,13 @@ Scenario("No errors during brush export in MIG", async ({ I, LabelStudio, AtImag
     [40, 20],
     [20, 20],
   ];
+  const AtDetailsPanel = AtPanels.usePanel(AtPanels.PANEL.DETAILS);
 
   I.amOnPage("/");
   LabelStudio.init(params);
+  AtDetailsPanel.collapsePanel();
 
-  await AtImageView.waitForImage();
+  LabelStudio.waitForObjectsReady();
   await AtImageView.lookForStage();
 
   I.say("Create brush regions on the first image");

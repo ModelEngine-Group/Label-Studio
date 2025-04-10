@@ -16,7 +16,7 @@ function isLabels(val, key) {
 examples.forEach((example) => {
   const { annotations, config, data, result = annotations[0].result, title } = example;
 
-  Scenario(`Different from_name -> ${title}`, async ({ I, LabelStudio, AtSidebar, AtImageView, AtAudioView }) => {
+  Scenario(`Different from_name -> ${title}`, async ({ I, LabelStudio, AtOutliner, AtAudioView }) => {
     let { result = annotations[0].result } = example;
 
     LabelStudio.setFeatureFlags({
@@ -37,15 +37,12 @@ examples.forEach((example) => {
 
     I.amOnPage("/");
     LabelStudio.init(params);
-    AtSidebar.seeRegions(regionsCount);
+    LabelStudio.waitForObjectsReady();
+    AtOutliner.seeRegions(regionsCount);
 
-    if (Utils.xmlTreeHasTag(configTree, "Image")) {
-      AtImageView.waitForImage();
-    }
     if (Utils.xmlFindBy(configTree, (node) => node["#name"] === "Audio")) {
       await AtAudioView.waitForAudio();
     }
-
     if (regionsCount) {
       const restored = await LabelStudio.serialize();
 
@@ -60,7 +57,9 @@ examples.forEach((example) => {
     }
   });
 
-  Scenario(`Nonexistent from_name -> ${title}`, async ({ I, LabelStudio, AtTopbar, AtSidebar }) => {
+  // For classifications that scenario does not make sense
+  if (title.includes("Classifications,")) return;
+  Scenario(`Nonexistent from_name -> ${title}`, async ({ I, LabelStudio, AtTopbar, AtOutliner }) => {
     const params = { annotations: [{ id: "test", result }], data };
     const configTree = Utils.parseXml(config);
 
@@ -73,8 +72,8 @@ examples.forEach((example) => {
     I.amOnPage("/");
     LabelStudio.init(params);
     AtTopbar.see("Update");
-    AtSidebar.dontSeeRegions(regionsCount);
-    AtSidebar.dontSeeRegions();
+    AtOutliner.dontSeeRegions(regionsCount);
+    AtOutliner.dontSeeRegions();
   });
 });
 
@@ -82,7 +81,7 @@ const SINGLE_TYPE = "single";
 const MULTIPLE_TYPE = "multiple";
 
 [SINGLE_TYPE, MULTIPLE_TYPE].forEach((type) => {
-  Scenario(`Making labels empty -> choice="${type}"`, async ({ I, LabelStudio, AtSidebar, AtAudioView, AtLabels }) => {
+  Scenario(`Making labels empty -> choice="${type}"`, async ({ I, LabelStudio, AtOutliner, AtAudioView, AtLabels }) => {
     async function expectSelectedLabels(expectedNum) {
       const selectedLabelsNum = await I.grabNumberOfVisibleElements(AtLabels.locateSelected());
 
@@ -96,7 +95,7 @@ const MULTIPLE_TYPE = "multiple";
       await expectSelectedLabels(expectSelectedNum);
       I.pressKey(["u"]);
       await expectSelectedLabels(0);
-      I.click(locate(".lsf-region-item"));
+      AtOutliner.clickRegion(1);
       await expectSelectedLabels(expectSelectedNum);
     }
     async function clickLabelWithSelectedExpection(labelNumber, expectSelectedNum) {
@@ -125,9 +124,9 @@ const MULTIPLE_TYPE = "multiple";
     I.amOnPage("/");
     LabelStudio.init(params);
     await AtAudioView.waitForAudio();
-    AtSidebar.seeRegions(regionsCount);
+    AtOutliner.seeRegions(regionsCount);
 
-    I.click(locate(".lsf-region-item"));
+    AtOutliner.clickRegion(1);
     AtLabels.clickLabel("1");
 
     const restored = await LabelStudio.serialize();
@@ -168,7 +167,8 @@ const MULTIPLE_TYPE = "multiple";
   });
 });
 
-Scenario("Consistency of empty labels", async ({ I, LabelStudio, AtSidebar, AtImageView, AtLabels }) => {
+Scenario("Consistency of empty labels", async ({ I, LabelStudio, AtOutliner, AtImageView, AtLabels, AtPanels }) => {
+  const AtDetailsPanel = AtPanels.usePanel(AtPanels.PANEL.DETAILS);
   const { config, data } = require("../examples/image-bboxes");
   const params = { annotations: [{ id: "test", result: [] }], data };
   const configTree = Utils.parseXml(config);
@@ -182,8 +182,9 @@ Scenario("Consistency of empty labels", async ({ I, LabelStudio, AtSidebar, AtIm
 
   I.amOnPage("/");
   LabelStudio.init(params);
-  AtSidebar.seeRegions(0);
-  AtImageView.waitForImage();
+  AtDetailsPanel.collapsePanel();
+  AtOutliner.seeRegions(0);
+  LabelStudio.waitForObjectsReady();
   AtLabels.clickLabel("1");
   AtImageView.dragKonva(200, 200, 100, 100);
   const shapesNum = await AtImageView.countKonvaShapes();
