@@ -1,6 +1,6 @@
 {
-  "message": "chore: OPTIC-1935: Generate all required css variables from design tokens (#7352)",
-  "commit": "5e0ae305f7292c9de23d0f9ceda34a698ccafe56",
-  "date": "2025-04-09T18:25:03.000Z",
+  "message": "feat: LEAP-1973: Adjustable spans for Text tag (#7309)",
+  "commit": "1ebe781d9b8842849f64816ebbbb22a58af508aa",
+  "date": "2025-04-10T14:56:24.000Z",
   "branch": "develop"
 }
