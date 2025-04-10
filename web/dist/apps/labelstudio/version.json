@@ -1,6 +1,6 @@
 {
-  "message": "feat: LEAP-1973: Adjustable spans for Text tag (#7309)",
-  "commit": "1ebe781d9b8842849f64816ebbbb22a58af508aa",
-  "date": "2025-04-10T14:56:24.000Z",
+  "message": "fix: LEAP-1433: Remove deprecated feature flag FF_DEV_1170 (#7264)",
+  "commit": "51e652c5859e9e04e1d5d3029fc5feb0f7292092",
+  "date": "2025-04-10T15:01:50.000Z",
   "branch": "develop"
 }
