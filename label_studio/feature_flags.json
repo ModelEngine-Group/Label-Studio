@@ -2334,7 +2334,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 2,
+      "version": 3,
       "deleted": false
     },
     "fflag_feat_front_leap_482_self_serve_short": {
@@ -4297,7 +4297,7 @@
     },
     "fflag_optic_all_optic_1938_storage_proxy": {
       "key": "fflag_optic_all_optic_1938_storage_proxy",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -4319,7 +4319,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 2,
+      "version": 4,
       "deleted": false
     },
     "fix_backend_dev_3134_exclude_deactivated_users": {
