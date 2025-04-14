@@ -1,6 +1,6 @@
 {
-  "message": "fix: OPTIC-1889: upgrade dependencies (#7365)",
-  "commit": "5cd5fbb7d07882839ea7dc9310ec1d312bfd89a6",
-  "date": "2025-04-14T13:54:53.000Z",
+  "message": "chore: OPTIC-1956: Refactor all component blocks and pages from core to app-common lib (#7367)",
+  "commit": "217028bd16308aa3549c805582576350b6ffad8e",
+  "date": "2025-04-14T14:24:34.000Z",
   "branch": "develop"
 }
