@@ -1,5 +1,5 @@
 import { ff } from "@humansignal/core";
-import { SampleDatasetSelect } from "@humansignal/core/blocks/SampleDatasetSelect/SampleDatasetSelect";
+import { SampleDatasetSelect } from "@humansignal/app-common/blocks/SampleDatasetSelect/SampleDatasetSelect";
 import { IconError, IconFileUpload, IconInfo, IconTrash, IconUpload } from "@humansignal/icons";
 import { Badge } from "@humansignal/shad/components/ui/badge";
 import { cn as scn } from "@humansignal/shad/utils";

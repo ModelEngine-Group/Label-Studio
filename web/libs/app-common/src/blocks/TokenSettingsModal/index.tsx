@@ -1,10 +1,10 @@
 import { useAtomValue } from "jotai";
-import { settingsAtom, TOKEN_SETTINGS_KEY } from "@humansignal/core/pages/AccountSettings/atoms";
+import { settingsAtom, TOKEN_SETTINGS_KEY } from "@humansignal/app-common/pages/AccountSettings/atoms";
 import { queryClientAtom } from "jotai-tanstack-query";
 
 import { Form, Input, Toggle } from "apps/labelstudio/src/components/Form";
 import { Button } from "apps/labelstudio/src/components/Button/Button";
-import type { AuthTokenSettings } from "@humansignal/core/pages/AccountSettings/types";
+import type { AuthTokenSettings } from "@humansignal/app-common/pages/AccountSettings/types";
 import { type ChangeEvent, useState } from "react";
 
 export const TokenSettingsModal = ({

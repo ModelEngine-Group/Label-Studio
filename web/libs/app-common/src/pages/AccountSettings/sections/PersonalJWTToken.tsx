@@ -5,7 +5,7 @@ import { useAtomValue } from "jotai";
 import clsx from "clsx";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
-import { useCopyText } from "../../../lib/hooks/useCopyText";
+import { useCopyText } from "@humansignal/core/lib/hooks/useCopyText";
 import styles from "./PersonalJWTToken.module.scss";
 
 /**

@@ -13,7 +13,7 @@ import "./PeopleInvitation.scss";
 import { PeopleList } from "./PeopleList";
 import "./PeoplePage.scss";
 import { SelectedUser } from "./SelectedUser";
-import { TokenSettingsModal } from "@humansignal/core/blocks/TokenSettingsModal";
+import { TokenSettingsModal } from "@humansignal/app-common/blocks/TokenSettingsModal";
 import { IconPlus } from "@humansignal/icons";
 import { useToast } from "@humansignal/ui";
 import { InviteLink } from "./InviteLink";

@@ -18,6 +18,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@humansignal/app-common": ["libs/app-common/src/index.ts"],
+      "@humansignal/app-common/*": ["libs/app-common/src/*"],
       "@humansignal/core": ["libs/core/src/index.ts"],
       "@humansignal/core/*": ["libs/core/src/*"],
       "@humansignal/datamanager": ["libs/datamanager/src/index.js"],

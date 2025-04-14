@@ -2,7 +2,7 @@ import { IconLaunch, IconFileCopy, Label } from "@humansignal/ui";
 import styles from "./PersonalAccessToken.module.scss";
 import { atomWithMutation, atomWithQuery } from "jotai-tanstack-query";
 import { atom, useAtomValue } from "jotai";
-import { useCopyText } from "../../../lib/hooks/useCopyText";
+import { useCopyText } from "@humansignal/core/lib/hooks/useCopyText";
 
 /**
  * FIXME: This is legacy imports. We're not supposed to use such statements
