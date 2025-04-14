@@ -1,6 +1,6 @@
 {
-  "message": "chore: OPTIC-1956: Refactor all component blocks and pages from core to app-common lib (#7367)",
-  "commit": "217028bd16308aa3549c805582576350b6ffad8e",
-  "date": "2025-04-14T14:24:34.000Z",
+  "message": "chore: OPTIC-1956: Update Menubar to have the proper new import of pages from app-common (#7369)",
+  "commit": "86f1f1ffe01927e533107993cea4341935840dd6",
+  "date": "2025-04-14T16:31:19.000Z",
   "branch": "develop"
 }
