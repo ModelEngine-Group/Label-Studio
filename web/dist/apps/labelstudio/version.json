@@ -1,6 +1,6 @@
 {
-  "message": "fix: LEAP-1433: Remove deprecated feature flag FF_DEV_1170 (#7264)",
-  "commit": "51e652c5859e9e04e1d5d3029fc5feb0f7292092",
-  "date": "2025-04-10T15:01:50.000Z",
+  "message": "fix: OPTIC-1889: upgrade dependencies (#7365)",
+  "commit": "5cd5fbb7d07882839ea7dc9310ec1d312bfd89a6",
+  "date": "2025-04-14T13:54:53.000Z",
   "branch": "develop"
 }
