@@ -1,6 +1,6 @@
 {
-  "message": "chore: OPTIC-1956: Update Menubar to have the proper new import of pages from app-common (#7369)",
-  "commit": "86f1f1ffe01927e533107993cea4341935840dd6",
-  "date": "2025-04-14T16:31:19.000Z",
+  "message": "fix: LEAP-1945: [FE][lso] Fix Babel has inefficient RexExp complexity (#7374)",
+  "commit": "9605cee2bc0ba1d0a0e8ec276e55ac3b574edea9",
+  "date": "2025-04-15T16:13:39.000Z",
   "branch": "develop"
 }
