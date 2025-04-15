@@ -1,6 +1,6 @@
 ---
 description: Tailwind CSS and UI component best practices for the LabelStudio clientside application
-globs: **/*.css, web/**/*.tsx, web/**/*.jsx, web/**/*.scss, web/libs/ui/tailwind.config.js, web/libs/ui/tailwind.config.ts
+globs: **/*.css,tailwind.config.ts,tailwind.config.js,**/*.scss,**/*.tsx,**/*.jsx
 ---
 
 # Tailwind CSS Best Practices

@@ -1,6 +1,6 @@
 ---
 description: TypeScript coding standards and best practices for the LabelStudio clientside application
-globs: web/**/*.ts, web/**/*.tsx, web/**/*.d.ts
+globs: **/*.ts,**/*.tsx,**/*.d.ts
 ---
 
 # TypeScript Best Practices

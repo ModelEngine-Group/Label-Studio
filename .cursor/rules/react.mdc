@@ -1,7 +1,6 @@
 ---
 description: React coding standards and best practices for the LabelStudio clientside application
-globs: web/**/*.tsx, web/**/*.jsx
-alwaysApply: false
+globs: **/*.jsx,**/*.tsx
 ---
 
 # React Best Practices
