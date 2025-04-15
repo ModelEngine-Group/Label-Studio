@@ -79,3 +79,9 @@ h6 { font-size: 0.67em; }
     @apply text-primary-content;
   }
 }
+
+@layer utilities {
+  .text-shadow-button {
+    text-shadow: 0 1px 1px rgb(var(--black-raw) / 15%);
+  }
+}
