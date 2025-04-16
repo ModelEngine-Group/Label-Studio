@@ -54,7 +54,7 @@ force = true
 
 [[redirects]]
 from = "/guide/script_examples"
-to = "/guide/plugin_examples"
+to = "/plugins"
 status = 301
 force = true
 

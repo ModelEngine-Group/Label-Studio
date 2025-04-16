@@ -957,6 +957,10 @@ h6 {
   right: 0;
 }
 
+.content-markdown h1+img {
+    margin-top: 2em;
+}
+
 /****************************
   Paragraph styles
 ****************************/

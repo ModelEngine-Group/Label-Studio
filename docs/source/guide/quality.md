@@ -150,7 +150,7 @@ You can use **Settings > Quality > Annotation Limit** to set limits on how many 
 
 If you have [plugins](plugins) enabled, you can automatically pause an annotator based on certain behaviors and then customize the message that appears on their screen. 
 
-For more information, see [Plugin examples - Pause an annotator](plugin_examples#Pause-an-annotator).
+For more information, see [Plugins - Spam and Bot Detection](/plugins/pause_annotator).
 
 
 ## Verify model and annotator performance
