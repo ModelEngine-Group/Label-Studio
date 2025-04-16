@@ -1,5 +1,4 @@
 import type { Page } from "../types/Page";
-import { Button } from "@humansignal/shad/components/ui/button";
 import { SimpleCard, Spinner } from "@humansignal/ui";
 import { IconExternal, IconFolderAdd, IconHumanSignal, IconUserAdd, IconFolderOpen } from "@humansignal/icons";
 import { HeidiTips } from "../../components/HeidiTips/HeidiTips";
@@ -11,6 +10,7 @@ import { InviteLink } from "../Organization/PeoplePage/InviteLink";
 import { Heading, Sub } from "@humansignal/typography";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
+import { Button } from "../../components";
 
 const PROJECTS_TO_SHOW = 10;
 
@@ -93,7 +93,6 @@ export const HomePage: Page = () => {
                 <Button
                   key={action.title}
                   className="flex-grow-0 text-16/24 text-primary-content text-left justify-start min-w-[250px] [&_svg]:w-6 [&_svg]:h-6"
-                  variant="lsOutline"
                   onClick={handleActions(action.type)}
                 >
                   <action.icon className="text-primary-icon" />
@@ -132,7 +131,7 @@ export const HomePage: Page = () => {
                 </div>
                 <Heading size={2}>Create your first project</Heading>
                 <Sub>Import your data and set up the labeling interface to start annotating</Sub>
-                <Button className="mt-4" onClick={() => setCreationDialogOpen(true)}>
+                <Button primary className="mt-4" onClick={() => setCreationDialogOpen(true)}>
                   Create Project
                 </Button>
               </div>
