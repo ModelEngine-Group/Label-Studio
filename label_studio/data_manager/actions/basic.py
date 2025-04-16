@@ -65,7 +65,7 @@ def delete_tasks(project, queryset, **kwargs):
         reload = True
 
     # Execute actions after delete tasks
-    Task.after_bulk_delete_actions(tasks_ids_list)
+    Task.after_bulk_delete_actions(tasks_ids_list, project)
 
     return {'processed_items': count, 'reload': reload, 'detail': 'Deleted ' + str(count) + ' tasks'}
 
