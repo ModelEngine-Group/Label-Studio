@@ -187,4 +187,7 @@ jobs:
         uses: slackapi/slack-github-action@v1.27
         with:
           channel-id: 'C01RJV08UJK'
-          payload: "{\"text\": \":alert:<!subteam^${{ vars.SLACK_GR_DEVOPS }}>\\n*Branch: ${{ inputs.branch_name }}*\\n*Build status: <https://github.com/${{ env.GITHUB_REPOSITORY }}/actions/runs/${{ env.GITHUB_RUN_ID }}|FAILED>*\\n*Commit: <https://github.com/${{ env.GITHUB_REPOSITORY }}/commit/${{ steps.version.outputs.sha }}|${{ steps.version.outputs.sha }}>*\"}"
+          slack-message: |
+            ❌ Docker build failed for *develop* branch! <!subteam^${{ vars.SLACK_GR_DEVOPS }}> 
+
+            ><https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|[Workflow run]>
