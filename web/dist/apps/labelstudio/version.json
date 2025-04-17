@@ -1,6 +1,6 @@
 {
-  "message": "feat: DIA-2196: Dedup JSON Preview and Sample Data FFs (#7386)",
-  "commit": "66d43c84e2fef1a7079b4aec6343e8a48484fd07",
-  "date": "2025-04-16T15:45:52.000Z",
+  "message": "chore(deps): bump http-proxy-middleware from 2.0.7 to 2.0.9 in /web (#7391)",
+  "commit": "015a17e2e73d60c33f31d17a3d5dc1e8cf986760",
+  "date": "2025-04-17T09:23:09.000Z",
   "branch": "develop"
 }
