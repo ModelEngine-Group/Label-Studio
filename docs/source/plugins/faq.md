@@ -35,6 +35,12 @@ Because plugins operate in real-time on the annotator's browser, they come with 
 
 No, they are only available in Label Studio Enterprise. 
 
+### Who can access plugins?
+
+By default, only users who are in the Admin, Owner, or Manager role can access the project settings to view, add, and edit plugins. 
+    
+You can optionally add a restriction so that only users in the Admin or Owner role can add or edit plugins. To request this, contact your account manager or [open a support ticket](mailto:support@humansignal.com). 
+
 
 ### Can I customize plugins? 
 
@@ -57,6 +63,7 @@ Yes, they stack.
 
 ### Where can I learn more?
 
+* [Label Studio Interface reference](custom#Label-Studio-Interface-LSI)
 * [Plugins for projects](/guide/plugins)
 * [Plugins repo](https://github.com/HumanSignal/label-studio-plugins)
 * [Label Studio Frontend reference](/guide/frontend_reference.html#Available-events)
