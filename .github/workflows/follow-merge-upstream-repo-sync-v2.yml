@@ -63,8 +63,8 @@ jobs:
         id: upstream-prs
         with:
           branch_name: "${{ inputs.branch_name }}"
-          poetry_repositories: "label-studio,label-studio-evalme"
-          infra_repositories: "adala,label-studio-query-vectordb"
+          poetry_repositories: "label-studio-sdk"
+          infra_repositories: ""
           github_token: "${{ secrets.GIT_PAT }}"
 
       - name: Find or Create branch
