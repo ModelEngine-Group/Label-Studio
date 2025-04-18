@@ -1502,7 +1502,7 @@
     },
     "fflag_feat_all_optic_1178_reduce_memory_leak_short": {
       "key": "fflag_feat_all_optic_1178_reduce_memory_leak_short",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -1524,7 +1524,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 2,
+      "version": 3,
       "deleted": false
     },
     "fflag_feat_all_optic_1181_membership_performance": {
@@ -2528,7 +2528,7 @@
     },
     "fflag_feat_front_optic_1217_theme_toggle_short": {
       "key": "fflag_feat_front_optic_1217_theme_toggle_short",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -2550,7 +2550,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 2,
+      "version": 3,
       "deleted": false
     },
     "fflag_feat_front_optic_1351_use_new_projects_counts_api_short": {
