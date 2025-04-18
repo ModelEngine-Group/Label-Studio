@@ -43,12 +43,37 @@ jobs:
           repository: HumanSignal/actions-hub
           path: ./.github/actions-hub
 
+      - name: Team details
+        id: team_details
+        uses: ./.github/actions-hub/actions/team-details
+        with:
+          jira-server: "${{ vars.JIRA_SERVER }}"
+          jira-username: "${{ secrets.JIRA_USERNAME }}"
+          jira-token: "${{ secrets.JIRA_TOKEN }}"
+          github_token: "${{ secrets.GIT_PAT }}"
+        continue-on-error: true
+
+      - name: Git Configure
+        uses: ./.github/actions-hub/actions/git-configure
+        with:
+          username: "${{ steps.team_details.outputs.github-username }}"
+
+      - name: Get Upstream PRs
+        uses: ./.github/actions-hub/actions/follow-merge-upstream-prs
+        id: upstream-prs
+        with:
+          branch_name: "${{ inputs.branch_name }}"
+          poetry_repositories: "label-studio,label-studio-evalme"
+          infra_repositories: "adala,label-studio-query-vectordb"
+          github_token: "${{ secrets.GIT_PAT }}"
+
       - name: Find or Create branch
         uses: ./.github/actions-hub/actions/github-find-or-create-branch
         id: get-branch
         with:
           github_token: ${{ secrets.GIT_PAT }}
-          branch_name: "${{ inputs.branch_name }}"
+          base_branch_name: "${{ steps.upstream-prs.outputs.base_branch_name }}"
+          branch_name: "${{ steps.upstream-prs.outputs.branch_name }}"
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -63,29 +88,6 @@ jobs:
           token: ${{ secrets.GIT_PAT }}
           repository: HumanSignal/actions-hub
           path: ./.github/actions-hub
-
-      - name: Get Upstream PRs
-        uses: ./.github/actions-hub/actions/follow-merge-upstream-prs
-        id: upstream-prs
-        with:
-          branch_name: "${{ inputs.branch_name }}"
-          poetry_repositories: "label-studio-sdk"
-          infra_repositories: ""
-          github_token: "${{ secrets.GIT_PAT }}"
-
-      - name: Git Configure
-        uses: ./.github/actions-hub/actions/git-configure
-        with:
-          username: ${{ github.event.client_payload.actor || steps.upstream-prs.outputs.author_username }}
-
-      - name: Git Merge
-        id: merge
-        continue-on-error: true
-        uses: ./.github/actions-hub/actions/git-merge
-        with:
-          base_branch: ${{ steps.upstream-prs.outputs.base_branch_name }}
-          head_branch: ${{ steps.get-branch.outputs.branch_name }}
-          our_files: "pyproject.toml poetry.lock web/package.json web/yarn.lock"
 
       - name: "Install poetry"
         env:
@@ -119,6 +121,15 @@ jobs:
           git status -s
           git commit --allow-empty -m "${COMMIT_MESSAGE}" -m "${COMMIT_MESSAGE_WORKFLOW_LINK}"
 
+      - name: Git Merge
+        id: merge
+        continue-on-error: true
+        uses: ./.github/actions-hub/actions/git-merge
+        with:
+          base_branch: ${{ steps.upstream-prs.outputs.base_branch_name }}
+          head_branch: ${{ steps.get-branch.outputs.branch_name }}
+          our_files: "pyproject.toml poetry.lock web/package.json web/yarn.lock"
+
       - name: Git Push
         uses: ./.github/actions-hub/actions/git-push
 
@@ -150,27 +161,12 @@ jobs:
           pullrequest_number: "${{ steps.get-pr.outputs.number }}"
           labels: "FM Stale"
 
-      - name: Merge Stale PR (Dry run)
-        if: steps.upstream-prs.outputs.status == 'stale'
-        continue-on-error: true
-        shell: bash
-        env:
-          GIT_PAT: ${{ secrets.GIT_PAT }}
-          BRANCH_NAME: "origin/${{ steps.get-branch.outputs.branch_name }}"
-          BASE_BRANCH_NAME: "origin/${{ steps.upstream-prs.outputs.base_branch_name }}"
-        run: |
-          if git diff --quiet "${BASE_BRANCH_NAME}..${BRANCH_NAME}"; then
-            echo "No changes detected."
-          else
-            echo "Changes detected in PR."
-          fi
-
       - name: Convert to ready for review
-        if: steps.upstream-prs.outputs.status == 'merged'
+        if: steps.upstream-prs.outputs.status == 'merged' || steps.upstream-prs.outputs.status == 'stale'
         id: ready-for-review-pr
         shell: bash
         env:
-          GIT_PAT: ${{ secrets.GIT_PAT }}
+          GIT_PAT: "${{ secrets.GIT_PAT }}"
         run: |
           echo "$GIT_PAT" | gh auth login --with-token
           gh api graphql -F id='${{ steps.get-pr.outputs.node_id }}' -f query='
@@ -182,6 +178,26 @@ jobs:
               }
             }
           '
+
+      - name: Merge Stale PR
+        if: steps.upstream-prs.outputs.status == 'stale'
+        continue-on-error: true
+        shell: bash
+        env:
+          GIT_PAT: "${{ secrets.GIT_PAT }}"
+          BRANCH_NAME: "origin/${{ steps.get-branch.outputs.branch_name }}"
+          BASE_BRANCH_NAME: "origin/${{ steps.upstream-prs.outputs.base_branch_name }}"
+          PR_NUMBER: "${{ steps.get-pr.outputs.number }}"
+          TITLE: "${{ steps.get-pr.outputs.title }}"
+        run: |
+          if git diff --quiet "${BASE_BRANCH_NAME}..${BRANCH_NAME}"; then
+            echo "No changes detected."
+            echo "Merging PR as a Stale."
+            echo "$GIT_PAT" | gh auth login --with-token
+            gh pr merge "${PR_NUMBER}" --squash --admin --subject "${TITLE} (stale) (#${PR_NUMBER})"
+          else
+            echo "Changes detected in PR."
+          fi
 
       - name: Enable AutoMerge
         if: steps.upstream-prs.outputs.status == 'merged'
