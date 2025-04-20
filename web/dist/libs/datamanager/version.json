@@ -1,6 +1,6 @@
 {
-  "message": "chore(deps): bump http-proxy-middleware from 2.0.7 to 2.0.9 in /web (#7391)",
-  "commit": "015a17e2e73d60c33f31d17a3d5dc1e8cf986760",
-  "date": "2025-04-17T09:23:09.000Z",
+  "message": "feat: OPTIC-1938: Proxy for storages when presigned urls are off (#7354)",
+  "commit": "b560a3fb14675bb12dc68c416fa4e9b3556938f1",
+  "date": "2025-04-20T09:50:10.000Z",
   "branch": "develop"
 }
