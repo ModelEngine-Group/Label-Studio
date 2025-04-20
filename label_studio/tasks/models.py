@@ -474,14 +474,7 @@ class Task(TaskMixin, models.Model):
                 storage = self.storage or get_storage_by_url(task_data[field], storage_objects)
                 if storage:
                     try:
-                        proxy_task = None
-                        if flag_set(
-                            'fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short',
-                            user='auto',
-                        ):
-                            proxy_task = self
-
-                        resolved_uri = storage.resolve_uri(task_data[field], proxy_task)
+                        resolved_uri = storage.resolve_uri(task_data[field], self)
                     except Exception as exc:
                         logger.debug(exc, exc_info=True)
                         resolved_uri = None
@@ -492,6 +485,9 @@ class Task(TaskMixin, models.Model):
     @property
     def storage(self):
         # maybe task has storage link
+        # TODO: this is bad idea to use storage from storage_link,
+        # because storage resolver will be limited to this storage,
+        # however, we may need to use other storages to resolve the uri.
         storage_link = self.get_storage_link()
         if storage_link:
             return storage_link.storage

@@ -4,7 +4,6 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_off
 
 stages:
 - id: signup
@@ -65,7 +64,6 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_off
 
 stages:
 - id: signup
@@ -127,7 +125,7 @@ stages:
   response:
     json:
       data:
-        image_url: !re_match "https://pytest-s3-images.s3.amazonaws.com.+X-Amz-Security-Token=testing"
+        image_url: !re_match "/tasks/\\d+/resolve/\\?fileuri=czM6Ly9weXRlc3QtczMtaW1hZ2VzL2ltYWdlMS5qcGc="
     status_code: 200
 
 - name: Set the first view in the project
@@ -150,7 +148,7 @@ stages:
     json:
       tasks:
         - data:
-            image_url: !re_match "https://pytest-s3-images.s3.amazonaws.com.+X-Amz-Security-Token=testing"
+            image_url: !re_match "/tasks/\\d+/resolve/\\?fileuri=czM6Ly9weXRlc3QtczMtaW1hZ2VzL2ltYWdlMS5qcGc="
     status_code: 200
 
 - name: Get storage list
@@ -285,7 +283,7 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_off
+
 stages:
 - id: signup
   type: ref
@@ -354,7 +352,7 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_off
+
 stages:
 - id: signup
   type: ref
@@ -403,7 +401,7 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_off
+
 stages:
 - id: signup
   type: ref
@@ -458,7 +456,7 @@ stages:
   response:
     json:
       data:
-        image_url: !re_match "https://storage.googleapis.com/test-gs-bucket/.+"
+        image_url: !re_match "/tasks/\\d+/resolve/\\?fileuri=Z3M6Ly90ZXN0LWdzLWJ1Y2tldC90ZXN0LWdzLWJ1Y2tldC9hYmM="
     status_code: 200
 - name: Patch storage with synchronizable false
   request:
@@ -487,7 +485,7 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_off
+
 stages:
 - id: signup
   type: ref
@@ -525,7 +523,7 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_off
+
 stages:
 - id: signup
   type: ref
@@ -579,7 +577,7 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_off
+
 stages:
   - id: signup
     type: ref
@@ -650,16 +648,16 @@ stages:
     response:
       json:
         data:
-          image: !re_match "https://storage.googleapis.com/test-gs-bucket_JSON/manual.link.+"
+          image: !re_match "/tasks/\\d+/resolve/\\?fileuri=Z3M6Ly90ZXN0LWdzLWJ1Y2tldF9KU09OL21hbnVhbC5saW5rLmpwZw=="
           dict:
-            key1: !re_match "https://storage.googleapis.com/test-gs-bucket_JSON/manual.link.+"
+            key1: !re_match "/tasks/\\d+/resolve/\\?fileuri=Z3M6Ly90ZXN0LWdzLWJ1Y2tldF9KU09OL21hbnVhbC5saW5rLmpwZw=="
             array:
-              - !re_match "https://storage.googleapis.com/test-gs-bucket_JSON/manual.link.+"
-              - !re_match "https://storage.googleapis.com/test-gs-bucket_JSON/manual.link.+"
+              - !re_match "/tasks/\\d+/resolve/\\?fileuri=Z3M6Ly90ZXN0LWdzLWJ1Y2tldF9KU09OL21hbnVhbC5saW5rLmpwZw=="
+              - !re_match "/tasks/\\d+/resolve/\\?fileuri=Z3M6Ly90ZXN0LWdzLWJ1Y2tldF9KU09OL21hbnVhbC5saW5rLmpwZw=="
           array:
-            - item1: !re_match "https://storage.googleapis.com/test-gs-bucket_JSON/manual.link.+"
+            - item1: !re_match "/tasks/\\d+/resolve/\\?fileuri=Z3M6Ly90ZXN0LWdzLWJ1Y2tldF9KU09OL21hbnVhbC5saW5rLmpwZw=="
               some: 'some text'
-            - item2: !re_match "https://storage.googleapis.com/test-gs-bucket_JSON/manual.link.+"
+            - item2: !re_match "/tasks/\\d+/resolve/\\?fileuri=Z3M6Ly90ZXN0LWdzLWJ1Y2tldF9KU09OL21hbnVhbC5saW5rLmpwZw=="
               some: 'some text'
             # This link should remain unresolved - no matching bucket
             - item3: !re_match "gs://bad-bucket/manual.link.+"
@@ -672,7 +670,7 @@ strict: true
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_off
+
 stages:
 - id: signup
   type: ref
@@ -717,7 +715,7 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_off
+
 stages:
 - id: signup
   type: ref
@@ -828,9 +826,9 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_off
   - fflag_feat_back_lsdv_3958_server_side_encryption_for_target_storage_short_on
   - mock_s3_resource_aes
+
 stages:
 - id: signup
   type: ref
@@ -918,9 +916,9 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_off
   - fflag_feat_back_lsdv_3958_server_side_encryption_for_target_storage_short_on
   - mock_s3_resource_kms
+
 stages:
 - id: signup
   type: ref
@@ -1010,7 +1008,7 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_off
+
 stages:
 - id: signup
   type: ref
@@ -1126,7 +1124,7 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_off
+
 stages:
 - id: signup
   type: ref
@@ -1153,7 +1151,7 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_off
+
 stages:
 - id: signup
   type: ref
@@ -1206,7 +1204,7 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_off
+
 stages:
 - id: signup
   type: ref
@@ -1253,7 +1251,7 @@ stages:
   response:
     json:
       data:
-        image_url: !re_match "https://testing.blob.core.windows.net/pytest-azure-images/.+"
+        image_url: !re_match "/tasks/\\d+/resolve/\\?fileuri=YXp1cmUtYmxvYjovL3B5dGVzdC1henVyZS1pbWFnZXMvYWJj"
     status_code: 200
 - name: stage
   request:
@@ -1308,7 +1306,7 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_off
+
 stages:
 - id: signup
   type: ref
@@ -1410,7 +1408,7 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_off
+
 stages:
 - id: signup
   type: ref
@@ -1475,7 +1473,7 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_off
+
 stages:
 - id: signup
   type: ref
@@ -1539,7 +1537,7 @@ stages:
   response:
     json:
       data:
-        pdf: !re_match "<embed src='https://storage.googleapis.com/heartex-test/file.pdf?.*"
+        pdf: !re_match "<embed src='/tasks/\\d+/resolve/\\?fileuri=Z3M6Ly9oZWFydGV4LXRlc3QvZmlsZS5wZGY='/>"
     status_code: 200
 
 ---
@@ -1551,7 +1549,7 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_off
+
 stages:
 - id: signup
   type: ref
@@ -1605,7 +1603,7 @@ stages:
   response:
     json:
       data:
-        text: !re_match "<a href=\"https://pytest-s3-jsons-hypertext.s3.amazonaws.com/file%20with%20/spaces%20and%27%20/%20%27%20/%20quotes.jpg.+X-Amz-Security-Token=testing"
+        text: !re_match "<a href=\"/tasks/\\d+/resolve/\\?fileuri=czM6Ly9weXRlc3QtczMtanNvbnMtaHlwZXJ0ZXh0L2ZpbGUgd2l0aCAvc3BhY2VzIGFuZCcgLyAnIC8gcXVvdGVzLmpwZw==\"/>"
     status_code: 200
 
 ---
@@ -1615,7 +1613,7 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_off
+
 stages:
 - id: signup
   type: ref
@@ -1665,7 +1663,7 @@ stages:
     status_code: 200
     json:
       data:
-        image: 's3://pytest-s3-jsons-unexisted_links/some-unexisted-image.jpg'
+        image: !re_match "/tasks/\\d+/resolve/\\?fileuri=czM6Ly9weXRlc3QtczMtanNvbnMtdW5leGlzdGVkX2xpbmtzL3NvbWUtdW5leGlzdGVkLWltYWdlLmpwZw=="
 
 ---
 test_name: test_connection_to_import_redis_storage
@@ -1673,7 +1671,7 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_off
+
 stages:
 - id: signup
   type: ref

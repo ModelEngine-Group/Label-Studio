@@ -127,8 +127,8 @@ class AllImportStorageListAPI(generics.ListAPIView):
             response = view(request._request, *args, **kwargs)
             payload = response.data
             if not isinstance(payload, list):
-                raise ValueError('Response is not list')
-            return response.data
+                raise ValueError(f'Response is not list: {payload}')
+            return payload
         except Exception:
             logger.error(f"Can't process {api.__class__.__name__}", exc_info=True)
             return []
@@ -158,9 +158,16 @@ class AllExportStorageListAPI(generics.ListAPIView):
     permission_required = all_permissions.projects_change
 
     def _get_response(self, api, request, *args, **kwargs):
-        view = api.as_view()
-        response = view(request._request, *args, **kwargs)
-        return response.data
+        try:
+            view = api.as_view()
+            response = view(request._request, *args, **kwargs)
+            payload = response.data
+            if not isinstance(payload, list):
+                raise ValueError(f'Response is not list: {payload}')
+            return payload
+        except Exception:
+            logger.error(f"Can't process {api.__class__.__name__}", exc_info=True)
+            return []
 
     def list(self, request, *args, **kwargs):
         list_responses = sum(

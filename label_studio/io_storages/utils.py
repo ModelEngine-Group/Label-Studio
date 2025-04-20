@@ -79,3 +79,33 @@ def storage_can_resolve_bucket_url(storage, url) -> bool:
         return False
 
     return True
+
+
+def parse_range(range_header):
+    """
+    Parse HTTP Range header and extract start and end values.
+
+    Args:
+        range_header (str): Range header in format 'bytes=start-end'
+
+    Returns:
+        tuple: (start, end) where start is an integer and end is either an integer or empty string
+    """
+    start, end = 0, ''
+    if not range_header:
+        return None, None
+
+    try:
+        values = range_header.split('=')[1].split('-')
+        start = int(values[0])
+        if len(values) > 1:
+            end = values[1]
+            if end != '':
+                end = int(end)
+    except (IndexError, ValueError) as e:
+        # Return default values if parsing fails
+        logger.warning(f'Invalid range header: {range_header}: {e}')
+        start = 0
+        end = ''
+
+    return start, end

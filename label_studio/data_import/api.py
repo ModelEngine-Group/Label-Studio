@@ -1,11 +1,9 @@
 """This file and its contents are licensed under the Apache License 2.0. Please see the included NOTICE for copyright information and LICENSE for a copy of the license.
 """
-import base64
 import json
 import logging
 import mimetypes
 import time
-from typing import Union
 from urllib.parse import unquote, urlparse
 
 import drf_yasg.openapi as openapi
@@ -18,7 +16,7 @@ from core.utils.params import bool_from_request, list_of_strings_from_request
 from csp.decorators import csp
 from django.conf import settings
 from django.db import transaction
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 from drf_yasg.utils import swagger_auto_schema
 from projects.models import Project, ProjectImport, ProjectReimport
@@ -748,89 +746,3 @@ class DownloadStorageData(APIView):
         response['X-Accel-Redirect'] = redirect
         response['Content-Disposition'] = 'attachment; filename="{}"'.format(filepath)
         return response
-
-
-class PresignAPIMixin:
-    def handle_presign(self, request: HttpRequest, fileuri: str, instance: Union[Task, Project]) -> Response:
-        model_name = type(instance).__name__
-
-        if not instance.has_permission(request.user):
-            return Response(status=status.HTTP_403_FORBIDDEN)
-
-        # Attempt to base64 decode the fileuri
-        try:
-            fileuri = base64.urlsafe_b64decode(fileuri.encode()).decode()
-        # For backwards compatibility, try unquote if this fails
-        except Exception as exc:
-            logger.debug(
-                f'Failed to decode base64 {fileuri} for {model_name} {instance.id}: {exc} falling back to unquote'
-            )
-            fileuri = unquote(fileuri)
-
-        try:
-            resolved = instance.resolve_storage_uri(fileuri)
-        except Exception as exc:
-            logger.error(f'Failed to resolve storage uri {fileuri} for {model_name} {instance.id}: {exc}')
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        if resolved is None or resolved.get('url') is None:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        url = resolved['url']
-        max_age = 0
-        if resolved.get('presign_ttl'):
-            max_age = resolved.get('presign_ttl') * 60
-
-        # Proxy to presigned url
-        response = HttpResponseRedirect(redirect_to=url, status=status.HTTP_303_SEE_OTHER)
-        response.headers['Cache-Control'] = f'no-store, max-age={max_age}'
-
-        return response
-
-
-class TaskPresignStorageData(PresignAPIMixin, APIView):
-    """A file proxy to presign storage urls at the task level."""
-
-    swagger_schema = None
-    http_method_names = ['get']
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request, *args, **kwargs):
-        """Get the presigned url for a given fileuri"""
-        request = self.request
-        task_id = kwargs.get('task_id')
-        fileuri = request.GET.get('fileuri')
-
-        if fileuri is None or task_id is None:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            task = Task.objects.get(pk=task_id)
-        except Task.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        return self.handle_presign(request, fileuri, task)
-
-
-class ProjectPresignStorageData(PresignAPIMixin, APIView):
-    """A file proxy to presign storage urls at the project level."""
-
-    swagger_schema = None
-    http_method_names = ['get']
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request, *args, **kwargs):
-        """Get the presigned url for a given fileuri"""
-        request = self.request
-        project_id = kwargs.get('project_id')
-        fileuri = request.GET.get('fileuri')
-
-        if fileuri is None or project_id is None:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            project = Project.objects.get(pk=project_id)
-        except Project.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        return self.handle_presign(request, fileuri, project)

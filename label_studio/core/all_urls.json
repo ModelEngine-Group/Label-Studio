@@ -276,18 +276,6 @@
         "decorators": ""
     },
     {
-        "url": "/tasks/<int:task_id>/presign/",
-        "module": "data_import.api.TaskPresignStorageData",
-        "name": "data_import:task-storage-data-presign",
-        "decorators": ""
-    },
-    {
-        "url": "/projects/<int:project_id>/presign/",
-        "module": "data_import.api.ProjectPresignStorageData",
-        "name": "data_import:project-storage-data-presign",
-        "decorators": ""
-    },
-    {
         "url": "/api/dm/views/",
         "module": "data_manager.api.ViewAPI",
         "name": "data_manager:api:view-list",
@@ -945,6 +933,30 @@
         "url": "/api/storages/export/localfiles/form",
         "module": "io_storages.localfiles.api.LocalFilesExportStorageFormLayoutAPI",
         "name": "storages:api:export-storage-localfiles-form",
+        "decorators": ""
+    },
+    {
+        "url": "/tasks/<int:task_id>/resolve/",
+        "module": "io_storages.proxy_api.TaskResolveStorageUri",
+        "name": "storages:task-storage-data-resolve",
+        "decorators": ""
+    },
+    {
+        "url": "/projects/<int:project_id>/resolve/",
+        "module": "io_storages.proxy_api.ProjectResolveStorageUri",
+        "name": "storages:project-storage-data-resolve",
+        "decorators": ""
+    },
+    {
+        "url": "/tasks/<int:task_id>/presign/",
+        "module": "io_storages.proxy_api.TaskResolveStorageUri",
+        "name": "storages:task-storage-data-presign",
+        "decorators": ""
+    },
+    {
+        "url": "/projects/<int:project_id>/presign/",
+        "module": "io_storages.proxy_api.ProjectResolveStorageUri",
+        "name": "storages:project-storage-data-presign",
         "decorators": ""
     },
     {

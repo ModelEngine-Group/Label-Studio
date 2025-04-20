@@ -2,6 +2,7 @@
 """
 from django.conf import settings
 from django.urls import include, path
+from io_storages import proxy_api
 from io_storages.all_api import (
     AllExportStorageListAPI,
     AllExportStorageTypesAPI,
@@ -156,4 +157,22 @@ if settings.ENABLE_LOCAL_FILES_STORAGE:
 
 urlpatterns = [
     path('api/storages/', include((_api_urlpatterns, app_name), namespace='api')),
+]
+
+# URI Resolving: proxy or redirect to presigned URLs
+urlpatterns += [
+    # resolving storage URIs endpoints: proxy or redirect to presigned URLs
+    path('tasks/<int:task_id>/resolve/', proxy_api.TaskResolveStorageUri.as_view(), name='task-storage-data-resolve'),
+    path(
+        'projects/<int:project_id>/resolve/',
+        proxy_api.ProjectResolveStorageUri.as_view(),
+        name='project-storage-data-resolve',
+    ),
+    # keep /presign/ for backwards compatibility
+    path('tasks/<int:task_id>/presign/', proxy_api.TaskResolveStorageUri.as_view(), name='task-storage-data-presign'),
+    path(
+        'projects/<int:project_id>/presign/',
+        proxy_api.ProjectResolveStorageUri.as_view(),
+        name='project-storage-data-presign',
+    ),
 ]

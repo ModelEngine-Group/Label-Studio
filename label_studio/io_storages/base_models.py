@@ -236,6 +236,17 @@ class ImportStorage(Storage):
     def generate_http_url(self, url):
         raise NotImplementedError
 
+    def get_bytes_stream(self, uri):
+        """Get file bytes from storage as a stream and content type.
+
+        Args:
+            uri: The URI of the file to retrieve
+
+        Returns:
+            Tuple of (BytesIO stream, content_type)
+        """
+        raise NotImplementedError
+
     def can_resolve_url(self, url: Union[str, None]) -> bool:
         return self.can_resolve_scheme(url)
 
@@ -275,16 +286,32 @@ class ImportStorage(Storage):
                     logger.debug(f'No storage info found for URI={uri}')
                     return
 
-                if self.presign and task is not None:
+                if flag_set('fflag_optic_all_optic_1938_storage_proxy', user=self.project.organization.created_by):
+                    if task is None:
+                        logger.error(f'Task is required to resolve URI={uri}', exc_info=True)
+                        raise ValueError(f'Task is required to resolve URI={uri}')
+
                     proxy_url = urljoin(
                         settings.HOSTNAME,
-                        reverse('data_import:task-storage-data-presign', kwargs={'task_id': task.id})
+                        reverse('storages:task-storage-data-resolve', kwargs={'task_id': task.id})
                         + f'?fileuri={base64.urlsafe_b64encode(extracted_uri.encode()).decode()}',
                     )
                     return uri.replace(extracted_uri, proxy_url)
+
+                # ff off: old logic without proxy
                 else:
-                    # resolve uri to url using storages
-                    http_url = self.generate_http_url(extracted_uri)
+                    if self.presign and task is not None:
+                        proxy_url = urljoin(
+                            settings.HOSTNAME,
+                            reverse('storages:task-storage-data-presign', kwargs={'task_id': task.id})
+                            + f'?fileuri={base64.urlsafe_b64encode(extracted_uri.encode()).decode()}',
+                        )
+                        return uri.replace(extracted_uri, proxy_url)
+                    else:
+                        # this branch is our old approach:
+                        # it generates presigned URLs if storage.presign=True;
+                        # or it inserts base64 media into task data if storage.presign=False
+                        http_url = self.generate_http_url(extracted_uri)
 
                 return uri.replace(extracted_uri, http_url)
             except Exception:

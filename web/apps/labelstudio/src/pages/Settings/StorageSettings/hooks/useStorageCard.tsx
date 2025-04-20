@@ -7,6 +7,7 @@ function useStorages(target: "import" | "export", projectId?: number) {
   const storagesQueryKey = ["storages", target, projectId];
   const { data, isLoading, isSuccess, refetch } = useQuery({
     queryKey: storagesQueryKey,
+    enabled: projectId !== undefined,
     async queryFn() {
       const result = await api.callApi("listStorages", {
         params: { project: projectId, target },
