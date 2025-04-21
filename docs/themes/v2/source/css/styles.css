@@ -624,7 +624,9 @@ dl {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 15em), 1fr));
 }
 
-.column-wrapper+.column-wrapper {
+.column-wrapper+.column-wrapper,
+.templates-grid+.column-wrapper,
+.content-grid+.column-wrapper {
   margin-top: 5rem;
   border-top: 1px solid var(--color-gray-200);
 }
