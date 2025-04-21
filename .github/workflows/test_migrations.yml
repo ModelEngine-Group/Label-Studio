@@ -16,6 +16,7 @@ env:
   LABEL_STUDIO_TEST_ENVIRONMENT: false
   SENTRY_RATE: 0
   JSON_LOG: 0
+  POETRY_VERSION: 2.1.2
 
 jobs:
   sqlite-migrations:
@@ -35,9 +36,7 @@ jobs:
           ref: ${{ inputs.ref }}
 
       - name: "Install poetry"
-        env:
-          POETRY_VERSION: ${{ vars.POETRY_VERSION }}
-        run: pipx install "poetry==${POETRY_VERSION}"
+        run: pipx install "poetry==${{ env.POETRY_VERSION }}"
 
       - name: "Set up Python"
         id: setup_python
@@ -100,9 +99,7 @@ jobs:
           fetch-depth: 0
 
       - name: "Install poetry"
-        env:
-          POETRY_VERSION: ${{ vars.POETRY_VERSION }}
-        run: pipx install "poetry==${POETRY_VERSION}"
+        run: pipx install "poetry==${{ env.POETRY_VERSION }}"
 
       - name: "Set up Python"
         id: setup_python

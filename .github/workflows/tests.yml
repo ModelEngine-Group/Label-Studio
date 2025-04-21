@@ -10,6 +10,7 @@ on:
 env:
   NODE: '18'
   CACHE_NAME_PREFIX: v1
+  POETRY_VERSION: 2.1.2
 
 jobs:
   run_pytest_sqlite:
@@ -46,9 +47,7 @@ jobs:
           ref: ${{ inputs.head_sha }}
 
       - name: "Install poetry"
-        env:
-          POETRY_VERSION: ${{ vars.POETRY_VERSION }}
-        run: pipx install "poetry==${POETRY_VERSION}"
+        run: pipx install "poetry==${{ env.POETRY_VERSION }}"
 
       - name: "Set up Python ${{ matrix.python-version }}"
         id: setup_python
@@ -133,9 +132,7 @@ jobs:
           ref: ${{ inputs.head_sha }}
 
       - name: "Install poetry"
-        env:
-          POETRY_VERSION: ${{ vars.POETRY_VERSION }}
-        run: pipx install "poetry==${POETRY_VERSION}"
+        run: pipx install "poetry==${{ env.POETRY_VERSION }}"
 
       - name: "Set up Python ${{ matrix.python-version }}"
         id: setup_python
@@ -212,9 +209,7 @@ jobs:
           ref: ${{ inputs.head_sha }}
 
       - name: "Install poetry"
-        env:
-          POETRY_VERSION: ${{ vars.POETRY_VERSION }}
-        run: pipx install "poetry==${POETRY_VERSION}"
+        run: pipx install "poetry==${{ env.POETRY_VERSION }}"
 
       - name: "Set up Python ${{ matrix.python-version }}"
         id: setup_python

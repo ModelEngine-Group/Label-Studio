@@ -16,6 +16,7 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ inputs.branch_name }}
   cancel-in-progress: true
+  POETRY_VERSION: 2.1.2
 
 jobs:
   sync:
@@ -90,9 +91,7 @@ jobs:
           path: ./.github/actions-hub
 
       - name: "Install poetry"
-        env:
-          POETRY_VERSION: ${{ vars.POETRY_VERSION }}
-        run: pipx install "poetry==${POETRY_VERSION}"
+        run: pipx install "poetry==${{ env.POETRY_VERSION }}"
 
       - name: "Set up Python"
         id: setup_python

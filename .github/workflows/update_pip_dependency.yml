@@ -8,6 +8,9 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.client_payload.branch_name || 'schedule' }}
 
+env:
+  POETRY_VERSION: 2.1.2
+
 jobs:
   open:
     name: Sync PR
@@ -29,9 +32,7 @@ jobs:
           git config --global user.email 'robot-ci-heartex@users.noreply.github.com'
 
       - name: "Install poetry"
-        env:
-          POETRY_VERSION: ${{ vars.POETRY_VERSION }}
-        run: pipx install "poetry==${POETRY_VERSION}"
+        run: pipx install "poetry==${{ env.POETRY_VERSION }}"
 
       - name: "Set up Python"
         id: setup_python
