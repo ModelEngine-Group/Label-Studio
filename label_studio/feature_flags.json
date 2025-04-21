@@ -1299,7 +1299,7 @@
     },
     "fflag_feat_all_leap_1825_annotator_evaluation_short": {
       "key": "fflag_feat_all_leap_1825_annotator_evaluation_short",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -1321,7 +1321,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 2,
+      "version": 3,
       "deleted": false
     },
     "fflag_feat_all_leap_883_custom_script_270524_short": {
