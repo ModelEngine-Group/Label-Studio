@@ -4054,7 +4054,7 @@
     },
     "fflag_optic_all_optic_1938_storage_proxy": {
       "key": "fflag_optic_all_optic_1938_storage_proxy",
-      "on": true,
+      "on": false,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -4076,7 +4076,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 4,
+      "version": 5,
       "deleted": false
     },
     "fix_backend_dev_3134_exclude_deactivated_users": {
