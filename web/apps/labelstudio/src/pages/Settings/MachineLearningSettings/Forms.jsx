@@ -6,7 +6,7 @@ import { Form, Input, Select, TextArea, Toggle } from "../../../components/Form"
 import "./MachineLearningSettings.scss";
 
 const CustomBackendForm = ({ action, backend, project, onSubmit }) => {
-  const [selectedAuthMethod, setAuthMethod] = useState("");
+  const [selectedAuthMethod, setAuthMethod] = useState("NONE");
   const [, setMLError] = useState();
 
   return (
@@ -38,9 +38,8 @@ const CustomBackendForm = ({ action, backend, project, onSubmit }) => {
             { label: "No Authentication", value: "NONE" },
             { label: "Basic Authentication", value: "BASIC_AUTH" },
           ]}
-          onChange={(e) => {
-            setAuthMethod(e.target.value);
-          }}
+          value={selectedAuthMethod}
+          onChange={setAuthMethod}
         />
       </Form.Row>
 

@@ -20,4 +20,13 @@
     display: flex;
     align-items: center;
   }
+
+  &__wrapper {
+    background-color: transparent;
+
+    > div {
+      display: flex;
+      background-color: transparent;
+    }
+  }
 }

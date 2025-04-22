@@ -1,40 +1,6 @@
 import { observer } from "mobx-react";
-import { IconChevronDown } from "@humansignal/icons";
-import { Icon } from "../Common/Icon/Icon";
-import { Select } from "../Common/Select/Select";
-import { Tag } from "../Common/Tag/Tag";
-
-const TagRender =
-  (items) =>
-  ({ label, ...rest }) => {
-    const color = items.find((el) => el.value === rest.value)?.color;
-
-    return (
-      <Tag color={color ?? "#000"} {...rest} size="small" className="filter-data-tag">
-        <div className="ant-tag-text">{label}</div>
-      </Tag>
-    );
-  };
-
-const renderOptions = (OptionRender) => (item) => {
-  const value = item.value ?? item;
-  const label = item.label ?? item.title ?? value;
-  const key = `${item.id}-${value}-${label}`;
-
-  if (item.options) {
-    return (
-      <Select.OptGroup key={key} label={item.title}>
-        {item.options.map(renderOptions(OptionRender))}
-      </Select.OptGroup>
-    );
-  }
-
-  return (
-    <Select.Option key={`${value}-${label}`} value={value} style={{ fontSize: 12 }} title={label}>
-      {OptionRender ? <OptionRender item={item} /> : label}
-    </Select.Option>
-  );
-};
+import { Select } from "../Common/Form";
+import { useCallback, useMemo } from "react";
 
 export const FilterDropdown = observer(
   ({
@@ -49,33 +15,44 @@ export const FilterDropdown = observer(
     optionRender,
     dropdownClassName,
     outputFormat,
+    searchFilter,
   }) => {
+    const parseItems = useCallback(
+      (item) => {
+        const OptionVisuals = optionRender;
+        const option =
+          typeof item === "string" || typeof item === "number"
+            ? { label: <OptionVisuals item={item} />, value: item, original: item }
+            : {
+                ...item,
+                label: item?.original?.field?.parent ? (
+                  <OptionVisuals item={item} />
+                ) : (
+                  (item?.title ?? item?.label ?? item?.name)
+                ),
+                value: item?.value ?? item,
+                children: item?.options?.map(parseItems),
+              };
+        return option;
+      },
+      [optionRender],
+    );
+    const options = useMemo(() => items.map(parseItems), [items, parseItems]);
+
     return (
       <Select
         multiple={multiple}
         placeholder={placeholder}
         defaultValue={defaultValue}
         value={value}
-        tagRender={TagRender(items)}
-        bordered={false}
-        style={{
-          fontSize: 12,
-          width: "100%",
-          backgroundColor: disabled ? "none" : "#fafafa",
-          ...(multiple ? { padding: 0 } : {}),
-          ...(style ?? {}),
-        }}
-        dropdownStyle={{ minWidth: "fit-content" }}
         onChange={(value) => onChange(outputFormat?.(value) ?? value)}
         disabled={disabled}
         size="small"
-        suffixIcon={<Icon icon={IconChevronDown} />}
-        listItemHeight={20}
-        listHeight={600}
-        dropdownClassName={dropdownClassName}
-      >
-        {items.map(renderOptions(optionRender))}
-      </Select>
+        options={options}
+        searchable={true}
+        className="whitespace-nowrap"
+        searchFilter={searchFilter}
+      />
     );
   },
 );

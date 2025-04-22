@@ -78,6 +78,7 @@ export const FilterOperation = observer(({ filter, field, operator, value }) => 
           filter={filter}
           value={value}
           onChange={onChange}
+          size="small"
         />
       </Elem>
     </>

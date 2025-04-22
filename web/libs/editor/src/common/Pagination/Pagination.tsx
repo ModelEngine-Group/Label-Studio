@@ -1,7 +1,8 @@
-import { type ChangeEvent, type FC, forwardRef, type KeyboardEvent, useCallback, useState } from "react";
+import { type ChangeEvent, type FC, forwardRef, type KeyboardEvent, useCallback, useMemo, useState } from "react";
 import { Hotkey } from "../../core/Hotkey";
 import { useHotkey } from "../../hooks/useHotkey";
 import { Block, Elem } from "../../utils/bem";
+import { Select } from "@humansignal/ui";
 import "./Pagination.scss";
 
 interface PaginationProps {
@@ -56,15 +57,14 @@ export const Pagination: FC<PaginationProps> = forwardRef<any, PaginationProps>(
       onChange?.(1, e.currentTarget.value);
     };
 
-    const renderOptions = () => {
+    const options = useMemo(() => {
       return pageSizeOptions.map((obj: number, index: number) => {
-        return (
-          <option value={obj} key={index}>
-            {obj} per page
-          </option>
-        );
+        return {
+          value: obj,
+          label: `${obj} per page`,
+        };
       });
-    };
+    }, [pageSizeOptions]);
 
     return (
       <Block name="pagination" mod={{ size, outline, align, noPadding, disabled }}>
@@ -149,9 +149,7 @@ export const Pagination: FC<PaginationProps> = forwardRef<any, PaginationProps>(
         </Elem>
         {pageSizeSelectable && (
           <Elem name="page-size">
-            <select value={pageSize} onChange={handleChangeSelect}>
-              {renderOptions()}
-            </select>
+            <Select value={pageSize} onChange={handleChangeSelect} options={options} />
           </Elem>
         )}
       </Block>

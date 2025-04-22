@@ -1,4 +1,4 @@
-import { EnterpriseBadge } from "@humansignal/ui";
+import { EnterpriseBadge, Select } from "@humansignal/ui";
 import React from "react";
 import { useHistory } from "react-router";
 import { Button, ToggleItems } from "../../components";
@@ -12,7 +12,7 @@ import "./CreateProject.scss";
 import { ImportPage } from "./Import/Import";
 import { useImportPage } from "./Import/useImportPage";
 import { useDraftProject } from "./utils/useDraftProject";
-import { Input, Select, TextArea } from "../../components/Form";
+import { Input, TextArea } from "../../components/Form";
 import { Caption } from "../../components/Caption/Caption";
 import { FF_LSDV_E_297, isFF } from "../../utils/feature-flags";
 import { createURL } from "../../components/HeidiTips/utils";

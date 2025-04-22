@@ -2,7 +2,7 @@ import { cn } from "../../../../../utils/bem";
 import { FormField } from "../../FormField";
 import { useValueTracker } from "../../Utils";
 import { default as Label } from "../Label/Label";
-import "./Select.scss";
+import { Select as SelectUI } from "@humansignal/ui";
 
 const Select = ({
   label,
@@ -20,8 +20,6 @@ const Select = ({
   const rootClass = cn("form-select");
   const [value, setValue] = useValueTracker(props.value, defaultValue);
 
-  const classList = rootClass.mod({ ghost, size }).mix(className);
-
   const selectWrapper = (
     <FormField
       name={props.name}
@@ -36,37 +34,18 @@ const Select = ({
     >
       {({ ref }) => {
         return (
-          <div className={classList}>
-            <select
-              {...props}
-              ref={ref}
-              value={value}
-              onChange={(e) => {
-                setValue(e.target.value);
-                props.onChange?.(e);
-              }}
-              className={rootClass.elem("list")}
-            >
-              {props.placeholder && (!props.defaulValue || !props.value) && (
-                <option value="" disabled hidden>
-                  {props.placeholder}
-                </option>
-              )}
-
-              {(options ?? []).map((option) => {
-                const value = option.value ?? option;
-                const label = option.label ?? value;
-                const disabled = option.disabled ?? false;
-                const hidden = option.hidden ?? false;
-
-                return (
-                  <option key={value} value={value} disabled={disabled} hidden={hidden}>
-                    {label}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
+          <SelectUI
+            {...props}
+            ref={ref}
+            value={value}
+            onChange={(val) => {
+              setValue(val);
+              props.onChange?.(val);
+            }}
+            className={rootClass.elem("list").toString()}
+            options={options?.toJSON ? options.toJSON() : options}
+            size={size}
+          />
         );
       }}
     </FormField>

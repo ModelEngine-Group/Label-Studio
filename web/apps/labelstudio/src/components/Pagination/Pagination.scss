@@ -1,5 +1,7 @@
 .pagination-ls {
-  height: 40px;
+  --pagination-height: 40px;
+
+  height: var(--pagination-height);
   display: inline-flex;
   align-items: center;
 
@@ -114,14 +116,12 @@
 
   &__input {
     width: 100px;
-    height: 38px;
+    height: var(--pagination-height);
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
     border: 1px solid #D9D9D9;
-    border-top: none;
-    border-bottom: none;
     background: var(--sand_100);
     margin: 1px 0;
 

@@ -60,6 +60,11 @@ const DATA = {
 
 const CONFIG = `
 <View>
+  <style>
+    [data-radix-popper-content-wrapper] {
+      z-index: 9999 !important;
+    }
+  </style>
   <ParagraphLabels name="ner" toName="text">
     <Label value="Important Stuff"></Label>
     <Label value="Random talk"></Label>
@@ -529,7 +534,7 @@ Scenario(
     AtOutliner.seeRegions(0);
 
     I.say("Select 2 regions in the consecutive phrases of the one person");
-    AtParagraphs.clickFilter("Vincent Vega");
+    AtParagraphs.clickFilter("Vincent Vega:");
     AtLabels.clickLabel("Random talk");
     AtParagraphs.setSelection(
       AtParagraphs.locateText("Hate what?2"),

@@ -69,7 +69,14 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
     );
 
     return label ? (
-      <Label placement="right" required={required} text={label} description={description} {...(labelProps ?? {})}>
+      <Label
+        placement="right"
+        required={required}
+        text={label}
+        description={description}
+        className="gap-2"
+        {...(labelProps ?? {})}
+      >
         {formField}
       </Label>
     ) : (

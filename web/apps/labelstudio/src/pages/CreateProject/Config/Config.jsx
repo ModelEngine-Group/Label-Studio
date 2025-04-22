@@ -1,13 +1,13 @@
 import "codemirror/lib/codemirror.css";
 import "codemirror/mode/xml/xml";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { UnControlled as CodeMirror } from "react-codemirror2";
 import CM from "codemirror";
 import "codemirror/addon/hint/show-hint";
 import "codemirror/addon/hint/show-hint.css";
 
 import { Button, ToggleItems } from "../../../components";
-import { Form } from "../../../components/Form";
+import { Form, Input } from "../../../components/Form";
 import { useAPI } from "../../../providers/ApiProvider";
 import { Block, cn, Elem } from "../../../utils/bem";
 import { Palette } from "../../../utils/colors";
@@ -22,7 +22,7 @@ import "./codemirror.css";
 import "./config-hint";
 import tags from "./schema.json";
 import { UnsavedChanges } from "./UnsavedChanges";
-import { Checkbox } from "@humansignal/ui";
+import { Checkbox, Select } from "@humansignal/ui";
 import { toSnakeCase } from "strman";
 
 const wizardClass = cn("wizard");
@@ -154,26 +154,25 @@ const ConfigureSettings = ({ template }) => {
 
     switch (type) {
       case Array:
-        onChange = (e) => {
+        onChange = (val) => {
           if (typeof options.param === "function") {
-            options.param($tag, e.target.value);
+            options.param($tag, val);
           } else {
-            $object.setAttribute(options.param, e.target.value);
+            $object.setAttribute(options.param, val);
           }
           template.render();
         };
         return (
           <li key={key}>
-            <label>
-              {options.title}{" "}
-              <select className="border" value={value} onChange={onChange}>
-                {options.type.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <Select
+              className="border"
+              value={value}
+              onChange={onChange}
+              options={options.type}
+              label={options.title}
+              isInline={true}
+              dataTestid={`select-trigger-${options.title.replace(/\s+/g, "-").replace(":", "").toLowerCase()}-${value}`}
+            />
           </li>
         );
       case Boolean:
@@ -247,9 +246,7 @@ const ConfigureColumn = ({ template, obj, columns }) => {
     template.render();
   };
 
-  const selectValue = (e) => {
-    const value = e.target.value;
-
+  const selectValue = (value) => {
     if (value === "-") {
       setIsManual(true);
       return;
@@ -278,23 +275,40 @@ const ConfigureColumn = ({ template, obj, columns }) => {
     }
   };
 
+  const columnsList = useMemo(() => {
+    const cols = (columns ?? []).map((col) => {
+      return {
+        value: col,
+        label: col === DEFAULT_COLUMN ? "<imported file>" : `$${col}`,
+      };
+    });
+    if (!columns?.length) {
+      cols.push({ value, label: "<imported file>" });
+    }
+    cols.push({ value: "-", label: "<set manually>" });
+    return cols;
+  }, [columns, DEFAULT_COLUMN, value]);
+
   return (
-    <p>
-      Use {obj.tagName.toLowerCase()}
-      {template.objects > 1 && ` for ${obj.getAttribute("name")}`}
-      {" from "}
-      {columns?.length > 0 && columns[0] !== DEFAULT_COLUMN && "field "}
-      <select className="border" onChange={selectValue} value={isManual ? "-" : value}>
-        {columns?.map((column) => (
-          <option key={column} value={column}>
-            {column === DEFAULT_COLUMN ? "<imported file>" : `$${column}`}
-          </option>
-        ))}
-        {!columns?.length && <option value={value}>{"<imported file>"}</option>}
-        <option value="-">{"<set manually>"}</option>
-      </select>
-      {isManual && <input value={newValue} onChange={handleChange} onBlur={handleBlur} onKeyDown={handleKeyDown} />}
-    </p>
+    <>
+      <Select
+        onChange={selectValue}
+        value={isManual ? "-" : value}
+        options={columnsList}
+        isInline={true}
+        label={
+          <>
+            Use {obj.tagName.toLowerCase()}
+            {template.objects > 1 && ` for ${obj.getAttribute("name")}`}
+            {" from "}
+            {columns?.length > 0 && columns[0] !== DEFAULT_COLUMN && "field "}
+          </>
+        }
+        labelProps={{ className: "inline-flex" }}
+        dataTestid={`select-trigger-use-image-from-field-${isManual ? "-" : value}`}
+      />
+      {isManual && <Input value={newValue} onChange={handleChange} onBlur={handleBlur} onKeyDown={handleKeyDown} />}
+    </>
   );
 };
 

@@ -38,7 +38,7 @@ export const DateTimeInput = observer(({ value, range, time, onChange }) => {
   }, [range, value]);
 
   return (
-    <DatePicker size="small" value={dateValue} selectRange={range} showTime={time === true} onChange={onValueChange} />
+    <DatePicker value={dateValue} selectRange={range} showTime={time === true} onChange={onValueChange} size="small" />
   );
 });
 

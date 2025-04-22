@@ -2,7 +2,7 @@ import { format, isMatch, isValid } from "date-fns";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { default as DP } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { BemWithSpecifiContext } from "../../../utils/bem";
+import { BemWithSpecifiContext, cn } from "../../../utils/bem";
 import { isDefined } from "../../../utils/utils";
 import { Dropdown } from "../Dropdown/Dropdown";
 import Input from "../Input/Input";
@@ -106,18 +106,21 @@ export const DatePicker = ({
         ref={dropdownRef}
         toggle={false}
         content={
-          <DP
-            {...dateRange}
-            ref={datepickerRef}
-            selected={realStartDate}
-            onChange={(date) => onChangeHandler(date)}
-            onSelect={(date) => onChangeHandler(date)}
-            monthsShown={2}
-            selectsRange={selectRange}
-            showTimeSelect={showTime}
-            inline
-          />
+          <div className={cn("datepicker").elem("wrapper")}>
+            <DP
+              {...dateRange}
+              ref={datepickerRef}
+              selected={realStartDate}
+              onChange={(date) => onChangeHandler(date)}
+              onSelect={(date) => onChangeHandler(date)}
+              monthsShown={2}
+              selectsRange={selectRange}
+              showTimeSelect={showTime}
+              inline
+            />
+          </div>
         }
+        style={{ backgroundColor: "transparent", borderRadius: "1em" }}
       >
         <Elem name="output" mod={{ range: selectRange }}>
           <Input

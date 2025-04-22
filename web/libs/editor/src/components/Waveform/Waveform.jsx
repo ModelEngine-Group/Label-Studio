@@ -7,14 +7,15 @@ import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js
 import WaveSurfer from "wavesurfer.js";
 import styles from "./Waveform.module.scss";
 import globalStyles from "../../styles/global.module.scss";
-import { Col, Row, Select, Slider } from "antd";
+import { Col, Row, Slider } from "antd";
 import { SoundOutlined } from "@ant-design/icons";
 import defaultMessages from "../../utils/messages";
 import { Hotkey } from "../../core/Hotkey";
-import { Tooltip } from "@humansignal/ui";
+import { Select, Tooltip } from "@humansignal/ui";
 
 const MIN_ZOOM_Y = 1;
 const MAX_ZOOM_Y = 50;
+const SPEEDS = ["0.5", "0.75", "1.0", "1.25", "1.5", "2.0"].map((v) => ({ value: +v, label: `Speed ${v}` }));
 
 /**
  * Use formatTimeCallback to style the notch labels as you wish, such
@@ -480,8 +481,6 @@ export default class Waveform extends React.Component {
   };
 
   render() {
-    const speeds = ["0.5", "0.75", "1.0", "1.25", "1.5", "2.0"];
-
     return (
       <div>
         <div id="wave" ref={this.setWaveformRef} className={styles.wave} />
@@ -567,13 +566,8 @@ export default class Waveform extends React.Component {
                   style={{ width: "100%" }}
                   defaultValue={this.state.speed}
                   onChange={this.onChangeSpeed}
-                >
-                  {speeds.map((speed) => (
-                    <Select.Option value={+speed} key={speed}>
-                      Speed {speed}
-                    </Select.Option>
-                  ))}
-                </Select>
+                  options={SPEEDS}
+                />
               )}
             </Col>
           </Row>

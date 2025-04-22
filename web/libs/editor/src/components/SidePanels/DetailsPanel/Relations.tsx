@@ -13,7 +13,7 @@ import { Button } from "../../../common/Button/Button";
 import { Block, Elem } from "../../../utils/bem";
 import { wrapArray } from "../../../utils/utilities";
 import { RegionItem } from "./RegionItem";
-import { Select } from "antd";
+import { Select } from "@humansignal/ui";
 import "./Relations.scss";
 
 const RealtionsComponent: FC<any> = ({ relationStore }) => {
@@ -143,7 +143,7 @@ const RelationMeta: FC<any> = observer(({ relation }) => {
   const { children, choice } = control;
 
   const selectionMode = useMemo(() => {
-    return choice === "multiple" ? "multiple" : undefined;
+    return choice === "multiple";
   }, [choice]);
 
   const onChange = useCallback(
@@ -154,22 +154,21 @@ const RelationMeta: FC<any> = observer(({ relation }) => {
     },
     [relation],
   );
+  const options = useMemo(
+    () => children.map((c: any) => ({ value: c.value, style: { background: c.background } })),
+    [children],
+  );
 
   return (
     <Block name="relation-meta">
       <Select
-        mode={selectionMode}
+        multiple={selectionMode}
         style={{ width: "100%" }}
         placeholder="Select labels"
         value={selectedValues}
         onChange={onChange}
-      >
-        {children.map((c: any) => (
-          <Select.Option key={c.value} value={c.value} style={{ background: c.background }}>
-            {c.value}
-          </Select.Option>
-        ))}
-      </Select>
+        options={options}
+      />
     </Block>
   );
 });

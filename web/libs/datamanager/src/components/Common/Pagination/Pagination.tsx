@@ -299,8 +299,8 @@ export const Pagination: FC<PaginationProps> = forwardRef<any, PaginationProps>(
               size={size}
               value={pageSize}
               options={pageSizeOptions.map((v) => ({ label: `${v} per page`, value: v }))}
-              onChange={(e: any) => {
-                const newPageSize = Number.parseInt(e.target.value);
+              onChange={(val: any) => {
+                const newPageSize = Number.parseInt(val);
 
                 setPageSize(newPageSize);
 
