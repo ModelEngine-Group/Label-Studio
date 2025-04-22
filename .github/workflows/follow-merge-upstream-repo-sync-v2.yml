@@ -16,6 +16,8 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ inputs.branch_name }}
   cancel-in-progress: true
+
+env:
   POETRY_VERSION: 2.1.2
 
 jobs:
