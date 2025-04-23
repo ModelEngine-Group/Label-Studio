@@ -100,6 +100,12 @@ def parse_input_args(input_args):
         action='store_true',
         help='Agree to fix SQLite issues on python 3.6-3.8 on Windows automatically',
     )
+    root_parser.add_argument(
+        '--enable-legacy-api-token',
+        dest='enable_legacy_api_token',
+        action='store_true',
+        help='Enable legacy API token authentication',
+    )
 
     parser = argparse.ArgumentParser(description='Label studio', parents=[root_parser])
 
