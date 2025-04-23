@@ -110,7 +110,13 @@ class ExportMixin:
             return queryset
 
         q = reduce(lambda x, y: x | y, q_list)
-        return queryset.filter(q)
+        annotations_qs = queryset.filter(q)
+
+        # prefetch reviews in LSE
+        if hasattr(annotations_qs.model, 'reviews'):
+            annotations_qs = annotations_qs.prefetch_related('reviews')
+
+        return annotations_qs
 
     @staticmethod
     def _get_export_serializer_option(serialization_options):
@@ -144,6 +150,7 @@ class ExportMixin:
 
     def get_task_queryset(self, ids, annotation_filter_options):
         annotations_qs = self._get_filtered_annotations_queryset(annotation_filter_options=annotation_filter_options)
+
         return (
             Task.objects.filter(id__in=ids)
             .prefetch_related(
@@ -152,7 +159,7 @@ class ExportMixin:
                     queryset=annotations_qs,
                 )
             )
-            .prefetch_related('predictions', 'drafts')
+            .prefetch_related('predictions', 'drafts', 'comment_authors', 'file_upload')
         )
 
     def get_export_data(self, task_filter_options=None, annotation_filter_options=None, serialization_options=None):
@@ -272,10 +279,10 @@ class ExportMixin:
             self.status = self.Status.COMPLETED
             self.save(update_fields=['status'])
 
-        except Exception:
+        except Exception as e:
             self.status = self.Status.FAILED
             self.save(update_fields=['status'])
-            logger.exception('Export was failed')
+            logger.exception('Export was failed: %s', e)
         finally:
             self.finished_at = datetime.now()
             self.save(update_fields=['finished_at'])
