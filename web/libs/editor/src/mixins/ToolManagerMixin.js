@@ -1,10 +1,15 @@
+import { ff } from "@humansignal/core";
 import { types } from "mobx-state-tree";
 import ToolsManager from "../tools/Manager";
 import * as Tools from "../tools";
+import { FF_DEV_3391 } from "../utils/feature-flags";
 
 export const ToolManagerMixin = types.model().actions((self) => {
   return {
     afterAttach() {
+      if (ff.isActive(FF_DEV_3391) && !self.annotation) {
+        return;
+      }
       const toolNames = self.toolNames ?? [];
       const manager = ToolsManager.getInstance({ name: self.toname });
       const env = { manager, control: self };

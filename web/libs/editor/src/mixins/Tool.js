@@ -1,5 +1,7 @@
+import { ff } from "@humansignal/core";
 import { getEnv, getRoot, types } from "mobx-state-tree";
 import { cloneNode } from "../core/Helpers";
+import { FF_DEV_3391 } from "../utils/feature-flags";
 import { AnnotationMixin } from "./AnnotationMixin";
 
 const ToolMixin = types
@@ -10,6 +12,13 @@ const ToolMixin = types
   })
   .views((self) => ({
     get obj() {
+      if (ff.isActive(FF_DEV_3391)) {
+        // It's a temporal solution (see root description)
+        const root = self.manager?.root;
+        if (root?.annotationStore.selected) {
+          return root.annotationStore.selected.names.get(self.manager?.name);
+        }
+      }
       return self.manager?.obj ?? getEnv(self).object;
     },
 
@@ -18,6 +27,16 @@ const ToolMixin = types
     },
 
     get control() {
+      if (ff.isActive(FF_DEV_3391)) {
+        // It's a temporal solution (see root description)
+        const control = getEnv(self).control;
+        const { name } = control;
+        const root = self.manager?.root;
+        if (root?.annotationStore.selected) {
+          return root.annotationStore.selected.names.get(name);
+        }
+        return control;
+      }
       return getEnv(self).control;
     },
 

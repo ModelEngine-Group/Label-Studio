@@ -221,7 +221,8 @@ function renderItem(ref: IAnyStateTreeNode, annotation: IAnnotation, includeKey 
   if (isFF(FF_DEV_3391)) {
     if (!annotation) return null;
 
-    el = annotation.ids.get(cleanUpId(ref.id ?? ref.name));
+    // The part `|| el` is a hack to allow it to work with Image regions. For some reason, it uses this function for rendering
+    el = annotation.ids.get(cleanUpId(ref.id ?? ref.name)) || el;
   }
 
   if (!el) {

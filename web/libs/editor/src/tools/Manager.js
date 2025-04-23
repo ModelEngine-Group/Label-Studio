@@ -42,6 +42,19 @@ class ToolsManager {
   get preservedTool() {
     return window.localStorage.getItem(`selected-tool:${this.name}`);
   }
+  /**
+    There are some problems with working with ToolManager with interactive view all flag switched on.
+    For now, tool manager is hidden in view_all,
+    so it allows us to use root and selected annotation
+    while we are looking for the object or the control from the tool.
+    At the same time, we can use `annotation_id`
+    as an additional key to be able to get the right annotation in that view_all mode.
+    But in that case,
+    there will be a problem with the inconsistent state of tool manager for 2 different annotations in the context of the same task.
+    */
+  get root() {
+    return root;
+  }
 
   get obj() {
     return root.annotationStore.names.get(this.name);
