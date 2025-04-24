@@ -5,7 +5,12 @@ import * as xpath from "xpath-range";
 import { inject, observer } from "mobx-react";
 import { STATE_CLASS_MODS } from "../../../mixins/HighlightMixin";
 import Utils from "../../../utils";
-import { fixCodePointsInRange, rangeToGlobalOffset } from "../../../utils/selection-tools";
+import {
+  applyTextGranularity,
+  fixCodePointsInRange,
+  rangeToGlobalOffset,
+  trimSelection,
+} from "../../../utils/selection-tools";
 import "./RichText.scss";
 import { isAlive } from "mobx-state-tree";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -78,6 +83,7 @@ class RichTextPieceView extends Component {
   /**
    * Adjust selection style to mimic region's style but with a lighter color; this is done by creating a style tag.
    * Region style is also adjusted to be lighter so the combination of two will look like original selected region.
+   * Also sets cursor to "resize" for all document during resize.
    * @param {*} region to mimic
    * @param {Document} doc document to apply style to
    */
@@ -91,7 +97,11 @@ class RichTextPieceView extends Component {
       doc.head.appendChild(this.selectionStyle);
     }
 
-    this.selectionStyle.innerText = `::selection {${rules.join(" ")}}`;
+    this.selectionStyle.innerText = [
+      `::selection {${rules.join(" ")}}`, // set selection style to mimic region
+      `::-moz-selection {${rules.join(" ")}}`, // the same for Firefox
+      "body * { cursor: col-resize !important; }", // set cursor for all elements
+    ].join("\n");
     this.props.item.setStyles?.({ [region.identifier]: region.resizeStyles });
   };
 
@@ -177,37 +187,53 @@ class RichTextPieceView extends Component {
     if (item.initializedDrag) {
       const area = this.draggableRegion;
       const selection = window.getSelection();
-      const range = selection.getRangeAt(0);
 
       // don't collapse region into nothing
       if (selection.isCollapsed) return false;
+      if (!area) return false;
 
-      // so no visual glitches on the screen, selection was just a helper here, we don't need it anymore
-      selection.removeAllRanges();
+      let range = selection.getRangeAt(0);
 
       // @todo would be more convenient to try to reduce the range to be within the root,
       // @todo so for example if we drag to the left and the range is outside of the root, we would
       // @todo just reduce it to the left edge of the root,
       // @todo but that would be a bit more complicated, so let's just check if the range is within the root for now.
-      if (!root.contains(range.startContainer) || !root.contains(range.endContainer)) return false;
-      if (!area) return false;
+      if (!root.contains(range.startContainer) || !root.contains(range.endContainer)) {
+        selection.removeAllRanges();
+        return false;
+      }
+
+      // remove handles to not mess with ranges and selection
+      area.detachHandles();
+
+      // we need this to properly apply the granularity; it fixes selection to point only to text nodes
+      if (item.granularity !== "symbol") {
+        trimSelection(selection);
+      }
+
+      // update range to respect granularity
+      applyTextGranularity(selection, item.granularity);
+      range = selection.getRangeAt(0);
+
+      // so no visual glitches on the screen, selection was just a helper here, we don't need it anymore
+      selection.removeAllRanges();
 
       area._range = range;
 
       // we have to calculate offsets before we remove spans, because it will break the range
       const [soff, eoff] = rangeToGlobalOffset(range, root);
 
-      // clear visuals and remove spans before updating internals
-      area.detachHandles();
+      // remove all spans to recreate them later
       area.removeHighlight();
 
       // we update multiple props of the region here, so easier to just freeze the history during these updates
       item.annotation.history.freeze("richtext:resize");
 
       area.updateGlobalOffsets(soff, eoff);
-      if (range.isText) {
+      if (item.type === "text") {
         area.updateTextOffsets(soff, eoff);
       } else {
+        // @todo right now resizing works only for text regions, this `else` branch is for the future
         area.updateXPathsFromGlobalOffsets();
       }
 
@@ -221,10 +247,6 @@ class RichTextPieceView extends Component {
       item.annotation.history.unfreeze("richtext:resize");
 
       return true;
-    }
-
-    if (this.draggableRegion) {
-      this._resetDragParams();
     }
 
     return false;
@@ -266,6 +288,10 @@ class RichTextPieceView extends Component {
     const root = rootEl?.contentDocument?.body ?? rootEl;
 
     this._checkDragAndAdjustRegion(root);
+
+    if (this.draggableRegion) {
+      this._resetDragParams();
+    }
   };
 
   _onMouseUp = (ev) => {
