@@ -1,6 +1,6 @@
 {
-  "message": "fix: LEAP-1947: Fix interactive view all FF in image tag case (#7387)",
-  "commit": "98dfd898c23e94a2f094df3798ad233ba8a83a91",
-  "date": "2025-04-23T16:14:37.000Z",
+  "message": "fix: LEAP-2009: Respect granularity when resizing NER spans (#7364)",
+  "commit": "f9cdff24ff81e24c6515c4d14fba1bda4d04932a",
+  "date": "2025-04-24T09:12:12.000Z",
   "branch": "develop"
 }
