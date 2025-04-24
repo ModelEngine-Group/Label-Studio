@@ -239,7 +239,8 @@ export const Frames: FC<TimelineViewProps> = ({
       let baseFrame = toSteps(offset, step) + 1;
       let isInstant = false;
 
-      setIndicatorOffset(offset);
+      // don't scroll if we select region clicking on keyframes, outside of scrollable area
+      if (onKeyframes) setIndicatorOffset(offset);
 
       if (isDrawing) {
         // always a timeline region

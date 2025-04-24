@@ -84,6 +84,12 @@ const Model = types
      * @property {string[]} [value.timelinelabels] Regions are created by `TimelineLabels`, and the corresponding label is listed here.
      */
 
+    onSelectInOutliner() {
+      // skip video to the first frame of this region
+      // @todo hidden/disabled timespans?
+      self.object.setFrame(self.ranges[0].start);
+    },
+
     /**
      * @return {TimelineRegionResult}
      */
