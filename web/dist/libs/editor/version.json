@@ -1,6 +1,6 @@
 {
-  "message": "fix: LEAP-2009: Respect granularity when resizing NER spans (#7364)",
-  "commit": "f9cdff24ff81e24c6515c4d14fba1bda4d04932a",
-  "date": "2025-04-24T09:12:12.000Z",
+  "message": "fix: LEAP-1442: Fix unexpected scrolling on region select in Video (#7392)",
+  "commit": "a154f88092bb133a26e09c6d202b2c4ae6c5c3e6",
+  "date": "2025-04-24T10:03:07.000Z",
   "branch": "develop"
 }
