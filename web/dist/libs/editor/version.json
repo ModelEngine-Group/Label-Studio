@@ -1,6 +1,6 @@
 {
-  "message": "fix: LEAP-1983: [FE] Conditional View Visibility Fails When Based on a Choice Selected Within a Taxonomy Tag (#7373)",
-  "commit": "ddc1d46145451da3e57a1bf905e92a6c174df98a",
-  "date": "2025-04-25T16:06:33.000Z",
+  "message": "fix: LEAP-2051: Don't allow to resize spans in readonly mode (#7422)",
+  "commit": "b45567246037545e55d132efb8294b86e99e4582",
+  "date": "2025-04-25T16:34:33.000Z",
   "branch": "develop"
 }
