@@ -3890,6 +3890,33 @@
       "version": 5,
       "deleted": false
     },
+    "fflag_fix_leap_2052_detect_empty_filters_at_next_task_endpoint_short": {
+      "key": "fflag_fix_leap_2052_detect_empty_filters_at_next_task_endpoint_short",
+      "on": false,
+      "prerequisites": [],
+      "targets": [],
+      "contextTargets": [],
+      "rules": [],
+      "fallthrough": {
+        "variation": 1
+      },
+      "offVariation": 1,
+      "variations": [
+        true,
+        false
+      ],
+      "clientSideAvailability": {
+        "usingMobileKey": false,
+        "usingEnvironmentId": false
+      },
+      "clientSide": false,
+      "salt": "42b74824c185432fb0f4d76c2595480b",
+      "trackEvents": false,
+      "trackEventsFallthrough": false,
+      "debugEventsUntilDate": null,
+      "version": 2,
+      "deleted": false
+    },
     "fflag_fix_leap_246_multi_object_hotkeys_160124_short": {
       "key": "fflag_fix_leap_246_multi_object_hotkeys_160124_short",
       "on": true,
