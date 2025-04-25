@@ -1,6 +1,6 @@
 {
-  "message": "fix: LEAP-1442: Fix unexpected scrolling on region select in Video (#7392)",
-  "commit": "a154f88092bb133a26e09c6d202b2c4ae6c5c3e6",
-  "date": "2025-04-24T10:03:07.000Z",
+  "message": "chore(deps): Remove incorrect dependency on tailwind (#7425)",
+  "commit": "6173d7c48a49a5b2404dca1b5b2453d8ce73e6ac",
+  "date": "2025-04-25T15:02:32.000Z",
   "branch": "develop"
 }
