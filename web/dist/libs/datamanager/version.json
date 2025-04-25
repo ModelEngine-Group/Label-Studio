@@ -1,6 +1,6 @@
 {
-  "message": "chore(deps): Remove incorrect dependency on tailwind (#7425)",
-  "commit": "6173d7c48a49a5b2404dca1b5b2453d8ce73e6ac",
-  "date": "2025-04-25T15:02:32.000Z",
+  "message": "fix: LEAP-1983: [FE] Conditional View Visibility Fails When Based on a Choice Selected Within a Taxonomy Tag (#7373)",
+  "commit": "ddc1d46145451da3e57a1bf905e92a6c174df98a",
+  "date": "2025-04-25T16:06:33.000Z",
   "branch": "develop"
 }
