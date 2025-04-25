@@ -1,22 +1,24 @@
-import React, { Component } from "react";
-import { htmlEscape, matchesSelector } from "../../../utils/html";
-import ObjectTag from "../../../components/Tags/Object";
-import * as xpath from "xpath-range";
+import { LoadingOutlined } from "@ant-design/icons";
+import * as ff from "@humansignal/core/lib/utils/feature-flags/ff";
+import { observe } from "mobx";
 import { inject, observer } from "mobx-react";
+import { isAlive } from "mobx-state-tree";
+import React, { Component } from "react";
+import * as xpath from "xpath-range";
+
+import ObjectTag from "../../../components/Tags/Object";
 import { STATE_CLASS_MODS } from "../../../mixins/HighlightMixin";
 import Utils from "../../../utils";
+import { Block, cn, Elem } from "../../../utils/bem";
+import { htmlEscape, matchesSelector } from "../../../utils/html";
 import {
   applyTextGranularity,
   fixCodePointsInRange,
   rangeToGlobalOffset,
   trimSelection,
 } from "../../../utils/selection-tools";
-import "./RichText.scss";
-import { isAlive } from "mobx-state-tree";
-import { LoadingOutlined } from "@ant-design/icons";
-import { Block, cn, Elem } from "../../../utils/bem";
-import { observe } from "mobx";
 import { isDefined } from "../../../utils/utilities";
+import "./RichText.scss";
 
 const DBLCLICK_TIMEOUT = 450; // ms
 const DBLCLICK_RANGE = 5; // px
@@ -560,7 +562,7 @@ class RichTextPieceView extends Component {
           <Elem
             key="root"
             name="container"
-            mod={{ canResizeSpans: item.canResizeSpans }}
+            mod={{ canResizeSpans: ff.isActive(ff.FF_ADJUSTABLE_SPANS) }}
             ref={(el) => {
               item.mountNodeRef.current = el;
               el && this.markObjectAsLoaded();

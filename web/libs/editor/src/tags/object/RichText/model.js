@@ -1,24 +1,24 @@
+import * as ff from "@humansignal/core/lib/utils/feature-flags/ff";
 import { destroy as destroyNode, flow, types } from "mobx-state-tree";
 import { createRef } from "react";
-import * as ff from "@humansignal/core/lib/utils/feature-flags/ff";
+import Constants from "../../../core/Constants";
 import { customTypes } from "../../../core/CustomTypes";
 import { errorBuilder } from "../../../core/DataValidator/ConfigValidator";
+import { cloneNode } from "../../../core/Helpers";
 import { AnnotationMixin } from "../../../mixins/AnnotationMixin";
+import { STATE_CLASS_MODS } from "../../../mixins/HighlightMixin";
 import IsReadyMixin from "../../../mixins/IsReadyMixin";
 import ProcessAttrsMixin from "../../../mixins/ProcessAttrs";
 import RegionsMixin from "../../../mixins/Regions";
 import Utils from "../../../utils";
 import { parseValue } from "../../../utils/data";
+import { FF_SAFE_TEXT, isFF } from "../../../utils/feature-flags";
 import { sanitizeHtml } from "../../../utils/html";
 import messages from "../../../utils/messages";
 import { rangeToGlobalOffset } from "../../../utils/selection-tools";
 import { escapeHtml, isValidObjectURL } from "../../../utils/utilities";
 import ObjectBase from "../Base";
-import { cloneNode } from "../../../core/Helpers";
-import { FF_SAFE_TEXT, isFF } from "../../../utils/feature-flags";
 import DomManager from "./domManager";
-import { STATE_CLASS_MODS } from "../../../mixins/HighlightMixin";
-import Constants from "../../../core/Constants";
 
 const WARNING_MESSAGES = {
   dataTypeMistmatch: () => "Do not put text directly in task data if you use valueType=url.",
@@ -83,7 +83,7 @@ const Model = types
   })
   .views((self) => ({
     get canResizeSpans() {
-      return ff.isActive(ff.FF_ADJUSTABLE_SPANS) && self.type === "text";
+      return ff.isActive(ff.FF_ADJUSTABLE_SPANS) && self.type === "text" && !self.isReadOnly();
     },
     get hasStates() {
       const states = self.states();
