@@ -65,7 +65,7 @@ export type SelectProps<T, A extends SelectOption<T>[]> = {
   disabled?: boolean;
   triggerProps?: any;
   isInline?: boolean;
-  isInProgress?: boolean;
+  isLoading?: boolean;
   dataTestid?: string;
   size?: "small" | "medium" | "large";
   onSearch?: (value: string) => void;

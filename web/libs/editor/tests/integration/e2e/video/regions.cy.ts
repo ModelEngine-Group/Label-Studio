@@ -24,6 +24,7 @@ describe("Video segmentation", () => {
     Labels.select("Label 2");
     VideoView.drawRectRelative(0.2, 0.2, 0.6, 0.6);
     Sidebar.hasRegions(1);
+    cy.wait(500);
     VideoView.canvasShouldChange("canvas", 0);
   });
 
@@ -35,6 +36,7 @@ describe("Video segmentation", () => {
       VideoView.captureCanvas("canvas");
 
       VideoView.clickAtFrame(4);
+      cy.wait(500);
       VideoView.canvasShouldChange("canvas", 0);
     });
   });
@@ -55,6 +57,7 @@ describe("Video segmentation", () => {
       Sidebar.hasSelectedRegions(1);
       VideoView.clickAtFrame(4);
       Sidebar.hasSelectedRegions(1);
+      cy.wait(500);
       VideoView.canvasShouldNotChange("canvas", 0);
     });
   });

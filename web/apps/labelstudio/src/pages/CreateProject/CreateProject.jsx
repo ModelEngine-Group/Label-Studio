@@ -57,7 +57,7 @@ const ProjectName = ({ name, setName, onSaveName, onSubmit, error, description, 
           </label>
           <Select placeholder="Select an option" disabled options={[]} />
           <Caption>
-            Simplify project management by organizing projects into workspaces.
+            Simplify project management by organizing projects into workspaces.{" "}
             <a
               href={createURL(
                 "https://docs.humansignal.com/guide/manage_projects#Create-workspaces-to-organize-projects",

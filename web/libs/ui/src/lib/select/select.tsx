@@ -67,6 +67,7 @@ export const Select = forwardRef(
       } else if (!multiple && Array.isArray(val)) {
         val = val[0];
       }
+      valueRef.current = val;
       setValue(val);
     }, [externalValue, multiple]);
 
@@ -141,6 +142,12 @@ export const Select = forwardRef(
       [setQuery, onSearch],
     );
 
+    useEffect(() => {
+      if (selectedOptions.length > 0 || !isDefined(defaultValue)) return;
+      valueRef.current = defaultValue;
+      setValue(defaultValue);
+    }, [selectedOptions, defaultValue]);
+
     const combobox = (
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild={true} disabled={disabled}>
@@ -210,6 +217,7 @@ export const Select = forwardRef(
                   placeholder={searchPlaceholder ?? "Search"}
                   onChangeCapture={onSearchInputHandler}
                   data-testid="select-search-field"
+                  autoFocus
                 />
               )}
               <CommandList
@@ -370,11 +378,8 @@ const Option = ({
         [
           "rounded-4",
           "text-neutral-content-subtle",
-          "[&_[cmdk-group-heading]]:text-muted-foreground",
           "overflow-hidden",
           "p-1",
-          "[&_[cmdk-group-heading]]:text-xs",
-          "[&_[cmdk-group-heading]]:font-medium",
           "outline-none",
           "group",
           "duration-150 ease-out",
