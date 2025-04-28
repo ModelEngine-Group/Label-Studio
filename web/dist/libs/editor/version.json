@@ -1,6 +1,6 @@
 {
-  "message": "feat: LEAP-2042: [FE] Implement agreement popover component showing agreement between annotators as list (#7430)",
-  "commit": "25e99ba6cc07c6993d6d7f365b42a253cc4a28ee",
-  "date": "2025-04-28T10:37:39.000Z",
+  "message": "fix: OPTIC-2017: Select follow ups (#7415)",
+  "commit": "1fdeabc98a78c9d76f72bba98f0acf887810bf20",
+  "date": "2025-04-28T13:04:06.000Z",
   "branch": "develop"
 }
