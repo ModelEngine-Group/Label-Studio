@@ -1,6 +1,6 @@
 {
-  "message": "fix: LEAP-2051: Don't allow to resize spans in readonly mode (#7422)",
-  "commit": "b45567246037545e55d132efb8294b86e99e4582",
-  "date": "2025-04-25T16:34:33.000Z",
+  "message": "feat: LEAP-2042: [FE] Implement agreement popover component showing agreement between annotators as list (#7430)",
+  "commit": "25e99ba6cc07c6993d6d7f365b42a253cc4a28ee",
+  "date": "2025-04-28T10:37:39.000Z",
   "branch": "develop"
 }
