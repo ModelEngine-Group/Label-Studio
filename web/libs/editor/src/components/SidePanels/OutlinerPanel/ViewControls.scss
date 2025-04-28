@@ -9,7 +9,7 @@
   grid-auto-flow: column;
   grid-auto-columns: min-content;
   grid-column-gap: 4px;
-  background-color: var(--sand_0);
+  background-color: var(--color-neutral-background);
   box-shadow: 0 1px 0 rgb(0 0 0 / 10%);
 
 
@@ -22,7 +22,7 @@
     width: 100%;
     display: flex;
     align-items: center;
-    gap: var(--spacing-small, 8px);
+    gap: var(--spacing-tight);
 
     span {
       display: flex;
@@ -44,7 +44,7 @@
     justify-content: flex-start;
     white-space: nowrap;
     box-shadow: none;
-    gap: var(--spacing-small-x, 4px);
+    gap: var(--spacing-tighter);
 
     &_newUI {
       font-size: 12px;
@@ -64,13 +64,13 @@
     }
 
     &:hover {
-      background: var(--sand_200);
+      background: var(--color-primary-emphasis-subtle);
       border-radius: 4px;
     }
 
     &[disabled] {
-      background-color: var(--sand_0);
-      color: var(--sand_400);
+      background-color: var(--color-neutral-background);
+      color: var(--color-neutral-content-subtlest);
     }
 
     &_type_text {

@@ -1,7 +1,7 @@
 .badge {
   display: inline-block;
   border-radius: 4px;
-  background: linear-gradient(135deg, #FFA663 0%, #FF7557 51.56%, #E37BD3 100%);
+  background: linear-gradient(135deg, var(--color-accent-cantaloupe-base) 0%, var(--color-accent-persimmon-base) 51.56%, var(--color-accent-plum-base) 100%);
   vertical-align: middle;
   height: 20px;
 }
@@ -9,20 +9,20 @@
 .filled {
   .label {
     background: none;
-    color: var(--persimmon_0);
+    color: var(--color-accent-persimmon-base);
   }
 
   .icon {
     path {
-      fill: var(--persimmon_0);
+      fill: var(--color-accent-persimmon-base);
     }
   }
 }
 
 .label {
   margin: 1px;
-  background: var(--persimmon_0);
-  color: var(--persimmon_400);
+  background: var(--color-accent-persimmon-subtlest);
+  color: var(--color-accent-persimmon-base);
   border-radius: 3px;
   font-size: 11px;
   padding: 2px 5px 2px 3px;

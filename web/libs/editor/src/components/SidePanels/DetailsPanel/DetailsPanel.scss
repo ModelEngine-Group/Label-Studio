@@ -3,7 +3,7 @@
 .relations,
 .info,
 .comments-panel {
-  --details-section-border-color: var(--sand_300);
+  --details-section-border-color: var(--color-neutral-border);
 
   width: 100%;
 
@@ -17,11 +17,11 @@
   }
 
   &__section {
-    border-top: 1px solid var(--sand_300);
+    border-top: 1px solid var(--color-neutral-border);
     width: 100%;
 
     &:last-child {
-      border-bottom: 1px solid var(--sand_300);
+      border-bottom: 1px solid var(--color-neutral-border);
     }
 
     &-head {
@@ -34,7 +34,7 @@
       justify-content: space-between;
 
       span {
-        color: var(--sand_600);
+        color: var(--color-neutral-content-subtler);
         font-weight: normal;
       }
     }
@@ -49,7 +49,6 @@
   justify-content: space-between;
   position: sticky;
   bottom: 0;
-  background: white;
 
   &__group {
     display: grid;
@@ -76,9 +75,9 @@
   }
 }
 
-.history {
+.history, .info {
   &__section-tab {
-    padding: 8px;
+    padding: 4px;
   }
 }
 

@@ -109,3 +109,91 @@
 .react-dropdown-tree-select .node.disabled > label > input {
   opacity: 0;
 }
+
+[data-color-scheme="dark"] input[type="number"] {
+  color-scheme: dark;
+}
+
+.number input {
+  background-color: var(--color-neutral-background);
+  border: 1px solid var(--color-neutral-border);
+  color: var(--color-neutral-content);
+  border-radius: var(--corner-radius-small);
+  padding: var(--spacing-tight) var(--spacing-base);
+  transition: all 150ms ease-out;
+
+  &[type="number"]:hover {
+    border-color: var(--color-neutral-border-bold);
+  }
+
+  &[type="number"]:focus {
+    box-shadow: 0 0 0 4px var(--color-primary-focus-outline);
+    border-color: var(--color-neutral-border-bold);
+    outline: none;
+  }
+
+  &[type="range"] {
+    accent-color: var(--color-primary-surface);
+  }
+
+  &[type="range"]:hover {
+    accent-color: var(--color-primary-surface-hover);
+  }
+  
+  /* Removes default focus */
+  &[type="range"]:focus {
+    outline: none;
+  }
+  
+  // /* slider thumb */
+  &[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    margin-top: 0;
+    transition: all 150ms ease-out;
+    border-radius: 50%;
+  }
+  
+  &[type="range"]:hover::-webkit-slider-thumb {
+    background-color: var(--color-primary-surface-hover);
+  }
+  
+  &[type="range"]:focus::-webkit-slider-thumb {
+    background-color: var(--color-primary-surface-hover);
+    outline: 4px solid var(--color-primary-focus-outline);
+    border: 1px solid var(--color-primary-border-bold);
+  }
+}
+
+:global(.htx-datetime) {
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-base);
+  padding: 0 var(--spacing-tight);
+}
+
+:global(.htx-datetime input) {
+  background-color: var(--color-neutral-background);
+  border: 1px solid var(--color-neutral-border);
+  color: var(--color-neutral-content);
+  border-radius: var(--corner-radius-small);
+  padding: var(--spacing-tighter) var(--spacing-tight) var(--spacing-tighter) var(--spacing-base);
+  transition: all 150ms ease-out;
+}
+
+:global(.htx-datetime input:hover) {
+  border: 1px solid var(--color-neutral-border-bold);
+}
+
+:global(.htx-datetime input:focus) {
+  border: 1px solid var(--color-neutral-border-bold);
+  box-shadow: 0 0 0 4px var(--color-primary-focus-outline);
+  outline: none;
+}
+
+:global(.htx-datetime input::-webkit-calendar-picker-indicator) {
+  opacity: 0.5;
+}
+
+:global([data-color-scheme="dark"] .htx-datetime input[type="time"]) {
+  color-scheme: dark;
+}

@@ -69,6 +69,7 @@ export type SelectProps<T, A extends SelectOption<T>[]> = {
   dataTestid?: string;
   size?: "small" | "medium" | "large";
   onSearch?: (value: string) => void;
+  selectFirstIfEmpty?: boolean;
 } & SelectVirtualizedProps &
   Omit<React.SelectHTMLAttributes<HTMLSelectElement>, "value" | "placeholder">;
 

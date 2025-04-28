@@ -13,7 +13,7 @@
     height: 1px;
     position: relative;
     margin: 14px 0;
-    background-color: var(--sand_200);
+    background-color: var(--color-neutral-border);
 
     &::before {
       top: 0;
@@ -24,7 +24,7 @@
       position: absolute;
       content: attr(title);
       transform: translateY(-50%);
-      background-color: var(--sand_0);
+      background-color: var(--color-neutral-background);
     }
   }
 }
@@ -36,7 +36,7 @@
   border-radius: 5px;
 
   &__date {
-    color: var(--sand_700);
+    color: var(--color-neutral-content-subtler);
   }
 
   &:not(&_disabled) {
@@ -44,12 +44,13 @@
   }
 
   &:hover:not(.history-item_disabled) {
-    background-color: var(--sand_100);
+    background-color: var(--color-neutral-surface);
   }
 
   &_selected:not(.history-item_disabled),
   &_selected:hover:not(.history-item_disabled) {
-    background-color: var(--sand_200);
+    background-color: var(--color-primary-emphasis);
+    color: var(--color-neutral-content);
   }
 
   &__name,
@@ -66,7 +67,8 @@
   &_disabled {
     opacity: 0.6;
     border-radius: 5px;
-    background-color: var(--sand_200);
+    background-color: var(--color-neutral-surface);
+    cursor: not-allowed;
   }
 
   &__userpic {
@@ -74,8 +76,8 @@
     height: 24px;
 
     &_prediction {
-      color: var(--plum_500);
-      background-color: var(--plum_100);
+      color: var(--color-accent-plum-bold);
+      background-color: var(--color-accent-plum-subtlest);
       box-shadow: inset 0 0 0 1px rgb(148 75 255 / 15%);
     }
   }

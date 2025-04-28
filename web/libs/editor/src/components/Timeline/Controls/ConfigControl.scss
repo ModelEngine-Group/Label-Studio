@@ -6,10 +6,10 @@
     top: 36px;
     position: absolute;
     width: 260px;
-    background: var(--sand_0);
+    background: var(--color-neutral-background);
+    box-shadow: 0 4px 10px 0 rgba(var(--color-neutral-shadow-raw) / 30%);
     border-radius: 4px;
     padding: 12px 0 0;
-    box-shadow: 0 4px 10px 0 var(--sand_300);
     z-index: 10;
   }
 
@@ -27,7 +27,7 @@
   &__buttons {
     margin-top: 10px;
     padding: 2px 0;
-    border-top: 1px solid var(--sand_200);
+    border-top: 1px solid var(--color-neutral-border);
     font-size: 14px;
     cursor: pointer;
   }
@@ -35,9 +35,11 @@
   &__menu-button {
     padding: 8px 16px;
     cursor: pointer;
+    transition: all 150ms ease-out;
+    color: var(--color-neutral-content-subtle);
 
     &:hover {
-      background: var(--sand_200);
+      background: var(--color-primary-emphasis-subtle);
     }
   }
 }

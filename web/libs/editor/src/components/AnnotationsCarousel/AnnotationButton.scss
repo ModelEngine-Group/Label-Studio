@@ -1,17 +1,20 @@
 .annotation-button {
   display: flex;
   padding: 4px 8px;
-  border-radius: 4px 4px 0 0;
+  border-radius: var(--corner-radius-small) var(--corner-radius-small) 0 0;
   border-width: 1px 1px 0;
   border-style: solid;
-  background-color: var(--sand_200);
-  border-color: transparent;
+  background-color: var(--color-neutral-surface);
   margin-top: 2px;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
   cursor: pointer;
   height: calc(100% - 3px);
   min-width: 186px;
+  border-color: var(--color-neutral-border);
+  transition-property: background-color, border-color;
+  transition-duration: 150ms;
+  transition-timing-function: ease-out;
 
   &__user {
     line-height: 16px;
@@ -29,8 +32,8 @@
     flex: 1 0 auto;
 
     & .annotation-button__userpic_prediction {
-      background-color: var(--plum_100);
-      color: var(--plum_500);
+      background-color: var(--color-accent-plum-subtle);
+      color: var(--color-accent-plum-bold);
     }
   }
 
@@ -40,7 +43,7 @@
     line-height: 16px;
     letter-spacing: 0.4px;
     text-align: left;
-    color: var(--sand_700);
+    color: var(--color-neutral-content);
   }
 
   &__entity-id {
@@ -49,7 +52,7 @@
     line-height: 16px;
     letter-spacing: 0.4px;
     text-align: left;
-    color: var(--sand_700);
+    color: var(--color-neutral-content-subtler);
     margin-left: 8px;
   }
 
@@ -59,20 +62,20 @@
     line-height: 16px;
     letter-spacing: 0.4px;
     text-align: left;
-    color: var(--sand_700);
+    color: var(--color-neutral-content-subtler);
   }
 
   &:hover {
-    background-color: var(--grape_0);
-    border-color: var(--grape_100);
+    background-color: var(--color-primary-emphasis-subtle);
+    border-color: var(--color-primary-border-subtler);
     border-bottom-color: transparent;
 
     & .annotation-button__name {
-      color: var(--sand_900);
+      color: var(--color-neutral-content);
     }
 
     & .annotation-button__created {
-      color: var(--sand_900);
+      color: var(--color-neutral-content);
     }
 
     & .annotation-button__trigger {
@@ -81,14 +84,16 @@
   }
 
   &_selected {
-    background-color: var(--sand_0);
-    border-color: var(--sand_300);
+    background-color: var(--color-neutral-background);
+    border-color: var(--color-neutral-border);
     transform: translate(0, 1px);
+    margin-top: 1px;
+    height: calc(100% - 2px);
 
     &:hover {
-      background-color: var(--sand_0);
-      border-color: var(--sand_300);
-      border-bottom-color: transparent;
+      cursor: default;
+      background-color: var(--color-neutral-background);
+      border-color: var(--color-neutral-border);
     }
 
     & .annotation-button__trigger {
@@ -96,11 +101,11 @@
     }
 
     & .annotation-button__created {
-      color: var(--sand_900);
+      color: var(--color-neutral-content);
     }
 
     & .annotation-button__name {
-      color: var(--sand_900);
+      color: var(--color-neutral-content);
     }
   }
 
@@ -120,12 +125,15 @@
   }
 
   &__trigger {
+    --trigger-border-color: transparent;
+
     transform: rotate(90deg);
     display: flex;
     border-radius: 4px;
-    color: var(--sand_700);
+    color: var(--color-neutral-content-subtler);
     visibility: hidden;
-    padding: var(--spacing-small-x, 4px);
+    padding: var(--spacing-tighter);
+    border: 1px solid var(--trigger-border-color);
 
     svg {
       width: 20px;
@@ -135,8 +143,10 @@
     }
 
     &:hover {
-      color: var(--grape_500);
-      background: var(--grape_0);
+      cursor: pointer;
+      color: var(--color-neutral-content);
+      background: var(--color-primary-emphasis-subtle);
+      border-color: var(--color-primary-border-subtle);
     }
   }
 
@@ -149,8 +159,8 @@
     top: 15px;
     left: calc(50% + 5px);
     border-radius: 4px;
-    color: var(--sand_0);
-    border: 2px solid var(--sand_300);
+    color: var(--color-neutral-background);
+    border: 2px solid var(--color-neutral-border);
     display: flex;
     width: 10px;
     height: 10px;
@@ -159,15 +169,15 @@
     justify-content: center;
 
     &_approved {
-      background-color: var(--success_color);
+      background-color: var(--color-positive-content);
     }
 
     &_skipped {
-      background-color: var(--danger_color);
+      background-color: var(--color-negative-content);
     }
 
     &_updated {
-      background-color: var(--grape_500);
+      background-color: var(--color-primary-content);
 
       svg {
         display: block;

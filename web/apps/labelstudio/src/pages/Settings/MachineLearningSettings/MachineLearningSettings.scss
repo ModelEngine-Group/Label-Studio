@@ -23,8 +23,9 @@
     overflow-y: scroll;
     padding: 10px;
     border-radius: 4px;
-    background: var(--sand_0);
-    border: 1px solid var(--sand_300); 
+    background: var(--color-neutral-surface);
+    border: 1px solid var(--color-neutral-border);
+    color: var(--color-neutral-content);
 
     pre {
       white-space: pre-wrap;
@@ -69,7 +70,7 @@
     align-items: center;
     margin-right: 10px;
     font-size: 12px;
-    border: 1px solid var(--sand_300);
+    border: 1px solid var(--color-neutral-border);
     padding: 3px 6px;
     border-radius: 10px;
     max-width: 100px;
@@ -88,20 +89,20 @@
     background-color: var(--indicator-color);
 
     &_state_CO {
-      --indicator-color: var(--success_color);
+      --indicator-color: var(--color-positive-surface);
     }
 
     &_state_DI {
-      --indicator-color: var(--canteloupe_400);
+      --indicator-color: var(--color-warning-surface);
     }
 
     &_state_ER {
-      --indicator-color: var(--danger_color);
+      --indicator-color: var(--color-negative-surface);
     }
 
     &_state_TR,
     &_state_PR {
-      --indicator-color: var(--grape_500);
+      --indicator-color: var(--color-primary-surface);
 
       position: relative;
 

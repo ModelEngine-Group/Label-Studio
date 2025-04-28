@@ -9,25 +9,29 @@
   }
 
   &__footer {
-    margin: 0 -32px -32px;
-    padding: 32px 40px;
+    margin: 0 -40px -32px;
+    padding: 24px 32px;
     position: sticky;
     bottom: -40px;
-    background-color: var(--sand_0);
-    border-radius: 5px;
+    background-color: var(--color-neutral-surface-active);
+    border-top: 1px solid var(--color-neutral-border);
   }
 }
 
 .formats {
-  color: var(--sand_700);
+  color: var(--color-neutral-content-subtler);
   font-size: 16px;
+  padding-bottom: var(--spacing-base);
 
   &__list {
     margin: 10px -7px;
+    display: flex;
+    flex-flow: row wrap;
+    gap: var(--spacing-tight);
   }
 
   & a {
-    color: var(--primary_link);
+    color: var(--color-primary-content);
     text-decoration: underline;
   }
 
@@ -36,6 +40,10 @@
     border-radius: 4px;
     position: relative;
     pointer-events: none;
+    color: var(--color-neutral-content);
+    transition: all 150ms ease-out;
+    border: 1px solid transparent;
+    width: 100%;
 
     &_active {
       cursor: pointer;
@@ -43,14 +51,9 @@
     }
 
     &_active:hover:not(&_selected) {
-      background-color: var(--grape_0);
+      background-color: var(--color-primary-emphasis-subtle);
     }
 
-    &_selected {
-      pointer-events: none;
-      background-color: var(--grape_0);
-      border: 1px solid var(--grape_500);
-    }
 
     &:not(&_active) {
       opacity: 0.3;
@@ -70,14 +73,24 @@
     }
 
     &::before {
-      box-shadow: 0 0 0 0.5px rgba(#000, 0.5);
+      box-shadow: 0 0 0 0.5px var(--color-neutral-content-subtler);
     }
 
-    &_selected::after {
-      left: 12px;
-      width: 14px;
-      height: 14px;
-      background-color: var(--grape_500);
+    &_selected {
+      pointer-events: none;
+      background-color: var(--color-primary-emphasis);
+      border: 1px solid var(--color-primary-border-subtler);
+
+      &::after {
+        left: 12px;
+        width: 14px;
+        height: 14px;
+        background-color: var(--color-primary-content);
+      }
+
+      &::before {
+        box-shadow: 0 0 0 0.5px var(--color-neutral-content);
+      }
     }
   }
 
@@ -92,11 +105,13 @@
     padding: 2px 5px;
     border-radius: 2px;
     font-weight: 400;
-    background-color: var(--grape_0);
+    background-color: var(--color-primary-background);
+    color: var(--color-primary-content);
   }
 
   &__description {
     font-size: 14px;
     opacity: 0.7;
+    color: var(--color-neutral-content-subtle);
   }
 }

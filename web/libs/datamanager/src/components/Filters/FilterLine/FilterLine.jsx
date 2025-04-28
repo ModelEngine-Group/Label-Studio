@@ -68,7 +68,9 @@ export const FilterLine = observer(({ filter, availableFilters, index, view, sid
       </GroupWrapper>
       <Elem name="remove">
         <Button
-          type="link"
+          look="danger"
+          size="small"
+          style={{ border: "none" }}
           onClick={(e) => {
             e.stopPropagation();
             filter.delete();

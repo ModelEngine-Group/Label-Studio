@@ -8,13 +8,14 @@
     font-size: 14px;
     line-height: 22px;
     justify-content: space-between;
+    color: var(--color-neutral-content-subtle);
   }
 
   &__description {
     margin-top: 5px;
     font-size: 14px;
     line-height: 22px;
-    color: var(--sand_500);
+    color: var(--color-neutral-content-subtle);
     display: block;
   }
 
@@ -56,12 +57,12 @@
   &_placement_right {
     display: inline-flex;
     flex-direction: row-reverse;
-    gap: var(--spacing-small-x, 4px);
+    gap: var(--spacing-tighter, 4px);
   }
 
   &_placement_left {
     display: inline-flex;
-    gap: var(--spacing-small-x, 4px);
+    gap: var(--spacing-tighter, 4px);
   }
 
   &_empty &__text,

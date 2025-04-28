@@ -21,12 +21,27 @@
   <link rel="preload" href="{{settings.HOSTNAME}}{% static 'fonts/Figtree-SemiBold.ttf' %}" type="font" crossorigin="anonymous">
 
   <!-- CSS -->
-  <link href="{{settings.HOSTNAME}}{% static 'css/uikit.css' %}" rel="stylesheet">
-  <link href="{{settings.HOSTNAME}}{% static 'css/main.css' %}" rel="stylesheet">
   {% block app-css %}
     <link href="{{settings.FRONTEND_HOSTNAME}}/react-app/main.css?v={{ versions.backend.commit }}" rel="stylesheet">
   {% endblock %}
 
+  {% block theme_colors %}
+    {% if feature_flags.fflag_feat_front_optic_1217_theme_toggle_short %}
+    <script>
+      function handleThemeColor() {
+        let themeColor = window.localStorage.getItem("preferred-color-scheme");
+        if (themeColor === "Auto") {
+          themeColor = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "Dark" : "Light"
+        } else if (!themeColor) {
+          themeColor = "Light";
+        }
+        document.documentElement.setAttribute("data-color-scheme", themeColor.toLowerCase());
+      }
+      handleThemeColor();
+    </script>
+    {% endif %}
+  {% endblock %}
+  
   {% block app-scripts %}
   {% endblock %}
 
@@ -52,6 +67,7 @@
 
   {% get_current_language as LANGUAGE_CODE %}
   {% get_available_languages as LANGUAGES %}
+
 </head>
 
 <body>

@@ -1,10 +1,10 @@
 $border-thin: 1px solid rgb(137 128 152 / 16%);
 
 .phrase {
-  background: #e8ffd0;
+  background: var(--color-neutral-surface);
   padding: 0.5em;
-  border-radius: 5px;
-  margin-right: 5px;
+  border-radius: var(--corner-radius-small);
+  margin-right: var(--spacing-tight);
   margin-bottom: 10px;
   display: table;
 
@@ -34,7 +34,7 @@ $border-thin: 1px solid rgb(137 128 152 / 16%);
 
 .dialoguename {
   font-weight: bold;
-  background: white;
+  background: var(--color-neutral-background);
   border-radius: 5px;
   padding: 5px;
   margin-right: 10px;
@@ -43,7 +43,7 @@ $border-thin: 1px solid rgb(137 128 152 / 16%);
 }
 
 .dialoguename span {
-  background: white !important;
+  background: var(--color-neutral-background) !important;
   padding: 0 !important;
 }
 
@@ -131,7 +131,7 @@ $border-thin: 1px solid rgb(137 128 152 / 16%);
       border-bottom: 1px solid rgb(0 0 0 / 15%);
       font-size: 14px;
       line-height: 22px;
-      background: #fafafa;
+      background: var(--color-neutral-surface);
       outline: none;
     }
   }
@@ -143,7 +143,7 @@ $border-thin: 1px solid rgb(137 128 152 / 16%);
 
     &__item {
       color: initial;
-      background-color: #fff;
+      background-color: var(--color-neutral-background);
       display: inline-flex;
       font-weight: 400;
       font-size: 14px;
@@ -206,7 +206,7 @@ $border-thin: 1px solid rgb(137 128 152 / 16%);
   }
 
   &:not(.collapsed) {
-    background-color: var(--background-color);
+    background-color: rgba(var(--background-color) / 50%);
     border-left: 4px solid var(--highlight-color);
     border-top: 1px solid rgb(137 128 152 / 16%);
     border-bottom: 1px solid rgb(137 128 152 / 16%);
@@ -232,7 +232,7 @@ $border-thin: 1px solid rgb(137 128 152 / 16%);
     font-weight: 400;
     line-height: 20px;
     letter-spacing: 0.25px;
-    color: #1F1F1F;
+    color: var(--color-neutral-content);
     width: 100%;
     margin-top: 8px;
   }
@@ -249,7 +249,7 @@ $border-thin: 1px solid rgb(137 128 152 / 16%);
       font-weight: 600;
       line-height: 16px;
       letter-spacing: 0.5px;
-      color: #898098;
+      color: var(--color-neutral-content-subtler);
     }
   }
 

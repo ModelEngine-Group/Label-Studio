@@ -5,7 +5,7 @@
   flex-direction: column;
 
   &__error {
-    color: var(--danger_color);
+    color: var(--color-negative-content);
     padding: 0 32px;
   }
 
@@ -16,7 +16,7 @@
   & > header {
     font-size: 14px;
     padding: 24px 32px;
-    background: var(--sand_0);
+    background: var(--color-neutral-background);
     display: flex;
     align-items: center;
 
@@ -29,22 +29,37 @@
     display: flex;
 
     input {
-      border: 1px solid var(--sand_300);
+      border: 1px solid var(--color-neutral-border);
+      background: var(--color-neutral-background);
+      color: var(--color-neutral-content);
       line-height: 1em;
       width: 320px;
       border-radius: 5px 0 0 5px;
+      box-shadow: inset 0 1px 2px rgba(var(--color-neutral-shadow-raw) / 12%);
+      transition: all 150ms ease-out;
+
+      &:focus, &:focus-visible {
+        border-color: var(--color-neutral-border-bolder);
+        outline: none;
+        box-shadow: 0 0 0 4px var(--color-primary-focus-outline);
+      }
     }
 
     button {
       margin-left: -1px;
       border-radius: 0 5px 5px 0;
-      background: var(--grape_500);
-      color: var(--sand_0);
+      background: var(--color-primary-surface);
+      color: var(--color-primary-surface-content);
       cursor: pointer;
+      transition: all 150ms ease-out;
+
+      &:hover {
+        background: var(--color-primary-surface-hover);
+      }
     }
 
     & + span {
-      color: var(--sand_600);
+      color: var(--color-neutral-content-subtler);
     }
   }
 
@@ -56,9 +71,9 @@
   & > main {
     flex: 1;
     overflow-y: auto;
-    background: linear-gradient(white 30%, rgb(255 255 255 / 0%)), linear-gradient(rgb(0 0 0 / 10%), white 100%);
+    background: linear-gradient(var(--color-neutral-background) 30%, rgb(255 255 255 / 0%)), linear-gradient(rgb(0 0 0 / 10%), var(--color-neutral-background) 100%);
     background-repeat: no-repeat;
-    background-color: var(--sand_0);
+    background-color: var(--color-neutral-background);
     background-size: 100% 20px, 100% 5px;
     background-attachment: local, scroll;
   }
@@ -78,7 +93,7 @@
     display: block;
 
     &_uploading {
-      border: 1px solid var(--grape_500);
+      border: 1px solid var(--color-primary-border-subtle);
       background-color: var(--grape_500);
       background-repeat: repeat;
       background-position: 40px;
@@ -106,10 +121,16 @@
     display: flex;
     align-items: center;
     padding: 8px;
-    border: 1px solid var(--grape_500);
-    background: var(--grape_0);
+    border: 1px solid var(--color-primary-border);
+    background: var(--color-primary-background);
     border-radius: 4px;
     cursor: pointer;
+    color: var(--color-primary-content);
+    transition: all 150ms ease-out;
+
+    &:hover {
+      background: var(--color-primary-emphasis-subtle);
+    }
   }
 
   &__upload-icon {
@@ -132,7 +153,7 @@
     &_highlighted {
       position: relative;
       z-index: 12;
-      background: var(--sand_0);
+      background: var(--color-neutral-background);
       padding: 4px 8px;
       border-radius: 8px;
     }
@@ -144,7 +165,7 @@
   }
 
   &__csv-splash {
-    background: var(--sand_100);
+    background: var(--color-neutral-surface);
     position: absolute;
     inset: 0;
     z-index: 10;
@@ -161,11 +182,10 @@
   position: relative;
 
   a {
-    color: var(--grape_600);
-    text-decoration: underline;
+    color: var(--color-primary-content);
 
     &:hover {
-      color: var(--grape_700);
+      text-decoration: underline;
     }
   }
 
@@ -176,7 +196,7 @@
       content: "";
       position: absolute;
       inset: 8px;
-      border: 2px dashed var(--grape_500);
+      border: 2px dashed var(--color-primary-border);
       border-radius: 10px;
       pointer-events: none;
     }
@@ -200,8 +220,9 @@
     flex-direction: column;
     align-items: center;
     cursor: pointer;
-    background: var(--grape_0);
-    border: 1px dashed var(--grape_500);
+    background: var(--color-primary-background);
+    border: 1px dashed var(--color-primary-border);
+    color: var(--color-neutral-content-subtle);
     padding: 2rem;
     width: 40rem;
     border-radius: 8px;
@@ -213,8 +234,8 @@
     header {
       font-size: 24px;
       line-height: 32px;
-      font-weight: 800;
       text-align: center;
+      color: var(--color-neutral-content);
     }
 
     dl {
@@ -224,8 +245,8 @@
       line-height: 20px;
       gap: 0 30px;
 
-      dd {
-        font-weight: 900;
+      dt {
+        color: var(--color-neutral-content);
       }
 
       dt:last-of-type,

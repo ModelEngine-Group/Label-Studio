@@ -60,3 +60,7 @@ $gap: 30px;
 .grid > div:empty {
   display: none;
 }
+
+:global(.ant-btn.ant-btn-text.ant-btn-icon-only:hover) {
+  background-color: var(--color-primary-emphasis-subtle);
+}

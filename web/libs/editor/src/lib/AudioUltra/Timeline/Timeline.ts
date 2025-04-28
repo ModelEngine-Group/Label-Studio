@@ -1,3 +1,4 @@
+import { getCurrentTheme } from "@humansignal/ui";
 import { rgba, type RgbaColorArray } from "../Common/Color";
 import type { Padding } from "../Common/Style";
 import { defaults, toPrecision } from "../Common/Utils";
@@ -23,6 +24,7 @@ type LabelMaxWidth = {
   [includeMs: string]: number; // true | false
 };
 
+const isDarkMode = getCurrentTheme() === "Dark";
 export type TimelineMark = { x: number; time: number; type: "mark" | "label"; includeMs: boolean };
 
 export class Timeline {
@@ -36,9 +38,9 @@ export class Timeline {
   private fontSize = 12;
   private gridWidth = 1;
   private fontFamily = "Arial";
-  private fontColor = rgba("#413C4A");
-  private selectionColor = rgba("rgba(65, 60, 74, 0.08)");
-  private gridColor = rgba("rgba(137,128,152,0.16)");
+  private fontColor = isDarkMode ? rgba("rgba(200,200,200,0.8)") : rgba("#413C4A");
+  private selectionColor = isDarkMode ? rgba("rgba(200,200,200,0.08)") : rgba("rgba(65, 60, 74, 0.08)");
+  private gridColor = isDarkMode ? rgba("rgba(200,200,200,0.16)") : rgba("rgba(137,128,152,0.16)");
   private backgroundColor = rgba("#fff");
   private _labeMaxWidth: LabelMaxWidth = {
     true: 0, // includeMs

@@ -4,8 +4,8 @@
 
   display: flex;
   align-items: center;
-  padding: var(--spacing-small) var(--spacing-small) var(--spacing-small) var(--spacing-base);
-  gap: var(--spacing-small);
+  padding: var(--spacing-tight) var(--spacing-tight) var(--spacing-tight) var(--spacing-base);
+  gap: var(--spacing-tight);
   flex: 1 0 0;
   overflow: hidden;
   color: var(--color-neutral-content-subtler);
@@ -68,7 +68,7 @@
 .selectLoading {
   &:focus {
     outline: none;
-    padding: var(--spacing-small);
+    padding: var(--spacing-tight);
 
   }
 }

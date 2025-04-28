@@ -3,7 +3,7 @@
   font-size: 0.875rem;
 
   a {
-    color: var(--primary_link);
+    color: var(--color-primary-content);
     text-decoration: underline;
 
     &::before {
@@ -12,7 +12,7 @@
 
     &:hover {
       text-decoration: none;
-      color: var(--primary_link);
+      color: var(--color-primary-content-hover);
     }
   }
 }

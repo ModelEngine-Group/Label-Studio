@@ -16,8 +16,8 @@
     display: flex;
     padding: 0 8px;
     justify-content: space-between;
-    background: linear-gradient(0deg, var(--hover), var(--hover) 100%), linear-gradient(0deg, #FAFAFA, #FAFAFA 100%);
-    box-shadow: 1px 0 0 rgb(0 0 0 / 5%);
+    background: linear-gradient(0deg, var(--hover), var(--hover) 100%), linear-gradient(0deg, var(--color-neutral-surface), var(--color-neutral-surface) 100%);
+    box-shadow: 1px 0 0 rgb(var(--color-neutral-shadow-raw) / 5%);
   }
 
   &__data {
@@ -29,7 +29,7 @@
 
   &__data-item {
     &_faded {
-      opacity: 0.4;
+      color: var(--color-neutral-content-subtler);
     }
   }
 
@@ -96,12 +96,12 @@
   }
 
   &:hover {
-    --hover: rgb(0 0 0 / 4%);
+    --hover: rgb(var(--color-neutral-shadow-raw) / calc( 8% * var(--shadow-intensity) ));
   }
 
   &_selected,
   &_selected:hover {
-    --hover: rgb(0 0 0 / 8%);
+    --hover: rgb(var(--color-neutral-shadow-raw) / calc( 8% * var(--shadow-intensity) ));
   }
 }
 
@@ -112,7 +112,7 @@
   min-width: 18px;
   cursor: pointer;
   border-radius: 3px;
-  background: var(--sand_0);
+  background: var(--color-neutral-background);
   box-shadow: 0 1px 0 rgb(0 0 0 / 10%), 0 0 0 1px rgb(0 0 0 / 15%);
 
   svg {
@@ -121,6 +121,6 @@
   }
 
   &_danger {
-    color: var(--danger_color);
+    color: var(--color-negative-content);
   }
 }

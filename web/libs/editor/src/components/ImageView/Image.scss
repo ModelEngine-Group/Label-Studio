@@ -8,12 +8,12 @@
   padding: 14px 16px;
   display: flex;
   justify-content: center;
-  background: var(--sand_0);
+  background: var(--color-neutral-background);
   border-radius: 4px;
-  box-shadow: 0 0 0 0.5px rgb(0 0 0 / 20%);
+  box-shadow: 0 0 0 0.5px rgb(var(--color-neutral-shadow-raw) / 20%);
   margin: 16px 0.5px;
   flex-direction: column;
-  color: var(--sand_600);
+  color: var(--color-neutral-content);
   font-weight: bold;
 
   &__bar {

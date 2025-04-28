@@ -8,7 +8,7 @@
   position: relative;
   overflow: hidden;
   box-sizing: content-box;
-  background: var(--sand_100);
+  background: var(--color-neutral-surface);
 
   &__controls {
     height: 0;
@@ -20,9 +20,9 @@
     left: 0;
     height: 100%;
     z-index: 3;
-    background-color: var(--sand_100);
+    background-color: var(--color-neutral-surface);
     position: absolute;
-    box-shadow: -1px 0 0 rgb(0 0 0 / 5%);
+    box-shadow: -1px 0 0 rgb(var(--color-neutral-shadow-raw) / 5%);
   }
 
   &__filler {
@@ -37,7 +37,7 @@
     inset: 0 0 0 var(--offset);
     z-index: 1;
     position: absolute;
-    background-color: rgb(0 0 0 / 5%);
+    background-color: rgb(var(--color-neutral-shadow-raw) / 5%);
   }
 
   &__scroll {
@@ -48,9 +48,9 @@
     position: relative;
     box-sizing: content-box;
     padding-top: 24px;
-    border-top: 1px solid var(--sand_300);
-    background-image: repeating-linear-gradient(90deg, var(--sand_0),
-        var(--sand_0) var(--frame-width),
+    border-top: 1px solid var(--color-neutral-border);
+    background-image: repeating-linear-gradient(90deg, var(--color-neutral-background),
+        var(--color-neutral-background) var(--frame-width),
         transparent var(--frame-width),
         transparent calc(var(--frame-width) + 1)),
       linear-gradient(0deg, var(--sand_100), transparent 50%);
@@ -63,8 +63,8 @@
     z-index: 2;
     position: absolute;
     width: var(--frame-size);
-    box-shadow: inset 0 1px var(--sand_900), inset 0 -1px var(--sand_900);
-    background: linear-gradient(0deg, rgb(0 0 0 / 5%), rgb(0 0 0 / 5%)), var(--sand_100);
+    box-shadow: inset 0 1px var(--color-neutral-border), inset 0 -1px var(--color-neutral-border);
+    background: linear-gradient(0deg, rgb(var(--color-neutral-shadow-raw) / 5%), rgb(var(--color-neutral-shadow-raw) / 5%)), var(--color-neutral-background);
 
     &::before {
       inset: -5px;
@@ -83,7 +83,7 @@
       display: block;
       position: absolute;
       pointer-events: none;
-      background: linear-gradient(180deg, rgb(0 0 0 / 15%) -1.28%, rgb(0 0 0 / 15%) 69.21%, rgb(0 0 0 / 0%) 100%), rgb(0 0 0 / 5%);
+      background: linear-gradient(180deg, rgb(var(--color-neutral-shadow-raw) / 15%) -1.28%, rgb(var(--color-neutral-shadow-raw) / 15%) 69.21%, rgb(var(--color-neutral-shadow-raw) / 0%) 100%), rgb(var(--color-neutral-shadow-raw) / 5%);
     }
   }
 
@@ -95,13 +95,13 @@
     width: var(--frame-size);
     position: absolute;
     pointer-events: none;
-    background: linear-gradient(0deg, rgb(0 0 0 / 5%), rgb(0 0 0 / 5%)), var(--sand_100);
+    background: linear-gradient(0deg, rgb(var(--color-neutral-shadow-raw) / 5%), rgb(var(--color-neutral-shadow-raw) / 5%)), var(--color-neutral-surface);
 
     &::before {
       top: 0;
       left: 50%;
       height: 12px;
-      color: var(--sand_0);
+      color: var(--color-neutral-content-subtler);
       display: flex;
       padding: 0 4px;
       min-width: 100%;
@@ -112,7 +112,7 @@
       position: absolute;
       content: attr(data-frame);
       transform: translateX(-50%);
-      background-color: var(--sand_400);
+      background-color: var(--color-neutral-surface-inset);
     }
   }
 

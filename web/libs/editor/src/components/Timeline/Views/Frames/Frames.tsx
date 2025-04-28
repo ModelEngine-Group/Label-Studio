@@ -67,10 +67,10 @@ export const Frames: FC<TimelineViewProps> = ({
 
   const background = useMemo(() => {
     const bg = [
-      `repeating-linear-gradient(90deg, #fff 1px, #fff ${step - 1}px, rgba(255,255,255,0) ${
+      `repeating-linear-gradient(90deg, var(--color-neutral-background) 1px, var(--color-neutral-background) ${step - 1}px, rgba(255,255,255,0) ${
         step - 1
       }px, rgba(255,255,255,0) ${step + 1}px)`,
-      "linear-gradient(0deg, #FAFAFA, rgba(255,255,255,0) 50%)",
+      "linear-gradient(0deg, var(--color-neutral-surface), rgba(255,255,255,0) 50%)",
     ];
 
     return bg.join(", ");

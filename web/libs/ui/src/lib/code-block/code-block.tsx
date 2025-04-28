@@ -6,5 +6,7 @@ export function CodeBlock({
   code: string;
   className?: string;
 }) {
-  return <div className="whitespace-pre-wrap font-mono mt-2 p-3 bg-gray-100 rounded-sm max-h-fit">{code.trim()}</div>;
+  return (
+    <div className="whitespace-pre-wrap font-mono mt-2 p-3 bg-neutral-surface rounded-sm max-h-fit">{code.trim()}</div>
+  );
 }

@@ -5,6 +5,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
+  color: var(--color-neutral-content);
 
   &__waiting {
     top: 50%;
@@ -17,7 +18,7 @@
     transform: translate(-50%, -50%);
     box-shadow: 0 5px 20px var(--black_20);
 
-    @include waiting(var(--accent_color));
+    @include waiting(var(--color-primary-surface));
   }
 
   &__header {
@@ -50,7 +51,6 @@
     height: 100%;
     display: flex;
     min-width: 200px;
-    box-shadow: 0 0 0 1px #ccc;
   }
 
   &__lsf-wrapper {
@@ -85,8 +85,8 @@
     flex-direction: column;
     overflow-y: auto;
 
-    & > div {
-      --main-bg-color: var(--sand_100);
+    &>div {
+      --main-bg-color: var(--color-neutral-surface);
 
       flex: 1;
       height: 100%;

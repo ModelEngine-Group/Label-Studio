@@ -10,6 +10,25 @@ const designTokens = {
         active: "var(--color-neutral-surface-active)",
         inset: "var(--color-neutral-surface-inset)",
       },
+      on: {
+        dark: {
+          surface: {
+            DEFAULT: "var(--color-neutral-on-dark-surface)",
+            hover: "var(--color-neutral-on-dark-surface-hover)",
+            active: "var(--color-neutral-on-dark-surface-active)",
+          },
+          content: {
+            DEFAULT: "var(--color-neutral-on-dark-content)",
+            subtle: "var(--color-neutral-on-dark-content-subtle)",
+          },
+          icon: "var(--color-neutral-on-dark-icon)",
+          background: {
+            DEFAULT: "var(--color-neutral-on-dark-background)",
+            bold: "var(--color-neutral-on-dark-background-bold)",
+          },
+          border: "var(--color-neutral-on-dark-border)",
+        },
+      },
       content: {
         DEFAULT: "var(--color-neutral-content)",
         subtle: "var(--color-neutral-content-subtle)",

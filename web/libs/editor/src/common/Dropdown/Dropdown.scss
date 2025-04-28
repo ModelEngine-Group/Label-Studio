@@ -8,8 +8,8 @@
   display: none;
   position: absolute;
   box-sizing: border-box;
-  background-color: var(--sand_0);
-  box-shadow: 0 5px 20px rgb(0 0 0 / 20%);
+  background-color: var(--color-neutral-background);
+  box-shadow: 0 5px 20px rgb(var(--color-neutral-shadow-raw) / calc(20% * var(--shadow-intensity)));
   will-change: transform, opacity;
 
   &_align {

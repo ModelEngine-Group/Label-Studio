@@ -30,7 +30,20 @@ const getIconCategory = (iconName: string): string => {
     return "AI/ML";
   }
 
-  if (["HumanSignal", "Slack", "Github", "Mastercard", "Visa"].includes(name)) {
+  if (
+    [
+      "HumanSignal",
+      "Slack",
+      "Github",
+      "Mastercard",
+      "Visa",
+      "OpenAI",
+      "Anthropic",
+      "Azure",
+      "Gemini",
+      "VertexAI",
+    ].includes(name)
+  ) {
     return "Brand";
   }
 

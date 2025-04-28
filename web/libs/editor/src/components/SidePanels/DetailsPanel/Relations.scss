@@ -3,13 +3,14 @@
     cursor: default;
     user-select: none;
     padding: 0 8px;
+    transition: all 150ms ease-out;
 
     &_hidden {
       opacity: 0.4;
     }
 
     &:hover {
-      background-color: var(--sand_200);
+      background-color: var(--color-primary-emphasis-subtle);
     }
   }
 
@@ -34,10 +35,10 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    color: var(--sand_400);
+    color: var(--color-neutral-content-subtle);
 
     &:hover {
-      color: var(--sand_900);
+      color: var(--color-neutral-content);
     }
   }
 

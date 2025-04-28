@@ -34,7 +34,7 @@
   display: flex;
   flex-direction: column;
   overflow: auto;
-  background-color: var(--white);
+  background-color: var(--color-neutral-background);
 
   &_fit {
     width: max-content;
@@ -66,7 +66,7 @@
     min-width: fit-content;
     position: relative;
     cursor: pointer;
-    background-color: var(--sand_0);
+    background-color: var(--color-neutral-background);
 
     &_disabled,
     &_loading {
@@ -75,15 +75,15 @@
     }
 
     &_even:not(.table__row_wrapper_selected) {
-      background-color: var(--sand_100);
+      background-color: var(--color-neutral-surface);
     }
 
     &_selected {
-      background-color: var(--grape_0);
+      background-color: var(--color-primary-surface-content);
     }
 
     &:not(.table__row_wrapper_selected):hover {
-      background-color: var(--grape_0);
+      background-color: var(--color-primary-surface-content);
     }
 
     &_highlighted:not(.table__row_wrapper_selected)::after {

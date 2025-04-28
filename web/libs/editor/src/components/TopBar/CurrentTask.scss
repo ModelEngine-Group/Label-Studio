@@ -13,7 +13,7 @@
 
   &__task-id {
     grid-area: id;
-    color: var(--sand_900);
+    color: var(--color-neutral-content);
     font-size: 14px;
     user-select: text;
 
@@ -24,7 +24,7 @@
 
   &__task-count {
     grid-area: counter;
-    color: var(--sand_500);
+    color: var(--color-neutral-content);
     font-size: 11px;
     user-select: none;
   }
@@ -46,7 +46,7 @@
 
     &_newui {
       &:hover {
-        background: var(--grape_0);
+        background: var(--color-primary-emphasis-subtle);
       }
     }
 
@@ -58,7 +58,7 @@
       height: 10px;
       display: block;
       position: absolute;
-      border: 2px solid var(--sand_900);
+      border: 2px solid var(--color-neutral-icon);
       border-bottom: none;
       border-right: none;
       margin-top: -3px;
@@ -71,7 +71,7 @@
     }
 
     &_next.current-task__prevnext_postpone::before {
-      border-color: var(--grape_500);
+      border-color: var(--color-primary-border);
     }
 
     &_prev {
@@ -89,7 +89,7 @@
       }
 
       &::before {
-        border: 2px solid var(--sand_300);
+        border: 2px solid var(--color-neutral-content-subtlest);
         border-bottom: none;
         border-right: none;
       }

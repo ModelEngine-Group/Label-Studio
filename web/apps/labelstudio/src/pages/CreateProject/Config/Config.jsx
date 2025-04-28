@@ -1,10 +1,5 @@
-import "codemirror/lib/codemirror.css";
-import "codemirror/mode/xml/xml";
 import React, { useEffect, useMemo, useState } from "react";
-import { UnControlled as CodeMirror } from "react-codemirror2";
 import CM from "codemirror";
-import "codemirror/addon/hint/show-hint";
-import "codemirror/addon/hint/show-hint.css";
 
 import { Button, ToggleItems } from "../../../components";
 import { Form, Input } from "../../../components/Form";
@@ -18,11 +13,9 @@ import { Preview } from "./Preview";
 import { DEFAULT_COLUMN, EMPTY_CONFIG, isEmptyConfig, Template } from "./Template";
 import { TemplatesList } from "./TemplatesList";
 
-import "./codemirror.css";
-import "./config-hint";
 import tags from "./schema.json";
 import { UnsavedChanges } from "./UnsavedChanges";
-import { Checkbox, Select } from "@humansignal/ui";
+import { Checkbox, CodeEditor, Select } from "@humansignal/ui";
 import { toSnakeCase } from "strman";
 
 const wizardClass = cn("wizard");
@@ -48,7 +41,7 @@ const Label = ({ label, template, color }) => {
   return (
     <li className={configClass.elem("label").mod({ choice: label.tagName === "Choice" })}>
       <label style={{ background: color }}>
-        <input
+        <Input
           type="color"
           className={configClass.elem("label-color")}
           value={colorNames[color] || color}
@@ -105,7 +98,15 @@ const ConfigureControl = ({ control, template }) => {
       <form className={configClass.elem("add-labels")} action="">
         <h4>{tagname === "Choices" ? "Add choices" : "Add label names"}</h4>
         <span>Use new line as a separator to add multiple labels</span>
-        <textarea name="labels" id="" cols="50" rows="5" ref={refLabels} onKeyPress={onKeyPress} className="p-2 px-3" />
+        <textarea
+          name="labels"
+          id=""
+          cols="50"
+          rows="5"
+          ref={refLabels}
+          onKeyPress={onKeyPress}
+          className="lsf-textarea-ls p-2 px-3"
+        />
         <Button type="button" size="compact" onClick={onAddLabels}>
           Add
         </Button>
@@ -205,7 +206,7 @@ const ConfigureSettings = ({ template }) => {
         return (
           <li key={key}>
             <label>
-              {options.title} <input type="text" onInput={onChange} value={value} size={size} />
+              {options.title} <Input type="text" onInput={onChange} value={value} size={size} />
             </label>
           </li>
         );
@@ -487,7 +488,14 @@ const Configurator = ({
       <div className={configClass.elem("container")}>
         <h1>Labeling Interface{hasChanges ? " *" : ""}</h1>
         <header>
-          <Button type="button" data-leave={true} onClick={onBrowse} size="compact">
+          <Button
+            look="secondary"
+            type="button"
+            data-leave={true}
+            onClick={onBrowse}
+            size="compact"
+            style={{ width: 160 }}
+          >
             Browse Templates
           </Button>
           <ToggleItems items={{ code: "Code", visual: "Visual" }} active={configure} onSelect={onSelect} />
@@ -495,13 +503,14 @@ const Configurator = ({
         <div className={configClass.elem("editor")}>
           {configure === "code" && (
             <div className={configClass.elem("code")} style={{ display: configure === "code" ? undefined : "none" }}>
-              <CodeMirror
+              <CodeEditor
                 name="code"
                 id="edit_code"
                 value={config}
                 autoCloseTags={true}
                 smartIndent={true}
                 detach
+                border
                 extensions={["hint", "xml-hint"]}
                 options={{
                   mode: "xml",

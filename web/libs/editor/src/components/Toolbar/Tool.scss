@@ -13,8 +13,8 @@
   border: none;
   padding: 0;
 
-  --text-color: var(--sand_500);
-  --text-color-hover: var(--sand_900);
+  --text-color: var(--color-neutral-content-subtle);
+  --text-color-hover: var(--color-neutral-content);
 
   &:hover {
     z-index: 100;
@@ -33,6 +33,8 @@
     height: 32px;
     opacity: 0.5;
     color: var(--text-color-hover);
+    border-radius: var(--corner-radius-smaller);
+    transition: all 150ms ease-out;
 
     svg {
       width: 100%;
@@ -40,9 +42,12 @@
     }
   }
 
-  &_active, &:hover {
+  &:not(&_active):hover {
     & .tool__icon {
       opacity: 1;
+      box-shadow: inset 0 0 2px var(--color-primary-border-subtle);
+      background: var(--color-primary-emphasis-subtle);
+      color: var(--text-color-hover);
     }
 
     & .tool__label {
@@ -54,20 +59,51 @@
     }
   }
 
-  &_active > &__icon {
-    background: var(--sand_200);
-    box-shadow: inset 0 1px 0 rgb(0 0 0 / 5%), inset 0 0 0 1px rgb(0 0 0 / 5%);
-    border-radius: 5px;
+
+  &_active {
+    & .tool__tooltip {
+      display: none;
+    }
+
+    & .tool__tooltip-body {
+      color: var(--text-color-hover);
+    }
+
+    & .tool_expanded {
+      border-radius: 5px;
+      background-color: var(--color-neutral-background);
+    }
+
+    & > .tool__icon {
+      opacity: 1;
+      box-shadow: inset 0 0 2px var(--color-primary-border-subtle);
+      background: var(--color-primary-emphasis-subtle);
+      color: var(--text-color-hover);
+    }
+
+    .tool_smart {
+      border-radius: 5px;
+    }
+
+    & .tool__label {
+      color: var(--text-color-hover);
+    }
+
+    & .tool__shortcut {
+      opacity: 1;
+    }
+
+    > &__icon {
+      background: var(--color-neutral-surface-active);
+      box-shadow: inset 0 0 0 1px var(--color-primary-border-subtle);
+      border-radius: 5px;
+    }
+
   }
 
   &_smart {
-    & .tool_active > .tool__icon {
-      background: var(--plum_200);
-      box-shadow: inset 0 1px 0 var(--plum_0), inset 0 0 0 1px var(--plum_0);
-    }
-
-    --text-color: var(--plum_200);
-    --text-color-hover: var(--plum_400);
+    --text-color: var(--color-accent-plum-base);
+    --text-color-hover: var(--color-accent-plum-base);
   }
 
   &__tooltip {
@@ -90,9 +126,9 @@
       border-radius: 5px;
       white-space: nowrap;
       padding: 0 14px;
-      color: var(--text-color);
-      background-color: var(--sand_0);
-      box-shadow: 0 0 0 1px rgb(0 0 0 / 5%), 0 5px 10px rgb(0 0 0 / 10%);
+      color: var(--color-neutral-content);
+      background-color: var(--color-neutral-background);
+      box-shadow: 0 0 0 1px var(--color-neutral-border), 0 5px 10px rgba(var(--color-neutral-shadow-raw) / 16%);
     }
 
     &_controlled {
@@ -129,10 +165,6 @@
       flex-direction: row;
     }
 
-    & .tool__controls-body{
-      padding-left: 10px;
-    }
-
     & .tool__shortcut {
       margin: 0 0 0 20px;
     }
@@ -141,26 +173,6 @@
       padding-left: 12px;
       padding-right: 8px;
       flex-direction: row;
-    }
-  }
-
-  &_active {
-    & .tool__tooltip {
-      display: none;
-    }
-
-    & .tool__tooltip-body {
-      color: var(--text-color-hover);
-    }
-
-    & .tool_expanded {
-      border-radius: 5px;
-      background-color: var(--sand_100);
-    }
-
-    .tool_smart {
-      border-radius: 5px;
-      background-color: var(--sand_100);
     }
   }
 
@@ -173,7 +185,7 @@
     &-body {
       display: flex;
       border-radius: 5px;
-      background-color: var(--sand_0);
+      background-color: var(--color-neutral-background);
       box-shadow: 0 0 0 1px rgb(0 0 0 / 5%), 0 5px 10px rgb(0 0 0 / 10%);
     }
   }
@@ -183,7 +195,7 @@
     display: flex;
     font-size: 12px;
     font-weight: bold;
-    color: var(--sand_600);
+    color: var(--color-neutral-content-subtler);
   }
 
   &_expanded &_alignment_right {
@@ -199,14 +211,19 @@
   }
 
   &__key {
-    padding: 0 4px;
-    height: 16px;
+    height: 24px;
+    min-width: 24px;
     display: flex;
     align-items: center;
-    background: var(--sand_0);
-    border-radius: 2px;
+    justify-content: center;
+    background: var(--color-neutral-background);
     text-transform: uppercase;
-    box-shadow: 0 0 0 1px rgb(0 0 0 / 10%), 0 1px 0 rgb(0 0 0 / 8%);
+    padding: 3px 3px 6px;
+    border-radius: var(--corner-radius-smaller);
+    border: 1px solid var(--color-neutral-border);
+    box-shadow: 0 -2.5px 0.5px 0 rgba(var(--color-neutral-border-raw) / 70%) inset;
+    position: relative;
+    color: var(--color-neutral-content-subtler);
   }
 
   &__key + &__key {

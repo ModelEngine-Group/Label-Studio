@@ -3,12 +3,13 @@
 @tailwind utilities;
 
 body {
-  @apply text-neutral-content;
+  @apply !text-neutral-content !bg-neutral-background;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: 500;
   margin: 0;
+  color: inherit !important;
 }
 
 h1 { font-size: 2em; }
@@ -17,6 +18,14 @@ h3 { font-size: 1.17em; }
 h4 { font-size: 1em; }
 h5 { font-size: 0.83em; }
 h6 { font-size: 0.67em; }
+
+a {
+  @apply text-primary-content;
+}
+
+a:hover {
+  @apply text-primary-content-hover;
+}
 
 /* third-party libraries CSS */
 @layer base {
@@ -73,10 +82,6 @@ h6 { font-size: 0.67em; }
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-  }
-
-  a {
-    @apply text-primary-content;
   }
 }
 

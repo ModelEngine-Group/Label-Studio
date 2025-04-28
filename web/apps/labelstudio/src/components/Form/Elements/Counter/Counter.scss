@@ -4,14 +4,21 @@
   display: flex;
   min-width: 114px;
   border-radius: 8px;
-  background: var(--sand_100);
+  background: var(--color-neutral-surface);
   box-sizing: border-box;
-  box-shadow: 0 0 0 1px var(--sand_300) inset;
-  transition: box-shadow 80ms ease;
+
+  // box-shadow: 0 0 0 1px rgba(var(--color-neutral-shadow-raw) / 16%) inset;
+  border: 1px solid var(--color-neutral-border);
+  transition: all 150ms ease;
+  align-items: center;
+
+  &:active {
+    border: 1px solid var(--color-neutral-border-bold);
+  }
 
   &_disabled {
     opacity: 0.6;
-    background-color: var(--sand_200);
+    background-color: var(--color-neutral-background);
   }
 
   &__btn {
@@ -19,31 +26,30 @@
     min-height: 32px;
     margin: 4px;
     border-radius: 4px;
-    background: var(--sand_0);
+    background: var(--color-neutral-background);
     display: flex;
-    color: var(--primary_link);
+    color: var(--color-primary-icon);
     border: none;
     outline: none;
     align-items: center;
     justify-content: center;
-    transition: all 80ms ease;
-    box-shadow: 0 1px 0 var(--sand_200), 0 0 0 1px var(--sand_100), 0 5px 10px var(--sand_300);
+    transition: all 150ms ease;
+    box-shadow: 0 4px 8px rgba(var(--color-neutral-shadow-raw) / 16%), 0 1px 2px rgba(var(--color-neutral-shadow-raw) / 30%);
 
     &_disabled {
       box-shadow: none;
-      background: none;
       pointer-events: none;
-      color: var(--sand_500);
-    }
-
-    &:active {
-      background: var(--sand_0);
-      box-shadow: 0 1px 0 var(--sand_200), 0 0 0 1px var(--sand_100), 0 5px 10px var(--sand_300);
+      color: var(--color-neutral-content-subtlest);
+      background: var(--color-neutral-surface);
     }
 
     &:active,
     &:hover {
-      color: var(--grape_700);
+      background: var(--color-neutral-surface-hover);
+      color: var(--color-primary-content);
+      box-shadow: 0 6px 12px 0 rgb(0 0 0 / 15%), 0 2px 4px 0 rgb(38 38 38 / 30%);
+      box-shadow: 0 6px 12px rgba(var(--color-neutral-shadow-raw) / 16%), 0 2px 4px rgba(var(--color-neutral-shadow-raw) / 30%);
+
     }
   }
 
@@ -57,5 +63,6 @@
     outline: none;
     font-size: 16px;
     line-height: 22px;
+    color: var(--color-neutral-content);
   }
 }

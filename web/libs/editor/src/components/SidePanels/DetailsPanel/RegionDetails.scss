@@ -20,8 +20,8 @@
     align-items: flex-start;
     word-break: break-word;
 
-    & + span {
-      color: var(--sand_900);
+    &+span {
+      color: var(--color-neutral-content);
 
       &::before {
         opacity: 0.6;
@@ -46,7 +46,7 @@
   }
 
   &__index_value {
-    color: var(--sand_0);
+    color: var(--color-sand-000);
   }
 
   &__result {
@@ -61,22 +61,22 @@
     min-height: 64px;
     border-radius: 4px;
     outline: none;
-    background-color: var(--sand_100);
+    background-color: var(--color-neutral-surface);
     transition-property: background-color, border-color;
     transition-duration: 80ms;
     transition-timing-function: ease;
 
     &:hover {
       textarea {
-        border-color: var(--sand_300);
-        background-color: var(--sand_0);
+        border-color: var(--color-neutral-border);
+        background-color: var(--color-neutral-background);
       }
     }
 
     &:focus {
-      background-color: var(--sand_0);
-      border-color: var(--grape_500);
-      box-shadow: 0 0 0 1px var(--grape_500);
+      background-color: var(--color-neutral-background);
+      border-color: var(--color-primary-border-subtle);
+      box-shadow: 0 0 0 1px var(--color-primary-border-subtle);
     }
 
     &:not(textarea) {
@@ -96,8 +96,8 @@
     align-items: center;
     padding: 8px;
     gap: 8px;
-    background: var(--canteloupe_0);
-    border: 1px solid var(--canteloupe_400);
+    background: var(--color-warning-background);
+    border: 1px solid var(--color-warning-border);
     border-radius: 4px;
     margin: 0 16px 8px;
     flex: none;
@@ -107,7 +107,7 @@
     svg {
       width: 20px;
       height: 17px;
-      fill: var(--incomplete-warning-color, var(--canteloupe_500));
+      fill: var(--incomplete-warning-color, var(--color-warning-icon));
     }
   }
 }
@@ -120,7 +120,7 @@
       &_text {
         padding: 3px 6px;
         border-radius: 4px;
-        background-color: var(--sand_100);
+        background-color: var(--color-neutral-surface);
         white-space: pre-wrap;
         line-break: loose;
         word-break: break-all;

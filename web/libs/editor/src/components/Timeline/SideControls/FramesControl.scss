@@ -4,16 +4,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--sand_200);
+  background: var(--color-neutral-surface);
   border-radius: 4px;
   font-weight: 500;
   font-size: 16px;
   line-height: 19px;
-  color: var(--sand_900);
+  color: var(--color-neutral-content);
   padding: 0 8px;
+  border: 1px solid var(--color-neutral-border);
 
   span {
-    opacity: 0.4;
+    color: var(--color-neutral-content-subtler);
     padding-left: 5px;
     font-weight: 400;
   }

@@ -7,6 +7,7 @@ import Registry from "../../core/Registry";
 import Tree from "../../core/Tree";
 import { guidGenerator } from "../../utils/unique";
 import { clamp } from "../../utils/utilities";
+import "./Header.scss";
 
 /**
  * The `Header` tag is used to show a header on the labeling interface.

@@ -25,7 +25,7 @@
       height: 100%;
       min-height: 2.2em; // for straight separator even on empty lines (they have wrong height)
       width: 3em; // for 4 digits
-      border-right: 1px solid lightgray;
+      border-right: 1px solid var(--color-neutral-border);
       padding-right: 4px;
       font-size: 0.8em;
       line-height: 2em; // = 1.6em as usual text

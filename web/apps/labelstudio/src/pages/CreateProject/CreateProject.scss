@@ -6,7 +6,7 @@
   overflow-y: auto;
 
   & > .modal__header {
-    border-bottom: 1px solid var(--sand_300);
+    border-bottom: 1px solid var(--color-neutral-border);
 
     & h1 {
       width: 224px;
@@ -14,6 +14,7 @@
       margin-bottom: 0;
       margin-top: 0;
       font-size: 20px;
+      color: var(--color-neutral-content);
     }
 
     & button {
@@ -40,7 +41,7 @@
       width: 8px;
       border-radius: 4px;
       margin-right: 6px;
-      background: var(--danger_color);
+      background: var(--color-negative-background);
     }
   }
 
@@ -55,6 +56,25 @@
     label {
       display: inline-flex;
       align-items: center;
+    }
+
+    input, textarea {
+      background: var(--color-neutral-background);
+      border: 1px solid var(--color-neutral-border);
+      color: var(--color-neutral-content);
+      border-radius: var(--corner-radius-smaller);
+      box-shadow: inset 0 1px 2px rgba(var(--color-neutral-shadow-raw) / 12%);
+      transition: all 150ms ease-out;
+
+      &:hover {
+        border-color: var(--color-neutral-border-bold);
+      }
+
+      &:focus, &:focus-visible {
+        border-color: var(--color-neutral-border-bolder);
+        outline: none;
+        box-shadow: 0 0 0 4px var(--color-primary-focus-outline);
+      }
     }
   }
 

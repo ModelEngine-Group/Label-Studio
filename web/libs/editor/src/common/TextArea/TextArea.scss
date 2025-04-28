@@ -1,7 +1,7 @@
 .textarea {
-  --textarea-surface-color: #FAFAFA;
+  --textarea-surface-color: var(--color-neutral-surface);
   --textarea-border-size: 1px;
-  --textarea-border-color: #DFDFDF;
+  --textarea-border-color: var(--color-neutral-border);
   --textarea-border-radius: 4px;
   --textarea-font-size: 16px;
   --textarea-line-height: 24px;
@@ -14,6 +14,7 @@
     align-items: center;
     min-height: var(--textarea-min-height) !important;
     border: var(--textarea-border-size) solid var(--textarea-border-color) !important;
+    outline-color: var(--color-primary-border) !important;
     border-radius: var(--textarea-border-radius) !important;
     background-color: var(--textarea-surface-color) !important;
     padding: var(--textarea-padding) !important;
@@ -35,4 +36,57 @@
   &_autosize {
     resize: none !important;
   }
+}
+
+:global(.ant-form-item .ant-form-item-control-input-content input) {
+  background-color: var(--color-neutral-background);
+  color: var(--color-neutral-content);
+  border-color: var(--color-neutral-border);
+  border-radius: var(--corner-radius-smaller);
+}
+
+:global(.ant-form-item .ant-form-item-control-input-content input:focus) {
+  border-color: var(--color-neutral-border-bold);
+  box-shadow: 0 0 0 4px var(--color-primary-focus-outline);
+}
+
+:global(.ant-form-item .ant-form-item-control-input-content input:focus-visible) {
+  border-color: var(--color-neutral-border-bold);
+  box-shadow: 0 0 0 4px var(--color-primary-focus-outline);
+}
+
+:global(.ant-form-item .ant-form-item-control-input-content textarea) {
+  background-color: var(--color-neutral-background);
+  color: var(--color-neutral-content);
+  border-color: var(--color-neutral-border);
+  border-radius: var(--corner-radius-smaller);
+}
+
+:global(.ant-form-item .ant-form-item-control-input-content textarea:focus) {
+  border-color: var(--color-neutral-border-bold);
+  box-shadow: 0 0 0 4px var(--color-primary-focus-outline);
+}
+
+:global(.ant-form-item .ant-form-item-control-input-content textarea:focus-visible) {
+  border-color: var(--color-neutral-border-bold);
+  box-shadow: 0 0 0 4px var(--color-primary-focus-outline);
+}
+
+:global(.ant-form-item .ant-form-item-control .ant-btn-primary) {
+  background-color: var(--color-primary-surface);
+  color: var(--color-primary-surface-content);
+  border-color: var(--color-primary-border);
+  transition: all 150ms ease-out;
+}
+
+:global(.ant-form-item .ant-form-item-control .ant-btn-primary:hover) {
+  background-color: var(--color-primary-surface-hover);
+  color: var(--color-primary-surface-content);
+  border-color: var(--color-primary-border);
+}
+
+:global(.ant-form-item .ant-form-item-control .ant-btn-primary:active) {
+  background-color: var(--color-primary-surface-active);
+  color: var(--color-primary-surface-content);
+  border-color: var(--color-primary-border);
 }

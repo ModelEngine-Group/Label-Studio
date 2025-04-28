@@ -12,6 +12,7 @@ import { errorBuilder } from "../../../core/DataValidator/ConfigValidator";
 import { TagParentMixin } from "../../../mixins/TagParentMixin";
 import { FF_DEV_3391, isFF } from "../../../utils/feature-flags";
 import { fixMobxObserve } from "../../../utils/utilities";
+import { getCurrentTheme } from "@humansignal/ui";
 
 /**
  * Channel tag can be used to label time series data
@@ -518,6 +519,7 @@ class ChannelD3 extends React.Component {
   componentDidMount() {
     if (!this.ref.current) return;
 
+    const isDarkMode = getCurrentTheme() === "Dark";
     const { data, item, range, time, column } = this.props;
     const { isDate, formatTime, formatDuration, margin, slicesCount } = item.parent;
     const height = this.height;
@@ -659,6 +661,7 @@ class ChannelD3 extends React.Component {
     main
       .append("text")
       .text(item.legend)
+      .attr("fill", isDarkMode ? "red" : "black")
       .attr("dx", "1em")
       .attr("dy", "1em")
       .attr("font-weight", "bold")

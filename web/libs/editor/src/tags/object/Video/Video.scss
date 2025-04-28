@@ -5,7 +5,7 @@
   &_fullscreen {
     display: flex;
     flex-direction: column;
-    background-color: var(--sand_0);
+    background-color: var(--color-neutral-background);
 
     &__main {
       flex: 1;
@@ -46,7 +46,7 @@
     display: flex;
     height: 32px;
     align-items: center;
-    background-color: var(--sand_0);
+    background-color: var(--color-neutral-background);
     justify-content: flex-end;
   }
 }

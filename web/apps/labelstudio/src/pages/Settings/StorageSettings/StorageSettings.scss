@@ -5,7 +5,7 @@
     font-size: 16px;
     opacity: 0.6;
     margin-bottom: 32px;
-  } 
+  }
 
   &__controls {
     display: flex;
@@ -22,7 +22,7 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    color: var(--sand_600);
+    color: var(--color-neutral-content-subtler);
   }
 
   &__submit {
@@ -39,12 +39,12 @@
   &__info {
     display: flex;
     align-items: center;
-    color: var(--danger_color);
+    color: var(--color-negative-content);
     font-size: 14px;
     line-height: 22px;
 
     &_valid {
-      color: var(--sand_600);
+      color: var(--color-neutral-content-subtler);
     }
   }
 

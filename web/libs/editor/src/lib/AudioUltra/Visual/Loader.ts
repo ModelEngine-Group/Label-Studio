@@ -23,8 +23,9 @@ export class Loader extends HTMLElement {
           z-index: 9999;
           justify-content: center;
           align-items: center;
-          background-color: var(--ls-loader-background-color, #fafafa);
+          background-color: var(--color-neutral-background);
           pointer-events: none;
+          color: var(--color-neutral-content);
         }
         :host([hidden]) {
           display: none;
@@ -61,7 +62,7 @@ export class Loader extends HTMLElement {
         .progress-bar-info {
           display: flex;
           justify-content: space-between;
-          color: var(--ls-loader-text-color, rgba(137, 128, 152, 1));
+          color: var(--color-neutral-content);
         }
         .progress-bar-text {
           display: flex;

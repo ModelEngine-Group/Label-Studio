@@ -9,7 +9,7 @@ function Command({ className, ...props }: React.ComponentProps<typeof CommandPri
     <CommandPrimitive
       data-slot="command"
       className={cn(
-        "bg-neutral-background border-neutral-border border text-popover-foreground flex h-full w-full flex-col overflow-hidden rounded-md",
+        "bg-neutral-background border-neutral-border border flex h-full w-full flex-col overflow-hidden rounded-md",
         className,
       )}
       {...props}
@@ -74,7 +74,7 @@ function CommandShortcut({ className, ...props }: React.ComponentProps<"span">) 
   return (
     <span
       data-slot="command-shortcut"
-      className={cn("text-muted-foreground ml-auto text-xs tracking-widest", className)}
+      className={cn("text-neutral-content-subtle ml-auto text-xs tracking-widest", className)}
       {...props}
     />
   );

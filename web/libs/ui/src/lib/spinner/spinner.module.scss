@@ -16,7 +16,7 @@
   height: var(--spinner-size);
   position: absolute;
   transform: translate(-50%, -50%);
-  background-color: var(--persimmon_0);
+  background-color: var(--color-neutral-background-subtle);
   box-shadow: 0 0 0 calc(var(--spinner-size) * 0.0625) var(--persimmon_400) inset, 0 0 0 calc(var(--spinner-size) * 0.0625) var(--persimmon_400);
   will-change: transform, width, height;
 

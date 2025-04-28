@@ -10,7 +10,7 @@
     z-index: 1000;
     height: 28px;
     width: 28px;
-    background-color: var(--white);
+    background-color: var(--color-neutral-background);
     box-shadow: 0 2px 5px 0 var(--black_20);
     margin: 6.5px 20px;
     border-radius: 4px;
@@ -18,10 +18,15 @@
     &:hover {
       border: none;
       filter: none;
-      background: #ebf3fc;
+      background: var(--color-primary-emphasis-subtle);
+
+      &__icon {
+        color: var(--color-neutral-content);
+      }
     }
 
     &:active {
+      color: var(--color-neutral-content);
       background: linear-gradient(0deg, var(--black_2), var(--black_2)), #FFF;
       box-shadow: 0 0 5px 0 var(--black_20);
     }
@@ -34,7 +39,7 @@
   display: flex;
   flex-direction: column;
   overflow: auto;
-  background-color: var(--white);
+  background-color: var(--color-neutral-background);
 
   &_fit {
     width: max-content;
@@ -66,7 +71,7 @@
     min-width: fit-content;
     position: relative;
     cursor: pointer;
-    background-color: var(--sand_0);
+    background-color: var(--color-neutral-background);
 
     &_disabled,
     &_loading {
@@ -75,15 +80,15 @@
     }
 
     &_even:not(.table__row_wrapper_selected) {
-      background-color: var(--sand_100);
+      background-color: var(--color-neutral-emphasis-subtle);
     }
 
     &_selected {
-      background-color: var(--grape_0);
+      background-color: var(--color-primary-emphasis);
     }
 
     &:not(.table__row_wrapper_selected):hover {
-      background-color: var(--grape_0);
+      background-color: var(--color-primary-emphasis-subtle);
     }
 
     &_highlighted:not(.table__row_wrapper_selected)::after {
@@ -111,6 +116,7 @@
     position: relative;
     overflow: hidden;
     word-break: break-word;
+    color: var(--color-neutral-content-subtler);
   }
 
   &__cell-content {
@@ -118,6 +124,7 @@
     display: flex;
     white-space: nowrap;
     align-items: center;
+    color:  var(--color-neutral-content);
 
     &_disabled {
       opacity: 0.6;

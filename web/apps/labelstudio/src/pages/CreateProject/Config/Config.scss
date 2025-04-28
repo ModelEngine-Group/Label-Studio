@@ -4,11 +4,11 @@ $scroll-width: 5px;
   &::-webkit-scrollbar {
     width: 6px;
     height: 6px;
-    background-color: var(--sand_100);
+    background-color: var(--color-neutral-border-bolder);
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: var(--sand_400);
+    background-color: var(--color-neutral-surface);
   }
 }
 
@@ -45,7 +45,7 @@ $scroll-width: 5px;
   flex-direction: column;
   padding: 16px 16px - $scroll-width 16px 20px;
   overflow-y: scroll;
-  background-color: var(--sand_0);
+  background-color: var(--color-neutral-background);
 
   &::-webkit-scrollbar {
     width: $scroll-width;
@@ -92,19 +92,22 @@ $scroll-width: 5px;
     padding: 4px 8px;
     border-radius: 4px;
     cursor: pointer;
-    color: var(--sand_600);
+    color: var(--color-neutral-content-subtler);
     font-weight: 500;
     line-height: 24px;
     display: flex;
     align-items: center;
+    transition: all 150ms ease-out;
 
-    &:hover {
-      background-color: var(--sand_100);
+    &:not(&_active):hover {
+      background-color: var(--color-primary-emphasis-subtle);
+      color: var(--color-neutral-content);
     }
 
     &_active {
-      color: var(--sand_900);
-      background-color: var(--sand_0);
+      color: var(--color-neutral-content);
+      background-color: var(--color-neutral-surface-active);
+      cursor: default;
     }
 
     svg {
@@ -139,12 +142,16 @@ $scroll-width: 5px;
     cursor: pointer;
     position: relative;
     width: 276px;
-    border: 1px solid var(--sand_300);
+    border: 1px solid var(--color-neutral-border);
     box-sizing: content-box;
+    transition: all 300ms ease-out;
+    overflow: hidden;
 
     &_active,
     &:hover {
-      box-shadow: 0 0 0 2px var(--primary_link);
+      box-shadow: 0 0 0 6px var(--color-primary-focus-outline);
+      background: var(--color-neutral-surface-hover);
+      border-color: var(--color-primary-border-bolder);
     }
 
     &:hover {
@@ -156,7 +163,8 @@ $scroll-width: 5px;
       padding: 12px;
       font-size: 14px;
       font-weight: 500;
-      border-top: 1px solid var(--sand_300);
+      border-top: 1px solid var(--color-neutral-content);
+      color: var(--color-neutral-content);
     }
 
     img {
@@ -171,12 +179,14 @@ $scroll-width: 5px;
     grid-column: 1 / span 2;
     padding: 16px 32px;
     font-size: 14px;
-    background: var(--sand_100);
+    background: var(--color-neutral-surface-inset);
     box-shadow: inset 0 1px 0 rgb(0 0 0 / 5%);
     text-align: center;
+    color: var(--color-neutral-content-subtler);
 
     & a {
-      color: var(--primary_link);
+      color: var(--color-primary-content-hover);
+      text-decoration: underline;
     }
   }
 
@@ -209,17 +219,18 @@ $scroll-width: 5px;
   font-size: 1.75rem;
   width: 100%;
   display: flex;
+  color: var(--color-neutral-content);
 }
 
 .wizard h1 a[name="config"] {
   margin-left: auto;
   font-size: 1rem;
   font-weight: 400;
-  background: var(--sand_300);
+  background: var(--color-neutral-surface-inset);
 }
 
 .wizard h1 a[name="config"]:hover {
-  background: var(--primary_link);
+  background: var(--color-primary-content);
 }
 
 .wizard h1 a[name="config"]:hover::before {
@@ -253,7 +264,7 @@ $scroll-width: 5px;
   margin-top: -6px;
 
   & a {
-    color: var(--primary_link);
+    color: var(--color-primary-content);
   }
 }
 
@@ -263,16 +274,6 @@ $scroll-width: 5px;
 
 .wizard .configure__code {
   overflow-x: hidden;
-
-  textarea,
-  :global(.react-codemirror2) {
-    flex: 1;
-    font-family: var(--font-mono);
-
-    :global(.CodeMirror) {
-      height: 100%;
-    }
-  }
 }
 
 .wizard .configure__code,
@@ -284,44 +285,55 @@ $scroll-width: 5px;
 
 .wizard .configure__visual {
   > * {
-    border-top: 1px solid var(--sand_300);
+    border-top: 1px solid var(--color-neutral-border);
     padding-top: 16px;
     margin-bottom: 16px;
+    color: var(--color-neutral-content);
+  }
+
+  a {
+    color: var(--color-primary-content);
+
+    &:hover {
+      text-decoration: underline;
+      color: var(--color-primary-content-hover);
+
+    }
+  }
+
+  input, select {
+    padding: 4px 8px;
+    font: inherit;
+    color: inherit;
+    background-color: inherit;
+    border-color: var(--color-neutral-border);
   }
 }
 
 .wizard .configure__object {
   h4 {
     margin-bottom: 8px;
+    color: var(--color-neutral-content);
   }
 
   > p {
     line-height: 32px;
+    color: var(--color-neutral-content-subtler);
   }
 
   > p.configure__object-error {
     line-height: 22px;
     margin-top: 8px;
-    color: var(--red_10);
+    color: var(--color-negative-content);
   }
 
   input {
     margin-left: 8px;
-    padding: 4px 8px;
-    line-height: 1.4em;
-    height: 40px;
-    border-radius: var(--corner-radius-smaller);
-  }
-
-  select {
-    padding: 4px 8px;
-    font: inherit;
-    border-color: var(--sand_300);
   }
 }
 
 .wizard .configure__enable_manual_columns {
-  border-bottom: 1px dashed var(--sand_300);
+  border-bottom: 1px dashed var(--color-neutral-border);
   width: fit-content;
   cursor: pointer;
 
@@ -341,10 +353,16 @@ $scroll-width: 5px;
   align-items: flex-start;
   flex: 1;
 
+  span {
+    color: var(--color-neutral-content-subtler);
+  }
+
   textarea {
     flex-grow: 1;
     margin: 8px 0;
-    border-color: var(--sand_300);
+    border-color: var(--color-neutral-border);
+    background: var(--color-neutral-surface);
+    color: var(--color-neutral-content);
     font: inherit;
   }
 }
@@ -352,6 +370,7 @@ $scroll-width: 5px;
 .wizard .configure__visual h4 {
   margin: 0;
   font-weight: 500;
+  color: var(--color-neutral-content);
 }
 
 /*** Configure Labels ***/
@@ -365,6 +384,7 @@ $scroll-width: 5px;
   h3 {
     font-size: 16px;
     margin: 0 32px 7px;
+    color: var(--color-neutral-content);
   }
 }
 
@@ -396,7 +416,7 @@ $scroll-width: 5px;
       }
 
       span {
-        background: var(--sand_100);
+        background: var(--color-neutral-background);
       }
     }
 
@@ -441,6 +461,7 @@ $scroll-width: 5px;
       padding: 0 8px;
       overflow-x: hidden;
       word-break: break-word;
+      color: var(--color-neutral-content);
     }
 
     .configure__delete-label {
@@ -455,16 +476,18 @@ $scroll-width: 5px;
       top: 0;
       left: 100%;
       height: 100%;
-      opacity: 0.3;
+      color: var(--color-negative-icon);
+      opacity: 0.8;
+      transition: all 150ms ease-out;
 
       &:hover {
-        background: var(--red_1);
+        background: var(--color-negative-emphasis-subtle);
         opacity: 1;
       }
     }
 
     &:hover {
-      background: var(--sand_100);
+      background: var(--color-neutral-surface);
 
       label::before {
         border-radius: 0;
@@ -487,11 +510,12 @@ $scroll-width: 5px;
 
   li {
     list-style: none;
-    margin: 12px 0;
+    margin: 8px 0 0 8px;
   }
 
   label {
     cursor: pointer;
+    color: var(--color-neutral-content-subtler);
   }
 
   input[type="checkbox"] {
@@ -504,25 +528,27 @@ $scroll-width: 5px;
     line-height: 1.2em;
     padding: 4px 8px;
     border-radius: 4px;
-    border: 1px solid var(--sand_300);
+    border: 1px solid var(--color-neutral-border);
   }
 }
 
 .wizard .configure__preview {
+  background-color: var(--color-neutral-surface);
   flex-grow: 10;
   min-width: 500px;
   padding: 16px 16px 0;
   overflow-y: auto;
-  border-left: 1px solid var(--sand_300);
-  background-color: var(--sand_100);
+  border-left: 1px solid var(--color-neutral-border);
   display: flex;
   flex-direction: column;
+  color: var(--color-neutral-content);
 
   @include styled-scroll;
 
   h3 {
     margin: 8px 0 16px;
     font-size: 16px;
+    color: var(--color-neutral-content);
   }
 
   iframe {
@@ -537,9 +563,9 @@ $scroll-width: 5px;
   }
 
   &-error {
-    color: var(--red_10);
-    border: 1px solid var(--danger_color);
-    background-color: var(--red_1);
+    color: var(--color-negative-content);
+    border: 1px solid var(--color-negative-border);
+    background-color: var(--color-negative-background);
     padding: 10px 15px;
     border-radius: 3px;
     margin-bottom: 16px;
@@ -565,4 +591,16 @@ $scroll-width: 5px;
 
 div[class^="App_menu"]>div {
   width: 100%;
+}
+
+:global(input.lsf-configure__add) {
+  border: 1px solid var(--color-primary-border);
+  color: var(--color-primary-content);
+  background: var(--color-neutral-background);
+  transition: all 150ms ease-out;
+}
+
+:global(input.lsf-configure__add:hover) {
+  color: var(--color-neutral-content);
+  background: var(--color-primary-emphasis-subtle);
 }

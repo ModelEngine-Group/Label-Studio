@@ -47,7 +47,6 @@ export const OrderButton = injector(({ size, ordering, view, ...rest }) => {
 
         <Button
           size={size}
-          style={{ color: "#595959" }}
           disabled={!!ordering === false}
           icon={ordering?.desc ? <IconSortUp /> : <IconSortDown />}
           onClick={() => view.setOrdering(ordering?.field)}

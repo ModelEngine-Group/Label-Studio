@@ -2,7 +2,6 @@
 {% load static %}
 
 {% block head %}
-<link rel="stylesheet" href="{{ settings.HOSTNAME }}{% static 'css/uikit.css' %}">
 <link rel="stylesheet" href="{{ settings.HOSTNAME }}{% static 'css/users.css' %}">
 {% endblock %}
 
@@ -100,38 +99,17 @@
 
 <div class="full_content">
   <div class="account-page">
+
+  <div class="forms">
     <form action="{% url 'user-detail' pk=user.pk %}" method="patch" class="user__info">
       <input type="hidden" name="_method" value="patch"/>
-
-      <header>Account info</header>
-      <ul>
-        <li class="field">
-          <label for="">E-mail</label>
-          <input type="text" class="lsf-input-ls" value="{{user.email}}" disabled />
-        </li>
-        <li class="field">
-          <label for="">First Name</label>
-          <input type="text" class="lsf-input-ls" name="first_name" value="{{user.first_name}}" />
-        </li>
-        <li class="field">
-          <label for="">Last Name</label>
-          <input type="text" class="lsf-input-ls" name="last_name" value="{{user.last_name}}" />
-        </li>
-        <li class="field">
-          <label for="">Phone</label>
-          <input type="text" class="lsf-input-ls" name="phone" value="{{user.phone}}" />
-          <!-- <span>We'll send you sms with code if you change your number</span>
-          <span class="error">Incorrect phone number!</span> -->
-        </li>
-      </ul>
-      <div class="user-some-actions">
-
-        <div class="user-pic {{ user.avatar|yesno:'can_delete,can_upload' }}">
+      <header>Your Avatar</header>
+      <div class="user-pic {{ user.avatar|yesno:'can_delete,can_upload' }}">
           <div class="userpic userpic--big">
             {% if user.avatar %}
               <img src="{{user.avatar_url}}" alt="User photo" width="92" />
             {% endif %}
-
+            
             {% if user.get_initials %}
               <span>{{user.get_initials}}</span>
             {% else %}
@@ -139,18 +117,39 @@
             {% endif %}
           </div>
 
-          <button class="lsf-button-ls lsf-button-ls_look_danger" name="delete-avatar" type="button">
-            Delete
-          </button>
+          <div class="controls">
+            <button class="lsf-button-ls lsf-button-ls_look_danger" name="delete-avatar" type="button">
+              Delete
+            </button>
 
-          <input class="file-input" type="file" name="avatar" value="Choose"
-                accept="image/png, image/jpeg, image/jpg"/>
-        </div>
+            <input class="file-input" type="file" name="avatar" value="Choose"
+                  accept="image/png, image/jpeg, image/jpg"/>
+          </div>
+      </div>
+      <header>Personal Information</header>
+      <ul>
+        <li class="field">
+          <label for="email">E-mail</label>
+          <input type="text" class="lsf-input-ls" id="email" name="email" value="{{user.email}}" disabled />
+        </li>
+        <li class="field">
+          <label for="first_name">First Name</label>
+          <input type="text" class="lsf-input-ls" id="first_name" name="first_name" value="{{user.first_name}}" />
+        </li>
+        <li class="field">
+          <label for="last_name">Last Name</label>
+          <input type="text" class="lsf-input-ls" id="last_name" name="last_name" value="{{user.last_name}}" />
+        </li>
+        <li class="field">
+          <label for="phone">Phone</label>
+          <input type="text" class="lsf-input-ls" id="phone" name="phone" value="{{user.phone}}" />
+          <!-- <span>We'll send you sms with code if you change your number</span>
+          <span class="error">Incorrect phone number!</span> -->
+        </li>
+      </ul>
+      <div class="user-some-actions">
 
-        <!-- <div class="user-activity">
-          <p>Inspect all your actions<br/>performed on the platform</p>
-          <button type="button">Activity Log<img src="" /></button>
-        </div> -->
+
       </div>
       <footer>
         <p class="secondary">Registered {{ user.date_joined|date:"M j, Y" }}, user ID {{ user.id }}</p>
@@ -252,6 +251,8 @@
 
     </form>
     {% endblock %}
+  </div>
+    
 
 
   </div>

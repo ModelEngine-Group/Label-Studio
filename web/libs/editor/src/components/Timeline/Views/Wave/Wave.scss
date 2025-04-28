@@ -2,13 +2,13 @@
 
 .wave {
   --container-edge-padding: 24px;
-  --border-color: var(--sand_300);
+  --border-color: var(--color-neutral-border);
 
   position: relative;
   user-select: none;
 
   &_compact {
-    --border-color: var(--sand_300);
+    --border-color: var(--color-neutral-border);
   }
 
   &__loader {
@@ -24,7 +24,7 @@
     justify-content: center;
     position: absolute;
     border-radius: 20px;
-    box-shadow: 0 5px 20px var(--grape_100);
+    box-shadow: 0 5px 20px var(--color-primary-surface-content-subtle);
 
     @include waiting(var(--primary_link));
 
@@ -53,10 +53,10 @@
 
     &_edge {
       &_relaxed {
-        background-color: var(--sand_100);
+        background-color: var(--color-neutral-surface);
 
       & .wave__timeline{
-        background-color: var(--sand_0);
+        background-color: var(--color-neutral-background);
       }
     }
   }
@@ -68,13 +68,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--sand_0);
+    background-color: var(--color-neutral-background);
   }
 
   &__body {
     flex: 1;
     position: relative;
-    background-color: var(--sand_100);
+    background-color: var(--color-neutral-surface);
     overflow: hidden;
   }
 
@@ -115,7 +115,7 @@
     border-radius: 2px;
     position: absolute;
     pointer-events: none;
-    background-color: var(--sand_900);
+    background-color: var(--color-neutral-inverted-background);
     transform: translate3d(-50%, 0, 0);
   }
 
@@ -141,8 +141,8 @@
       z-index: 10 !important;
 
       & > div{
-        background-color: var(--sand_900);
-        color: var(--sand_0);
+        background-color: var(--color-neutral-inverted-background);
+        color: var(--color-neutral-background);
         box-shadow: none;
       }
     }
@@ -153,7 +153,7 @@
       padding: 0 8px;
       border-radius: 4px;
       position: relative;
-      background-color: var(--sand_0);
+      background-color: var(--color-neutral-background);
       box-shadow: 0 4px 15px rgb(0 0 0 / 20%);
     }
   }

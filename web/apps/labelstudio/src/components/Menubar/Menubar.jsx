@@ -3,6 +3,7 @@ import { StaticContent } from "../../app/StaticContent/StaticContent";
 import {
   IconBook,
   IconFolder,
+  IconHome,
   IconPersonInCircle,
   IconPin,
   IconTerminal,
@@ -11,7 +12,8 @@ import {
   IconSettings,
   IconSlack,
 } from "@humansignal/icons";
-import { Userpic } from "@humansignal/ui";
+import { LSLogo } from "../../assets/images";
+import { Userpic, ThemeToggle } from "@humansignal/ui";
 import { useConfig } from "../../providers/ConfigProvider";
 import { useContextComponent, useFixedLocation } from "../../providers/RoutesProvider";
 import { useCurrentUser } from "../../providers/CurrentUser";
@@ -26,9 +28,9 @@ import "./Menubar.scss";
 import "./MenuContent.scss";
 import "./MenuSidebar.scss";
 import { FF_HOMEPAGE } from "../../utils/feature-flags";
-import { IconHome } from "@humansignal/ui";
 import { pages } from "@humansignal/app-common";
 import { isFF } from "../../utils/feature-flags";
+import { ff } from "@humansignal/core";
 
 export const MenubarContext = createContext();
 
@@ -135,7 +137,7 @@ export const Menubar = ({ enabled, defaultOpened, defaultPinned, children, onSid
         <div className={menubarClass}>
           <Dropdown.Trigger dropdown={menuDropdownRef} closeOnClickOutside={!sidebarPinned}>
             <div className={`${menubarClass.elem("trigger")} main-menu-trigger`}>
-              <img src={absoluteURL("/static/icons/logo.svg")} alt="Label Studio Logo" style={{ height: 22 }} />
+              <LSLogo className={`${menubarClass.elem("logo")}`} alt="Label Studio Logo" />
               <Hamburger opened={sidebarOpened} />
             </div>
           </Dropdown.Trigger>
@@ -145,6 +147,10 @@ export const Menubar = ({ enabled, defaultOpened, defaultPinned, children, onSid
 
             <RightContextMenu className={contextItem.mod({ right: true })} />
           </div>
+
+          <div className={menubarClass.elem("spacer").toString()} />
+
+          {ff.isActive(ff.FF_THEME_TOGGLE) && <ThemeToggle />}
 
           <Dropdown.Trigger
             ref={useMenuRef}

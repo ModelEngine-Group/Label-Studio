@@ -1,20 +1,44 @@
-/* Compiled from App.styl */
 .ls-global-error {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding-top: 15vh;
 }
+
+.ls-global-error__header {
+  position: relative;
+  width: 812px;
+}
+
+.ls-global-error__code {
+  font-size: 380px;
+  font-weight: 700;
+  color: var(--color-neutral-content);
+  user-select: none;
+  -webkit-user-select: none;
+  line-height: 1em;
+  text-align: center;
+}
+
 .ls-global-error__heidi {
   width: 812px;
+  position: absolute;
+  top: -22px;
+  left: -22px;
+  height: 100%;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .ls-global-error h1 {
   font-size: 48px;
+  color: var(--color-neutral-content);
 }
 
 .ls-global-error h2 {
   font-size: 16px;
+  color: var(--color-neutral-content);
+  font-weight: 500;
 }
 
 .ls-global-error__actions {
@@ -34,25 +58,28 @@ body > .ls-global-error .button {
   cursor: pointer;
   padding: 0 16px;
   display: inline-flex;
-  background-color: #fff;
+  background-color: var(--color-neutral-background);
   align-items: center;
   border-radius: 5px;
   text-align: center;
   text-decoration: none;
   justify-content: center;
-  color: #333;
-  box-shadow: inset 0px -1px 0px rgba(0,0,0,0.1), inset 0px 0px 0px 1px rgba(0,0,0,0.15);
+  color: var(--color-neutral-content);
+  border: 1px solid var(--color-neutral-border);
   font-weight: 500;
+  transition: all 150ms ease-out;
 }
 
 body > .ls-global-error button:hover {
-  box-shadow: rgba(0, 0, 0, 0.05) 0px 2px 4px 0px, rgba(0, 0, 0, 0.1) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.2) 0px 0px 0px 1px inset;
+  border-color: var(--color-neutral-border-bold);
 }
 
 body > .ls-global-error button.ls-global-error__primary_button {
-  background-color: #566fcf;
-  color: #fff;
+  background-color: var(--color-primary-surface);
+  color: var(--color-primary-surface-content);
+  transition: all 150ms ease-out;
 }
+
 body > .ls-global-error button.ls-global-error__primary_button:hover {
-  background-color: #4C5FA9;
+  background-color: var(--color-primary-surface-hover);
 }

@@ -1,4 +1,7 @@
 .resizer {
+  --handle-size: 1px;
+  --handle-size-hover: 2px;
+
   position: relative;
 
   & button {
@@ -8,29 +11,23 @@
     }
   }
 
-  &__content {
-    margin-left: -4px;
-    padding-inline: 4px;
-  }
-
   &__handle {
     top: 0;
     height: 100%;
     position: absolute;
-    cursor: col-resize;
+    cursor: ew-resize;
     z-index: 100;
-    right: -12px;
-    padding: 0 5px;
+    right: 0;
 
     &::before {
       top: 0;
       left: 50%;
       bottom: 0;
-      width: 1px;
+      width: var(--handle-size);
       content: "";
       z-index: 5;
       display: block;
-      background: #bdbdbd;
+      background: var(--color-neutral-border);
       position: absolute;
     }
 
@@ -42,8 +39,8 @@
     &_resizing::before {
       top: 0;
       bottom: 0;
-      background-color: var(--accent_color);
-      box-shadow: 0 0 0 1px var(--accent_color);
+      width: var(--handle-size-hover);
+      background-color: var(--color-primary-border-subtle);
     }
   }
 }

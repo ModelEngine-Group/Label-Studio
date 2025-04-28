@@ -9,6 +9,7 @@ import { rgba } from "../Common/Color";
 import type { Cursor } from "../Cursor/Cursor";
 import type { Padding } from "../Common/Style";
 import type { TimelineOptions } from "../Timeline/Timeline";
+import { getCurrentTheme } from "@humansignal/ui";
 import "./Loader";
 
 // Amount of data samples to buffer on either side of the renderable area
@@ -90,6 +91,7 @@ export class Visualizer extends Events<VisualizerEvents> {
   constructor(options: VisualizerOptions, waveform: Waveform) {
     super();
 
+    const isDarkMode = getCurrentTheme() === "Dark";
     this.wf = waveform;
     this.waveContainer = options.container;
     this.waveColor = options.waveColor ? rgba(options.waveColor) : this.waveColor;
@@ -112,9 +114,9 @@ export class Visualizer extends Events<VisualizerEvents> {
       {
         ...options.playhead,
         x: 0,
-        color: rgba("#000"),
-        fillColor: rgba("#BAE7FF"),
-        width: options.cursorWidth ?? 1,
+        color: isDarkMode ? rgba("#fff") : rgba("#000"),
+        fillColor: isDarkMode ? rgba("#fff") : rgba("#BAE7FF"),
+        width: options.cursorWidth ?? 2,
       },
       this,
       this.wf,
