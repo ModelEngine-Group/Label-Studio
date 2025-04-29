@@ -230,7 +230,7 @@ class ImportStorage(Storage):
     def iterkeys(self):
         return iter(())
 
-    def get_data(self, key):
+    def get_data(self, key) -> list[dict]:
         raise NotImplementedError
 
     def generate_http_url(self, url):
@@ -420,7 +420,7 @@ class ImportStorage(Storage):
 
             logger.debug(f'{self}: found new key {key}')
             try:
-                data = self.get_data(key)
+                tasks_data = self.get_data(key)
             except (UnicodeDecodeError, json.decoder.JSONDecodeError) as exc:
                 logger.debug(exc, exc_info=True)
                 raise ValueError(
@@ -429,26 +429,29 @@ class ImportStorage(Storage):
                     f'"Treat every bucket object as a source file"'
                 )
 
-            task = self.add_task(data, self.project, maximum_annotations, max_inner_id, self, key, link_class)
-            max_inner_id += 1
+            for task_data in tasks_data:
+                # TODO: batch this loop body with add_task -> add_tasks in a single bulk write.
+                # Also have to handle any mismatch between len(tasks_data) and settings.WEBHOOK_BATCH_SIZE
+                task = self.add_task(task_data, self.project, maximum_annotations, max_inner_id, self, key, link_class)
+                max_inner_id += 1
 
-            # update progress counters for storage info
-            tasks_created += 1
+                # update progress counters for storage info
+                tasks_created += 1
 
-            # add task to webhook list
-            tasks_for_webhook.append(task)
+                # add task to webhook list
+                tasks_for_webhook.append(task)
 
-            # settings.WEBHOOK_BATCH_SIZE
-            # `WEBHOOK_BATCH_SIZE` sets the maximum number of tasks sent in a single webhook call, ensuring manageable payload sizes.
-            # When `tasks_for_webhook` accumulates tasks equal to/exceeding `WEBHOOK_BATCH_SIZE`, they're sent in a webhook via
-            # `emit_webhooks_for_instance`, and `tasks_for_webhook` is cleared for new tasks.
-            # If tasks remain in `tasks_for_webhook` at process end (less than `WEBHOOK_BATCH_SIZE`), they're sent in a final webhook
-            # call to ensure all tasks are processed and no task is left unreported in the webhook.
-            if len(tasks_for_webhook) >= settings.WEBHOOK_BATCH_SIZE:
-                emit_webhooks_for_instance(
-                    self.project.organization, self.project, WebhookAction.TASKS_CREATED, tasks_for_webhook
-                )
-                tasks_for_webhook = []
+                # settings.WEBHOOK_BATCH_SIZE
+                # `WEBHOOK_BATCH_SIZE` sets the maximum number of tasks sent in a single webhook call, ensuring manageable payload sizes.
+                # When `tasks_for_webhook` accumulates tasks equal to/exceeding `WEBHOOK_BATCH_SIZE`, they're sent in a webhook via
+                # `emit_webhooks_for_instance`, and `tasks_for_webhook` is cleared for new tasks.
+                # If tasks remain in `tasks_for_webhook` at process end (less than `WEBHOOK_BATCH_SIZE`), they're sent in a final webhook
+                # call to ensure all tasks are processed and no task is left unreported in the webhook.
+                if len(tasks_for_webhook) >= settings.WEBHOOK_BATCH_SIZE:
+                    emit_webhooks_for_instance(
+                        self.project.organization, self.project, WebhookAction.TASKS_CREATED, tasks_for_webhook
+                    )
+                    tasks_for_webhook = []
         if tasks_for_webhook:
             emit_webhooks_for_instance(
                 self.project.organization, self.project, WebhookAction.TASKS_CREATED, tasks_for_webhook

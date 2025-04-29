@@ -1,5 +1,6 @@
 """This file and its contents are licensed under the Apache License 2.0. Please see the included NOTICE for copyright information and LICENSE for a copy of the license.
 """
+
 import json
 import logging
 
@@ -26,10 +27,15 @@ class RedisStorageMixin(models.Model):
     port = models.TextField(_('port'), null=True, blank=True, help_text='Server Port (optional)')
     password = models.TextField(_('password'), null=True, blank=True, help_text='Server Password (optional)')
     regex_filter = models.TextField(
-        _('port'), null=True, blank=True, help_text='Cloud storage regex for filtering objects'
+        _('port'),
+        null=True,
+        blank=True,
+        help_text='Cloud storage regex for filtering objects',
     )
     use_blob_urls = models.BooleanField(
-        _('use_blob_urls'), default=False, help_text='Interpret objects as BLOBs and generate URLs'
+        _('use_blob_urls'),
+        default=False,
+        help_text='Interpret objects as BLOBs and generate URLs',
     )
 
     def get_redis_connection(self, db=None, redis_config={}):
@@ -83,12 +89,32 @@ class RedisImportStorageBase(ImportStorage, RedisStorageMixin):
         for key in client.keys(path + '*'):
             yield key
 
-    def get_data(self, key):
+    def get_data(self, key) -> list[dict]:
         client = self.get_client()
-        value = client.get(key)
-        if not value:
-            return
-        return json.loads(value)
+        value_str = client.get(key)
+        if not value_str:
+            return []
+        try:
+            value = json.loads(value_str)
+            # NOTE: this validation did not previously exist, we were accepting any JSON values
+            if isinstance(value, dict):
+                return [value]
+            elif isinstance(value, list):
+                for idx, item in enumerate(value):
+                    if not isinstance(item, dict):
+                        raise ValueError(
+                            f'Error on key {key} item {idx}: For {self.__class__.__name__} your JSON file must be a dictionary with one task, or a list of dictionaries with one task each'
+                        )
+                return value
+            else:
+                raise ValueError(
+                    f'Error on key {key}: For {self.__class__.__name__} your JSON file must be a dictionary with one task, or a list of dictionaries with one task each'
+                )
+        except json.decoder.JSONDecodeError:
+            raise ValueError(
+                f"Can't import JSON-formatted tasks from {key}. If you're trying to import binary objects, "
+                f'perhaps you\'ve forgot to enable "Treat every bucket object as a source file" option?'
+            )
 
     def scan_and_create_links(self):
         return self._scan_and_create_links(RedisImportStorageLink)

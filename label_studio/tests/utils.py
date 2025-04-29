@@ -82,8 +82,9 @@ def email_mock():
         yield
 
 
+# NOTE: when using non-default sample arguments, be sure to use @pytest.mark.forked on the test, so as not to interfere with default values in other tests - this function doesn't properly clean up after itself.
 @contextmanager
-def gcs_client_mock():
+def gcs_client_mock(sample_json_contents=None, sample_blob_names=None):
     from collections import namedtuple
 
     from google.cloud import storage as google_storage
@@ -91,16 +92,21 @@ def gcs_client_mock():
     File = namedtuple('File', ['name'])
 
     class DummyGCSBlob:
-        def __init__(self, bucket_name, key, is_json):
+        def __init__(self, bucket_name, key, is_json, sample_json_contents=None):
             self.key = key
             self.bucket_name = bucket_name
             self.name = f'{bucket_name}/{key}'
             self.is_json = is_json
+            self.sample_json_contents = sample_json_contents or {
+                'str_field': 'test',
+                'int_field': 123,
+                'dict_field': {'one': 'wow', 'two': 456},
+            }
 
         def download_as_string(self):
             data = f'test_blob_{self.key}'
             if self.is_json:
-                return json.dumps({'str_field': data, 'int_field': 123, 'dict_field': {'one': 'wow', 'two': 456}})
+                return json.dumps(self.sample_json_contents)
             return data
 
         def upload_from_string(self, string):
@@ -112,46 +118,61 @@ def gcs_client_mock():
         def download_as_bytes(self):
             data = f'test_blob_{self.key}'
             if self.is_json:
-                return json.dumps({'str_field': data, 'int_field': 123, 'dict_field': {'one': 'wow', 'two': 456}})
+                return json.dumps(self.sample_json_contents)
             return data
 
     class DummyGCSBucket:
-        def __init__(self, bucket_name, is_json, **kwargs):
+        def __init__(self, bucket_name, is_json, sample_blob_names=None, sample_json_contents=None):
             self.name = bucket_name
             self.is_json = is_json
+            self.sample_blob_names = sample_blob_names
+            self.sample_json_contents = sample_json_contents
 
         def list_blobs(self, prefix, **kwargs):
             if 'fake' in prefix:
                 return []
-            return [File('abc'), File('def'), File('ghi')]
+            return [File(name) for name in self.sample_blob_names]
 
         def blob(self, key):
-            return DummyGCSBlob(self.name, key, self.is_json)
+            return DummyGCSBlob(self.name, key, self.is_json, self.sample_json_contents)
 
     class DummyGCSClient:
+        def __init__(self, sample_json_contents=None, sample_blob_names=None):
+            self.sample_json_contents = sample_json_contents
+            self.sample_blob_names = sample_blob_names or ['abc', 'def', 'ghi']
+
         def get_bucket(self, bucket_name):
             is_json = bucket_name.endswith('_JSON')
-            return DummyGCSBucket(bucket_name, is_json)
+            return DummyGCSBucket(bucket_name, is_json, self.sample_blob_names, self.sample_json_contents)
 
         def list_blobs(self, bucket_name, prefix):
             is_json = bucket_name.endswith('_JSON')
             return [
-                DummyGCSBlob(bucket_name, 'abc', is_json),
-                DummyGCSBlob(bucket_name, 'def', is_json),
-                DummyGCSBlob(bucket_name, 'ghi', is_json),
+                DummyGCSBlob(bucket_name, name, is_json, self.sample_json_contents) for name in self.sample_blob_names
             ]
 
-    with mock.patch.object(google_storage, 'Client', return_value=DummyGCSClient()):
-        yield
+    with mock.patch.object(
+        google_storage,
+        'Client',
+        side_effect=lambda *args, **kwargs: DummyGCSClient(sample_json_contents, sample_blob_names),
+    ):
+        yield google_storage
 
 
 @contextmanager
-def azure_client_mock():
+def azure_client_mock(sample_json_contents=None, sample_blob_names=None):
     from collections import namedtuple
 
     from io_storages.azure_blob import models
 
     File = namedtuple('File', ['name'])
+
+    sample_json_contents = sample_json_contents or {
+        'str_field': 'test',
+        'int_field': 123,
+        'dict_field': {'one': 'wow', 'two': 456},
+    }
+    sample_blob_names = sample_blob_names or ['abc', 'def', 'ghi']
 
     class DummyAzureBlob:
         def __init__(self, container_name, key):
@@ -168,14 +189,14 @@ def azure_client_mock():
             return f'https://storage.googleapis.com/{self.container_name}/{self.key}'
 
         def content_as_text(self):
-            return json.dumps({'str_field': str(self.key), 'int_field': 123, 'dict_field': {'one': 'wow', 'two': 456}})
+            return json.dumps(sample_json_contents)
 
     class DummyAzureContainer:
         def __init__(self, container_name, **kwargs):
             self.name = container_name
 
         def list_blobs(self, name_starts_with):
-            return [File('abc'), File('def'), File('ghi')]
+            return [File(name) for name in sample_blob_names]
 
         def get_blob_client(self, key):
             return DummyAzureBlob(self.name, key)
@@ -220,7 +241,7 @@ def redis_client_mock():
     # TODO: add mocked redis data
 
     with mock.patch.object(RedisStorageMixin, 'get_redis_connection', return_value=redis):
-        yield
+        yield redis
 
 
 def upload_data(client, project, tasks):

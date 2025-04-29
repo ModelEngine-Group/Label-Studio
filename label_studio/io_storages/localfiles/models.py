@@ -1,5 +1,6 @@
 """This file and its contents are licensed under the Apache License 2.0. Please see the included NOTICE for copyright information and LICENSE for a copy of the license.
 """
+
 import json
 import logging
 import os
@@ -27,9 +28,16 @@ logger = logging.getLogger(__name__)
 
 class LocalFilesMixin(models.Model):
     path = models.TextField(_('path'), null=True, blank=True, help_text='Local path')
-    regex_filter = models.TextField(_('regex_filter'), null=True, blank=True, help_text='Regex for filtering objects')
+    regex_filter = models.TextField(
+        _('regex_filter'),
+        null=True,
+        blank=True,
+        help_text='Regex for filtering objects',
+    )
     use_blob_urls = models.BooleanField(
-        _('use_blob_urls'), default=False, help_text='Interpret objects as BLOBs and generate URLs'
+        _('use_blob_urls'),
+        default=False,
+        help_text='Interpret objects as BLOBs and generate URLs',
     )
 
     def validate_connection(self):
@@ -70,16 +78,16 @@ class LocalFilesImportStorageBase(LocalFilesMixin, ImportStorage):
                     continue
                 yield str(file)
 
-    def get_data(self, key):
+    def get_data(self, key) -> list[dict]:
         path = Path(key)
         if self.use_blob_urls:
             # include self-hosted links pointed to local resources via
             # {settings.HOSTNAME}/data/local-files?d=<path/to/local/dir>
             document_root = Path(settings.LOCAL_FILES_DOCUMENT_ROOT)
             relative_path = str(path.relative_to(document_root))
-            return {
-                settings.DATA_UNDEFINED_NAME: f'{settings.HOSTNAME}/data/local-files/?d={quote(str(relative_path))}'
-            }
+            return [
+                {settings.DATA_UNDEFINED_NAME: f'{settings.HOSTNAME}/data/local-files/?d={quote(str(relative_path))}'}
+            ]
 
         try:
             with open(path, encoding='utf8') as f:
@@ -90,11 +98,19 @@ class LocalFilesImportStorageBase(LocalFilesMixin, ImportStorage):
                 f'perhaps you\'ve forgot to enable "Treat every bucket object as a source file" option?'
             )
 
-        if not isinstance(value, dict):
+        if isinstance(value, dict):
+            return [value]
+        elif isinstance(value, list):
+            for idx, item in enumerate(value):
+                if not isinstance(item, dict):
+                    raise ValueError(
+                        f'Error on key {key} item {idx}: For {self.__class__.__name__} your JSON file must be a dictionary with one task, or a list of dictionaries with one task each'
+                    )
+            return value
+        else:
             raise ValueError(
-                f'Error on key {key}: For {self.__class__.__name__} your JSON file must be a dictionary with one task.'
+                f'Error on key {key}: For {self.__class__.__name__} your JSON file must be a dictionary with one task, or a list of dictionaries with one task each'
             )
-        return value
 
     def scan_and_create_links(self):
         return self._scan_and_create_links(LocalFilesImportStorageLink)

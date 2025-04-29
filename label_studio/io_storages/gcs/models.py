@@ -1,5 +1,6 @@
 """This file and its contents are licensed under the Apache License 2.0. Please see the included NOTICE for copyright information and LICENSE for a copy of the license.
 """
+
 import json
 import logging
 import types
@@ -32,10 +33,15 @@ class GCSStorageMixin(models.Model):
     bucket = models.TextField(_('bucket'), null=True, blank=True, help_text='GCS bucket name')
     prefix = models.TextField(_('prefix'), null=True, blank=True, help_text='GCS bucket prefix')
     regex_filter = models.TextField(
-        _('regex_filter'), null=True, blank=True, help_text='Cloud storage regex for filtering objects'
+        _('regex_filter'),
+        null=True,
+        blank=True,
+        help_text='Cloud storage regex for filtering objects',
     )
     use_blob_urls = models.BooleanField(
-        _('use_blob_urls'), default=False, help_text='Interpret objects as BLOBs and generate URLs'
+        _('use_blob_urls'),
+        default=False,
+        help_text='Interpret objects as BLOBs and generate URLs',
     )
     google_application_credentials = models.TextField(
         _('google_application_credentials'),
@@ -174,12 +180,28 @@ class GCSImportStorageBase(GCSStorageMixin, ImportStorage):
             return_key=True,
         )
 
-    def get_data(self, key):
+    def get_data(self, key) -> list[dict]:
         if self.use_blob_urls:
-            return {settings.DATA_UNDEFINED_NAME: GCS.get_uri(self.bucket, key)}
-        return GCS.read_file(
-            client=self.get_client(), bucket_name=self.bucket, key=key, convert_to=GCS.ConvertBlobTo.JSON_DICT
+            return [{settings.DATA_UNDEFINED_NAME: GCS.get_uri(self.bucket, key)}]
+        data = GCS.read_file(
+            client=self.get_client(),
+            bucket_name=self.bucket,
+            key=key,
+            convert_to=GCS.ConvertBlobTo.JSON,
         )
+        if isinstance(data, dict):
+            return [data]
+        elif isinstance(data, list):
+            for idx, item in enumerate(data):
+                if not isinstance(item, dict):
+                    raise ValueError(
+                        f'Error on key {key} item {idx}: For {self.__class__.__name__} your JSON file must be a dictionary with one task, or a list of dictionaries with one task each'
+                    )
+            return data
+        else:
+            raise ValueError(
+                f'Error on key {key}: For {self.__class__.__name__} your JSON file must be a dictionary with one task, or a list of dictionaries with one task each'
+            )
 
     def generate_http_url(self, url):
         return GCS.generate_http_url(
