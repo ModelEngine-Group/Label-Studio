@@ -121,7 +121,7 @@ Export your brush mask labels as NumPy 2d arrays and PNG images. Each label outp
 
 ### COCO
 
-A popular machine learning format used by the [COCO dataset](http://cocodataset.org/#home) for object detection and image segmentation tasks. Supports bounding box and polygon image labeling projects that use the `RectangleLabels` or `PolygonLabels` tags.
+A popular machine learning format used by the [COCO dataset](http://cocodataset.org/#home) for object detection and image segmentation tasks. Supports bounding box and polygon image labeling projects that use the `BrushLabels`, `RectangleLabels`, or `PolygonLabels` tags.
 
 ### CoNLL2003
 
