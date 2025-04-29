@@ -1936,5 +1936,11 @@
         "module": "jwt_auth.views.LSTokenBlacklistView",
         "name": "jwt_auth:token_blacklist",
         "decorators": ""
+    },
+    {
+        "url": "/api/token/rotate/",
+        "module": "jwt_auth.views.LSAPITokenRotateView",
+        "name": "jwt_auth:token_rotate",
+        "decorators": ""
     }
 ]

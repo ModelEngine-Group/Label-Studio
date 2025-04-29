@@ -4,18 +4,22 @@ from datetime import datetime
 from core.permissions import all_permissions
 from django.utils.decorators import method_decorator
 from drf_yasg.utils import swagger_auto_schema
+from jwt_auth.auth import TokenAuthenticationPhaseout
 from jwt_auth.models import JWTSettings, LSAPIToken, TruncatedLSAPIToken
 from jwt_auth.serializers import (
     JWTSettingsSerializer,
     LSAPITokenCreateSerializer,
     LSAPITokenListSerializer,
     TokenRefreshResponseSerializer,
+    TokenRotateResponseSerializer,
 )
 from rest_framework import generics, status
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.exceptions import APIException
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import TokenBackendError, TokenError
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
 from rest_framework_simplejwt.views import TokenRefreshView, TokenViewBase
@@ -180,3 +184,40 @@ class LSTokenBlacklistView(TokenViewBase):
             return Response({'detail': 'Token is invalid or already blacklisted.'}, status=status.HTTP_404_NOT_FOUND)
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class LSAPITokenRotateView(TokenViewBase):
+    # Have to explicitly set authentication_classes here, due to how auth works in our middleware, request.user is not set
+    # properly before executing the view.
+    authentication_classes = [JWTAuthentication, TokenAuthenticationPhaseout, SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    _serializer_class = 'jwt_auth.serializers.LSAPITokenRotateSerializer'
+
+    @swagger_auto_schema(
+        tags=['JWT'],
+        operation_summary='Rotate JWT refresh token',
+        operation_description='Creates a new JWT refresh token and blacklists the current one.',
+        responses={
+            status.HTTP_200_OK: TokenRotateResponseSerializer,
+            status.HTTP_400_BAD_REQUEST: 'Invalid token or token already blacklisted',
+        },
+    )
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # Ensure the user is authenticated
+        if not request.user or not request.user.is_authenticated:
+            return Response({'detail': 'Authentication credentials were not provided or are invalid.'}, status=401)
+
+        current_token = serializer.validated_data['refresh']
+
+        # Blacklist the current token
+        try:
+            current_token.blacklist()
+        except TokenError:
+            return Response({'detail': 'Token is invalid or already blacklisted.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create a new token for the user
+        new_token = LSAPIToken.for_user(request.user)
+        return Response({'refresh': new_token.get_full_jwt()}, status=status.HTTP_200_OK)

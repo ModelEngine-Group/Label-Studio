@@ -1,6 +1,7 @@
 from jwt_auth.models import JWTSettings, LSAPIToken, TruncatedLSAPIToken
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenBlacklistSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 # Recommended implementation from JWT to support drf-yasg:
@@ -34,3 +35,20 @@ class LSAPITokenListSerializer(LSAPITokenCreateSerializer):
 
 class LSAPITokenBlacklistSerializer(TokenBlacklistSerializer):
     token_class = TruncatedLSAPIToken
+
+
+class LSAPITokenRotateSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+
+    def validate(self, data):
+        refresh = data.get('refresh')
+        try:
+            token = RefreshToken(refresh)
+        except Exception:
+            raise serializers.ValidationError('Invalid refresh token')
+        data['refresh'] = token
+        return data
+
+
+class TokenRotateResponseSerializer(serializers.Serializer):
+    refresh = serializers.CharField()

@@ -91,3 +91,47 @@ def test_create_token_after_blacklisting_previous():
     response = client.post('/api/token/')
     assert response.status_code == status.HTTP_201_CREATED
     assert 'token' in response.data
+
+
+@mock_feature_flag(flag_name='fflag__feature_develop__prompts__dia_1829_jwt_token_auth', value=True)
+@pytest.mark.django_db
+def test_rotate_token_success():
+    user = create_user_with_token_settings(api_tokens_enabled=True, legacy_api_tokens_enabled=False)
+    client = APIClient()
+    refresh = LSAPIToken()
+    client.credentials(HTTP_AUTHORIZATION=f'Bearer {refresh.access_token}')
+    client.force_authenticate(user)
+
+    # 1. Create first token
+    response = client.post('/api/token/')
+    assert response.status_code == status.HTTP_201_CREATED
+
+    # 2. Rotate the token
+    token = response.data['token']
+    response2 = client.post('/api/token/rotate/', data={'refresh': token}, format='json')
+    assert response2.status_code == status.HTTP_200_OK
+    assert 'refresh' in response2.data
+
+    # 3. The old refresh token should now be invalid
+    response3 = client.post('/api/token/rotate/', data={'refresh': token}, format='json')
+    assert response3.status_code == status.HTTP_400_BAD_REQUEST
+    assert 'detail' in response3.data or 'non_field_errors' in response3.data
+
+    # 4. The new refresh token should work for another rotation
+    new_token = response2.data['refresh']
+    response4 = client.post('/api/token/rotate/', data={'refresh': new_token}, format='json')
+    assert response4.status_code == status.HTTP_200_OK
+    assert 'refresh' in response4.data
+
+
+@mock_feature_flag(flag_name='fflag__feature_develop__prompts__dia_1829_jwt_token_auth', value=True)
+@pytest.mark.django_db
+def test_rotate_token_requires_authentication():
+    user = create_user_with_token_settings(api_tokens_enabled=True, legacy_api_tokens_enabled=False)
+    refresh = LSAPIToken.for_user(user)
+    refresh_token = refresh.get_full_jwt()
+
+    client = APIClient()
+    # No credentials set
+    response = client.post('/api/token/rotate/', data={'refresh': refresh_token}, format='json')
+    assert response.status_code in (status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN)
