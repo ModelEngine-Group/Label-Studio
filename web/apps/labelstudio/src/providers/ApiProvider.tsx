@@ -226,9 +226,12 @@ export const ApiProvider = forwardRef<ApiContextType, PropsWithChildren<any>>(({
           }
         }
 
-        if (shouldShowGlobalError && suppressError !== true) {
+        // Allow inline error handling
+        if (suppressError !== true) {
           setError(result);
+        }
 
+        if (shouldShowGlobalError && suppressError !== true) {
           let displayErrorToast: ErrorDisplayMessage | undefined;
 
           // If there are no validation errors, show a toast error

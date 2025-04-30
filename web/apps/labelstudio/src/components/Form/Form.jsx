@@ -245,7 +245,7 @@ export default class Form extends React.Component {
 
     this.setState({ lastResponse: response });
 
-    if (response === null) {
+    if (!response?.$meta?.ok) {
       this.props.onError?.();
       return false;
     }

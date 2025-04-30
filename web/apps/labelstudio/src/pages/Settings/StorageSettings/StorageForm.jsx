@@ -70,7 +70,7 @@ export const StorageForm = forwardRef(({ onSubmit, target, project, rootClass, s
         body,
       });
 
-      if (response !== null) setConnectionValid(true);
+      if (response?.$meta?.ok) setConnectionValid(true);
       else setConnectionValid(false);
     }
     setChecking(false);
