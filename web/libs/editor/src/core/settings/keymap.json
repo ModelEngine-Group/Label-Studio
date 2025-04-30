@@ -9,6 +9,14 @@
     "mac": "command+p",
     "description": "Play/pause"
   },
+  "audio:step-backward": {
+    "key": "alt+a",
+    "description": "Go one step back"
+  },
+  "audio:step-forward": {
+    "key": "alt+d",
+    "description": "Go one step forward"
+  },
   "ts:grow-left": {
     "key": "left",
     "description": "Increase region to the left"
