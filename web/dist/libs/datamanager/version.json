@@ -1,6 +1,6 @@
 {
-  "message": "fix: OPTIC-2093: Audio hotkeys for step back/forward missing (#7426)",
-  "commit": "f68405c81449605f95b7fd424589b241a240bb6f",
-  "date": "2025-04-30T16:02:48.000Z",
+  "message": "fix: OPTIC-1982: Allow any errors to be displayed inline for external connection testing (#7442)",
+  "commit": "1aab1d2bae61d309e056561953826ba0aa0c0358",
+  "date": "2025-04-30T21:53:37.000Z",
   "branch": "develop"
 }
