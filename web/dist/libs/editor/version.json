@@ -1,6 +1,6 @@
 {
-  "message": "feat: OPTIC-1217: Implement Color design tokens as CSS variables and Dark Mode (#6550)",
-  "commit": "2e8e35e16d766b02d1c4bca558ed692a8af3cb3a",
-  "date": "2025-04-28T16:46:57.000Z",
+  "message": "fix: LEAP-1957: Fix implementation of readonly behavior for controls and audio regions (#7412)",
+  "commit": "82b5176b3ad998588a2eb726a76f11272535dc9e",
+  "date": "2025-04-30T15:36:54.000Z",
   "branch": "develop"
 }
