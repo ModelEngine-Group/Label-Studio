@@ -132,12 +132,6 @@
         "decorators": ""
     },
     {
-        "url": "/projects/upload-example/",
-        "module": "projects.views.upload_example_using_config",
-        "name": "projects:project-upload-example-using-config",
-        "decorators": ""
-    },
-    {
         "url": "/api/projects/",
         "module": "projects.api.ProjectListAPI",
         "name": "projects:api:project-list",
