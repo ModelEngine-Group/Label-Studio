@@ -1,6 +1,6 @@
 {
-  "message": "fix: LEAP-1957: Fix implementation of readonly behavior for controls and audio regions (#7412)",
-  "commit": "82b5176b3ad998588a2eb726a76f11272535dc9e",
-  "date": "2025-04-30T15:36:54.000Z",
+  "message": "fix: OPTIC-2093: Audio hotkeys for step back/forward missing (#7426)",
+  "commit": "f68405c81449605f95b7fd424589b241a240bb6f",
+  "date": "2025-04-30T16:02:48.000Z",
   "branch": "develop"
 }
