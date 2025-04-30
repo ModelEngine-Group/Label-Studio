@@ -432,7 +432,7 @@ export class Regions {
     if (!this.updateable) return;
     const region = this.findRegionUnderCursor(e);
 
-    if (this.layerGroup.isVisible && region?.updateable) {
+    if (this.layerGroup.isVisible && region) {
       e.preventDefault();
       e.stopPropagation();
       region.invoke("mouseDown", [region, e]);
@@ -443,7 +443,7 @@ export class Regions {
     if (!this.updateable) return;
     const region = this.findRegionUnderCursor(e);
 
-    if (this.layerGroup.isVisible && region?.updateable) {
+    if (this.layerGroup.isVisible && region) {
       region.invoke("mouseUp", [region, e]);
     }
   };

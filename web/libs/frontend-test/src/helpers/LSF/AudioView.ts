@@ -121,6 +121,11 @@ export const AudioView = {
     cy.log(`Draw rectangle at (${x}, ${y}) of size ${width}x${height}`);
     this.drawingArea
       .scrollIntoView()
+      .trigger("mousemove", x, y, {
+        eventConstructor: "MouseEvent",
+        buttons: 1,
+        ...options,
+      })
       .trigger("mousedown", x, y, {
         eventConstructor: "MouseEvent",
         buttons: 1,

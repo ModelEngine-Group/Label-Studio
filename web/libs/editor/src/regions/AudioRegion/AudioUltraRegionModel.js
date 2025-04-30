@@ -48,8 +48,8 @@ export const AudioUltraRegionModel = types
         end: self.end,
         color: self.getColor(),
         visible: !self.hidden,
-        updateable: !self.readonly,
-        deletable: !self.readonly,
+        updateable: !self.isReadOnly(),
+        deletable: !self.isReadOnly(),
         channel: self.channel ?? 0,
       };
 

@@ -252,17 +252,15 @@ export class Segment extends Events<SegmentEvents> {
   };
 
   private mouseOver = (_: Segment, e: MouseEvent) => {
-    if (!this.updateable || !this.controller.layerGroup.isVisible) return;
+    if (!this.controller.layerGroup.isVisible) return;
     const isEdgeGrab = this.edgeGrabCheck(e);
 
     if (this.isDragging) return;
-    if (isEdgeGrab.isRightEdge || isEdgeGrab.isLeftEdge) this.switchCursor(CursorSymbol.colResize);
+    if (this.updateable && (isEdgeGrab.isRightEdge || isEdgeGrab.isLeftEdge)) this.switchCursor(CursorSymbol.colResize);
     else this.switchCursor(CursorSymbol.grab);
   };
 
   private handleMouseUp = (e: MouseEvent) => {
-    if (!this.updateable) return;
-
     if (this.isDragging) {
       this.switchCursor(CursorSymbol.grab);
       this.handleUpdateEnd();
@@ -273,7 +271,7 @@ export class Segment extends Events<SegmentEvents> {
 
     this.isDragging = false;
     this.draggingStartPosition = null;
-    this.isGrabbingEdge = { isRightEdge: false, isLeftEdge: false };
+    if (this.updateable) this.isGrabbingEdge = { isRightEdge: false, isLeftEdge: false };
     document.removeEventListener("mousemove", this.handleDrag);
     document.removeEventListener("mouseup", this.handleMouseUp);
   };
@@ -310,7 +308,7 @@ export class Segment extends Events<SegmentEvents> {
   };
 
   private mouseDown = (_: Segment, e: MouseEvent) => {
-    if (!this.updateable || !this.controller.layerGroup.isVisible) return;
+    if (!this.controller.layerGroup.isVisible) return;
     if (this.controller.isOverrideKeyPressed(e) || this.controller.isLocked) return;
     const { container } = this.visualizer;
     const scrollLeft = this.visualizer.getScrollLeft();
@@ -319,8 +317,9 @@ export class Segment extends Events<SegmentEvents> {
 
     this.bringToFront();
     this.draggingStartPosition = { grabPosition: x, start, end };
-    this.isGrabbingEdge = this.edgeGrabCheck(e);
     document.addEventListener("mouseup", this.handleMouseUp);
+    if (!this.updateable) return;
+    this.isGrabbingEdge = this.edgeGrabCheck(e);
     document.addEventListener("mousemove", this.handleDrag);
   };
 
@@ -366,7 +365,7 @@ export class Segment extends Events<SegmentEvents> {
   }
 
   handleSelected = (selected?: boolean) => {
-    if (!this.updateable || (this.isDragging && this.selected)) return;
+    if (this.isDragging && this.selected) return;
     if (this.waveform.playing) this.waveform.player.pause();
     this.selected = selected ?? !this.selected;
     this.invoke("update", [this]);

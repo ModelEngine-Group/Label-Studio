@@ -2,6 +2,7 @@ import { Rate } from "antd";
 import { inject, observer } from "mobx-react";
 import { types } from "mobx-state-tree";
 import { StarOutlined } from "@ant-design/icons";
+import { ReadOnlyControlMixin } from "../../mixins/ReadOnlyMixin";
 
 import RequiredMixin from "../../mixins/Required";
 import PerRegionMixin from "../../mixins/PerRegion";
@@ -121,6 +122,7 @@ const RatingModel = types.compose(
   ControlBase,
   ClassificationBase,
   RequiredMixin,
+  ReadOnlyControlMixin,
   PerRegionMixin,
   ...(isFF(FF_LSDV_4583) ? [PerItemMixin] : []),
   AnnotationMixin,
@@ -164,6 +166,7 @@ const HtxRating = inject("store")(
           count={Number(item.maxrating)}
           defaultValue={Number(item.defaultvalue)}
           onChange={item.setRating}
+          disabled={item.isReadOnly()}
         />
         {store.settings.enableTooltips && store.settings.enableHotkeys && item.hotkey && (
           <sup style={{ fontSize: "9px" }}>[{item.hotkey}]</sup>

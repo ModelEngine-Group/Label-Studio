@@ -26,6 +26,10 @@ export const ToolBar = {
     return this.controls.find("button");
   },
 
+  get viewAllBtn() {
+    return this.sectionOne.find('[aria-label="Compare all annotations"]');
+  },
+
   get submitBtn() {
     return this.sectionTwo.find('[aria-label="submit"]');
   },
