@@ -11,7 +11,7 @@ from io_storages.tests.factories import (
 from moto import mock_s3
 from projects.tests.factories import ProjectFactory
 from rest_framework.test import APIClient
-from tests.utils import azure_client_mock, gcs_client_mock, redis_client_mock
+from tests.utils import azure_client_mock, gcs_client_mock, mock_feature_flag, redis_client_mock
 
 
 class TestMultiTaskImport(TestCase):
@@ -26,6 +26,7 @@ class TestMultiTaskImport(TestCase):
             {'data': {'image_url': 'http://ggg.com/image2.jpg', 'text': 'Task 2 text'}},
         ]
 
+    @mock_feature_flag('fflag_feat_dia_2092_multitasks_per_storage_link', True)
     def _test_storage_import(self, storage_class, task_data, **storage_kwargs):
         """Helper to test import for a specific storage type"""
 

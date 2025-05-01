@@ -429,6 +429,9 @@ class ImportStorage(Storage):
                     f'"Treat every bucket object as a source file"'
                 )
 
+            if not flag_set('fflag_feat_dia_2092_multitasks_per_storage_link'):
+                tasks_data = tasks_data[:1]
+
             for task_data in tasks_data:
                 # TODO: batch this loop body with add_task -> add_tasks in a single bulk write.
                 # Also have to handle any mismatch between len(tasks_data) and settings.WEBHOOK_BATCH_SIZE
