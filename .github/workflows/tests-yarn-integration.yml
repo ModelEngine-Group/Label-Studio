@@ -39,7 +39,7 @@ jobs:
 
       - name: Run server
         id: run-server
-        timeout-minutes: 1
+        timeout-minutes: 2
         working-directory: ${{ env.FRONTEND_MONOREPO_DIR }}
         run: |
           set -xeuo pipefail

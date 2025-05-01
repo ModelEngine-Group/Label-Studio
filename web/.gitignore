@@ -121,3 +121,5 @@ libs/datamanager/src/examples
 libs/datamanager/e2e/output
 
 libs/datamanager/.cache
+
+dist

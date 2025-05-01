@@ -49,7 +49,7 @@ jobs:
 
       - name: Run LSF server
         id: run-lsf-server
-        timeout-minutes: 1
+        timeout-minutes: 2
         working-directory: ${{ env.FRONTEND_MONOREPO_DIR }}
         env:
           NODE_ENV: production
