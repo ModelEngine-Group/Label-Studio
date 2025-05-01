@@ -1,6 +1,7 @@
 import json
 
 import boto3
+import pytest
 from django.test import TestCase
 from io_storages.tests.factories import (
     AzureBlobImportStorageFactory,
@@ -14,6 +15,7 @@ from rest_framework.test import APIClient
 from tests.utils import azure_client_mock, gcs_client_mock, mock_feature_flag, redis_client_mock
 
 
+@pytest.mark.skip(reason='FF mocking is broken here, letting these tests run in LSE instead')
 class TestMultiTaskImport(TestCase):
     @classmethod
     def setUpTestData(cls):
