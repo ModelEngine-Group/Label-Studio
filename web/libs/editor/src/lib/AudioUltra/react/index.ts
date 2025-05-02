@@ -123,49 +123,65 @@ export const useWaveform = (
   }, []);
 
   useEffect(() => {
-    const wf = waveform.current;
+    const animationFrameId = requestAnimationFrame(() => {
+      if (!waveform.current) return;
 
-    if (wf && wf.loaded) {
-      wf.zoom = zoom;
-    }
-  }, [zoom]);
+      const isWfPlaying = waveform.current.playing ?? false;
+      if (playing !== isWfPlaying) {
+        if (playing) {
+          waveform.current.play();
+        } else {
+          waveform.current.pause();
+        }
+      }
+    });
 
-  useEffect(() => {
-    const wf = waveform.current;
-
-    if (wf && wf.loaded) {
-      wf.volume = volume;
-    }
-  }, [volume]);
-
-  useEffect(() => {
-    const wf = waveform.current;
-
-    if (wf && wf.loaded) {
-      wf.rate = rate;
-    }
-  }, [rate]);
-
-  useEffect(() => {
-    const wf = waveform.current;
-
-    if (wf && wf.loaded) {
-      wf.amp = amp;
-    }
-  }, [amp]);
-
-  useEffect(() => {
     options?.onPlaying?.(playing);
+
+    return () => cancelAnimationFrame(animationFrameId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playing]);
 
   useEffect(() => {
-    if (waveform.current) {
-      waveform.current.muted = muted;
-    }
+    const animationFrameId = requestAnimationFrame(() => {
+      if (waveform.current && waveform.current.zoom !== zoom) waveform.current.zoom = zoom;
+    });
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [zoom]);
+
+  useEffect(() => {
+    const animationFrameId = requestAnimationFrame(() => {
+      if (waveform.current && waveform.current.volume !== volume) waveform.current.volume = volume;
+    });
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [volume]);
+
+  useEffect(() => {
+    const animationFrameId = requestAnimationFrame(() => {
+      if (waveform.current && waveform.current.rate !== rate) waveform.current.rate = rate;
+    });
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [rate]);
+
+  useEffect(() => {
+    const animationFrameId = requestAnimationFrame(() => {
+      if (waveform.current && waveform.current.amp !== amp) waveform.current.amp = amp;
+    });
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [amp]);
+
+  useEffect(() => {
+    const animationFrameId = requestAnimationFrame(() => {
+      if (waveform.current && waveform.current.muted !== muted) waveform.current.muted = muted;
+    });
+    return () => cancelAnimationFrame(animationFrameId);
   }, [muted]);
 
   useEffect(() => {
-    waveform.current?.updateLabelVisibility(showLabels);
+    const animationFrameId = requestAnimationFrame(() => {
+      waveform.current?.updateLabelVisibility(showLabels);
+    });
+    return () => cancelAnimationFrame(animationFrameId);
   }, [showLabels]);
 
   return {

@@ -188,7 +188,10 @@ export class Visualizer extends Events<VisualizerEvents> {
     this.getSamplesPerPx();
     this.updateScrollFiller();
 
+    // Notify external listeners about zoom change
     this.wf.invoke("zoom", [this.zoom]);
+    //  _setScrollLeft handles the draw call.
+
     this.draw();
   }
 
@@ -197,8 +200,9 @@ export class Visualizer extends Events<VisualizerEvents> {
   }
 
   setScrollLeft(value: number, redraw = true, forceDraw = false) {
+    // Only set the DOM element scroll. Let the native 'scroll' event handler
+    // call _setScrollLeft to update internal state and trigger redraw.
     this.wrapper.scrollLeft = value * this.fullWidth;
-    this._setScrollLeft(value, redraw, forceDraw);
   }
 
   _setScrollLeft(value: number, redraw = true, forceDraw = false) {
@@ -228,7 +232,6 @@ export class Visualizer extends Events<VisualizerEvents> {
   draw(dry = false, forceDraw = false) {
     if (this.isDestroyed) return;
     if (this.drawing && !forceDraw) return warn("Concurrent render detected");
-
     this.drawing = true;
 
     setTimeout(async () => {
@@ -937,7 +940,6 @@ export class Visualizer extends Events<VisualizerEvents> {
       const zoom = this.zoom - e.deltaY * 0.2;
 
       this.setZoom(zoom);
-      this.wf.invoke("zoom", [this.zoom]);
     } else if (this.zoom > 1) {
       // Base values
       const maxScroll = this.scrollWidth;
