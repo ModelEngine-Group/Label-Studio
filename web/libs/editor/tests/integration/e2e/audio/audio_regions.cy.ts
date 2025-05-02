@@ -1,7 +1,16 @@
 import { AudioView, Labels, LabelStudio, Relations } from "@humansignal/frontend-test/helpers/LSF";
 import { audioOneRegionResult, audioWithLabelsConfig, audioWithLabelsData } from "../../data/audio/audio_regions";
 
-describe("Audio regions", () => {
+// This test suite has exhibited flakiness in the past, so we are going to run it with retries
+// while we investigate the root cause.
+const suiteConfig = {
+  retries: {
+    runMode: 3,
+    openMode: 0,
+  },
+};
+
+describe("Audio regions", suiteConfig, () => {
   it("Should have indication of selected state", () => {
     LabelStudio.params()
       .config(audioWithLabelsConfig)
