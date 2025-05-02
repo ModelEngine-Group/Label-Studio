@@ -1,7 +1,14 @@
-@import "antd/dist/antd.css";
+@import "./antd-no-reset";
 @import "./variables";
 @import "./mixins";
 @import "./functions";
+
+.root {
+  font-size: 14px;
+  font-variant: tabular-nums;
+  font-feature-settings: "tnum";
+  line-height: 1.5715;
+}
 
 .ant-divider-horizontal.ant-divider-with-text-center::before,
 .ant-divider-horizontal.ant-divider-with-text-left::before,
@@ -9,7 +16,7 @@
 .ant-divider-horizontal.ant-divider-with-text-center::after,
 .ant-divider-horizontal.ant-divider-with-text-left::after,
 .ant-divider-horizontal.ant-divider-with-text-right::after {
-  border-top-color: #cecece !important;
+  border-top-color: var(--color-neutral-border) !important;
 }
 
 .renderall {

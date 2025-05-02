@@ -13,7 +13,7 @@
         "webpackConfig": "webpack.config.js",
         "index": "libs/editor/public/index.html",
         "tsConfig": "libs/editor/tsconfig.lib.json",
-        "main": "libs/editor/src/index.js",
+        "main": "libs/editor/src/standalone.js",
         "outputPath": "dist/libs/editor",
         "isolatedConfig": true,
         "generatePackageJson": true,
@@ -91,6 +91,13 @@
       "options": {
         "cwd": "libs/editor",
         "command": "node scripts/create-docs.js ../../../docs/source/tags"
+      }
+    },
+    "extract-antd-no-reset": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node ../../tools/extract-antd-no-reset/extract-antd-no-reset.mjs",
+        "cwd": "libs/editor"
       }
     }
   }

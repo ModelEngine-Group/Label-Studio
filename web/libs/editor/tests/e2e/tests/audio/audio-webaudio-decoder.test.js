@@ -178,14 +178,14 @@ Scenario("Can select a region below a hidden region", async ({ I, LabelStudio, A
   AtOutliner.seeRegions(2);
 
   // click on the top-most region visible to select it
-  AtAudioView.clickAt(50);
+  AtAudioView.clickAt(51);
   AtOutliner.seeSelectedRegion("Noise");
 
   // hide the region
   AtOutliner.toggleRegionVisibility("Noise");
 
   // click on the region below the hidden one to select it
-  AtAudioView.clickAt(50);
+  AtAudioView.clickAt(51);
   AtOutliner.seeSelectedRegion("Speech");
 });
 

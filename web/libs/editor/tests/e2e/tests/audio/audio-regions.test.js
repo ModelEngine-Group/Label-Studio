@@ -177,14 +177,14 @@ FFlagMatrix(["fflag_feat_front_lsdv_e_278_contextual_scrolling_short"], (flags) 
       AtOutliner.seeRegions(2);
 
       // click on the top-most region visible to select it
-      AtAudioView.clickAt(50);
+      AtAudioView.clickAt(51);
       AtOutliner.seeSelectedRegion("Noise");
 
       // hide the region
       AtOutliner.toggleRegionVisibility("Noise");
 
       // click on the region below the hidden one to select it
-      AtAudioView.clickAt(50);
+      AtAudioView.clickAt(51);
       AtOutliner.seeSelectedRegion("Speech");
     });
 
@@ -217,7 +217,7 @@ FFlagMatrix(["fflag_feat_front_lsdv_e_278_contextual_scrolling_short"], (flags) 
         AtOutliner.seeRegions(2);
 
         // click on the top-most region visible to select it
-        AtAudioView.clickAt(50);
+        AtAudioView.clickAt(51);
         AtOutliner.seeSelectedRegion("Noise");
 
         // Select the bottom most region to bring it to the top
@@ -225,12 +225,12 @@ FFlagMatrix(["fflag_feat_front_lsdv_e_278_contextual_scrolling_short"], (flags) 
         AtOutliner.seeSelectedRegion("Speech");
 
         // click on the overlapping region will deselect it, which shows that it is now the top in the list
-        AtAudioView.clickAt(50);
+        AtAudioView.clickAt(51);
         AtOutliner.dontSeeSelectedRegion("Speech");
         AtOutliner.dontSeeSelectedRegion("Noise");
 
         // click on the overlapping region will select the top item of the list, which will now be the item which was brought to the front by the original interaction.
-        AtAudioView.clickAt(50);
+        AtAudioView.clickAt(51);
         AtOutliner.seeSelectedRegion("Speech");
       },
     );

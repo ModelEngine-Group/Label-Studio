@@ -61,9 +61,9 @@ async function testRegion(testType, toolAccelerator, I, LabelStudio, AtImageView
   await doDrawingAction(I, {
     msg: `Initial ${testType}`,
     fromX: OUTLINER_PANEL_WIDTH + 150,
-    fromY: 110,
+    fromY: 115,
     toX: OUTLINER_PANEL_WIDTH + 150 + 50,
-    toY: 110 + 50,
+    toY: 115 + 50,
   });
 
   I.say("There should now be a single region");

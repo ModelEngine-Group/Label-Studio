@@ -34,6 +34,7 @@
     "test:watch:affected": "yarn test --watch",
     "postinstall": "npx -y copy-files-from-to",
     "design-tokens": "nx design-tokens ui",
+    "extract-antd-no-reset": "nx extract-antd-no-reset editor",
     "storybook:serve": "nx storybook storybook",
     "storybook:build": "nx build-storybook storybook"
   },

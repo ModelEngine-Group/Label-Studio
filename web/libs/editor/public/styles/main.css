@@ -57,6 +57,15 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 2px;
+}
+.footer a {
+  line-height: 24px;
+  color: var(--color-primary-content);
+  text-decoration: inherit;
+}
+.footer a:hover {
+  color: var(--color-primary-content-hover);
 }
 
 #header {

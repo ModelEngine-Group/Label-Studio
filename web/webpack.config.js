@@ -169,7 +169,7 @@ module.exports = composePlugins(
 
           // we also don't need css modules as these are used directly
           // in the code and don't need prefixing
-          if (testString.match(/module|raw/)) return false;
+          if (testString.match(/module|raw|antd/)) return false;
 
           // we only target pre-processors that has 'css-loader included'
           return testString.match(/scss|sass/) && r.use.some((u) => u.loader && u.loader.includes("css-loader"));
