@@ -1637,7 +1637,7 @@
     },
     "fflag_feat_all_optic_1811_automax_project_setup_streaming": {
       "key": "fflag_feat_all_optic_1811_automax_project_setup_streaming",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -1659,7 +1659,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 2,
+      "version": 3,
       "deleted": false
     },
     "fflag_feat_all_optic_520_annotator_report_short": {
