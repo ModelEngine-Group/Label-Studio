@@ -128,6 +128,10 @@ export const AppStore = types
     get currentFilter() {
       return self.currentView.filterSnapshot;
     },
+
+    get usersMap() {
+      return new Map(self.users.map((user) => [user.id, user]));
+    },
   }))
   .volatile(() => ({
     needsDataFetch: false,
@@ -290,7 +294,7 @@ export const AppStore = types
       try {
         self.annotationStore.unset();
         self.taskStore.unset();
-      } catch (e) {
+      } catch (_e) {
         /* Something weird */
       }
 
