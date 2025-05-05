@@ -1,5 +1,3 @@
-version: "3.9"
-
 # rotating logs so they do not overflow
 x-logging:
   logging: &default-logging
@@ -11,7 +9,7 @@ x-logging:
 services:
   # not replicated setup for test setup, use a proper aws S3 compatible cluster in production
   minio:
-    image: quay.io/minio/minio:RELEASE.2024-02-13T15-35-11Z
+    image: "minio/minio:${MINIO_VERSION:-RELEASE.2025-04-22T22-12-26Z}"
     command: server /data --console-address ":9009"
     restart: unless-stopped
     logging: *default-logging
