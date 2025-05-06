@@ -1,5 +1,6 @@
 import { observer } from "mobx-react";
 import { FilterDropdown } from "../FilterDropdown";
+import { useMemo } from "react";
 // import { Common } from "./Common";
 
 function defaultFilterItems(items) {
@@ -10,13 +11,12 @@ export const VariantSelect = observer(({ filter, schema, onChange, multiple, val
   if (!schema) return <></>;
   const { items } = schema;
 
-  const selectedValue = (() => {
+  const selectedValue = useMemo(() => {
     if (!multiple) {
       return Array.isArray(value) ? value[0] : value;
     }
     return Array.isArray(value) ? value : (value ?? []);
-  })();
-
+  }, [multiple, value]);
   const filterItems = filter.cellView?.filterItems || defaultFilterItems;
   const FilterItem = filter.cellView?.FilterItem;
   return (

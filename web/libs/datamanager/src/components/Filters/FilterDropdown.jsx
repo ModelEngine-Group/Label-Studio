@@ -19,7 +19,11 @@ export const FilterDropdown = observer(
   }) => {
     const parseItems = useCallback(
       (item) => {
-        const OptionVisuals = optionRender;
+        const OptionVisuals =
+          optionRender ??
+          (() => {
+            return <>{item?.label ?? item?.title ?? item?.value ?? item}</>;
+          });
         const option =
           typeof item === "string" || typeof item === "number"
             ? { label: <OptionVisuals item={item} />, value: item, original: item }
