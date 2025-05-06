@@ -16,6 +16,39 @@ import { IconChevron, IconChevronDown } from "@humansignal/icons";
 import clsx from "clsx";
 import styles from "./select.module.scss";
 
+/*
+ * This file defines a custom Select component for the Design System, which uses a fully custom UI for
+ * dropdowns and options.
+ *
+ * Despite being fully customized, there needs to be a native HTML <select> element in this component for
+ * the following reasons:
+ *
+ * 1. Form Compatibility & Accessibility:
+ *    - Ensures selected value(s) are included in standard HTML form submissions via the 'name' attribute.
+ *    - Improves compatibility with non-React systems and libraries that expect real form fields.
+ *    - Aids accessibility: screen readers and assistive technologies can interact with native form
+ *      elements more reliably.
+ *
+ * 2. Browser Autofill and Validation:
+ *    - Allows browsers to recognize, autofill, and validate the field as a standard form element.
+ *
+ * 3. Preventing React Warnings:
+ *    - Prevents React from warning about uncontrolled to controlled component transitions by keeping the
+ *      <select> controlled.
+ *
+ * 4. Hidden Input for Value Sync:
+ *    - The <select> is visually hidden but kept in sync with the custom UI, ensuring the value is always
+ *      available in the DOM for form libraries, browser extensions, or other integrations.
+ *
+ * 5. Multiple Selection Support:
+ *    - When 'multiple' is true, the <select> can represent multiple selected values, which is the
+ *      standard way to submit multiple selections in a form.
+ *
+ * In summary, the native <select> acts as a bridge between the custom UI and the expectations of the
+ * broader web platform, ensuring seamless integration with forms, browser features, and accessibility
+ * tools.
+ */
+
 export const Select = forwardRef(
   <T, A extends SelectOption<T>[]>(
     {
@@ -316,9 +349,10 @@ export const Select = forwardRef(
           ref={ref}
           disabled={disabled}
           className={styles.valueInput}
+          onChange={() => {}} // Prevents the React uncontrolled select component warning message
         >
           {selectedOptions?.map((option, index) => (
-            <option key={`${option?.value}_${index}`} value={option?.value ?? option} selected />
+            <option key={`${option?.value}_${index}`} value={option?.value ?? option} />
           ))}
         </select>
       </Popover>
