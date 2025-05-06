@@ -1,4 +1,6 @@
 import factory
+from core.utils.common import load_func
+from django.conf import settings
 from io_storages.base_models import ImportStorage, ProjectStorageMixin
 from io_storages.models import AzureBlobImportStorage, GCSImportStorage, RedisImportStorage, S3ImportStorage
 
@@ -19,7 +21,7 @@ class ImportStorageFactory(StorageFactory):
 
 
 class ProjectStorageMixinFactory(factory.django.DjangoModelFactory):
-    project = factory.SubFactory('projects.tests.factories.ProjectFactory')
+    project = factory.SubFactory(load_func(settings.PROJECT_FACTORY))
 
     class Meta:
         model = ProjectStorageMixin

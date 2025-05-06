@@ -606,6 +606,10 @@ PROJECT_IMPORT_PERMISSION = 'projects.permissions.ProjectImportPermission'
 DELETE_TASKS_ANNOTATIONS_POSTPROCESS = None
 FEATURE_FLAGS_GET_USER_REPR = 'core.feature_flags.utils.get_user_repr'
 
+# Test factories
+PROJECT_FACTORY = 'projects.tests.factories.ProjectFactory'
+USER_FACTORY = 'users.tests.factories.UserFactory'
+
 
 def project_delete(project):
     project.delete()
