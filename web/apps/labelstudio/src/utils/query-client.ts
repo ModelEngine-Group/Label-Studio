@@ -1,9 +1,1 @@
-import { QueryClient } from "@tanstack/react-query";
-
-export const LSQueryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+export { queryClient } from "@humansignal/core/lib/utils/query-client";

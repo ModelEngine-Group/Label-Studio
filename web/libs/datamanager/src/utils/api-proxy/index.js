@@ -11,6 +11,8 @@
 
 import { formDataToJPO, parseJson } from "../helpers";
 import statusCodes from "./status-codes.json";
+import { queryClient, shouldBypassCache } from "@humansignal/core/lib/utils/query-client";
+import { FF_MEMBERS_MANAGER_API_CACHE, isFF } from "@humansignal/core/lib/utils/feature-flags";
 
 /**
  * @typedef {Dict<string, EndpointConfig>} Endpoints
@@ -155,7 +157,13 @@ export class APIProxy {
       let responseMeta;
       const alwaysExpectJSON = options?.alwaysExpectJSON === undefined ? true : options.alwaysExpectJSON;
 
-      let shouldUseQueryCache = false;
+      /**
+       * Object to be used to control the cache for the request
+       * @type {Object}
+       * @property {number} [staleTime]
+       * @property {string} [keyPrefix]
+       */
+      let queryCacheParams = null;
       try {
         const finalParams = {
           ...(methodSettings.params ?? {}),
@@ -163,21 +171,18 @@ export class APIProxy {
           ...(this.sharedParams ?? {}),
         };
 
-        if (finalParams.__useQueryCache && methodSettings.queryCache) {
-          shouldUseQueryCache = true;
+        const { __useQueryCache, ...paramsForRequest } = finalParams;
 
-          const cachedData = methodSettings.queryCache(finalParams);
-
-          if (cachedData) {
-            return cachedData;
-          }
-
-          delete finalParams.__useQueryCache;
+        if (__useQueryCache) {
+          queryCacheParams = {
+            staleTime: __useQueryCache.staleTime ?? undefined,
+            keyPrefix: __useQueryCache.prefixKey ?? methodSettings.path,
+          };
         }
 
         const { method, url: apiCallURL } = this.createUrl(
           methodSettings.path,
-          finalParams,
+          paramsForRequest,
           parentPath,
           methodSettings.gateway,
         );
@@ -200,95 +205,104 @@ export class APIProxy {
           credentials: this.requestMode === "cors" ? "omit" : "same-origin",
         };
 
-        if (requestMethod !== "GET") {
-          const contentType = requestHeaders.get("Content-Type");
-          const { sharedParams } = this;
-          const extendedBody = body ?? {};
+        // Helper to perform the actual fetch (mock or real)
+        const doFetch = async () => {
+          if (requestMethod !== "GET" && requestMethod !== "HEAD") {
+            const contentType = requestHeaders.get("Content-Type");
+            const { sharedParams } = this;
+            const extendedBody = body ?? {};
 
-          if (extendedBody instanceof FormData) {
-            Object.entries(sharedParams ?? {}).forEach(([key, value]) => {
-              extendedBody.append(key, value);
-            });
-          } else {
-            Object.assign(extendedBody, {
-              ...(sharedParams ?? {}),
-              ...(body ?? {}),
-            });
-          }
-
-          if (extendedBody instanceof FormData) {
-            requestParams.body = extendedBody;
-          } else if (contentType === "multipart/form-data") {
-            requestParams.body = this.createRequestBody(extendedBody);
-          } else if (contentType === "application/json") {
-            requestParams.body = this.bodyToJSON(extendedBody);
-          } else {
-            requestParams.body = extendedBody;
-          }
-
-          // @todo better check for files maybe?
-          if (contentType === "multipart/form-data") {
-            // fetch will set correct header with boundaries
-            requestHeaders.delete("Content-Type");
-          }
-        }
-
-        /** @type {Response} */
-        let rawResponse;
-
-        if (methodSettings.mock && process.env.NODE_ENV === "development" && !this.mockDisabled) {
-          rawResponse = await this.mockRequest(apiCallURL, urlParams, requestParams, methodSettings);
-        } else {
-          rawResponse = await fetch(apiCallURL, requestParams);
-        }
-
-        if (raw || rawResponse.isCanceled) return rawResponse;
-
-        responseMeta = {
-          headers: new Map(Array.from(rawResponse.headers)),
-          status: rawResponse.status,
-          url: rawResponse.url,
-        };
-
-        if (rawResponse.ok && rawResponse.status !== 401) {
-          const responseText = await rawResponse.text();
-
-          try {
-            const responseData =
-              rawResponse.status !== 204
-                ? parseJson(this.alwaysExpectJSON && alwaysExpectJSON ? responseText : responseText || "{}")
-                : { ok: true };
-
-            if (methodSettings.convert instanceof Function) {
-              const convertedData = await methodSettings.convert(responseData);
-
-              if (shouldUseQueryCache) {
-                methodSettings.queryCache(finalParams, convertedData);
-              }
-
-              return convertedData;
+            if (extendedBody instanceof FormData) {
+              Object.entries(sharedParams ?? {}).forEach(([key, value]) => {
+                extendedBody.append(key, value);
+              });
+            } else {
+              Object.assign(extendedBody, {
+                ...(sharedParams ?? {}),
+                ...(body ?? {}),
+              });
             }
 
-            responseResult = responseData;
-          } catch (err) {
-            responseResult = this.generateException(err, responseText);
+            if (extendedBody instanceof FormData) {
+              requestParams.body = extendedBody;
+            } else if (contentType === "multipart/form-data") {
+              requestParams.body = this.createRequestBody(extendedBody);
+            } else if (contentType === "application/json") {
+              requestParams.body = this.bodyToJSON(extendedBody);
+            } else {
+              requestParams.body = extendedBody;
+            }
+
+            // @todo better check for files maybe?
+            if (contentType === "multipart/form-data") {
+              // fetch will set correct header with boundaries
+              requestHeaders.delete("Content-Type");
+            }
           }
-        } else {
-          responseResult = await this.generateError(rawResponse);
+
+          /** @type {Response} */
+          let rawResponse;
+
+          if (methodSettings.mock && process.env.NODE_ENV === "development" && !this.mockDisabled) {
+            rawResponse = await this.mockRequest(apiCallURL, urlParams, requestParams, methodSettings);
+          } else {
+            rawResponse = await fetch(apiCallURL, requestParams);
+          }
+
+          if (raw || rawResponse.isCanceled) return rawResponse;
+
+          responseMeta = {
+            headers: new Map(Array.from(rawResponse.headers)),
+            status: rawResponse.status,
+            url: rawResponse.url,
+          };
+
+          if (rawResponse.ok && rawResponse.status !== 401) {
+            const responseText = await rawResponse.text();
+
+            try {
+              const responseData =
+                rawResponse.status !== 204
+                  ? parseJson(this.alwaysExpectJSON && alwaysExpectJSON ? responseText : responseText || "{}")
+                  : { ok: true };
+
+              if (methodSettings.convert instanceof Function) {
+                const convertedData = await methodSettings.convert(responseData);
+
+                return convertedData;
+              }
+
+              responseResult = responseData;
+            } catch (err) {
+              responseResult = this.generateException(err, responseText);
+            }
+          } else {
+            responseResult = await this.generateError(rawResponse);
+          }
+
+          Object.defineProperty(responseResult, "$meta", {
+            value: responseMeta,
+            configurable: false,
+            enumerable: false,
+            writable: false,
+          });
+
+          return responseResult;
+        };
+
+        // Use TanStack Query cache for GET requests only if queryCacheParams is present
+        if (isFF(FF_MEMBERS_MANAGER_API_CACHE) && requestMethod === "GET" && queryCacheParams) {
+          const cacheKey = [queryCacheParams.keyPrefix, paramsForRequest];
+          return queryClient.fetchQuery({
+            queryKey: cacheKey,
+            queryFn: doFetch,
+            staleTime: shouldBypassCache ? undefined : queryCacheParams.staleTime,
+          });
         }
+        // Non-GET requests or no __useQueryCache: no cache
+        return doFetch();
       } catch (exception) {
         responseResult = this.generateException(exception);
-      }
-
-      Object.defineProperty(responseResult, "$meta", {
-        value: responseMeta,
-        configurable: false,
-        enumerable: false,
-        writable: false,
-      });
-
-      if (shouldUseQueryCache) {
-        methodSettings.queryCache(finalParams, responseResult);
       }
 
       return responseResult;

@@ -547,7 +547,12 @@ export const AppStore = types
     }),
 
     fetchUsers: flow(function* () {
-      const list = yield self.apiCall("users", { __useQueryCache: 60 * 1000 });
+      const list = yield self.apiCall("users", {
+        __useQueryCache: {
+          prefixKey: "organizationMembers",
+          staleTime: 60 * 1000,
+        },
+      });
 
       self.users.push(...list);
     }),
