@@ -18,7 +18,7 @@ export const Dropdown = React.forwardRef(({ animated = true, visible = false, ..
   const { triggerRef } = React.useContext(DropdownContext) ?? {};
   const isInline = triggerRef === undefined;
 
-  const { children, align, openUpwardForShortViewport } = props;
+  const { children, align, openUpwardForShortViewport, constrainHeight = false } = props;
   const [currentVisible, setVisible] = React.useState(visible);
   const [offset, setOffset] = React.useState({});
   const [visibility, setVisibility] = React.useState(visible ? "visible" : null);
@@ -31,11 +31,12 @@ export const Dropdown = React.forwardRef(({ animated = true, visible = false, ..
       dropdownEl,
       align ?? "bottom-left",
       0,
+      constrainHeight,
       openUpwardForShortViewport ?? true,
     );
 
     setOffset({ left, top });
-  }, [triggerRef]);
+  }, [triggerRef, align, openUpwardForShortViewport, constrainHeight]);
 
   const dropdownIndex = React.useMemo(() => {
     return lastIndex++;
