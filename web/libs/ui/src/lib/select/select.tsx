@@ -74,6 +74,7 @@ export const Select = forwardRef(
       onSearch,
       selectedValueRenderer,
       selectFirstIfEmpty,
+      renderSelected,
       ...props
     }: SelectProps<T, A>,
     _ref: ForwardedRef<HTMLSelectElement>,
@@ -191,6 +192,32 @@ export const Select = forwardRef(
       setValue(defaultValue);
     }, [selectedOptions, defaultValue]);
 
+    const displayValue = useMemo(() => {
+      return (
+        <>
+          {selectedOptions?.length ? (
+            <>
+              {selectedOptions?.map((option, index) => {
+                if (selectedValueRenderer) {
+                  return (
+                    <React.Fragment key={`${option?.value}_${index}`}>{selectedValueRenderer(option)}</React.Fragment>
+                  );
+                }
+                const optionValue = option?.value ?? option;
+                return (
+                  <span key={`${optionValue}_${index}`} className="truncate only:w-full">
+                    {option?.label ?? optionValue}
+                  </span>
+                );
+              })}
+            </>
+          ) : (
+            <span className="truncate w-full">{props?.placeholder ?? ""}</span>
+          )}
+        </>
+      );
+    }, [selectedOptions, props?.placeholder, selectedValueRenderer]);
+
     const combobox = (
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild={true} disabled={disabled}>
@@ -219,27 +246,7 @@ export const Select = forwardRef(
               className="flex flex-1 text-left gap-2 max-w-full w-[calc(100%-1rem-0.5rem)]"
               data-testid="select-display-value"
             >
-              {selectedOptions?.length ? (
-                <>
-                  {selectedOptions?.map((option, index) => {
-                    if (selectedValueRenderer) {
-                      return (
-                        <React.Fragment key={`${option?.value}_${index}`}>
-                          {selectedValueRenderer(option)}
-                        </React.Fragment>
-                      );
-                    }
-                    const optionValue = option?.value ?? option;
-                    return (
-                      <span key={`${optionValue}_${index}`} className="truncate only:w-full">
-                        {option?.label ?? optionValue}
-                      </span>
-                    );
-                  })}
-                </>
-              ) : (
-                <span className="truncate w-full">{props?.placeholder ?? ""}</span>
-              )}
+              {renderSelected ? renderSelected?.(selectedOptions, props?.placeholder) : displayValue}
             </span>
             {isOpen ? (
               <IconChevron className="h-4 w-4 shrink-0 opacity-50 pointer-events-none" />
