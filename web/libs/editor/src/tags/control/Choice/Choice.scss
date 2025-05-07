@@ -18,8 +18,8 @@
     line-height: 40px;
   }
 
-  &_leaf &_hidden,
-  &_notLeaf &_hidden {
+  @at-root #{selector-append(&,_leaf,&,_hidden)},
+  #{selector-append(&,_notLeaf,&,_hidden)} {
     display: none;
   }
 
