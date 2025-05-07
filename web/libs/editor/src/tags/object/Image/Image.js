@@ -606,15 +606,15 @@ const Model = types
       if (ff.isActive(FF_DEV_3391) && !self.annotation) {
         return;
       }
-      if (self.selectioncontrol) manager.addTool("MoveTool", Tools.Selection.create({}, env));
+      if (self.selectioncontrol) manager.addTool("MoveTool", Tools.Selection.create({}, env), "MoveTool");
 
-      if (self.zoomcontrol) manager.addTool("ZoomPanTool", Tools.Zoom.create({}, env));
+      if (self.zoomcontrol) manager.addTool("ZoomPanTool", Tools.Zoom.create({}, env), "ZoomPanTool");
 
-      if (self.brightnesscontrol) manager.addTool("BrightnessTool", Tools.Brightness.create({}, env));
+      if (self.brightnesscontrol) manager.addTool("BrightnessTool", Tools.Brightness.create({}, env), "BrightnessTool");
 
-      if (self.contrastcontrol) manager.addTool("ContrastTool", Tools.Contrast.create({}, env));
+      if (self.contrastcontrol) manager.addTool("ContrastTool", Tools.Contrast.create({}, env), "ContrastTool");
 
-      if (self.rotatecontrol) manager.addTool("RotateTool", Tools.Rotate.create({}, env));
+      if (self.rotatecontrol) manager.addTool("RotateTool", Tools.Rotate.create({}, env), "RotateTool");
 
       createImageEntities();
     }
