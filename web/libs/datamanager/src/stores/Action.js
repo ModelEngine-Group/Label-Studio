@@ -13,6 +13,8 @@ const ActionFormField = types.model("ActionForm", {
   value: types.maybeNull(types.union(types.string, types.array(types.string))),
   options: types.maybeNull(types.union(types.array(types.string), types.array(SelectOptions))),
   type: types.enumeration(["input", "number", "checkbox", "radio", "toggle", "select", "range"]),
+  searchable: types.optional(types.boolean, false),
+  placeholder: types.optional(types.string, ""),
 });
 
 const ActionFormCoulmn = types.model("ActionFormCoulmn", {
