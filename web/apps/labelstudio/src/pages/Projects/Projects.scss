@@ -31,7 +31,8 @@
   }
 
   &__pages {
-    background-color: transparent;
+    background: var(--color-neutral-background);
+    border-top: 1px solid var(--color-neutral-border);
     bottom: 0;
     width: 100%;
     position: sticky;
