@@ -117,8 +117,8 @@ class OrganizationMemberListAPI(generics.ListAPIView):
     pagination_class = OrganizationMemberListPagination
 
     def _get_created_projects_map(self):
-        members = self.get_queryset()
-        user_ids = members.values_list('user_id', flat=True)
+        members = self.paginate_queryset(self.filter_queryset(self.get_queryset()))
+        user_ids = [member.user_id for member in members]
         projects = (
             Project.objects.filter(created_by_id__in=user_ids, organization=self.request.user.active_organization)
             .values('created_by_id', 'id', 'title')
@@ -135,24 +135,29 @@ class OrganizationMemberListAPI(generics.ListAPIView):
         return projects_map
 
     def _get_contributed_to_projects_map(self):
-        members = self.get_queryset()
-        user_ids = members.values_list('user_id', flat=True)
-        projects = (
-            Annotation.objects.filter(
-                completed_by__in=user_ids, project__organization=self.request.user.active_organization
-            )
-            .values('completed_by', 'project__id', 'project__title')
+        members = self.paginate_queryset(self.filter_queryset(self.get_queryset()))
+        user_ids = [member.user_id for member in members]
+        org_project_ids = Project.objects.filter(organization=self.request.user.active_organization).values_list(
+            'id', flat=True
+        )
+        annotations = (
+            Annotation.objects.filter(completed_by__in=list(user_ids), project__in=list(org_project_ids))
+            .values('completed_by', 'project_id')
             .distinct()
         )
-        projects_map = {}
-        for project in projects:
-            projects_map.setdefault(project['completed_by'], []).append(
+        project_ids = [annotation['project_id'] for annotation in annotations]
+        projects_map = Project.objects.in_bulk(id_list=project_ids, field_name='id')
+
+        contributed_to_projects_map = {}
+        for annotation in annotations:
+            project = projects_map[annotation['project_id']]
+            contributed_to_projects_map.setdefault(annotation['completed_by'], []).append(
                 {
-                    'id': project['project__id'],
-                    'title': project['project__title'],
+                    'id': project.id,
+                    'title': project.title,
                 }
             )
-        return projects_map
+        return contributed_to_projects_map
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
