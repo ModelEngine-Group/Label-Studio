@@ -54,6 +54,5 @@ def get_storage_by_url(url: Union[str, List, Dict], storage_objects: Iterable[Im
         for storage_object in storage_objects:
             if storage_object.can_resolve_url(url):
                 # note: only first found storage_object will be used for link resolving
-                # probably we need to use more advanced can_resolve_url mechanics
-                # that takes into account not only prefixes, but bucket path too
+                # can_resolve_url now checks both the scheme and the bucket to ensure the correct storage is used
                 return storage_object

@@ -185,3 +185,28 @@ The Storage Proxy API behavior can be configured using the following environment
 | `RESOLVER_PROXY_CACHE_TIMEOUT` | Cache TTL in seconds for proxy responses | 3600 |
 
 These optimizations ensure that the Proxy API remains responsive and resource-efficient, even when handling large files or many concurrent requests.
+
+## Multiple Storages and URL Resolving
+
+There are use cases where multiple storages can/must be used in a single project. This can cause some confusion as to which storage gets used when. Here are some common cases and how to set up mutliple storages properly.
+
+### Case 1 - Tasks Referencing Other Buckets
+* bucket-A containing JSON tasks
+* bucket-B containing images/text/other data
+* Tasks synced from bucket-A have references to data in bucket-B
+
+##### How To Setup
+* Add storage 1 for bucket-A
+* Add storage 2 for bucket-B (might be same or different credentials than bucket-A)
+* Sync storage 1
+* All references to data in bucket-B will be resolved using storage 2 automatically
+
+### Case 2 - Buckets with Different Credentials
+* bucket-A accessible by credentials 1
+* bucket-B accessible by credentials 2
+
+##### How To Setup
+* Add storage 1 for bucket-A with credentials 1
+* Add storage 2 for bucket-B with credentials 2
+* Sync both storages
+* The appropriate storage will be used to resolve urls/generate presigned URLs

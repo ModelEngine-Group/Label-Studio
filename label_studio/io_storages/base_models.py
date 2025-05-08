@@ -27,7 +27,7 @@ from django.shortcuts import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django_rq import job
-from io_storages.utils import get_uri_via_regex
+from io_storages.utils import get_uri_via_regex, parse_bucket_uri
 from rq.job import Job
 from tasks.models import Annotation, Task
 from tasks.serializers import AnnotationSerializer, PredictionSerializer
@@ -255,8 +255,19 @@ class ImportStorage(Storage):
             return False
         # TODO: Search for occurrences inside string, e.g. for cases like "gs://bucket/file.pdf" or "<embed src='gs://bucket/file.pdf'/>"
         _, prefix = get_uri_via_regex(url, prefixes=(self.url_scheme,))
-        if prefix == self.url_scheme:
-            return True
+        bucket_uri = parse_bucket_uri(url, self)
+
+        # If there is a prefix and the bucket matches the storage's bucket/container/path
+        if prefix == self.url_scheme and bucket_uri:
+            # bucket is used for s3 and gcs
+            if hasattr(self, 'bucket') and bucket_uri.bucket == self.bucket:
+                return True
+            # container is used for azure blob
+            if hasattr(self, 'container') and bucket_uri.bucket == self.container:
+                return True
+            # path is used for redis
+            if hasattr(self, 'path') and bucket_uri.bucket == self.path:
+                return True
         # if not found any occurrences - this Storage can't resolve url
         return False
 
