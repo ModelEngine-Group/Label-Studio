@@ -704,20 +704,14 @@ const HtxBrushView = ({ item, setShapeRef }) => {
           onMouseOver={() => {
             if (store.annotationStore.selected.isLinkingMode) {
               item.setHighlight(true);
-              stage.container().style.cursor = "crosshair";
-            } else {
-              // no tool selected
-              if (!item.parent.getToolsManager().findSelectedTool()) stage.container().style.cursor = "pointer";
             }
+            item.updateCursor(true);
           }}
           onMouseOut={() => {
             if (store.annotationStore.selected.isLinkingMode) {
               item.setHighlight(false);
             }
-
-            if (!item.parent?.getToolsManager().findSelectedTool()) {
-              stage.container().style.cursor = "default";
-            }
+            item.updateCursor();
           }}
           onClick={(e) => {
             if (item.parent.getSkipInteractions()) return;

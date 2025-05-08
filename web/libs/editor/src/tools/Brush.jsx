@@ -124,18 +124,9 @@ const _Tool = types
         return newArea;
       },
 
-      updateCursor() {
-        if (!self.selected || !self.obj?.stageRef) return;
-        const val = self.strokeWidth;
-        const stage = self.obj.stageRef;
-        const base64 = Canvas.brushSizeCircle(val);
-        const cursor = ["url('", base64, "')", " ", Math.floor(val / 2) + 4, " ", Math.floor(val / 2) + 4, ", auto"];
-
-        stage.container().style.cursor = cursor.join("");
-      },
-
       setStroke(val) {
         self.strokeWidth = val;
+        self.updateCursor();
       },
 
       afterUpdateSelected() {
@@ -236,6 +227,22 @@ const _Tool = types
     };
   });
 
-const Brush = types.compose(_Tool.name, ToolMixin, BaseTool, DrawingTool, _Tool);
+const BrushCursorMixin = types
+  .model("BrushCursorMixin")
+  .views((self) => ({
+    get cursorStyleRule() {
+      const val = self.strokeWidth;
+      return Canvas.createBrushSizeCircleCursor(val);
+    },
+  }))
+  .actions((self) => ({
+    updateCursor() {
+      if (!self.selected || !self.obj?.stageRef) return;
+      const stage = self.obj.stageRef;
+      stage.container().style.cursor = self.cursorStyleRule;
+    },
+  }));
 
-export { Brush };
+const Brush = types.compose(_Tool.name, ToolMixin, BaseTool, DrawingTool, BrushCursorMixin, _Tool);
+
+export { Brush, BrushCursorMixin };

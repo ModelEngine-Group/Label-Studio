@@ -258,17 +258,14 @@ const HtxKeyPointView = ({ item, setShapeRef }) => {
         onMouseOver={() => {
           if (store.annotationStore.selected.isLinkingMode) {
             item.setHighlight(true);
-            stage.container().style.cursor = "crosshair";
-          } else {
-            stage.container().style.cursor = "pointer";
           }
+          item.updateCursor(true);
         }}
         onMouseOut={() => {
-          stage.container().style.cursor = "default";
-
           if (store.annotationStore.selected.isLinkingMode) {
             item.setHighlight(false);
           }
+          item.updateCursor();
         }}
         onClick={(e) => {
           if (item.parent.getSkipInteractions()) return;
