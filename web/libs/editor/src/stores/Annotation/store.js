@@ -68,8 +68,26 @@ const AnnotationStoreModel = types
           self.selected.selected = false;
         }
 
-        self.annotations.forEach((c) => {
-          c.editable = false;
+        // When FF_SIMPLE_INIT is enabled, we need to ensure all tags have their results set from the annotations.
+        // This process is normally done via selecting explicitly all annotations but, when the flag is enabled, it is
+        // skipped in AppStore::initializeStore to enforcing better performance.
+        // The byproduct of this performance improvement is that we do not update the objects with their corresponding
+        // results and, when entering the ViewAll mode, we can only see the results updated for the previously selected
+        // annotation but not the rest of them.
+        // This fix aims to mimic the behaviour of selectAnnotation when it comes to updating the objects only without
+        // actually executing the full process of selecting the annotation.
+        if (isFF(FF_SIMPLE_INIT)) {
+          [...self.predictions, ...self.annotations].forEach((a) => {
+            // Skip the current annotation as it's already handled
+            if (a === self.selected) return;
+
+            // Set results for each annotation without selecting it
+            a.updateObjects();
+          });
+        }
+
+        self.annotations.forEach((a) => {
+          a.editable = false;
         });
       } else {
         selectAnnotation(self.annotations.at(isFF(FF_SIMPLE_INIT) ? -1 : 0).id, { fromViewAll: true });

@@ -74,7 +74,7 @@ body :global(.ant-checkbox-wrapper) {
 
 body :global(.ant-checkbox .ant-checkbox-inner) {
   background-color: var(--color-neutral-surface);
-  border-color: var(--color-neutral-border);
+  border-color: var(--color-neutral-border) !important;
 }
 
 body :global(.ant-checkbox-checked .ant-checkbox-inner) {
@@ -88,4 +88,12 @@ body :global(.ant-checkbox-checked)::after {
 
 :global(.ant-checkbox-wrapper span + span) {
   color: var(--color-neutral-content);
+}
+
+body :global(.ant-checkbox-disabled .ant-checkbox-inner) {
+  background-color: var(--color-neutral-background);
+}
+
+body :global(.ant-checkbox-disabled.ant-checkbox-checked .ant-checkbox-inner::after) {
+  border-color: var(--color-neutral-content-subtlest);
 }
