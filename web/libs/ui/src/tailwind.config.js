@@ -4,8 +4,11 @@ import tokens from "./tokens/tokens";
 module.exports = {
   content: [
     "./apps/**/*.{js,jsx,ts,tsx}",
-    "./libs/ui/src/**/*.{js,jsx,ts,tsx}",
-    "./libs/core/src/**/*.{js,jsx,ts,tsx}",
+    "./libs/app-common/**/*.{js,jsx,ts,tsx}",
+    "./libs/core/**/*.{js,jsx,ts,tsx}",
+    "./libs/editor/**/*.{js,jsx,ts,tsx}",
+    "./libs/datamanager/**/*.{js,jsx,ts,tsx}",
+    "./libs/ui/**/*.{js,jsx,ts,tsx}",
     "./libs/storybook/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
