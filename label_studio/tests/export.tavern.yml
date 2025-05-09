@@ -139,6 +139,7 @@ stages:
         tags:
         - image segmentation
         - object detection
+        - keypoints
         name: COCO
       - title: COCO with Images
         description: COCO format with images downloaded.
@@ -146,6 +147,7 @@ stages:
         tags:
         - image segmentation
         - object detection
+        - keypoints
         name: COCO_WITH_IMAGES
       - title: YOLO
         description: Popular TXT format is created for each image file. Each txt file contains
@@ -155,6 +157,7 @@ stages:
         tags:
         - image segmentation
         - object detection
+        - keypoints
         name: YOLO
       - title: YOLO with Images
         description: YOLO format with images downloaded.
@@ -162,6 +165,7 @@ stages:
         tags:
         - image segmentation
         - object detection
+        - keypoints
         name: YOLO_WITH_IMAGES
       - title: YOLOv8 OBB
         description: Popular TXT format is created for each image file. Each txt file contains
