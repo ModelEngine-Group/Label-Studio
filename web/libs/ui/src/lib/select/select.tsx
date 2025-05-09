@@ -458,7 +458,7 @@ const Option = ({
             "hover:data-[disabled=true]:cursor-not-allowed",
             "duration-150 ease-out",
           ],
-          isOptionSelected && ["bg-primary-emphasis"],
+          !multiple && isOptionSelected && ["bg-primary-emphasis"],
         )}
         data-disabled={disabled}
       >
