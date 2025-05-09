@@ -216,12 +216,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--color-neutral-background);
+    background: var(--color-neutral-surface);
     text-transform: uppercase;
-    padding: 3px 3px 6px;
+    padding: 3px var(--spacing-tight) 5px;
     border-radius: var(--corner-radius-smaller);
     border: 1px solid var(--color-neutral-border);
-    box-shadow: 0 -2.5px 0.5px 0 rgba(var(--color-neutral-border-raw) / 70%) inset;
+    box-shadow: 0 4px 2px var(--color-neutral-background) inset, 0 -3px 0.5px 0 rgba(var(--color-neutral-shadow-raw) / calc( var(--shadow-intensity) * 10% )) inset, 0 2px 1px rgba(var(--color-neutral-shadow-raw) / calc( var(--shadow-intensity) * 4% ));
     position: relative;
     color: var(--color-neutral-content-subtler);
   }
