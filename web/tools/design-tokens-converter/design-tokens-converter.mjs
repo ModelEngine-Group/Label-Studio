@@ -329,7 +329,7 @@ function processSizingTokens(sizingObj, result, variables, parentKey = "") {
         result,
         variables,
         // Fix the variable name from corder to corner
-        `${parentKey ? `${parentKey}-` : ""}${key.replace("$", "").replace("corder", "corner")}`,
+        `${parentKey ? `${parentKey}-` : ""}${key.replace(/\$/g, "").replace("corder", "corner")}`,
       );
       continue;
     }
