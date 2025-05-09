@@ -8,28 +8,47 @@ import { DataManager } from "../DataManager/DataManager";
 import { Labeling } from "../Label/Label";
 import "./App.scss";
 
-class ErrorBoundary extends React.Component {
-  state = {
+interface ErrorBoundaryProps {
+  children: React.ReactNode;
+}
+
+interface ErrorBoundaryState {
+  error: Error | null;
+}
+
+class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  state: ErrorBoundaryState = {
     error: null,
   };
 
-  componentDidCatch(error) {
+  componentDidCatch(error: Error): void {
     this.setState({ error });
   }
 
-  render() {
-    return this.state.error ? <div className="error">{this.state.error}</div> : this.props.children;
+  render(): React.ReactNode {
+    return this.state.error ? <div className="error">{this.state.error.toString()}</div> : this.props.children;
   }
+}
+
+interface AppComponentProps {
+  app: {
+    SDK: {
+      mode: string;
+    };
+    crashed: boolean;
+    loading: boolean;
+    isLabeling: boolean;
+  };
 }
 
 /**
  * Main Component
- * @param {{app: import("../../stores/AppStore").AppStore} param0
  */
-const AppComponent = ({ app }) => {
+const AppComponent: React.FC<AppComponentProps> = ({ app }) => {
   const rootCN = cn("root");
   const rootClassName = rootCN.mod({ mode: app.SDK.mode }).toString();
   const crashCN = cn("crash");
+
   return (
     <ErrorBoundary>
       <Provider store={app}>
