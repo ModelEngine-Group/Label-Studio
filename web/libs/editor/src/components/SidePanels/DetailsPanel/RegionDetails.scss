@@ -132,6 +132,18 @@
     display: grid;
     grid-template-columns: auto 1fr;
     grid-column-gap: 10px;
+    color: var(--color-neutral-content);
+
+    & .ant-typography {
+      color: var(--color-neutral-content);
+
+      & mark {
+        color: var(--color-neutral-content);
+        background-color: var(--color-primary-background);
+        padding: var(--spacing-tightest) var(--spacing-tighter);
+        border-radius: var(--corner-radius-smaller);
+      }
+    }
   }
 
   &__value {
