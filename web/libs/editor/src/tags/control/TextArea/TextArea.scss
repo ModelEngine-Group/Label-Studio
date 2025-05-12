@@ -77,8 +77,15 @@
     padding: 8px;
     box-sizing: border-box;
     border-radius: 4px;
-    border: 1px solid transparent;
+    border: 1px solid var(--color-neutral-border);
     background-color: var(--color-neutral-surface);
+    color: var(--color-neutral-content);
+
+
+    &:hover {
+      border: 1px solid var(--color-neutral-border-bold);
+      background-color: var(--color-neutral-surface-hover);
+    }
 
     &::placeholder {
       color: var(--color-neutral-content-subtler);
@@ -86,9 +93,9 @@
   }
 
   &_outliner &__input:focus {
-    background-color: var(--color-neutral-background);
     box-sizing: border-box;
-    border-color: var(--color-neutral-border);
-    box-shadow: 0 0 0 3px var(--color-neutral-border);
+    border-color: var(--color-neutral-border-bold);
+    background-color: var(--color-neutral-surface-hover);
+    box-shadow: 0 0 0 4px var(--color-primary-focus-outline);
   }
 }
