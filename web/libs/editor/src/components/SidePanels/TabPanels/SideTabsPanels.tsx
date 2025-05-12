@@ -265,7 +265,6 @@ const SideTabsPanelsComponent: FC<SidePanelsProps> = ({
           maxHeight,
           alignment: setDetached ? undefined : panel.alignment,
         });
-        setSnap(undefined);
       });
     },
     [updatePanel, checkSnap, panelData, positioning],
@@ -502,7 +501,6 @@ const SideTabsPanelsComponent: FC<SidePanelsProps> = ({
         viewportSize.current.height = clientHeight ?? 0;
         setViewportSizeMatch(checkContentFit());
         setPanelMaxWidth(rootRef.current.clientWidth * 0.4);
-        setSnap(undefined);
       });
     });
 

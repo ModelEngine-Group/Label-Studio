@@ -198,7 +198,6 @@ const useDataTree = ({ regions, rootClass, footer }: any) => {
   const processor = useCallback((item: any, idx, _false, _null, _onClick) => {
     const { id, type, hidden, isDrawing } = item ?? {};
     const style = item?.background ?? item?.getOneColor?.();
-    console.log(item?.background);
     const color = chroma(style ?? "#666").alpha(1);
     const mods: Record<string, any> = { hidden, type, isDrawing };
 
