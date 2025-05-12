@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { ReactComponent as Sun } from "./icons/sun.svg";
 import { ReactComponent as Moon } from "./icons/moon.svg";
 import { Badge } from "@humansignal/ui";
+import { atom, useSetAtom } from "jotai";
 
 interface ThemeToggleProps {
   className?: string;
@@ -11,6 +12,7 @@ interface ThemeToggleProps {
 
 const THEME_OPTIONS = ["Auto", "Light", "Dark"];
 const PREFERRED_COLOR_SCHEME_KEY = "preferred-color-scheme";
+
 export const getCurrentTheme = () => {
   const themeSelection = window.localStorage.getItem(PREFERRED_COLOR_SCHEME_KEY) ?? THEME_OPTIONS[0];
   return themeSelection === THEME_OPTIONS[0]
@@ -19,6 +21,7 @@ export const getCurrentTheme = () => {
       : "Light"
     : themeSelection;
 };
+export const themeAtom = atom<string>(getCurrentTheme());
 export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className }) => {
   const presetTheme = window.localStorage.getItem(PREFERRED_COLOR_SCHEME_KEY) ?? THEME_OPTIONS[1];
   const [theme, setTheme] = useState(presetTheme);
@@ -27,6 +30,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className }) => {
     [],
   );
   const [appliedTheme, setAppliedTheme] = useState(presetTheme === "Auto" ? systemMode : presetTheme);
+  const setThemeAtom = useSetAtom(themeAtom);
 
   useEffect(() => {
     if (!appliedTheme) return;
@@ -40,7 +44,9 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className }) => {
 
     window.localStorage.setItem(PREFERRED_COLOR_SCHEME_KEY, nextTheme);
     setTheme(nextTheme);
-    setAppliedTheme(nextTheme === "Auto" ? systemMode : nextTheme);
+    const newTheme = nextTheme === "Auto" ? systemMode : nextTheme;
+    setAppliedTheme(newTheme);
+    setThemeAtom(newTheme);
   }, [theme]);
 
   const themeLabel = useMemo(
