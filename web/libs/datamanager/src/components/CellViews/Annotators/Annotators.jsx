@@ -18,6 +18,7 @@ export const Annotators = (cell) => {
   const extra = userList.length - renderable.length;
   const userPickBadge = cn("userpic-badge");
   const annotatorsCN = cn("annotators");
+  const isEnterprise = window.APP_SETTINGS.billing?.enterprise;
 
   return (
     <div className={annotatorsCN.toString()}>
@@ -26,7 +27,7 @@ export const Annotators = (cell) => {
         const { annotated, reviewed, review } = item;
 
         const userpicIsFaded =
-          (isDefined(annotated) && annotated === false) || (isDefined(reviewed) && reviewed === false);
+          (isDefined(annotated) && annotated === false) || (isDefined(reviewed) && reviewed === false && isEnterprise);
         const suppressStats = column.alias === "comment_authors";
 
         return (
