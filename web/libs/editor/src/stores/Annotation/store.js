@@ -329,7 +329,7 @@ const AnnotationStoreModel = types
         id: guidGenerator(5),
         // pk and id may be missing, so undefined | string
         pk: pk && String(pk),
-        root: self.root,
+        root: options.root ?? self.root,
       };
 
       if (user && !("createdBy" in node)) node.createdBy = user.displayName;
@@ -429,6 +429,10 @@ const AnnotationStoreModel = types
 
     function addHistory(options = {}) {
       options.type = "history";
+
+      if (isFF(FF_DEV_3391)) {
+        options.root = self.selected.root;
+      }
 
       const item = createItem(options);
 
