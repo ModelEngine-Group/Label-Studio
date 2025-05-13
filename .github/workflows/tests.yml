@@ -6,11 +6,26 @@ on:
       head_sha:
         required: true
         type: string
+  workflow_dispatch:
+    inputs:
+      head_sha:
+        description: 'ref or SHA'
+        required: true
+        type: string
+        default: 'develop'
 
 env:
   NODE: '18'
   CACHE_NAME_PREFIX: v1
   POETRY_VERSION: 2.1.3
+  DJANGO_SETTINGS_MODULE: core.settings.label_studio
+  COVERAGE_PROCESS_START: 1
+  LOG_DIR: pytest_logs
+  COLLECT_ANALYTICS: false
+  DEBUG_CONTEXTLOG: true
+  LABEL_STUDIO_TEST_ENVIRONMENT: false
+  SENTRY_RATE: 0
+  JSON_LOG: 0
 
 jobs:
   run_pytest_sqlite:
@@ -26,17 +41,8 @@ jobs:
           - '3.13'
 
     env:
-      DJANGO_SETTINGS_MODULE: core.settings.label_studio
-      COVERAGE_PROCESS_START: 1
-      LOG_DIR: pytest_logs
-      COLLECT_ANALYTICS: true
-      DEBUG_CONTEXTLOG: true
-      LABEL_STUDIO_TEST_ENVIRONMENT: false
       SENTRY_ENVIRONMENT: tests-ubuntu-sqlite
-      SENTRY_RATE: 0
       DJANGO_DB: sqlite
-      JSON_LOG: 0
-      # SENTRY_DSN:
 
     steps:
       - uses: hmarr/debug-action@v3.0.0
@@ -64,17 +70,12 @@ jobs:
       - name: Install Python dependencies
         run: poetry install --with test
 
-      - name: Install LSF & set version.py
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: poetry run ./deploy/prebuild_wo_frontend.sh
-
-      - name: Do migrations
-        run: poetry run python label_studio/manage.py migrate
+      - name: Generate version file
+        run: poetry run python label_studio/core/version.py
 
       - name: Run functional tests
         working-directory: label_studio
-        run: poetry run pytest -vv -n auto
+        run: poetry run pytest --disable-warnings --durations=30 -n auto
 
   run_pytest_postgresql:
     name: LS PostgreSQL Ubuntu
@@ -84,23 +85,15 @@ jobs:
       matrix:
         python-version: [ '3.12' ]
     env:
-      DJANGO_SETTINGS_MODULE: core.settings.label_studio
       DJANGO_DB: default
       COVERAGE_PROCESS_START: .coveragerc
       PYTHONPATH: .
       LOG_LEVEL: ERROR
-      LOG_DIR: pytest_logs
-      COLLECT_ANALYTICS: true
-      DEBUG_CONTEXTLOG: true
-      LABEL_STUDIO_TEST_ENVIRONMENT: false
       SENTRY_ENVIRONMENT: tests-ubuntu-postgresql
-      SENTRY_RATE: 0
-      JSON_LOG: 0
-      # SENTRY_DSN:
 
     services:
       postgres:
-        image: postgres:13.8
+        image: postgres:13
         env:
           POSTGRES_PASSWORD: postgres
           POSTGRES_USER: postgres
@@ -112,17 +105,6 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-
-      redis:
-        image: redis
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 6379:6379
-
     steps:
       - uses: hmarr/debug-action@v3.0.0
 
@@ -149,17 +131,12 @@ jobs:
       - name: Install Python dependencies
         run: poetry install --with test
 
-      - name: Install LSF & set version.py
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: poetry run ./deploy/prebuild_wo_frontend.sh
-
-      - name: Do migrations
-        run: poetry run python label_studio/manage.py migrate
+      - name: Generate version file
+        run: poetry run python label_studio/core/version.py
 
       - name: Run functional tests
         working-directory: label_studio
-        run: poetry run pytest --cov=. --cov-report=xml -vv -n auto
+        run: poetry run pytest --disable-warnings --cov=. --cov-report=xml --junitxml=functional.xml --durations=30 -n auto
 
       - name: Upload coverage to Codecov
         if: ${{ github.event.pull_request.head.repo.fork == false && github.event.pull_request.user.login != 'dependabot[bot]' }}
@@ -172,6 +149,16 @@ jobs:
           verbose: true
           fail_ci_if_error: true
 
+      - name: "Upload functional tests results to Codecov"
+        if: ${{ github.event.pull_request.head.repo.fork == false && github.event.pull_request.user.login != 'dependabot[bot]' }}
+        uses: codecov/test-results-action@v1
+        with:
+          files: ./label_studio/functional.xml
+          name: codecov-general-test-results
+          flags: functional
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
+
   windows_label_studio:
     name: LS SQLite Windows
     runs-on: windows-latest
@@ -180,26 +167,12 @@ jobs:
       matrix:
         python-version:
           - '3.10'
-
-    # required for poetry action
-    # see https://github.com/marketplace/actions/install-poetry-action#running-on-windows
     defaults:
       run:
         shell: bash
-
     env:
-      DJANGO_SETTINGS_MODULE: core.settings.label_studio
-      COVERAGE_PROCESS_START: 1
-      LOG_DIR: pytest_logs
-      COLLECT_ANALYTICS: true
-      DEBUG_CONTEXTLOG: true
-      LABEL_STUDIO_TEST_ENVIRONMENT: false
       SENTRY_ENVIRONMENT: tests-windows-sqlite
-      SENTRY_RATE: 0
       DJANGO_DB: sqlite
-      JSON_LOG: 0
-      # SENTRY_DSN:
-
     steps:
       - uses: hmarr/debug-action@v3.0.0
 
@@ -229,7 +202,5 @@ jobs:
         shell: cmd
 
       - name: Test with pytest
-        env:
-          COLLECT_ANALYTICS: 0
         working-directory: label_studio
-        run: poetry run pytest -vv -n auto
+        run: poetry run pytest --disable-warnings --durations=30 -n auto
