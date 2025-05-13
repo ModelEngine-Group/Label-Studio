@@ -48,7 +48,7 @@ jobs:
         run: |
           set -xeuo pipefail
           
-          regexp='^[v]?([0-9]+)\.([0-9]+)\.([0-9]+)$';
+          regexp='^[v]?([0-9]+)\.([0-9]+)\.0$';
           
           if [[ "${{ inputs.version }}" =~ $regexp ]]; then
               first="${BASH_REMATCH[1]}"
