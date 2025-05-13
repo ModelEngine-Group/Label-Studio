@@ -84,6 +84,9 @@ class ResolveStorageUriAPIMixin:
         # Proxy to presigned url
         response = HttpResponseRedirect(redirect_to=url, status=status.HTTP_303_SEE_OTHER)
         response.headers['Cache-Control'] = f'no-store, max-age={max_age}'
+        # Remove Sentry trace propagation headers to avoid CORS issues
+        response.headers.pop('baggage', None)
+        response.headers.pop('sentry-trace', None)
         return response
 
     def time_limited_chunker(self, stream_body):
