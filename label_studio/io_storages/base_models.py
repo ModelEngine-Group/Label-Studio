@@ -689,10 +689,16 @@ class ImportStorageLink(models.Model):
 
     task = models.OneToOneField('tasks.Task', on_delete=models.CASCADE, related_name='%(app_label)s_%(class)s')
     key = models.TextField(_('key'), null=False, help_text='External link key')
+
+    # This field is set to True on creation and never updated; it should not be relied upon.
     object_exists = models.BooleanField(
         _('object exists'), help_text='Whether object under external link still exists', default=True
     )
+
     created_at = models.DateTimeField(_('created at'), auto_now_add=True, help_text='Creation time')
+
+    row_group = models.IntegerField(null=True, blank=True, help_text='Parquet row group')
+    row_index = models.IntegerField(null=True, blank=True, help_text='Parquet row index, or JSON[L] object index')
 
     @classmethod
     def exists(cls, key, storage):
