@@ -119,6 +119,7 @@ const Model = types
       "pagedview",
       "paragraphs",
       "paragraphlabels",
+      "pdf",
       "video",
       "videorectangle",
       "timelinelabels",

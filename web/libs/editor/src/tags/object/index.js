@@ -1,6 +1,7 @@
 import { AudioModel } from "./AudioNext";
 import { ImageModel } from "./Image";
 import { ParagraphsModel } from "./Paragraphs";
+import { PdfModel } from "./Pdf";
 import { RichTextModel } from "./RichText";
 import { TableModel } from "./Table";
 import { TimeSeriesModel } from "./TimeSeries";
@@ -22,4 +23,5 @@ export {
   TableModel,
   PagedViewModel,
   ListModel,
+  PdfModel,
 };
