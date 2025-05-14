@@ -9,11 +9,24 @@ const SENTRY_ENV = APP_SETTINGS.sentry_environment ?? process.env.NODE_ENV;
 const SENTRY_RATE = APP_SETTINGS.sentry_rate ? Number.parseFloat(APP_SETTINGS.sentry_rate) : 0.25;
 const SENTRY_ENABLED = APP_SETTINGS.debug === false && isDefined(SENTRY_DSN);
 
+// Production app any endpoints matching the explicit fetch will be considered for tracing
+// This is to ensure we catch the API Proxy requests which will make fetch requests with a full URL without the inclusion of presign in the URL
+const tracePropagationTargets = [
+  // Only propagate tracing headers for same-origin paths, excluding the resolve/presign endpoints
+  // Regex: ^/             => path starts with '/'
+  //        (?!tasks/...   => negative lookahead excluding '/tasks/:id/(resolve|presign)'
+  //           |projects/...)=> or '/projects/:id/(resolve|presign)'
+  // Note: (?:...) is a non-capturing group – groups without creating numbered captures
+  /^\/(?!tasks\/\d+\/(?:resolve|presign)|projects\/\d+\/(?:resolve|presign))/,
+];
+
 export const initSentry = (history: RouterHistory) => {
   if (SENTRY_ENABLED) {
     setTags();
+
     Sentry.init({
       dsn: APP_SETTINGS.sentry_dsn,
+      tracePropagationTargets,
       integrations: [
         Sentry.browserTracingIntegration(),
         ReactSentry.reactRouterV5BrowserTracingIntegration({ history }),
