@@ -161,6 +161,8 @@
     "@types/react-dom": "18.2.14",
     "@types/react-router": "^5.1.7",
     "@types/react-router-dom": "^5.1.7",
+    "@types/react-window": "^1.8.8",
+    "@types/react-window-infinite-loader": "^1.0.9",
     "@types/sanitize-html": "^2.13.0",
     "@types/sinon": "^17.0.3",
     "@types/strman": "^2.0.0",

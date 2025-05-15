@@ -10,6 +10,7 @@
   font-size: 14px;
   border-bottom: 1px solid var(--color-neutral-border);
   color: var(--color-neutral-content);
+  position: sticky;
 
   &__extra {
     flex: 1;

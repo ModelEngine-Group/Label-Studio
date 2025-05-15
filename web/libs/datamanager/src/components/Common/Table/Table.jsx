@@ -1,15 +1,12 @@
 import { observer } from "mobx-react";
 import { createContext, forwardRef, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import AutoSizer from "react-virtualized-auto-sizer";
-import { VariableSizeList } from "react-window";
-import InfiniteLoader from "react-window-infinite-loader";
 import { useSDK } from "../../../providers/SDKProvider";
 import { isDefined } from "../../../utils/utils";
 import { Button } from "../Button/Button";
 import { Icon } from "../Icon/Icon";
 import { modal } from "../Modal/Modal";
 import { IconCode, IconGear, IconGearNewUI } from "@humansignal/icons";
-import { Tooltip } from "@humansignal/ui";
+import { AutoSizerTable, Tooltip } from "@humansignal/ui";
 import "./Table.scss";
 import { TableCheckboxCell } from "./TableCheckbox";
 import { tableCN, TableContext } from "./TableContext";
@@ -386,34 +383,19 @@ const StickyList = observer(
 
     return (
       <StickyListContext.Provider value={itemData}>
-        <AutoSizer className={tableCN.elem("auto-size")}>
-          {({ width, height }) => (
-            <InfiniteLoader
-              ref={listRef}
-              itemCount={totalCount}
-              loadMoreItems={loadMore}
-              isItemLoaded={isItemLoaded}
-              threshold={5}
-              minimumBatchSize={30}
-            >
-              {({ onItemsRendered, ref }) => (
-                <VariableSizeList
-                  className={tableCN.elem("virual").toString()}
-                  {...rest}
-                  ref={ref}
-                  width={width}
-                  height={height}
-                  itemData={itemData}
-                  itemSize={itemSize}
-                  onItemsRendered={onItemsRendered}
-                  initialScrollOffset={initialScrollOffset?.(height) ?? 0}
-                >
-                  {ItemWrapper}
-                </VariableSizeList>
-              )}
-            </InfiniteLoader>
-          )}
-        </AutoSizer>
+        <AutoSizerTable
+          ref={listRef}
+          totalCount={totalCount}
+          loadMore={loadMore}
+          isItemLoaded={isItemLoaded}
+          itemData={itemData}
+          itemSize={itemSize}
+          initialScrollOffset={initialScrollOffset}
+          className={tableCN.elem("auto-size").toString()}
+          {...rest}
+        >
+          {ItemWrapper}
+        </AutoSizerTable>
       </StickyListContext.Provider>
     );
   }),
