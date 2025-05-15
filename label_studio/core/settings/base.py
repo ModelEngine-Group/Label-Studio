@@ -607,6 +607,7 @@ DELETE_TASKS_ANNOTATIONS_POSTPROCESS = None
 FEATURE_FLAGS_GET_USER_REPR = 'core.feature_flags.utils.get_user_repr'
 
 # Test factories
+ORGANIZATION_FACTORY = 'organizations.tests.factories.OrganizationFactory'
 PROJECT_FACTORY = 'projects.tests.factories.ProjectFactory'
 USER_FACTORY = 'users.tests.factories.UserFactory'
 
