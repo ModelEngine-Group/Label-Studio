@@ -23,6 +23,9 @@ Your Kubernetes cluster can be self-hosted or installed somewhere such as Amazon
 
 </div>
 
+!!! note
+    On-prem deployments of Label Studio Enterprise are not supported for Academic licenses. 
+
 This high-level architecture diagram that outlines the main components of a Label Studio Enterprise deployment.
 
 <img src="/images/LSE_k8s_scheme.png"/>
