@@ -26,13 +26,17 @@ export const Tour: React.FC<TourProps> = ({ name, autoStart = false, delay = 0, 
     if (tourContext) {
       tourContext.registerTour(name, dispatch);
 
+      let timeout = null;
       if (autoStart) {
-        setTimeout(() => {
+        timeout = setTimeout(() => {
           tourContext.startTour(name);
         }, delay);
       }
 
       return () => {
+        if (timeout) {
+          clearTimeout(timeout);
+        }
         tourContext.unregisterTour(name);
       };
     }
