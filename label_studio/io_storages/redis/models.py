@@ -3,6 +3,7 @@
 
 import json
 import logging
+from typing import Union
 
 import redis
 from django.db import models
@@ -89,7 +90,7 @@ class RedisImportStorageBase(ImportStorage, RedisStorageMixin):
         for key in client.keys(path + '*'):
             yield key
 
-    def get_data(self, key) -> list[dict]:
+    def get_data(self, key) -> Union[dict, list[dict]]:
         client = self.get_client()
         value_str = client.get(key)
         if not value_str:
@@ -98,7 +99,7 @@ class RedisImportStorageBase(ImportStorage, RedisStorageMixin):
             value = json.loads(value_str)
             # NOTE: this validation did not previously exist, we were accepting any JSON values
             if isinstance(value, dict):
-                return [value]
+                return value
             elif isinstance(value, list):
                 for idx, item in enumerate(value):
                     if not isinstance(item, dict):

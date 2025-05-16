@@ -137,7 +137,13 @@ def test_action_remove_duplicates(business_client, project_id, storage_model, li
     # task 4: add duplicated task, with storage link and one annotation
     task4 = make_task(task_data, project)
     make_annotation({'result': []}, task4.id)
+    # this task would have row_index=0 instead of None if it was created after multitask support was added
     link_model.objects.create(task=task4, key='duplicated.jpg', storage=storage)
+
+    # task 5: add a non-duplicated task using the same key, ensuring multiple tasks in the same key don't interfere
+    task_data = {'data': {'image': 'normal2.jpg'}}
+    task5 = make_task(task_data, project)
+    link_model.objects.create(task=task5, key='duplicated.jpg', row_index=1, storage=storage)
 
     # call the "remove duplicated tasks" action
     status = business_client.post(
@@ -145,16 +151,17 @@ def test_action_remove_duplicates(business_client, project_id, storage_model, li
         json={'selectedItems': {'all': True, 'excluded': []}},
     )
 
-    # As the result, we should have only 2 tasks left:
-    # task 1 and task 3 with storage link copied from task 4
+    # As the result, we should have only 3 tasks left:
+    # task 1, task 5, and task 3 with storage link copied from task 4
     assert list(project.tasks.order_by('id').values_list('id', flat=True)) == [
         task1.id,
         task3.id,
+        task5.id,
     ]
     assert status.status_code == 200
-    assert link_model.objects.count() == 1
+    assert link_model.objects.count() == 2
     assert project.annotations.count() == 4
-    assert project.tasks.count() == 2
+    assert project.tasks.count() == 3
 
 
 @pytest.mark.django_db

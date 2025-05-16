@@ -341,7 +341,7 @@ class ImportStorage(Storage):
         raise NotImplementedError
 
     @classmethod
-    def add_task(cls, data, project, maximum_annotations, max_inner_id, storage, key, link_class):
+    def add_task(cls, data, project, maximum_annotations, max_inner_id, storage, key, row_index, link_class):
         # predictions
         predictions = data.get('predictions', [])
         if predictions:
@@ -375,8 +375,8 @@ class ImportStorage(Storage):
                 inner_id=max_inner_id,
             )
 
-            link_class.create(task, key, storage)
-            logger.debug(f'Create {storage.__class__.__name__} link with key={key} for task={task}')
+            link_class.create(task, key, storage, row_index=row_index)
+            logger.debug(f'Create {storage.__class__.__name__} link with {key=} and {row_index=} for {task=}')
 
             raise_exception = not flag_set(
                 'ff_fix_back_dev_3342_storage_scan_with_invalid_annotations', user=AnonymousUser()
@@ -423,10 +423,10 @@ class ImportStorage(Storage):
             logger.debug(f'Scanning key {key}')
             self.info_update_progress(last_sync_count=tasks_created, tasks_existed=tasks_existed)
 
-            # skip if task already exists
-            if link_class.exists(key, self):
-                logger.debug(f'{self.__class__.__name__} link {key} already exists')
-                tasks_existed += 1  # update progress counter
+            # skip if key has already been synced
+            if n_tasks_linked := link_class.n_tasks_linked(key, self):
+                logger.debug(f'{self.__class__.__name__} already has {n_tasks_linked} tasks linked to {key=}')
+                tasks_existed += n_tasks_linked  # update progress counter
                 continue
 
             logger.debug(f'{self}: found new key {key}')
@@ -440,13 +440,20 @@ class ImportStorage(Storage):
                     f'"Treat every bucket object as a source file"'
                 )
 
-            if not flag_set('fflag_feat_dia_2092_multitasks_per_storage_link'):
-                tasks_data = tasks_data[:1]
+            if isinstance(tasks_data, dict):
+                tasks_data = [tasks_data]
+                row_indices = [None]
+            else:
+                if not flag_set('fflag_feat_dia_2092_multitasks_per_storage_link'):
+                    tasks_data = tasks_data[:1]
+                row_indices = range(len(tasks_data))
 
-            for task_data in tasks_data:
+            for row_index, task_data in zip(row_indices, tasks_data):
                 # TODO: batch this loop body with add_task -> add_tasks in a single bulk write.
-                # Also have to handle any mismatch between len(tasks_data) and settings.WEBHOOK_BATCH_SIZE
-                task = self.add_task(task_data, self.project, maximum_annotations, max_inner_id, self, key, link_class)
+                # See DIA-2062 for prerequisites
+                task = self.add_task(
+                    task_data, self.project, maximum_annotations, max_inner_id, self, key, row_index, link_class
+                )
                 max_inner_id += 1
 
                 # update progress counters for storage info
@@ -701,12 +708,14 @@ class ImportStorageLink(models.Model):
     row_index = models.IntegerField(null=True, blank=True, help_text='Parquet row index, or JSON[L] object index')
 
     @classmethod
-    def exists(cls, key, storage):
-        return cls.objects.filter(key=key, storage=storage.id).exists()
+    def n_tasks_linked(cls, key, storage):
+        return cls.objects.filter(key=key, storage=storage.id).count()
 
     @classmethod
-    def create(cls, task, key, storage):
-        link, created = cls.objects.get_or_create(task_id=task.id, key=key, storage=storage, object_exists=True)
+    def create(cls, task, key, storage, row_index=None, row_group=None):
+        link, created = cls.objects.get_or_create(
+            task_id=task.id, key=key, row_index=row_index, row_group=row_group, storage=storage, object_exists=True
+        )
         return link
 
     class Meta:

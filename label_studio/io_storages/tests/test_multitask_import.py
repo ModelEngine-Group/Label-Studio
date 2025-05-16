@@ -3,6 +3,8 @@ import json
 import boto3
 import pytest
 from django.test import TestCase
+from io_storages.models import S3ImportStorage
+from io_storages.s3.models import S3ImportStorageLink
 from io_storages.tests.factories import (
     AzureBlobImportStorageFactory,
     GCSImportStorageFactory,
@@ -37,7 +39,6 @@ class TestMultiTaskImport(TestCase):
         client.force_authenticate(user=self.project.created_by)
 
         # Setup storage with required credentials
-
         storage = storage_class(project=self.project, **storage_kwargs)
 
         # Validate connection before sync
@@ -112,3 +113,32 @@ class TestMultiTaskImport(TestCase):
                 path='',
                 use_blob_urls=False,
             )
+
+    def test_storagelink_fields(self):
+        # use an actual storage and storagelink to test this, since factories aren't connected properly
+        with mock_s3():
+            # Setup S3 bucket and test data
+            s3 = boto3.client('s3', region_name='us-east-1')
+            bucket_name = 'pytest-s3-jsons'
+            s3.create_bucket(Bucket=bucket_name)
+
+            # Put test data into S3
+            s3.put_object(Bucket=bucket_name, Key='test.json', Body=json.dumps(self.common_task_data))
+
+            # create a real storage and sync it
+            storage = S3ImportStorage(
+                project=self.project,
+                bucket=bucket_name,
+                aws_access_key_id='example',
+                aws_secret_access_key='example',
+                use_blob_urls=False,
+            )
+            storage.save()
+            storage.sync()
+
+            # check that the storage link fields are set correctly
+            storage_links = S3ImportStorageLink.objects.filter(storage=storage).order_by('task_id')
+            self.assertEqual(storage_links[0].row_index, 0)
+            self.assertEqual(storage_links[0].row_group, None)
+            self.assertEqual(storage_links[1].row_index, 1)
+            self.assertEqual(storage_links[1].row_group, None)

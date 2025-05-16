@@ -78,16 +78,16 @@ class LocalFilesImportStorageBase(LocalFilesMixin, ImportStorage):
                     continue
                 yield str(file)
 
-    def get_data(self, key) -> list[dict]:
+    def get_data(self, key) -> dict | list[dict]:
         path = Path(key)
         if self.use_blob_urls:
             # include self-hosted links pointed to local resources via
             # {settings.HOSTNAME}/data/local-files?d=<path/to/local/dir>
             document_root = Path(settings.LOCAL_FILES_DOCUMENT_ROOT)
             relative_path = str(path.relative_to(document_root))
-            return [
-                {settings.DATA_UNDEFINED_NAME: f'{settings.HOSTNAME}/data/local-files/?d={quote(str(relative_path))}'}
-            ]
+            return {
+                settings.DATA_UNDEFINED_NAME: f'{settings.HOSTNAME}/data/local-files/?d={quote(str(relative_path))}'
+            }
 
         try:
             with open(path, encoding='utf8') as f:
@@ -99,7 +99,7 @@ class LocalFilesImportStorageBase(LocalFilesMixin, ImportStorage):
             )
 
         if isinstance(value, dict):
-            return [value]
+            return value
         elif isinstance(value, list):
             for idx, item in enumerate(value):
                 if not isinstance(item, dict):

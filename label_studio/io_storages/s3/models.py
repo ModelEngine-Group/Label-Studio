@@ -218,11 +218,11 @@ class S3ImportStorageBase(S3StorageMixin, ImportStorage):
         return self._scan_and_create_links(S3ImportStorageLink)
 
     @catch_and_reraise_from_none
-    def get_data(self, key) -> list[dict]:
+    def get_data(self, key) -> Union[dict, list[dict]]:
         uri = f'{self.url_scheme}://{self.bucket}/{key}'
         if self.use_blob_urls:
             data_key = settings.DATA_UNDEFINED_NAME
-            return [{data_key: uri}]
+            return {data_key: uri}
 
         # read task json from bucket and validate it
         _, s3 = self.get_client_and_resource()
@@ -231,7 +231,7 @@ class S3ImportStorageBase(S3StorageMixin, ImportStorage):
         try:
             value = json.loads(obj)
             if isinstance(value, dict):
-                return [value]
+                return value
             elif isinstance(value, list):
                 for idx, item in enumerate(value):
                     if not isinstance(item, dict):

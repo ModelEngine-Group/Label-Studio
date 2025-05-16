@@ -209,17 +209,17 @@ class AzureBlobImportStorageBase(AzureBlobStorageMixin, ImportStorage):
                 continue
             yield file.name
 
-    def get_data(self, key) -> list[dict]:
+    def get_data(self, key) -> Union[dict, list[dict]]:
         if self.use_blob_urls:
             data_key = settings.DATA_UNDEFINED_NAME
-            return [{data_key: f'{self.url_scheme}://{self.container}/{key}'}]
+            return {data_key: f'{self.url_scheme}://{self.container}/{key}'}
 
         container = self.get_container()
         blob = container.download_blob(key)
         blob_str = blob.content_as_text()
         value = json.loads(blob_str)
         if isinstance(value, dict):
-            return [value]
+            return value
         elif isinstance(value, list):
             for idx, item in enumerate(value):
                 if not isinstance(item, dict):

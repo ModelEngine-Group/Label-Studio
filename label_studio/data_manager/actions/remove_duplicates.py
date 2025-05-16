@@ -172,6 +172,8 @@ def restore_storage_links_for_duplicated_tasks(duplicates) -> None:
                     link = storage_link_class(
                         task_id=task['id'],
                         key=link_instance.key,
+                        row_index=link_instance.row_index,
+                        row_group=link_instance.row_group,
                         storage=link_instance.storage,
                     )
                     link.save()

@@ -180,9 +180,9 @@ class GCSImportStorageBase(GCSStorageMixin, ImportStorage):
             return_key=True,
         )
 
-    def get_data(self, key) -> list[dict]:
+    def get_data(self, key) -> Union[dict, list[dict]]:
         if self.use_blob_urls:
-            return [{settings.DATA_UNDEFINED_NAME: GCS.get_uri(self.bucket, key)}]
+            return {settings.DATA_UNDEFINED_NAME: GCS.get_uri(self.bucket, key)}
         data = GCS.read_file(
             client=self.get_client(),
             bucket_name=self.bucket,
@@ -190,7 +190,7 @@ class GCSImportStorageBase(GCSStorageMixin, ImportStorage):
             convert_to=GCS.ConvertBlobTo.JSON,
         )
         if isinstance(data, dict):
-            return [data]
+            return data
         elif isinstance(data, list):
             for idx, item in enumerate(data):
                 if not isinstance(item, dict):
