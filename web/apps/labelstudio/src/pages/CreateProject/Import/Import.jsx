@@ -32,6 +32,7 @@ const supportedExtensions = {
   image: ["jpg", "jpeg", "png", "gif", "bmp", "svg", "webp"],
   html: ["html", "htm", "xml"],
   timeSeries: ["csv", "tsv"],
+  pdf: ["pdf"],
   common: ["csv", "tsv", "txt", "json"],
 };
 const allSupportedExtensions = flatten(Object.values(supportedExtensions));
