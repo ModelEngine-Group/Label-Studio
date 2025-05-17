@@ -1,3 +1,4 @@
+export { ReactComponent as IconAIAssistant } from "./ai-assistant.svg";
 export { ReactComponent as IconAllProjects } from "./all-projects.svg";
 export { ReactComponent as IconAnnotation } from "./annotation.svg";
 export { ReactComponent as IconAnnotationAccepted } from "./annotation-accepted.svg";
@@ -208,6 +209,7 @@ export { ReactComponent as IconSoundBars } from "./sound-bars.svg";
 export { ReactComponent as IconSoundConfig } from "./sound-config.svg";
 export { ReactComponent as IconSoundMutedConfig } from "./sound-muted-config.svg";
 export { ReactComponent as IconSpark } from "./spark.svg";
+export { ReactComponent as IconSparkle } from "./sparkle.svg";
 export { ReactComponent as IconSparks } from "./sparks.svg";
 export { ReactComponent as IconSparks3 } from "./sparks-3.svg";
 export { ReactComponent as IconSparksStop } from "./sparks-stop.svg";
