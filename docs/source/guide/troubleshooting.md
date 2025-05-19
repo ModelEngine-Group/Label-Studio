@@ -190,7 +190,7 @@ If there is only LIST permission, Label Studio can scan the bucket for the exist
 ### Tasks don't load the way I expect
 
 If the tasks sync to Label Studio but don't appear the way that you expect, maybe with URLs instead of images or with one task where you expect to see many, check the following:
-- If you're placing JSON files in [cloud storage](storage.html), place 1 task in each JSON file in the storage bucket. If you want to upload a JSON file from local storage into Label Studio, you can place multiple tasks in one JSON file. 
+- If you're placing JSON files in [cloud storage](storage.html), ensure that if you have multiple tasks in the same file, they are all formatted the same way (for example, you cannot have 1 task with the raw contents of the `data` field and another task that contains annotations and predictions in the same file).
 - If you're syncing image or audio files, make sure **Treat every bucket object as a source file** is enabled. 
 
 ### Unable to access local storage when using Windows

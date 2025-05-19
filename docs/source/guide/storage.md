@@ -77,18 +77,9 @@ When disabled, tasks in JSON format can be loaded directly from storage buckets 
 
 <img src="/images/source-storages-treat-off.png" class="make-intense-zoom">
 
-###### On
+You may put multiple tasks inside the same JSON file, but not mix task formats inside the same file.
 
-When enabled, Label Studio automatically lists files from the storage bucket and constructs tasks. This is only possible for simple labeling tasks that involve a single media source (such as an image, text, etc.).* 
-
-<img src="/images/source-storages-treat-on.png" class="make-intense-zoom">
-
-
-#### One Task - One JSON File 
-
-If you plan to load JSON tasks from the Source Storage (`Treat every bucket object as a source file = No`), you must place only one task as the **dict** per one JSON file. Otherwise, Label Studio will not load your data properly.
-
-{% details <b>Example with tasks in separate JSON files</b> %}
+{% details <b>Example with bare tasks</b> %}
 
 
 `task_01.json`
@@ -107,11 +98,27 @@ If you plan to load JSON tasks from the Source Storage (`Treat every bucket obje
 }
 ```
 
+Or:
+
+`tasks.json`
+```
+[
+  {
+    "image": "s3://bucket/1.jpg",
+    "text": "opossums are awesome"
+  },
+  {
+    "image": "s3://bucket/2.jpg",
+    "text": "cats are awesome"
+  }
+]
+```
+
 {% enddetails %}
 
 <br>
 
-{% details <b>Example with tasks, annotations and predictions in separate JSON files</b> %}
+{% details <b>Example with tasks, annotations and predictions</b> %}
 
 `task_with_predictions_and_annotations_01.json`
 ```
@@ -137,28 +144,39 @@ If you plan to load JSON tasks from the Source Storage (`Treat every bucket obje
 }
 ```
 
+Or:
+
+`tasks_with_predictions_and_annotations.json`
+```
+[
+  {
+      "data": {
+          "image": "s3://bucket/1.jpg",
+          "text": "opossums are awesome"
+      },
+      "annotations": [...],  
+      "predictions": [...]
+  },
+  {
+      "data": {
+        "image": "s3://bucket/2.jpg",
+        "text": "cats are awesome"
+      }
+      "annotations": [...],  
+      "predictions": [...]
+  }
+]
+```
+
 {% enddetails %}
 
 <br>
 
-{% details <b>Python script to split a single JSON file with multiple tasks</b> %}
+###### On
 
- Python script to split a single JSON file containing multiple tasks into separate JSON files, each containing one task:
+When enabled, Label Studio automatically lists files from the storage bucket and constructs tasks. This is only possible for simple labeling tasks that involve a single media source (such as an image, text, etc.).* 
 
-```python
-import sys
-import json
-
-input_json = sys.argv[1]
-with open(input_json) as inp:
-    tasks = json.load(inp)
-
-for i, v in enumerate(tasks):
-    with open(f'task_{i}.json', 'w') as f:
-        json.dump(v, f)
-```
-
-{% enddetails %}
+<img src="/images/source-storages-treat-on.png" class="make-intense-zoom">
 
 
 ### Target storage
