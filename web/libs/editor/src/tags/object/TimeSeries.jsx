@@ -1,7 +1,7 @@
 import React from "react";
 import * as d3 from "d3";
 import { inject, observer } from "mobx-react";
-import { getEnv, getRoot, getType, types } from "mobx-state-tree";
+import { getEnv, getRoot, getType, isAlive, types } from "mobx-state-tree";
 import throttle from "lodash.throttle";
 import { Spin } from "antd";
 
@@ -494,6 +494,9 @@ const Model = types
           }
           [data, headers] = parseCSV(text, separator);
         }
+        // @todo this actions might be called for detached instance with DEV-3391 FF
+        // @todo at least it should be rewritten to use MST `flow()`
+        if (!isAlive(self)) return;
         self.setData(data);
         self.setColumnNames(headers);
         self.updateValue(store);

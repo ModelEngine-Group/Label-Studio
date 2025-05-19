@@ -8,7 +8,8 @@ import Registry from "../../core/Registry";
 import Types from "../../core/Types";
 import Tree from "../../core/Tree";
 import { isSelfServe } from "../../utils/billing";
-import { FF_BULK_ANNOTATION } from "../../utils/feature-flags";
+import { FF_BULK_ANNOTATION, isFF } from "../../utils/feature-flags";
+import { guidGenerator } from "../../utils/unique";
 
 const { Panel } = Collapse;
 
@@ -88,6 +89,7 @@ const PanelModel = types
 
 const Model = types
   .model({
+    id: types.optional(types.identifier, guidGenerator),
     type: "collapse",
 
     size: types.optional(types.string, "4"),

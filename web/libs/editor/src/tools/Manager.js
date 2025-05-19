@@ -1,4 +1,6 @@
+import { ff } from "@humansignal/core";
 import { destroy } from "mobx-state-tree";
+import { FF_DEV_3391 } from "../utils/feature-flags";
 import { guidGenerator } from "../utils/unique";
 
 /** @type {Map<any, ToolsManager>} */
@@ -57,6 +59,9 @@ class ToolsManager {
   }
 
   get obj() {
+    if (ff.isActive(FF_DEV_3391)) {
+      return root.annotationStore.selected?.names.get(this.name);
+    }
     return root.annotationStore.names.get(this.name);
   }
 

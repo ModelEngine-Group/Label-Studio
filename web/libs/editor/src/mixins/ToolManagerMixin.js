@@ -7,7 +7,8 @@ import { FF_DEV_3391 } from "../utils/feature-flags";
 export const ToolManagerMixin = types.model().actions((self) => {
   return {
     afterAttach() {
-      if (ff.isActive(FF_DEV_3391) && !self.annotation) {
+      if (ff.isActive(FF_DEV_3391) && self.annotationStore.initialized) {
+        self.tools = self.annotationStore.names.get(self.name).tools;
         return;
       }
       const toolNames = self.toolNames ?? [];
