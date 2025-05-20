@@ -27,10 +27,24 @@ export type TooltipProps = PropsWithChildren<{
   children: React.ReactNode;
   interactive?: boolean;
   theme?: "light" | "dark";
+  className?: string;
 }>;
 
 const TooltipInner = forwardRef(
-  ({ title, children, alignment, defaultVisible, disabled, style, interactive, theme = "dark" }: TooltipProps, ref) => {
+  (
+    {
+      title,
+      children,
+      alignment,
+      defaultVisible,
+      disabled,
+      style,
+      interactive,
+      theme = "dark",
+      className,
+    }: TooltipProps,
+    ref,
+  ) => {
     const triggerElement = useRef<any>();
     const tooltipElement = useRef<HTMLDivElement>();
     const hideTimeoutRef = useRef<NodeJS.Timeout>();
@@ -101,10 +115,15 @@ const TooltipInner = forwardRef(
         injected ? (
           <div
             ref={(el: any) => setRef(tooltipElement, el)}
-            className={clsx(styles.tooltip, visibilityClasses, {
-              [styles[`tooltip_align_${align}`]]: true,
-              [styles.tooltip_theme_light]: theme === "light",
-            })}
+            className={clsx(
+              styles.tooltip,
+              visibilityClasses,
+              {
+                [styles[`tooltip_align_${align}`]]: true,
+                [styles.tooltip_theme_light]: theme === "light",
+              },
+              className,
+            )}
             style={{
               ...offset,
               ...style,

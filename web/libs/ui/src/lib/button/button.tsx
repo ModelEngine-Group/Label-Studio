@@ -1,6 +1,8 @@
 import { cn } from "../../utils/utils";
-import { forwardRef, type ButtonHTMLAttributes, type PropsWithChildren, type ReactNode } from "react";
+import { forwardRef, type MouseEvent, type ButtonHTMLAttributes, type PropsWithChildren, type ReactNode } from "react";
 import styles from "./button.module.scss";
+import { setRef } from "@humansignal/core/lib/utils/unwrapRef";
+import { Tooltip } from "../Tooltip/Tooltip";
 
 const variants = {
   primary: styles["variant-primary"],
@@ -30,6 +32,10 @@ const alignment = {
   right: styles["align-right"],
 };
 
+export type ButtonVariant = ButtonProps["variant"];
+export type ButtonLook = ButtonProps["look"];
+export type ButtonSize = ButtonProps["size"];
+
 /**
  * Generates a className string with button styling that can be applied to any element
  *
@@ -56,12 +62,16 @@ export function buttonVariant(
     size?: ButtonProps["size"];
     align?: ButtonProps["align"];
     waiting?: boolean;
-  },
+  } = {},
   className?: string,
 ) {
   const buttonStyles = [styles.base, variants[variant], looks[look], sizes[size], alignment[align]];
   return cn(
     "inline-flex items-center rounded-smaller border text-shadow-button box-border border transition-all",
+    "text-label-medium font-medium text-[color:--text-color] bg-[color:--background-color] bg-[image:--background-image] border-[color:--border-color] shadow-[shadow:--emboss-shadow] text-center",
+    "hover:text-[color:--text-color] hover:bg-[color:--background-color-hover] hover:border-[color:--border-color-hover]",
+    "active:bg-[color:--background-color-active] active:border-[color:--border-color]",
+    "[&_svg]:h-full [&_svg]:inline-block [&_svg]:aspect-square",
     ...buttonStyles,
     { [styles.waiting]: waiting },
     className,
@@ -69,13 +79,47 @@ export function buttonVariant(
 }
 
 export type ButtonProps = {
+  /**
+   * Controls the color variant of the button
+   * See [Storybook](https://labelstud.io/storybook?path=/docs/ui-button--docs)
+   */
   variant?: keyof typeof variants;
+  /**
+   * Controls the look of the button
+   * See [Storybook](https://labelstud.io/storybook?path=/docs/ui-button--docs)
+   */
   look?: keyof typeof looks;
   size?: keyof typeof sizes;
   align?: keyof typeof alignment;
+  /**
+   * Waiting state with stripes animation
+   */
   waiting?: boolean;
+  /**
+   * Allow button to be clickable when waiting
+   */
+  waitingClickable?: boolean;
+  /**
+   * @deprecated Use `leading` instead
+   */
+  icon?: ReactNode;
+  /**
+   * Inserts a leading element preceding the content of the button
+   */
   leading?: ReactNode;
+  /**
+   * Inserts a trailing element following the content of the button
+   */
   trailing?: ReactNode;
+  /**
+   * Adds a tooltip to the button
+   */
+  tooltip?: string;
+  /**
+   * When in waiting state with `waitingClickable` enabled, this function will be used
+   * as `onClick` if provided. Otherwise default `onClick` will be used.
+   */
+  secondaryOnClick?: (e: MouseEvent) => void;
 } & ButtonHTMLAttributes<HTMLButtonElement>;
 
 /**
@@ -84,6 +128,11 @@ export type ButtonProps = {
  * The Button component provides a consistent UI element for user interactions
  * with support for different visual variants, looks, and sizes. It can include
  * leading and trailing elements for additional visual context.
+ *
+ * Features:
+ * - Different colors and looks of the button
+ * - Waiting state with secondary action
+ * - Icons support
  */
 const Button = forwardRef(
   (
@@ -95,30 +144,45 @@ const Button = forwardRef(
       size = "medium",
       waiting = false,
       align = "default",
-      leading,
+      waitingClickable = false,
+      icon,
+      leading = icon,
       trailing,
+      tooltip,
+      onClick,
+      secondaryOnClick,
       ...buttonProps
     }: PropsWithChildren<ButtonProps>,
     ref,
-  ) => {
-    return (
+  ): JSX.Element => {
+    const buttonClassName = cn(buttonVariant({ variant, look, size, waiting, align }, className));
+    const iconClassName = "inline-flex gap-tight not-italic items-center";
+    const contentClassName = "inline-flex flex-1 whitespace-pre items-center px-tight";
+    const clickHandler = waiting && waitingClickable ? (secondaryOnClick ?? onClick) : onClick;
+
+    const buttonBody = (
       <button
         {...buttonProps}
-        ref={(el) => {
-          if (ref instanceof Function) {
-            ref(el);
-          } else if (ref) {
-            ref.current = el;
-          }
-        }}
-        disabled={buttonProps.disabled ?? waiting}
-        className={buttonVariant({ variant, look, size, waiting, align }, className)}
+        onClick={clickHandler}
+        ref={(el) => setRef(ref, el)}
+        disabled={buttonProps.disabled ?? (!waitingClickable && waiting)}
+        data-waiting={waiting}
+        data-variant={variant}
+        data-look={look}
+        data-align={align}
+        className={buttonClassName}
       >
-        {leading}
-        <span>{children}</span>
-        {trailing}
+        {leading && children && <em className={iconClassName}>{leading}</em>}
+        <span className={contentClassName}>{children ?? leading ?? ""}</span>
+        {trailing && <em className={iconClassName}>{trailing}</em>}
       </button>
     );
+
+    if (tooltip) {
+      return <Tooltip title={tooltip}>{buttonBody}</Tooltip>;
+    }
+
+    return buttonBody as JSX.Element;
   },
 );
 

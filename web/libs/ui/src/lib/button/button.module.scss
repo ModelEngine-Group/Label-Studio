@@ -15,38 +15,20 @@
   --emboss-shadow: inset 0 1px 0 rgb(var(--white-raw) / 10%), inset 0 -1px 0 rgb(var(--black-raw) / 10%);
   --emboss-shadow-active: inset 0 -1px 0 rgb(var(--white-raw) / 5%), inset 0 1px 0 rgb(var(--black-raw) / 10%);
 
-  @apply text-label-medium font-medium;
-
-  box-shadow: var(--emboss-shadow);
-  background-color: var(--background-color);
-  background-image: var(--background-image);
-  border-color: var(--border-color);
-  color: var(--text-color);
-  text-align: center;
-
-
-  & > span {
-    @apply inline-flex flex-1 whitespace-pre items-center px-tight;
-  }
-
-  svg {
-    @apply h-6 inline-block aspect-square;
-  }
-
   & > span:not(:has(text)):has(svg:only-child) {
     @apply h-full w-full p-0 aspect-square;
   }
 
-  &:hover {
-    background-color: var(--background-color-hover);
-    border-color: var(--border-color-hover);
+  & > em {
+    @apply inline-flex;
+
+    & > svg {
+      @apply h-full aspect-square;
+    }
   }
 
   &:active {
     --emboss-shadow: var(--emboss-shadow-active);
-
-    background-color: var(--background-color-active);
-    border-color: var(--border-color-hover);
   }
 
   &:focus {
@@ -153,11 +135,11 @@
 
 .variant-neutral-interted {
   --background-color: var(--color-neutral-inverted-surface);
-  --border-color: var(--color-neutral-inverted-border-bold);
+  --border-color: var(--color-neutral-inverted-border);
   --text-color: var(--color-neutral-inverted-content);
   --background-color-hover: var(--color-neutral-inverted-surface-hover);
   --background-color-active: var(--color-neutral-inverted-surface-active);
-  --focus-outline: var(--color-neutral-inverted-focus-outline);
+  --focus-outline: var(--color-primary-focus-outline);
   --background-color-hover-outline: var(--color-neutral-inverted-emphasis-subtle);
   --background-color-active-outline: var(--color-neutral-inverted-emphasis);
   --border-outline: var(--color-neutral-inverted-border);
@@ -171,7 +153,7 @@
 .look-outlined {
   &:not(:disabled),
   &.waiting {
-    --background-color: transparent;
+    --background-color: var(--color-neutral-background);
     --border-color: var(--border-outline);
     --text-color: var(--text-outline);
     --background-color-hover: var(--background-color-hover-outline);
@@ -214,47 +196,55 @@
       border-color: var(--border-color-hover);
     }
   }
+
+  &:disabled:not(.waiting),
+  &:disabled:not(.waiting):hover,
+  &:disabled:not(.waiting):focus,
+  &:disabled:not(.waiting):active {
+    --background-color-hover: transparent;
+    --background-color-active: transparent;
+    --border-color-hover: transparent;
+    --background-color: transparent;
+    --border-color: transparent;
+  }
 }
 
 /// SIZES
 
 .size-medium {
-  @apply p-tight text-label-medium h-[40px];
+  @apply p-tight text-label-medium h-1000;
 
   & > span {
     @apply px-tight gap-tight;
   }
 
-  & > svg {
-    @apply h-6;
+  & > em {
+    @apply gap-tight h-600 min-w-600;
   }
 }
 
 .size-small {
-  @apply p-tighter text-label-small h-[32px];
+  @apply p-tighter text-label-small h-800;
+
 
   & > span {
     @apply px-tighter gap-tighter;
   }
 
-  & > svg {
-    @apply h-4;
+  & > em {
+    @apply gap-tighter h-400 min-w-400;
   }
 }
 
 .size-smaller {
-  @apply p-tightest text-label-smaller h-[24px];
+  @apply p-tightest text-label-smaller h-600;
 
   & > span {
     @apply px-tightest gap-tightest;
   }
 
-  & > svg, & > span > svg {
-    @apply h-4;
-  }
-
-  & > svg {
-    @apply w-4;
+  & > em {
+    @apply gap-tighter h-400 min-w-400;
   }
 }
 
@@ -318,5 +308,31 @@
 .align-right {
   & > span {
     @apply justify-end;
+  }
+}
+
+.button-group {
+  @apply flex gap-tight;
+
+  &.button-group-collapsed {
+    @apply gap-0;
+
+  button:not(:first-child) {
+    border-left: none;
+  }
+
+    button:first-child:not(:only-child) {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    button:last-child:not(:only-child) {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    button:not(:first-child, :last-child) {
+      border-radius: 0;
+    }
   }
 }
