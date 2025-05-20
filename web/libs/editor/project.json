@@ -90,7 +90,7 @@
       "executor": "nx:run-commands",
       "options": {
         "cwd": "libs/editor",
-        "command": "node scripts/create-docs.js ../../../docs/source/tags"
+        "command": "node scripts/create-docs.js ../../../docs/source/includes/tags"
       }
     },
     "extract-antd-no-reset": {

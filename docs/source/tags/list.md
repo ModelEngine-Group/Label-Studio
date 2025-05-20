@@ -13,13 +13,7 @@ It's much more lightweight to use `List` than to group other tags like Text. Als
 The `List` tag can be used with the `Ranker` tag to rank items or pick relevant items from a list.
 Items can be styled in `Style` tag by using `.htx-ranker-item` class.
 
-### Parameters
-
-| Param | Type | Description |
-| --- | --- | --- |
-| name | <code>string</code> | Name of the element |
-| value | <code>string</code> | Data field containing a JSON with array of objects (id, title, body) to rank |
-| [title] | <code>string</code> | Title of the list |
+{% insertmd includes/tags/list.md %}
 
 ### Example
 

@@ -10,13 +10,7 @@ The `Pairwise` tag is used to compare two different objects and select one item 
 
 Use with the following data types: audio, image, HTML, paragraphs, text, time series, video.
 
-### Parameters
-
-| Param | Type | Description |
-| --- | --- | --- |
-| name | <code>string</code> | Name of the element |
-| toName | <code>string</code> | Comma-separated names of the elements you want to compare |
-| [selectionStyle] | <code>string</code> | Style for the selection |
+{% insertmd includes/tags/pairwise.md %}
 
 ### Example
 

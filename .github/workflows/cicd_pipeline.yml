@@ -135,6 +135,22 @@ jobs:
     with:
       head_sha: ${{ github.event.pull_request.head.sha || github.event.after }}
 
+  build-frontend-docs:
+    name: "Build"
+    needs:
+      - changed_files
+    if: |
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.fork == false &&
+      needs.changed_files.outputs.frontend == 'true' &&
+      !startsWith(needs.changed_files.outputs.commit-message, 'ci: Build tag docs')
+    permissions:
+      contents: write
+    uses: ./.github/workflows/create-tag-docs.yml
+    with:
+      ref: ${{ github.event.pull_request.head.ref || github.ref }}
+    secrets: inherit
+
   build-docker:
     name: "Build"
     needs:

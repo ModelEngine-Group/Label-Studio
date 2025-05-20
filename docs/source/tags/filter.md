@@ -8,14 +8,7 @@ meta_description: Customize Label Studio with the Filter tag to filter labels to
 
 Use the Filter tag to add a filter search for a large number of labels or choices. Use with the Labels tag or Choices tag.
 
-### Parameters
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| [placeholder] | <code>string</code> | <code>&quot;\&quot;Quick Filter\&quot;&quot;</code> | Placeholder text for filter |
-| [minlength] | <code>number</code> | <code>3</code> | Size of the filter |
-| [style] | <code>string</code> |  | CSS style of the string |
-| [hotkey] | <code>string</code> |  | Hotkey to use to focus on the filter text area |
+{% insertmd includes/tags/filter.md %}
 
 ### Example
 

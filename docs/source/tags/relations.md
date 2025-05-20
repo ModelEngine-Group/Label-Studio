@@ -10,11 +10,7 @@ The `Relations` tag is used to create label relations between regions. Use to pr
 
 Use with the following data types: audio, image, HTML, paragraphs, text, time series, video.
 
-### Parameters
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| [choice] | <code>single</code> \| <code>multiple</code> | <code>single</code> | Configure whether you can select one or multiple labels |
+{% insertmd includes/tags/relations.md %}
 
 ### Example
 

@@ -10,12 +10,7 @@ VideoRectangle tag brings Object Tracking capabilities to videos. It works in co
 
 Use with the following data types: video
 
-### Parameters
-
-| Param | Type | Description |
-| --- | --- | --- |
-| name | <code>string</code> | Name of the element |
-| toName | <code>string</code> | Name of the element to control (video) |
+{% insertmd includes/tags/videorectangle.md %}
 
 ### Example
 

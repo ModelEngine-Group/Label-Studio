@@ -10,12 +10,7 @@ The `Pdf` tag displays a PDF document for labeling. Use for performing document-
 
 Use with the following data types: PDF.
 
-### Parameters
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| name | <code>string</code> |  | Name of the element |
-| value | <code>string</code> |  | Value of the element - field name to retrieve the PDF URL from |
+{% insertmd includes/tags/pdf.md %}
 
 ### Supported Control tags
 Document-level annotations are supported with Pdf tag, for example:
