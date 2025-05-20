@@ -36,14 +36,7 @@ const PdfModel = types.compose("PdfModel", Base, ProcessAttrsMixin, AnnotationMi
 const HtxPdf = inject("store")(
   observer(({ item }) => {
     if (!item._url) return null;
-    return (
-      <iframe
-        src={item._url}
-        title="PDF Document"
-        style={{ width: "100%", height: "600px", border: "none" }}
-        allowFullScreen
-      />
-    );
+    return <embed src={item._url} style={{ width: "100%", height: "600px", border: "none" }} type="application/pdf" />;
   }),
 );
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Circle, Rect } from "react-konva";
 import { observer } from "mobx-react";
-import { getParent, getRoot, hasParent, types } from "mobx-state-tree";
+import { getParent, hasParent, types } from "mobx-state-tree";
 
 import { RELATIVE_STAGE_HEIGHT, RELATIVE_STAGE_WIDTH } from "../components/ImageView/Image";
 import { guidGenerator } from "../core/Helpers";

@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import { getRoot, types } from "mobx-state-tree";
+import { types } from "mobx-state-tree";
 
 import { Hotkey } from "../core/Hotkey";
 import NormalizationMixin from "../mixins/Normalization";
