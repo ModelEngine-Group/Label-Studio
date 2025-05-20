@@ -49,8 +49,14 @@ body :global(.ant-select-tree) {
   color: var(--color-neutral-content);
 }
 
-body :global(.ant-select-tree .ant-select-tree-node-content-wrapper:hover) {
+body :global(.ant-select-tree .ant-select-tree-treenode .ant-select-tree-node-content-wrapper:hover) {
   background-color: var(--color-primary-emphasis-subtle);
+  color: var(--color-neutral-content);
+}
+
+
+body :global(.ant-select-tree .ant-select-tree-treenode.ant-select-tree-treenode-active .ant-select-tree-node-content-wrapper) {
+  background: var(--color-primary-emphasis-subtle);
   color: var(--color-neutral-content);
 }
 
@@ -81,4 +87,8 @@ body :global(.ant-select-multiple .ant-select-selection-item-remove) {
 
 body :global(.ant-select-arrow) {
   color: var(--color-neutral-icon);
+}
+
+body :global(.ant-empty-description) {
+  color: var(--color-neutral-content-subtler);
 }
