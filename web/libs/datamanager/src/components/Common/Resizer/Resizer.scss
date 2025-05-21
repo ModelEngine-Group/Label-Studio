@@ -1,8 +1,6 @@
 .resizer {
-  --handle-size: 1px;
-  --handle-size-hover: 2px;
-
-  position: relative;
+  --handle-size: 2px;
+  --handle-size-hover: 3px;
 
   & button {
     &:focus {
@@ -12,33 +10,17 @@
   }
 
   &__handle {
-    top: 0;
-    height: 100%;
+    top: 25%;
+    bottom: 25%;
     position: absolute;
     cursor: ew-resize;
     z-index: 100;
     right: 0;
+    width: var(--handle-size);
+    background: var(--color-neutral-border);
 
-    &::before {
-      top: 0;
-      left: 50%;
-      bottom: 0;
-      width: var(--handle-size);
-      content: "";
-      z-index: 5;
-      display: block;
-      background: var(--color-neutral-border);
-      position: absolute;
-    }
-
-    &_quickview::before {
-      left: 0;
-    }
-
-    &:hover::before,
-    &_resizing::before {
-      top: 0;
-      bottom: 0;
+    &:hover,
+    &_resizing {
       width: var(--handle-size-hover);
       background-color: var(--color-primary-border-subtle);
     }
