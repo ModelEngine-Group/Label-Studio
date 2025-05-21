@@ -4,6 +4,7 @@ on:
   pull_request_target:
     types:
       - opened
+      - closed
       - converted_to_draft
       - ready_for_review
       - synchronize
