@@ -55,6 +55,8 @@ export const FF_MEMORY_LEAK_FIX = "fflag_feat_all_optic_1178_reduce_memory_leak_
  */
 export const FF_REGION_VISIBILITY_FROM_URL = "fflag_feat_front_optic_1553_url_based_region_visibility_short";
 
+export const FF_AVERAGE_AGREEMENT_SCORE_POPOVER = "fflag_feat_all_leap_2042_average_agreement_score_popover";
+
 // Customize flags
 const flags = {};
 
