@@ -12,7 +12,6 @@
 import { formDataToJPO, parseJson } from "../helpers";
 import statusCodes from "./status-codes.json";
 import { queryClient, shouldBypassCache } from "@humansignal/core/lib/utils/query-client";
-import { FF_MEMBERS_MANAGER_API_CACHE, isFF } from "@humansignal/core/lib/utils/feature-flags";
 
 /**
  * @typedef {Dict<string, EndpointConfig>} Endpoints
@@ -291,7 +290,7 @@ export class APIProxy {
         };
 
         // Use TanStack Query cache for GET requests only if queryCacheParams is present
-        if (isFF(FF_MEMBERS_MANAGER_API_CACHE) && requestMethod === "GET" && queryCacheParams) {
+        if (requestMethod === "GET" && queryCacheParams) {
           const cacheKey = [queryCacheParams.keyPrefix, paramsForRequest];
           return queryClient.fetchQuery({
             queryKey: cacheKey,
