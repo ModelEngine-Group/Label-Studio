@@ -1,0 +1,81 @@
+import { memo, useCallback } from "react";
+import { ThemeToggle, IconLink, IconCopyOutline, Tooltip, useToast } from "@humansignal/ui";
+import { useAtomValue } from "jotai";
+import { configAtom } from "../../atoms/configAtoms";
+import { getParentUrl } from "../../utils/url";
+
+const ShareUrlButton = () => {
+  const config = useAtomValue(configAtom);
+  const toast = useToast();
+
+  const handleCopy = useCallback(() => {
+    const url = new URL(getParentUrl());
+    url.searchParams.set("config", encodeURIComponent(config.replace(/\n/g, "<br>")));
+    navigator.clipboard.writeText(url.toString());
+    toast?.show({ message: "URL copied to clipboard" });
+  }, [config, toast]);
+
+  return (
+    <Tooltip title="Share labeling config URL">
+      <button
+        type="button"
+        className="flex items-center justify-center h-8 w-8 gap-2 border border-neutral-border rounded-md"
+        aria-label="Share labeling config URL"
+        onClick={handleCopy}
+      >
+        <IconLink width={22} height={22} className="flex-shrink-0" />
+      </button>
+    </Tooltip>
+  );
+};
+
+const CopyButton = () => {
+  const config = useAtomValue(configAtom);
+  const toast = useToast();
+
+  const handleCopy = useCallback(() => {
+    navigator.clipboard.writeText(config);
+    toast?.show({ message: "Config copied to clipboard" });
+  }, [config, toast]);
+
+  return (
+    <Tooltip title="Copy labeling config">
+      <button
+        type="button"
+        className="flex items-center justify-center h-8 w-8 gap-2 border border-neutral-border rounded-md"
+        aria-label="Copy labeling config"
+        onClick={handleCopy}
+      >
+        <IconCopyOutline width={18} height={18} className="flex-shrink-0" />
+      </button>
+    </Tooltip>
+  );
+};
+
+const ShareButtons = () => {
+  return (
+    <div className="flex items-center gap-2">
+      <CopyButton />
+      <ShareUrlButton />
+    </div>
+  );
+};
+
+export const TopBar = memo(
+  () => {
+    return (
+      <div className="flex items-center h-10 px-tight text-heading-medium justify-between select-none border-b border-neutral-border">
+        <div className="flex items-center gap-2">
+          <span className="font-semibold tracking-tight text-body-medium">
+            Label Studio <span className="text-accent-persimmon-base">Playground</span>
+          </span>
+        </div>
+        <div className="flex items-center gap-4">
+          <ShareButtons />
+          <ThemeToggle />
+        </div>
+      </div>
+    );
+  },
+  () => true,
+);

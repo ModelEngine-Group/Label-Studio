@@ -1032,6 +1032,8 @@ const _Annotation = types
     // And this problems are fixable, so better to fix them on start
     fixBrokenAnnotation(json) {
       return (json ?? []).reduce((res, objRaw) => {
+        if (!objRaw) return res;
+
         const obj = structuredClone(objRaw) ?? {};
 
         if (obj.type === "relation") {

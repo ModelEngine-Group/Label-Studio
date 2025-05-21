@@ -39,6 +39,12 @@ const SettingsModel = types
 
     bottomSidePanel: types.optional(types.boolean, false),
 
+    forceBottomPanel: types.optional(types.boolean, false),
+
+    collapsibleBottomPanel: types.optional(types.boolean, false),
+
+    defaultCollapsedBottomPanel: types.optional(types.boolean, false),
+
     sidePanelMode: types.optional(
       types.enumeration([SIDEPANEL_MODE_REGIONS, SIDEPANEL_MODE_LABELS]),
       SIDEPANEL_MODE_REGIONS,
@@ -71,6 +77,9 @@ const SettingsModel = types
     },
     get displayLabelsByDefault() {
       return self.sidePanelMode === SIDEPANEL_MODE_LABELS;
+    },
+    get effectiveBottomSidePanel() {
+      return self.forceBottomPanel ? true : self.bottomSidePanel;
     },
   }))
   .actions((self) => ({
@@ -192,6 +201,7 @@ const SettingsModel = types
     },
 
     toggleBottomSP() {
+      if (self.forceBottomPanel) return;
       self.bottomSidePanel = !self.bottomSidePanel;
     },
 

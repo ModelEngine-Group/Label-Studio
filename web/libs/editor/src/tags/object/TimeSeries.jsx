@@ -531,8 +531,6 @@ const Model = types
         store.annotationStore.addErrors([errorBuilder.generalError(message)]);
         return;
       }
-      // if current view already restored by PersistentState
-      if (self.brushRange?.length) return;
 
       const percentToLength = (percent) => times[Math.round((times.length - 1) * percent)];
       const boundaries = self.defaultOverviewWidth.map(percentToLength);
