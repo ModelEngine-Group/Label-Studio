@@ -65,7 +65,7 @@ const optimizer = () => {
     result.minimizer = undefined;
   }
 
-  if (process.env.MODE.startsWith("standalone")) {
+  if (process.env.MODE?.startsWith("standalone")) {
     result.runtimeChunk = false;
     result.splitChunks = { cacheGroups: { default: false } };
   }
@@ -84,7 +84,7 @@ module.exports = composePlugins(
   withReact({ svgr: true }),
   (config) => {
     // LS entrypoint
-    if (!process.env.MODE.startsWith("standalone")) {
+    if (!process.env.MODE?.startsWith("standalone")) {
       config.entry = {
         main: {
           import: path.resolve(__dirname, "apps/labelstudio/src/main.tsx"),
@@ -270,7 +270,7 @@ module.exports = composePlugins(
       mode,
       plugins,
       optimization: optimizer(),
-      devServer: process.env.MODE.startsWith("standalone")
+      devServer: process.env.MODE?.startsWith("standalone")
         ? {}
         : {
             // Port for the Webpack dev server
