@@ -17,6 +17,10 @@ type PreviewPanelProps = {
   onAnnotationUpdate?: (annotation: any) => void;
 };
 
+// Clear localStorage of any LabelStudio:settings as it may cause issues with fullscreen mode
+// if coming from the old playground
+localStorage.removeItem("labelStudio:settings");
+
 export const PreviewPanel: FC<PreviewPanelProps> = memo(
   ({ onAnnotationUpdate }) => {
     const config = useAtomValue(configAtom);
