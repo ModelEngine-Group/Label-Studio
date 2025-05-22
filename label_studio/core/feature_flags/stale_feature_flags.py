@@ -11,7 +11,6 @@ STALE_FEATURE_FLAGS = {
     'fflag_fix_back_leap_612_explore_review_09042024_short': True,
     'fflag_fix_optic_214_extra_blank_dashboard_charts_short': True,
     'fflag_fix_optic_391_tasks_outside_low_agreement_project_counts_short': True,
-    'fflag_fix_all_leap_877_annotator_membership_api_03042024_short': True,
     'fflag_feat_all_optic_520_annotator_report_short': True,
     'feat_all_optic_71_dashboard_multiple_labeling_group_support_v1_01092023_short': True,
     'fflag_feat_front_prod_281_project_list_search_19072023_short': True,
