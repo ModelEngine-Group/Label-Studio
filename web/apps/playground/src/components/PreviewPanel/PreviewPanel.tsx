@@ -79,6 +79,7 @@ export const PreviewPanel: FC<PreviewPanelProps> = memo(
               forceBottomPanel: true,
               collapsibleBottomPanel: true,
               defaultCollapsedBottomPanel: true,
+              fullscreen: false,
             },
             onStorageInitialized: (LS: any) => {
               const initAnnotation = () => {
