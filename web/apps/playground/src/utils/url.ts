@@ -1,7 +1,10 @@
 export const getParentUrl = () => {
-  // Check if in iframe, fallback to labelstud.io playground if not able to determine parent url through ancestorOrigins
+  // Check if in iframe, use labelstud.io playground url as fallback
   if (window.self !== window.top) {
-    return window.location.ancestorOrigins?.[0] ?? "https://labelstud.io/playground/";
+    const url = "https://labelstud.io/playground/";
+
+    return new URL(url);
   }
-  return window.location.href;
+
+  return new URL(window.location.href);
 };

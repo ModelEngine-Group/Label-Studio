@@ -1,19 +1,22 @@
 import { memo, useCallback } from "react";
-import { ThemeToggle, IconLink, IconCopyOutline, Tooltip, useToast } from "@humansignal/ui";
+import { ThemeToggle, IconLink, IconCopyOutline, Tooltip } from "@humansignal/ui";
 import { useAtomValue } from "jotai";
 import { configAtom } from "../../atoms/configAtoms";
 import { getParentUrl } from "../../utils/url";
+import { useCopyText } from "../../hooks/useCopyText";
 
 const ShareUrlButton = () => {
   const config = useAtomValue(configAtom);
-  const toast = useToast();
+  const copyText = useCopyText({
+    successMessage: "URL copied to clipboard",
+    errorMessage: "Failed to copy URL to clipboard",
+  });
 
   const handleCopy = useCallback(() => {
-    const url = new URL(getParentUrl());
+    const url = getParentUrl();
     url.searchParams.set("config", encodeURIComponent(config.replace(/\n/g, "<br>")));
-    navigator.clipboard.writeText(url.toString());
-    toast?.show({ message: "URL copied to clipboard" });
-  }, [config, toast]);
+    copyText(url.toString());
+  }, [config, copyText]);
 
   return (
     <Tooltip title="Share labeling config URL">
@@ -31,12 +34,14 @@ const ShareUrlButton = () => {
 
 const CopyButton = () => {
   const config = useAtomValue(configAtom);
-  const toast = useToast();
+  const copyText = useCopyText({
+    successMessage: "Config copied to clipboard",
+    errorMessage: "Failed to copy config to clipboard",
+  });
 
   const handleCopy = useCallback(() => {
-    navigator.clipboard.writeText(config);
-    toast?.show({ message: "Config copied to clipboard" });
-  }, [config, toast]);
+    copyText(config);
+  }, [config, copyText]);
 
   return (
     <Tooltip title="Copy labeling config">
