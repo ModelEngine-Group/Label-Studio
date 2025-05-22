@@ -65,7 +65,7 @@ const optimizer = () => {
     result.minimizer = undefined;
   }
 
-  if (process.env.MODE === "standalone") {
+  if (process.env.MODE.startsWith("standalone")) {
     result.runtimeChunk = false;
     result.splitChunks = { cacheGroups: { default: false } };
   }
@@ -84,7 +84,7 @@ module.exports = composePlugins(
   withReact({ svgr: true }),
   (config) => {
     // LS entrypoint
-    if (process.env.MODE !== "standalone") {
+    if (!process.env.MODE.startsWith("standalone")) {
       config.entry = {
         main: {
           import: path.resolve(__dirname, "apps/labelstudio/src/main.tsx"),
@@ -94,7 +94,12 @@ module.exports = composePlugins(
       config.output = {
         ...config.output,
         uniqueName: "labelstudio",
-        publicPath: isDevelopment && FRONTEND_HOSTNAME ? `${FRONTEND_HOSTNAME}/react-app/` : "auto",
+        publicPath:
+          isDevelopment && FRONTEND_HOSTNAME
+            ? `${FRONTEND_HOSTNAME}/react-app/`
+            : process.env.MODE === "standalone-playground"
+              ? "/playground-assets/"
+              : "auto",
         scriptType: "text/javascript",
       };
 
@@ -265,38 +270,37 @@ module.exports = composePlugins(
       mode,
       plugins,
       optimization: optimizer(),
-      devServer:
-        process.env.MODE === "standalone"
-          ? {}
-          : {
-              // Port for the Webpack dev server
-              port: HMR_PORT,
-              // Enable HMR
-              hot: true,
-              // Allow cross-origin requests from Django
-              headers: { "Access-Control-Allow-Origin": "*" },
-              static: {
-                directory: path.resolve(__dirname, "../label_studio/core/static/"),
-                publicPath: "/static/",
+      devServer: process.env.MODE.startsWith("standalone")
+        ? {}
+        : {
+            // Port for the Webpack dev server
+            port: HMR_PORT,
+            // Enable HMR
+            hot: true,
+            // Allow cross-origin requests from Django
+            headers: { "Access-Control-Allow-Origin": "*" },
+            static: {
+              directory: path.resolve(__dirname, "../label_studio/core/static/"),
+              publicPath: "/static/",
+            },
+            devMiddleware: {
+              publicPath: `${FRONTEND_HOSTNAME}/react-app/`,
+            },
+            allowedHosts: "all", // Allow access from Django's server
+            proxy: {
+              "/api": {
+                target: `${DJANGO_HOSTNAME}/api`,
+                changeOrigin: true,
+                pathRewrite: { "^/api": "" },
+                secure: false,
               },
-              devMiddleware: {
-                publicPath: `${FRONTEND_HOSTNAME}/react-app/`,
-              },
-              allowedHosts: "all", // Allow access from Django's server
-              proxy: {
-                "/api": {
-                  target: `${DJANGO_HOSTNAME}/api`,
-                  changeOrigin: true,
-                  pathRewrite: { "^/api": "" },
-                  secure: false,
-                },
-                "/": {
-                  target: `${DJANGO_HOSTNAME}`,
-                  changeOrigin: true,
-                  secure: false,
-                },
+              "/": {
+                target: `${DJANGO_HOSTNAME}`,
+                changeOrigin: true,
+                secure: false,
               },
             },
+          },
     });
   },
 );
