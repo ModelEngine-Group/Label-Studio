@@ -259,7 +259,7 @@ Adjust the included defaults to reflect your environment and copy these into a n
 
 </div>
 
-## Optional: set up TLS for PostgreSQL
+## Optional: Set up TLS for PostgreSQL
 To configure Label Studio Enterprise to use TLS for end-client connections with PostgreSQL, do the following:
 
 1. Enable TLS for your PostgreSQL instance and save Root TLS certificate, client certificate and its key for the next steps.
@@ -286,7 +286,7 @@ global:
 
 4. Install or upgrade Label Studio Enterprise using Helm.
 
-## Optional: set up TLS for Redis
+## Optional: Set up TLS for Redis
 To configure Label Studio Enterprise to use TLS for end-client connections with Redis, do the following:
 
 1. Enable TLS for your Redis instance and save Root TLS certificate, client certificate and its key for the next steps.
@@ -312,6 +312,51 @@ global:
 ```
 
 4. Install or upgrade Label Studio Enterprise using Helm.
+
+
+## Optional: Set up username and password for Redis
+
+Use one of these options to set a password and a username for Redis:
+
+**1. Password via Kubernetes Secret**. Use this when:
+* You want to avoid embedding credentials in `values.yaml`
+* You already manage Secrets in your cluster
+* You need a simple auth without multiple Redis users and you don't have username
+
+```yaml
+global:
+  redisConfig:
+    host: "redis://redis.example.com:6379/1"
+    password:
+      secretName: "my-redis-secret"   # Kubernetes Secret name
+      secretKey: "redis-password"      # Key inside Secret
+```
+
+**2. Username + password in URL**. Use this when:
+* Redis v.7 or later, and with ACL-enabled users
+* You need a dedicated Redis user for permission scoping
+* You need a quick, throwaway setup or local testing
+
+```yaml
+global:
+  redisConfig:
+    host: "redis://myuser:mypassword@redis.example.com:6379/1"
+```
+
+ **3. Username in environment variables + password in secret**. Use this when:
+* Redis v.7 or later, and with ACL-enabled users
+* You want to keep the password secret but still specify a username
+
+```yaml
+global:
+  redisConfig:
+    host: "redis://redis.example.com:6379/1"
+    password:
+      secretName: "my-redis-secret"   # Kubernetes Secret name
+      secretKey: "redis-password"      # Key inside Secret
+  extraEnvironmentVars:
+    REDIS_USERNAME: "myuser"           # Injected into pod env
+```
 
 ## Use Helm to install Label Studio Enterprise on your Kubernetes cluster
 
