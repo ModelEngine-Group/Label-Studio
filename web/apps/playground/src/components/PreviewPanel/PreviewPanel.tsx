@@ -10,6 +10,7 @@ import {
   interfacesAtom,
   annotationAtom,
   sampleTaskAtom,
+  displayModeAtom,
 } from "../../atoms/configAtoms";
 import { onSnapshot } from "mobx-state-tree";
 
@@ -29,6 +30,7 @@ export const PreviewPanel: FC<PreviewPanelProps> = memo(
     const interfaces = useAtomValue(interfacesAtom);
     const setAnnotation = useSetAtom(annotationAtom);
     const setSampleTask = useSetAtom(sampleTaskAtom);
+    const displayMode = useAtomValue(displayModeAtom);
     const [showPreview, setShowPreview] = useAtom(showPreviewAtom);
     const rootRef = useRef<HTMLDivElement>(null);
     const lsfInstance = useRef<any>(null);
@@ -82,7 +84,7 @@ export const PreviewPanel: FC<PreviewPanelProps> = memo(
             settings: {
               forceBottomPanel: true,
               collapsibleBottomPanel: true,
-              defaultCollapsedBottomPanel: true,
+              defaultCollapsedBottomPanel: displayMode === "all",
               fullscreen: false,
             },
             onStorageInitialized: (LS: any) => {
@@ -93,7 +95,7 @@ export const PreviewPanel: FC<PreviewPanelProps> = memo(
 
                 const annotation = as.selected;
                 if (annotation) {
-                  snapshotDisposer = onSnapshot(annotation, (snapshot) => {
+                  snapshotDisposer = onSnapshot(annotation, () => {
                     setAnnotation(annotation.serializeAnnotation());
                   });
                 }
