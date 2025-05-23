@@ -28,6 +28,7 @@ from core.utils.params import get_env
 from data_import.models import FileUpload
 from data_manager.managers import PreparedTaskManager, TaskManager
 from django.conf import settings
+from django.contrib.postgres.indexes import BrinIndex
 from django.db import OperationalError, models, transaction
 from django.db.models import CheckConstraint, F, JSONField, Q
 from django.db.models.lookups import GreaterThanOrEqual
@@ -174,6 +175,7 @@ class Task(TaskMixin, models.Model):
             models.Index(fields=['id', 'overlap']),
             models.Index(fields=['overlap']),
             models.Index(fields=['project', 'id']),
+            BrinIndex(fields=['updated_at'], name='task_updated_at_brin_idx'),
         ]
 
     @property
