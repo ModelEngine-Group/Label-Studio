@@ -24,7 +24,9 @@ Set up the following cloud and other storage systems with Label Studio:
 
 When working with an external cloud storage connection, keep the following in mind:
 
-* Label Studio doesn't import the data stored in the bucket, but instead creates *references* to the objects. Therefore, you must have full access control on the data to be synced and shown on the labeling screen.
+* For Source storage:
+   * When "Treat every bucket object as a source file" is checked, Label Studio doesn’t import the data stored in the bucket, but instead creates *references* to the objects. Therefore, you have full access control on the data to be synced and shown on the labeling screen.
+   * When "Treat every bucket object as a source file" is unchecked, bucket files are assumed to be immutable; the only way to push an updated file's state to Label Studio is to upload it with a new filename or delete all tasks that are associated with that file and resync.
 * Sync operations with external buckets only goes one way. It either creates tasks from objects on the bucket (Source storage) or pushes annotations to the output bucket (Target storage). Changing something on the bucket side doesn't guarantee consistency in results.
 * We recommend using a separate bucket folder for each Label Studio project. 
 * Storage Regions: To minimize latency and improve efficiency, store data in cloud storage buckets that are geographically closer to your team rather than near the Label Studio server.
@@ -75,7 +77,7 @@ Label Studio Source Storages feature an option called "Treat every bucket object
 
 ###### Off
 
-When disabled, tasks in JSON format can be loaded directly from storage buckets into Label Studio. This approach is particularly helpful when dealing with complex tasks that involve multiple media sources.
+When disabled, tasks in JSON or JSONL/NDJSON format can be loaded directly from storage buckets into Label Studio. This approach is particularly helpful when dealing with complex tasks that involve multiple media sources.
 
 <img src="/images/source-storages-treat-off.png" class="make-intense-zoom">
 
@@ -168,6 +170,18 @@ Or:
       "predictions": [...]
   }
 ]
+```
+
+{% enddetails %}
+
+<br>
+
+{% details <b>Example with JSONL</b> %}
+
+`tasks.jsonl`
+```
+{ "image": "s3://bucket/1.jpg", "text": "opossums are awesome" }
+{ "image": "s3://bucket/2.jpg", "text": "cats are awesome" }
 ```
 
 {% enddetails %}

@@ -112,7 +112,9 @@ Label Studio does not support labeling PDF files directly. However, you can conv
 
 When working with an external Cloud Storage connection (S3, GCS, Azure), keep the following in mind:
 
-* Label Studio doesn’t import the data stored in the bucket, but instead creates *references* to the objects. Therefore, you have full access control on the data to be synced and shown on the labeling screen.
+* For Source storage:
+   * When "Treat every bucket object as a source file" is checked, Label Studio doesn’t import the data stored in the bucket, but instead creates *references* to the objects. Therefore, you have full access control on the data to be synced and shown on the labeling screen.
+   * When "Treat every bucket object as a source file" is unchecked, bucket files are assumed to be immutable; the only way to push an updated file's state to Label Studio is to upload it with a new filename or delete all tasks that are associated with that file and resync.
 * Sync operations with external buckets only goes one way. It either creates tasks from objects on the bucket (Source storage) or pushes annotations to the output bucket (Target storage). Changing something on the bucket side doesn’t guarantee consistency in results.
 * We recommend using a separate bucket folder for each Label Studio project.
 
