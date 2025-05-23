@@ -11,9 +11,10 @@ export const showPreviewAtom = atom<boolean>(true);
 export const sampleTaskAtom = atom<any>({});
 export const annotationAtom = atom<any>([]);
 export const modeAtom = atom<"preview" | "editor" | "">("editor");
-export const displayModeAtom = atom<"preview" | "all">(() => {
+export const displayModeAtom = atom<"preview" | "preview-inline" | "all">(() => {
   const params = getQueryParams();
   const mode = params.get("mode");
   if (mode === "preview") return "preview";
+  if (mode === "preview-inline") return "preview-inline";
   return "all";
 });

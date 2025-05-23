@@ -2327,6 +2327,8 @@ code.hljs {
 #main-preview iframe {
   width: 100%;
   margin: 1em 0;
+  border: 1px var(--color-gray-300) solid;
+  border-radius: .75rem;
 }
 
 .page-type-playground .content-markdown {

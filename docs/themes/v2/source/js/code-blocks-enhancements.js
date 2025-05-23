@@ -18,7 +18,7 @@ function encodeConfig(text) {
   return encodeURIComponent(normalizeNewlines(text));
 }
 
-function editorIframe(config, modal, id) {
+function editorIframe(config, modal, id, inline = false) {
   // generate new iframe
   const iframeTemplate = `<iframe id="render-editor-${id}" class="api-render-editor" style="display:none"></iframe>`;
 
@@ -34,7 +34,7 @@ function editorIframe(config, modal, id) {
 
   const templateValue = encodeConfig(config);
 
-  iframe.src = `${getLabelStudioPlaygroundUrl()}?config=${templateValue}&mode=preview`;
+  iframe.src = `${getLabelStudioPlaygroundUrl()}?config=${templateValue}&mode=${inline ? "preview-inline" : "preview"}`;
 }
 
 function showRenderEditor(config) {
@@ -106,7 +106,7 @@ function showRenderEditor(config) {
 
     const inlinePlayground = document.querySelector("#main-preview");
 
-    if (inlinePlayground) editorIframe(code, inlinePlayground);
+    if (inlinePlayground) editorIframe(code, inlinePlayground, true);
   };
 
   const enhanceCodeBlocks = (codeBlock) => {

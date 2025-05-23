@@ -84,7 +84,8 @@ export const PreviewPanel: FC<PreviewPanelProps> = memo(
             settings: {
               forceBottomPanel: true,
               collapsibleBottomPanel: true,
-              defaultCollapsedBottomPanel: displayMode === "all",
+              // Default collapsed in all,preview-inline, but not in preview
+              defaultCollapsedBottomPanel: displayMode !== "preview",
               fullscreen: false,
             },
             onStorageInitialized: (LS: any) => {

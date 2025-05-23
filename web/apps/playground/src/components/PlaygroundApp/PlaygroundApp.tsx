@@ -119,13 +119,13 @@ export const PlaygroundApp = () => {
     >
       <ToastProvider>
         {/* Minimal top bar */}
-        {displayMode !== "preview" && <TopBar />}
+        {!displayMode.startsWith("preview") && <TopBar />}
         {/* Editor/Preview split */}
         <div className="flex flex-1 min-h-0 min-w-0 relative">
           {/* Editor Panel */}
-          {displayMode !== "preview" && <EditorPanel editorWidth={editorWidth} />}
+          {!displayMode.startsWith("preview") && <EditorPanel editorWidth={editorWidth} />}
           {/* Resizable Divider */}
-          {displayMode !== "preview" && (
+          {!displayMode.startsWith("preview") && (
             <div
               className="w-2 cursor-col-resize bg-neutral-emphasis hover:bg-primary-border active:bg-primary-border transition-colors duration-100 z-10"
               onMouseDown={(e: MouseEvent) => {
