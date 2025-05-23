@@ -106,7 +106,7 @@ function showRenderEditor(config) {
 
     const inlinePlayground = document.querySelector("#main-preview");
 
-    if (inlinePlayground) editorIframe(code, inlinePlayground, true);
+    if (inlinePlayground) editorIframe(code, inlinePlayground, "inline", true);
   };
 
   const enhanceCodeBlocks = (codeBlock) => {
