@@ -454,7 +454,7 @@ meta_description: Label Studio interactive demo and playground for data labeling
     const urlParams = new URLSearchParams(window.location.search);
     const config = urlParams.get('config');
     if (config) {
-      return config;
+      return encodeConfig(config);
     }
     const startTemplate = document.getElementById('start-template');
     return encodeConfig(startTemplate.innerHTML);
