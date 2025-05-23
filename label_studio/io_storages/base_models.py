@@ -8,6 +8,7 @@ import logging
 import os
 import traceback as tb
 from concurrent.futures import ThreadPoolExecutor
+from dataclasses import asdict
 from datetime import datetime
 from typing import Union
 from urllib.parse import urljoin
@@ -27,7 +28,7 @@ from django.shortcuts import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django_rq import job
-from io_storages.utils import get_uri_via_regex, parse_bucket_uri
+from io_storages.utils import StorageObject, get_uri_via_regex, parse_bucket_uri
 from rq.job import Job
 from tasks.models import Annotation, Task
 from tasks.serializers import AnnotationSerializer, PredictionSerializer
@@ -230,7 +231,7 @@ class ImportStorage(Storage):
     def iterkeys(self):
         return iter(())
 
-    def get_data(self, key) -> list[dict]:
+    def get_data(self, key) -> list[StorageObject]:
         raise NotImplementedError
 
     def generate_http_url(self, url):
@@ -341,9 +342,12 @@ class ImportStorage(Storage):
         raise NotImplementedError
 
     @classmethod
-    def add_task(cls, data, project, maximum_annotations, max_inner_id, storage, key, row_index, link_class):
+    def add_task(cls, project, maximum_annotations, max_inner_id, storage, link_object: StorageObject, link_class):
+        link_kwargs = asdict(link_object)
+        data = link_kwargs.pop('task_data', None)
+
         # predictions
-        predictions = data.get('predictions', [])
+        predictions = data.get('predictions') or []
         if predictions:
             if 'data' not in data:
                 raise ValueError(
@@ -351,7 +355,7 @@ class ImportStorage(Storage):
                 )
 
         # annotations
-        annotations = data.get('annotations', [])
+        annotations = data.get('annotations') or []
         cancelled_annotations = 0
         if annotations:
             if 'data' not in data:
@@ -361,7 +365,10 @@ class ImportStorage(Storage):
             cancelled_annotations = len([a for a in annotations if a.get('was_cancelled', False)])
 
         if 'data' in data and isinstance(data['data'], dict):
-            data = data['data']
+            if data['data'] is not None:
+                data = data['data']
+            else:
+                data.pop('data')
 
         with transaction.atomic():
             task = Task.objects.create(
@@ -375,8 +382,8 @@ class ImportStorage(Storage):
                 inner_id=max_inner_id,
             )
 
-            link_class.create(task, key, storage, row_index=row_index)
-            logger.debug(f'Create {storage.__class__.__name__} link with {key=} and {row_index=} for {task=}')
+            link_class.create(task, storage=storage, **link_kwargs)
+            logger.debug(f'Create {storage.__class__.__name__} link with {link_kwargs} for {task=}')
 
             raise_exception = not flag_set(
                 'ff_fix_back_dev_3342_storage_scan_with_invalid_annotations', user=AnonymousUser()
@@ -431,7 +438,7 @@ class ImportStorage(Storage):
 
             logger.debug(f'{self}: found new key {key}')
             try:
-                tasks_data = self.get_data(key)
+                link_objects = self.get_data(key)
             except (UnicodeDecodeError, json.decoder.JSONDecodeError) as exc:
                 logger.debug(exc, exc_info=True)
                 raise ValueError(
@@ -440,19 +447,19 @@ class ImportStorage(Storage):
                     f'"Treat every bucket object as a source file"'
                 )
 
-            if isinstance(tasks_data, dict):
-                tasks_data = [tasks_data]
-                row_indices = [None]
-            else:
-                if not flag_set('fflag_feat_dia_2092_multitasks_per_storage_link'):
-                    tasks_data = tasks_data[:1]
-                row_indices = range(len(tasks_data))
+            if not flag_set('fflag_feat_dia_2092_multitasks_per_storage_link'):
+                link_objects = link_objects[:1]
 
-            for row_index, task_data in zip(row_indices, tasks_data):
+            for link_object in link_objects:
                 # TODO: batch this loop body with add_task -> add_tasks in a single bulk write.
                 # See DIA-2062 for prerequisites
                 task = self.add_task(
-                    task_data, self.project, maximum_annotations, max_inner_id, self, key, row_index, link_class
+                    self.project,
+                    maximum_annotations,
+                    max_inner_id,
+                    self,
+                    link_object,
+                    link_class=link_class,
                 )
                 max_inner_id += 1
 
@@ -515,6 +522,8 @@ class ImportStorage(Storage):
                 self.info_set_queued()
                 import_sync_background(self.__class__, self.id)
             except Exception:
+                # needed to facilitate debugging storage-related testcases, since otherwise no exception is logged
+                logger.debug(f'Storage {self} failed', exc_info=True)
                 storage_background_failure(self)
 
     class Meta:

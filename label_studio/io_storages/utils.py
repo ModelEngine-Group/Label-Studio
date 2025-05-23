@@ -1,9 +1,16 @@
 """This file and its contents are licensed under the Apache License 2.0. Please see the included NOTICE for copyright information and LICENSE for a copy of the license.
 """
+import json
 import logging
 import re
 from dataclasses import dataclass
-from typing import Union
+from typing import Optional, Union
+
+import pyarrow as pa
+import pyarrow.json
+from core.feature_flags import flag_set
+from core.utils.common import load_func
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -109,3 +116,72 @@ def parse_range(range_header):
         end = ''
 
     return start, end
+
+
+@dataclass
+class StorageObject:
+    task_data: dict
+    key: str
+    row_index: int | None = None
+    row_group: int | None = None
+
+    @classmethod
+    def bulk_create(
+        cls, task_datas: list[dict], key, row_indexes: list[int] | None = None, row_groups: list[int] | None = None
+    ) -> list['StorageObject']:
+        if row_indexes is None:
+            row_indexes = [None] * len(task_datas)
+        if row_groups is None:
+            row_groups = [None] * len(task_datas)
+        return [
+            cls(key=key, row_index=row_idx, row_group=row_group, task_data=task_data)
+            for row_idx, row_group, task_data in zip(row_indexes, row_groups, task_datas)
+        ]
+
+
+def load_tasks_json_lso(blob_str: bytes, key: str) -> list[StorageObject]:
+    """
+    Parse blob_str containing task JSON(s) and return the validated result or raise an error.
+
+    Args:
+        blob_str (bytes): The blob string to parse.
+        key (str): The key of the blob. Used for error messages.
+
+    Returns:
+        list[StorageLinkParams]: link params for each task.
+    """
+
+    def _error_wrapper(exc: Optional[Exception] = None):
+        raise ValueError(
+            (
+                f'Can’t import JSON-formatted tasks from {key}. If you’re trying to import binary objects, '
+                f'perhaps you forgot to enable "Treat every bucket object as a source file" option?'
+            )
+        ) from exc
+
+    try:
+        value = json.loads(blob_str)
+    except json.decoder.JSONDecodeError as e:
+        if flag_set('fflag_feat_root_11_support_jsonl_cloud_storage'):
+            try:
+                table = pyarrow.json.read_json(
+                    pa.py_buffer(blob_str), parse_options=pa.json.ParseOptions(newlines_in_values=True)
+                )
+                return StorageObject.bulk_create(table.to_pylist(), key, range(table.num_rows))
+            except Exception as e:
+                _error_wrapper(e)
+        else:
+            _error_wrapper(e)
+
+    if isinstance(value, dict):
+        return [StorageObject(key=key, task_data=value)]
+    if isinstance(value, list):
+        return StorageObject.bulk_create(value, key, range(len(value)))
+
+    _error_wrapper()
+
+
+def load_tasks_json(blob_str: str, key: str) -> list[StorageObject]:
+    # uses load_tasks_json_lso here and an LSE-specific implementation in LSE
+    load_tasks_json_func = load_func(settings.STORAGE_LOAD_TASKS_JSON)
+    return load_tasks_json_func(blob_str, key)

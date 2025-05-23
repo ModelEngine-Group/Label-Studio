@@ -23,7 +23,12 @@ from io_storages.base_models import (
     ProjectStorageMixin,
 )
 from io_storages.gcs.utils import GCS
-from io_storages.utils import parse_range, storage_can_resolve_bucket_url
+from io_storages.utils import (
+    StorageObject,
+    load_tasks_json,
+    parse_range,
+    storage_can_resolve_bucket_url,
+)
 from tasks.models import Annotation
 
 logger = logging.getLogger(__name__)
@@ -180,28 +185,16 @@ class GCSImportStorageBase(GCSStorageMixin, ImportStorage):
             return_key=True,
         )
 
-    def get_data(self, key) -> Union[dict, list[dict]]:
+    def get_data(self, key) -> list[StorageObject]:
         if self.use_blob_urls:
-            return {settings.DATA_UNDEFINED_NAME: GCS.get_uri(self.bucket, key)}
-        data = GCS.read_file(
+            task = {settings.DATA_UNDEFINED_NAME: GCS.get_uri(self.bucket, key)}
+            return [StorageObject(key=key, task_data=task)]
+        blob_str = GCS.read_file(
             client=self.get_client(),
             bucket_name=self.bucket,
             key=key,
-            convert_to=GCS.ConvertBlobTo.JSON,
         )
-        if isinstance(data, dict):
-            return data
-        elif isinstance(data, list):
-            for idx, item in enumerate(data):
-                if not isinstance(item, dict):
-                    raise ValueError(
-                        f'Error on key {key} item {idx}: For {self.__class__.__name__} your JSON file must be a dictionary with one task, or a list of dictionaries with one task each'
-                    )
-            return data
-        else:
-            raise ValueError(
-                f'Error on key {key}: For {self.__class__.__name__} your JSON file must be a dictionary with one task, or a list of dictionaries with one task each'
-            )
+        return load_tasks_json(blob_str, key)
 
     def generate_http_url(self, url):
         return GCS.generate_http_url(

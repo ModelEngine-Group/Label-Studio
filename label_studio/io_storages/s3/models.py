@@ -27,9 +27,8 @@ from io_storages.s3.utils import (
     get_client_and_resource,
     resolve_s3_url,
 )
-from io_storages.utils import storage_can_resolve_bucket_url
+from io_storages.utils import StorageObject, load_tasks_json, storage_can_resolve_bucket_url
 from tasks.models import Annotation
-from tasks.validation import ValidationError as TaskValidationError
 
 from label_studio.io_storages.s3.utils import AWS
 
@@ -218,37 +217,18 @@ class S3ImportStorageBase(S3StorageMixin, ImportStorage):
         return self._scan_and_create_links(S3ImportStorageLink)
 
     @catch_and_reraise_from_none
-    def get_data(self, key) -> Union[dict, list[dict]]:
+    def get_data(self, key) -> list[StorageObject]:
         uri = f'{self.url_scheme}://{self.bucket}/{key}'
         if self.use_blob_urls:
             data_key = settings.DATA_UNDEFINED_NAME
-            return {data_key: uri}
+            task = {data_key: uri}
+            return [StorageObject(key=key, task_data=task)]
 
         # read task json from bucket and validate it
         _, s3 = self.get_client_and_resource()
         bucket = s3.Bucket(self.bucket)
-        obj = s3.Object(bucket.name, key).get()['Body'].read().decode('utf-8')
-        try:
-            value = json.loads(obj)
-            if isinstance(value, dict):
-                return value
-            elif isinstance(value, list):
-                for idx, item in enumerate(value):
-                    if not isinstance(item, dict):
-                        raise TaskValidationError(
-                            f'Error on key {key} item {idx}: For {self.__class__.__name__} your JSON file must be a dictionary with one task, or a list of dictionaries with one task each'
-                        )
-                return value
-
-            else:
-                raise TaskValidationError(
-                    f'Error on key {key}: For {self.__class__.__name__} your JSON file must be a dictionary with one task, or a list of dictionaries with one task each'
-                )
-        except json.decoder.JSONDecodeError:
-            raise ValueError(
-                f"Can't import JSON-formatted tasks from {key}. If you're trying to import binary objects, "
-                f'perhaps you\'ve forgot to enable "Treat every bucket object as a source file" option?'
-            )
+        obj = s3.Object(bucket.name, key).get()['Body'].read()
+        return load_tasks_json(obj, key)
 
     @catch_and_reraise_from_none
     def generate_http_url(self, url):

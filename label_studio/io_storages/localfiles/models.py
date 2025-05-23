@@ -20,6 +20,7 @@ from io_storages.base_models import (
     ImportStorageLink,
     ProjectStorageMixin,
 )
+from io_storages.utils import StorageObject, load_tasks_json
 from rest_framework.exceptions import ValidationError
 from tasks.models import Annotation
 
@@ -78,39 +79,24 @@ class LocalFilesImportStorageBase(LocalFilesMixin, ImportStorage):
                     continue
                 yield str(file)
 
-    def get_data(self, key) -> dict | list[dict]:
+    def get_data(self, key) -> list[StorageObject]:
         path = Path(key)
         if self.use_blob_urls:
             # include self-hosted links pointed to local resources via
             # {settings.HOSTNAME}/data/local-files?d=<path/to/local/dir>
             document_root = Path(settings.LOCAL_FILES_DOCUMENT_ROOT)
             relative_path = str(path.relative_to(document_root))
-            return {
+            task = {
                 settings.DATA_UNDEFINED_NAME: f'{settings.HOSTNAME}/data/local-files/?d={quote(str(relative_path))}'
             }
+            return [StorageObject(key=key, task_data=task)]
 
         try:
-            with open(path, encoding='utf8') as f:
-                value = json.load(f)
-        except (UnicodeDecodeError, json.decoder.JSONDecodeError):
-            raise ValueError(
-                f"Can't import JSON-formatted tasks from {key}. If you're trying to import binary objects, "
-                f'perhaps you\'ve forgot to enable "Treat every bucket object as a source file" option?'
-            )
-
-        if isinstance(value, dict):
-            return value
-        elif isinstance(value, list):
-            for idx, item in enumerate(value):
-                if not isinstance(item, dict):
-                    raise ValueError(
-                        f'Error on key {key} item {idx}: For {self.__class__.__name__} your JSON file must be a dictionary with one task, or a list of dictionaries with one task each'
-                    )
-            return value
-        else:
-            raise ValueError(
-                f'Error on key {key}: For {self.__class__.__name__} your JSON file must be a dictionary with one task, or a list of dictionaries with one task each'
-            )
+            with open(path, 'rb') as f:
+                blob_str = f.read()
+                return load_tasks_json(blob_str, key)
+        except OSError as e:
+            raise ValueError(f'Failed to read file {path}: {str(e)}')
 
     def scan_and_create_links(self):
         return self._scan_and_create_links(LocalFilesImportStorageLink)

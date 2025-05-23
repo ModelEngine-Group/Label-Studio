@@ -598,6 +598,7 @@ ORGANIZATION_MEMBER_MIXIN = 'organizations.mixins.OrganizationMemberMixin'
 MEMBER_PERM = 'core.api_permissions.MemberHasOwnerPermission'
 RECALCULATE_ALL_STATS = None
 GET_STORAGE_LIST = 'io_storages.functions.get_storage_list'
+STORAGE_LOAD_TASKS_JSON = 'io_storages.utils.load_tasks_json_lso'
 STORAGE_ANNOTATION_SERIALIZER = 'io_storages.serializers.StorageAnnotationSerializer'
 TASK_SERIALIZER_BULK = 'tasks.serializers.BaseTaskSerializerBulk'
 PREPROCESS_FIELD_NAME = 'data_manager.functions.preprocess_field_name'

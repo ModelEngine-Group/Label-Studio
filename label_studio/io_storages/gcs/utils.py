@@ -251,33 +251,14 @@ class GCS(object):
         return f'gs://{bucket_name}/{key}'
 
     @classmethod
-    def _try_read_json(cls, blob_str):
-        try:
-            data = json.loads(blob_str)
-        except ValueError:
-            logger.error(f"Can't parse JSON from {blob_str}")
-            return
-        return data
-
-    @classmethod
     def read_file(
         cls, client: gcs.Client, bucket_name: str, key: str, convert_to: ConvertBlobTo = ConvertBlobTo.NOTHING
     ):
         bucket = client.get_bucket(bucket_name)
         blob = bucket.blob(key)
         blob_str = blob.download_as_bytes()
-        if convert_to == cls.ConvertBlobTo.NOTHING:
-            return blob_str
-        elif convert_to == cls.ConvertBlobTo.JSON:
-            return cls._try_read_json(blob_str)
-        elif convert_to == cls.ConvertBlobTo.JSON_DICT:
-            json_data = cls._try_read_json(blob_str)
-            if not isinstance(json_data, dict):
-                raise ValueError(
-                    f'Error on key {key}: For {cls.__name__} your JSON file must be a dictionary with one task.'
-                )
-            return json_data
-        elif convert_to == cls.ConvertBlobTo.BASE64:
+
+        if convert_to == cls.ConvertBlobTo.BASE64:
             return base64.b64encode(blob_str)
 
         return blob_str

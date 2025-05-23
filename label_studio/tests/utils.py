@@ -192,6 +192,9 @@ def azure_client_mock(sample_json_contents=None, sample_blob_names=None):
         def content_as_text(self):
             return json.dumps(sample_json_contents)
 
+        def content_as_bytes(self):
+            return json.dumps(sample_json_contents).encode('utf-8')
+
     class DummyAzureContainer:
         def __init__(self, container_name, **kwargs):
             self.name = container_name

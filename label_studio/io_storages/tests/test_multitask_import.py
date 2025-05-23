@@ -1,8 +1,8 @@
 import json
 
 import boto3
+import mock
 import pytest
-from django.test import TestCase
 from io_storages.models import S3ImportStorage
 from io_storages.s3.models import S3ImportStorageLink
 from io_storages.tests.factories import (
@@ -11,134 +11,406 @@ from io_storages.tests.factories import (
     RedisImportStorageFactory,
     S3ImportStorageFactory,
 )
+from io_storages.utils import StorageObject, load_tasks_json
 from moto import mock_s3
 from projects.tests.factories import ProjectFactory
 from rest_framework.test import APIClient
 from tests.utils import azure_client_mock, gcs_client_mock, mock_feature_flag, redis_client_mock
 
 
-@pytest.mark.skip(reason='FF mocking is broken here, letting these tests run in LSE instead')
-class TestMultiTaskImport(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        # Setup project with simple config
-        cls.project = ProjectFactory()
+@pytest.fixture(name='fflag_feat_dia_2092_multitasks_per_storage_link_on', autouse=True)
+def fflag_feat_dia_2092_multitasks_per_storage_link_on():
+    from core.feature_flags import flag_set
 
-        # Common test data
-        cls.common_task_data = [
-            {'data': {'image_url': 'http://ggg.com/image.jpg', 'text': 'Task 1 text'}},
-            {'data': {'image_url': 'http://ggg.com/image2.jpg', 'text': 'Task 2 text'}},
-        ]
+    def fake_flag_set(*args, **kwargs):
+        if args[0] == 'fflag_feat_dia_2092_multitasks_per_storage_link':
+            return True
+        return flag_set(*args, **kwargs)
 
-    @mock_feature_flag('fflag_feat_dia_2092_multitasks_per_storage_link', True)
-    def _test_storage_import(self, storage_class, task_data, **storage_kwargs):
-        """Helper to test import for a specific storage type"""
+    with mock.patch('io_storages.base_models.flag_set', wraps=fake_flag_set):
+        yield
 
-        # can't do this in the classmethod for some reason, or self.client != cls.client
-        client = APIClient()
-        client.force_authenticate(user=self.project.created_by)
 
-        # Setup storage with required credentials
-        storage = storage_class(project=self.project, **storage_kwargs)
+@pytest.fixture(name='fflag_feat_root_11_support_jsonl_cloud_storage_on')
+def fflag_feat_root_11_support_jsonl_cloud_storage_on():
+    from core.feature_flags import flag_set
 
-        # Validate connection before sync
-        try:
-            storage.validate_connection()
-        except Exception as e:
-            self.fail(f'Storage connection validation failed: {str(e)}')
+    def fake_flag_set(*args, **kwargs):
+        if args[0] == 'fflag_feat_root_11_support_jsonl_cloud_storage':
+            return True
+        return flag_set(*args, **kwargs)
 
-        # Sync storage
-        # Don't have to wait for sync to complete because it's blocking without rq
+    with mock.patch('io_storages.utils.flag_set', wraps=fake_flag_set):
+        yield
+
+
+@pytest.fixture(name='fflag_feat_root_11_support_jsonl_cloud_storage_off')
+def fflag_feat_root_11_support_jsonl_cloud_storage_off():
+    from core.feature_flags import flag_set
+
+    def fake_flag_set(*args, **kwargs):
+        if args[0] == 'fflag_feat_root_11_support_jsonl_cloud_storage':
+            return False
+        return flag_set(*args, **kwargs)
+
+    with mock.patch('io_storages.utils.flag_set', wraps=fake_flag_set):
+        yield
+
+
+#
+# Integration tests for storage.sync()
+#
+
+pytestmark = pytest.mark.django_db
+
+
+@pytest.fixture
+def project():
+    return ProjectFactory()
+
+
+@pytest.fixture(scope='module')
+def common_task_data():
+    return [
+        {'data': {'image_url': 'http://ggg.com/image.jpg', 'text': 'Task 1 text'}},
+        {'data': {'image_url': 'http://ggg.com/image2.jpg', 'text': 'Task 2 text'}},
+    ]
+
+
+def _test_storage_import(project, storage_class, task_data, **storage_kwargs):
+    """Helper to test import for a specific storage type"""
+    client = APIClient()
+    client.force_authenticate(user=project.created_by)
+
+    # Setup storage with required credentials
+    storage = storage_class(project=project, **storage_kwargs)
+
+    # Validate connection before sync
+    try:
+        storage.validate_connection()
+    except Exception as e:
+        pytest.fail(f'Storage connection validation failed: {str(e)}')
+
+    # Sync storage
+    # Don't have to wait for sync to complete because it's blocking without rq
+    storage.sync()
+
+    # Validate tasks were imported correctly
+    tasks_response = client.get(f'/api/tasks?project={project.id}')
+    assert tasks_response.status_code == 200
+    tasks = tasks_response.json()['tasks']
+    assert len(tasks) == len(task_data)
+
+    # Validate task content
+    for task, expected_data in zip(tasks, task_data):
+        assert task['data'] == expected_data['data']
+
+
+@pytest.mark.fflag_feat_dia_2092_multitasks_per_storage_link_on
+def test_import_multiple_tasks_s3(project, common_task_data):
+    with mock_s3():
+        # Setup S3 bucket and test data
+        s3 = boto3.client('s3', region_name='us-east-1')
+        bucket_name = 'pytest-s3-jsons'
+        s3.create_bucket(Bucket=bucket_name)
+
+        # Put test data into S3
+        s3.put_object(Bucket=bucket_name, Key='test.json', Body=json.dumps(common_task_data))
+
+        _test_storage_import(
+            project,
+            S3ImportStorageFactory,
+            common_task_data,
+            bucket='pytest-s3-jsons',
+            aws_access_key_id='example',
+            aws_secret_access_key='example',
+            use_blob_urls=False,
+        )
+
+
+@pytest.mark.fflag_feat_dia_2092_multitasks_per_storage_link_on
+def test_import_multiple_tasks_gcs(project, common_task_data):
+    # initialize mock with sample data
+    with gcs_client_mock():
+        _test_storage_import(
+            project,
+            GCSImportStorageFactory,
+            common_task_data,
+            # magic bucket name to set correct data in gcs_client_mock
+            bucket='multitask_JSON',
+            use_blob_urls=False,
+        )
+
+
+@pytest.mark.fflag_feat_dia_2092_multitasks_per_storage_link_on
+def test_import_multiple_tasks_azure(project, common_task_data):
+    # initialize mock with sample data
+    with azure_client_mock(sample_json_contents=common_task_data, sample_blob_names=['test.json']):
+        _test_storage_import(
+            project,
+            AzureBlobImportStorageFactory,
+            common_task_data,
+            use_blob_urls=False,
+        )
+
+
+@pytest.mark.fflag_feat_dia_2092_multitasks_per_storage_link_on
+def test_import_multiple_tasks_redis(project, common_task_data):
+    with redis_client_mock() as redis:
+        redis.set('test.json', json.dumps(common_task_data))
+
+        _test_storage_import(
+            project,
+            RedisImportStorageFactory,
+            common_task_data,
+            path='',
+            use_blob_urls=False,
+        )
+
+
+@pytest.mark.fflag_feat_dia_2092_multitasks_per_storage_link_on
+def test_storagelink_fields(project, common_task_data):
+    # use an actual storage and storagelink to test this, since factories aren't connected properly
+    with mock_s3():
+        # Setup S3 bucket and test data
+        s3 = boto3.client('s3', region_name='us-east-1')
+        bucket_name = 'pytest-s3-jsons'
+        s3.create_bucket(Bucket=bucket_name)
+
+        # Put test data into S3
+        s3.put_object(Bucket=bucket_name, Key='test.json', Body=json.dumps(common_task_data))
+
+        # create a real storage and sync it
+        storage = S3ImportStorage(
+            project=project,
+            bucket=bucket_name,
+            aws_access_key_id='example',
+            aws_secret_access_key='example',
+            use_blob_urls=False,
+        )
+        storage.save()
         storage.sync()
 
-        # Validate tasks were imported correctly
-        tasks_response = client.get(f'/api/tasks?project={self.project.id}')
-        self.assertEqual(tasks_response.status_code, 200)
-        tasks = tasks_response.json()['tasks']
-        self.assertEqual(len(tasks), len(task_data))
+        # check that the storage link fields are set correctly
+        storage_links = S3ImportStorageLink.objects.filter(storage=storage).order_by('task_id')
+        assert storage_links[0].row_index == 0
+        assert storage_links[0].row_group is None
+        assert storage_links[1].row_index == 1
+        assert storage_links[1].row_group is None
 
-        # Validate task content
-        for task, expected_data in zip(tasks, task_data):
-            self.assertEqual(task['data'], expected_data['data'])
 
-    def test_import_multiple_tasks_s3(self):
-        with mock_s3():
-            # Setup S3 bucket and test data
-            s3 = boto3.client('s3', region_name='us-east-1')
-            bucket_name = 'pytest-s3-jsons'
-            s3.create_bucket(Bucket=bucket_name)
+#
+# Unit tests for load_tasks_json()
+#
 
-            # Put test data into S3
-            s3.put_object(Bucket=bucket_name, Key='test.json', Body=json.dumps(self.common_task_data))
 
-            self._test_storage_import(
-                S3ImportStorageFactory,
-                self.common_task_data,
-                bucket='pytest-s3-jsons',
-                aws_access_key_id='example',
-                aws_secret_access_key='example',
-                use_blob_urls=False,
-            )
+@pytest.fixture
+def storage():
+    project = ProjectFactory()
+    storage = S3ImportStorage(
+        project=project,
+        bucket='example',
+        aws_access_key_id='example',
+        aws_secret_access_key='example',
+        use_blob_urls=False,
+    )
+    storage.save()
+    return project, storage
 
-    def test_import_multiple_tasks_gcs(self):
-        # initialize mock with sample data
-        with gcs_client_mock():
 
-            self._test_storage_import(
-                GCSImportStorageFactory,
-                self.common_task_data,
-                # magic bucket name to set correct data in gcs_client_mock
-                bucket='multitask_JSON',
-                use_blob_urls=False,
-            )
+def create_tasks(storage, params_list: list[StorageObject]):
+    project, storage = storage
+    # check that no errors are raised during task creation; not checking the task itself
+    for params in params_list:
+        _ = S3ImportStorage.add_task(project, 1, 0, storage, params, S3ImportStorageLink)
 
-    def test_import_multiple_tasks_azure(self):
-        # initialize mock with sample data
-        with azure_client_mock(sample_json_contents=self.common_task_data, sample_blob_names=['test.json']):
 
-            self._test_storage_import(
-                AzureBlobImportStorageFactory,
-                self.common_task_data,
-                use_blob_urls=False,
-            )
+# Test data
+bare_task_list = [
+    {
+        'text': 'Test task 1',
+    },
+    {
+        'text': 'Test task 2',
+    },
+]
 
-    def test_import_multiple_tasks_redis(self):
-        with redis_client_mock() as redis:
+annots_preds_task_list = [
+    {
+        'data': {'text': 'Machine learning models require high-quality labeled data.'},
+        'annotations': [
+            {
+                'result': [
+                    {
+                        'value': {'start': 0, 'end': 22, 'text': 'Machine learning models', 'labels': ['FIELD']},
+                        'from_name': 'label',
+                        'to_name': 'text',
+                        'type': 'labels',
+                    },
+                    {
+                        'value': {'start': 44, 'end': 56, 'text': 'labeled data', 'labels': ['ACTION']},
+                        'from_name': 'label',
+                        'to_name': 'text',
+                        'type': 'labels',
+                    },
+                ]
+            }
+        ],
+        'predictions': [
+            {
+                'result': [
+                    {
+                        'value': {'start': 0, 'end': 22, 'text': 'Machine learning models', 'labels': ['FIELD']},
+                        'from_name': 'label',
+                        'to_name': 'text',
+                        'type': 'labels',
+                    }
+                ]
+            }
+        ],
+    },
+    {'data': {'text': 'Prosper annotation helps improve model accuracy.'}, 'predictions': [{'result': []}]},
+]
 
-            redis.set('test.json', json.dumps(self.common_task_data))
 
-            self._test_storage_import(
-                RedisImportStorageFactory,
-                self.common_task_data,
-                path='',
-                use_blob_urls=False,
-            )
+def test_bare_task(storage):
+    task_data = bare_task_list[0]
 
-    def test_storagelink_fields(self):
-        # use an actual storage and storagelink to test this, since factories aren't connected properly
-        with mock_s3():
-            # Setup S3 bucket and test data
-            s3 = boto3.client('s3', region_name='us-east-1')
-            bucket_name = 'pytest-s3-jsons'
-            s3.create_bucket(Bucket=bucket_name)
+    blob_str = json.dumps(task_data).encode()
+    output = load_tasks_json(blob_str, 'test.json')
+    expected_output = [StorageObject(key='test.json', task_data=task_data)]
+    assert output == expected_output
 
-            # Put test data into S3
-            s3.put_object(Bucket=bucket_name, Key='test.json', Body=json.dumps(self.common_task_data))
+    create_tasks(storage, output)
 
-            # create a real storage and sync it
-            storage = S3ImportStorage(
-                project=self.project,
-                bucket=bucket_name,
-                aws_access_key_id='example',
-                aws_secret_access_key='example',
-                use_blob_urls=False,
-            )
-            storage.save()
-            storage.sync()
 
-            # check that the storage link fields are set correctly
-            storage_links = S3ImportStorageLink.objects.filter(storage=storage).order_by('task_id')
-            self.assertEqual(storage_links[0].row_index, 0)
-            self.assertEqual(storage_links[0].row_group, None)
-            self.assertEqual(storage_links[1].row_index, 1)
-            self.assertEqual(storage_links[1].row_group, None)
+def test_data_key(storage):
+    task_data = {'data': bare_task_list[0]}
+
+    blob_str = json.dumps(task_data).encode()
+    output = load_tasks_json(blob_str, 'test.json')
+    expected_output = [StorageObject(key='test.json', task_data=task_data)]
+    assert output == expected_output
+
+    create_tasks(storage, output)
+
+
+def test_1elem_list(storage):
+    task_data = bare_task_list[:1]
+
+    blob_str = json.dumps(task_data).encode()
+    output = load_tasks_json(blob_str, 'test.json')
+    expected_output = [
+        StorageObject(key='test.json', task_data=task_data[0], row_index=0),
+    ]
+    assert output == expected_output
+
+    create_tasks(storage, output)
+
+
+def test_2elem_list(storage):
+    task_data = bare_task_list
+
+    blob_str = json.dumps(task_data).encode()
+    output = load_tasks_json(blob_str, 'test.json')
+    expected_output = [
+        StorageObject(key='test.json', task_data=task_data[0], row_index=0),
+        StorageObject(key='test.json', task_data=task_data[1], row_index=1),
+    ]
+    assert output == expected_output
+
+    create_tasks(storage, output)
+
+
+def test_preds_and_annots_list(storage):
+    task_data = annots_preds_task_list
+
+    blob_str = json.dumps(task_data).encode()
+    output = load_tasks_json(blob_str, 'test.json')
+
+    expected_output = [
+        StorageObject(key='test.json', task_data=task_data[0], row_index=0),
+        StorageObject(key='test.json', task_data=task_data[1], row_index=1),
+    ]
+    assert output == expected_output
+
+    create_tasks(storage, output)
+
+
+def test_mixed_formats(storage):
+    task_data = [bare_task_list[0], annots_preds_task_list[0]]
+
+    blob_str = json.dumps(task_data).encode()
+    output = load_tasks_json(blob_str, 'test.json')
+
+    expected_output = [
+        StorageObject(key='test.json', task_data=task_data[0], row_index=0),
+        StorageObject(key='test.json', task_data=task_data[1], row_index=1),
+    ]
+    assert output == expected_output
+
+    create_tasks(storage, output)
+
+
+@mock_feature_flag('fflag_feat_root_11_support_jsonl_cloud_storage', True, 'io_storages.utils')
+def test_list_jsonl(storage):
+    task_data = bare_task_list
+
+    blob_str = '\n'.join([json.dumps(task) for task in task_data]).encode()
+    output = load_tasks_json(blob_str, 'test.jsonl')
+    expected_output = [
+        StorageObject(key='test.jsonl', task_data=task_data[0], row_index=0),
+        StorageObject(key='test.jsonl', task_data=task_data[1], row_index=1),
+    ]
+    assert output == expected_output
+
+    create_tasks(storage, output)
+
+
+@mock_feature_flag('fflag_feat_root_11_support_jsonl_cloud_storage', True, 'io_storages.utils')
+def test_list_jsonl_with_preds_and_annots(storage):
+    task_data = annots_preds_task_list
+
+    blob_str = '\n'.join([json.dumps(task) for task in task_data]).encode()
+    output = load_tasks_json(blob_str, 'test.jsonl')
+
+    fixed_task_data_1 = task_data[1].copy()
+    fixed_task_data_1['annotations'] = None  # this key exists in the output, since preds exist
+    expected_output = [
+        StorageObject(key='test.jsonl', task_data=task_data[0], row_index=0),
+        StorageObject(key='test.jsonl', task_data=fixed_task_data_1, row_index=1),
+    ]
+    assert output == expected_output
+
+    create_tasks(storage, output)
+
+
+@mock_feature_flag('fflag_feat_root_11_support_jsonl_cloud_storage', False, 'io_storages.utils')
+def test_ff_blocks_jsonl():
+    with pytest.raises(ValueError):
+        load_tasks_json(b'{"text": "Test task 1"}\n{"text": "Test task 2"}', 'test.jsonl')
+
+
+@mock_feature_flag('fflag_feat_root_11_support_jsonl_cloud_storage', True, 'io_storages.utils')
+def test_mixed_formats_jsonl(storage):
+    task_data = [bare_task_list[0], annots_preds_task_list[0]]
+
+    blob_str = '\n'.join([json.dumps(task) for task in task_data]).encode()
+    output = load_tasks_json(blob_str, 'test.jsonl')
+
+    # keys are copied across tasks; empty keys are correctly ignored in create_tasks()
+    fixed_task_data_0 = task_data[0].copy()
+    fixed_task_data_0['data'] = None
+    fixed_task_data_0['predictions'] = None
+    fixed_task_data_0['annotations'] = None
+
+    fixed_task_data_1 = task_data[1].copy()
+    fixed_task_data_1['text'] = None
+
+    expected_output = [
+        StorageObject(key='test.jsonl', task_data=fixed_task_data_0, row_index=0),
+        StorageObject(key='test.jsonl', task_data=fixed_task_data_1, row_index=1),
+    ]
+    assert output == expected_output
+
+    create_tasks(storage, output)
