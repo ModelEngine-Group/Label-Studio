@@ -16,12 +16,13 @@ Use with the following data types: image.
 
 Basic image segmentation labeling configuration:
 
-```html
+```xml
 <View>
-  <Brush name="labels" toName="image">
+  <Brush name="brush" toName="image" />
+  <Labels name="labels" toName="image">
     <Label value="Person" />
     <Label value="Animal" />
-  </Brush>
+  </Labels>
   <Image name="image" value="$image" />
 </View>
 ```

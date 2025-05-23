@@ -442,11 +442,19 @@ meta_description: Label Studio interactive demo and playground for data labeling
     return "https://label-studio-playground.netlify.app/";
   }
 
+  function getStartingConfigValue() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const config = urlParams.get('config');
+    if (config) {
+      return config;
+    }
+    const startTemplate = document.getElementById('start-template');
+    return encodeURIComponent(startTemplate.innerHTML.replace(/(\r\n|\n|\r)/gm, "<br>"));
+  }
+
   const labelStudioPlaygroundUrl = getLabelStudioPlaygroundUrl();
   const labelStudioPlayground = document.getElementById('label-studio-playground');
-  const startTemplate = document.getElementById('start-template');
-  const templateValue = encodeURIComponent(startTemplate.innerHTML.replace(/(\r\n|\n|\r)/gm, "<br>"));
-  labelStudioPlayground.src = labelStudioPlaygroundUrl + '?config=' + templateValue;
+  labelStudioPlayground.src = labelStudioPlaygroundUrl + '?config=' + getStartingConfigValue();
 
   /*!
  * JavaScript Cookie v2.2.0
