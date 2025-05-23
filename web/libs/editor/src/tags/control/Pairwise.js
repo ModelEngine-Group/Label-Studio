@@ -54,10 +54,12 @@ const Model = types
     },
 
     get left() {
+      if (!self.annotation || !self.annotation.names) return undefined;
       return self.annotation.names.get(self.names[0]);
     },
 
     get right() {
+      if (!self.annotation || !self.annotation.names) return undefined;
       return self.annotation.names.get(self.names[1]);
     },
 
@@ -81,8 +83,39 @@ const Model = types
 
     setResult(dir = "none") {
       self.selected = dir;
-      self.left.addProp("style", dir === "left" ? self._selection : {});
-      self.right.addProp("style", dir === "right" ? self._selection : {});
+      if (!self.left || !self.right) {
+        // eslint-disable-next-line no-console
+        console.warn("Pairwise: left or right object reference is missing. Check toName and config.", {
+          left: self.left,
+          right: self.right,
+        });
+        return;
+      }
+      // Common interactive classes
+      const interactive = "cursor-pointer hover:bg-primary-emphasis-subtle transition-colors rounded-sm";
+      if (self._selectionType === "className") {
+        self.left.addProp(
+          "className",
+          dir === "left" ? `${interactive} ${self._selection}` : `${interactive} border border-transparent`,
+        );
+        self.right.addProp(
+          "className",
+          dir === "right" ? `${interactive} ${self._selection}` : `${interactive} border border-transparent`,
+        );
+        self.left.addProp("style", {});
+        self.right.addProp("style", {});
+      } else {
+        self.left.addProp(
+          "style",
+          dir === "left" ? self._selection : { border: "1px solid transparent", borderRadius: "0.125rem" },
+        );
+        self.right.addProp(
+          "style",
+          dir === "right" ? self._selection : { border: "1px solid transparent", borderRadius: "0.125rem" },
+        );
+        self.left.addProp("className", interactive);
+        self.right.addProp("className", interactive);
+      }
     },
 
     selectLeft() {
@@ -100,21 +133,22 @@ const Model = types
         InfoModal.error("Incorrect toName parameter on Pairwise, must be two names separated by a comma: name1,name2");
       }
 
-      let selection = {};
-
+      // If selectionstyle is provided, use inline style for backward compatibility.
+      // Otherwise, use Tailwind semantic classes for selection via className.
+      let selection;
       if (self.selectionstyle) {
         const s = Tree.cssConverter(self.selectionstyle);
-
+        selection = {};
         for (const key in s) {
           selection[key] = s[key];
         }
+        self._selectionType = "style";
       } else {
-        selection = {
-          backgroundColor: "#f6ffed",
-          border: "1px solid #b7eb8f",
-        };
+        // Use semantic Tailwind classes for primary/selected state
+        // See: label-studio/web/libs/ui/src/tokens/tokens.js
+        selection = "bg-primary-background border border-primary-border-subtle rounded-sm";
+        self._selectionType = "className";
       }
-
       self._selection = selection;
     },
 
@@ -126,6 +160,7 @@ const Model = types
     annotationAttached() {
       // @todo annotation attached in a weird way, so do that next tick, with fixed tree
       setTimeout(() => {
+        if (!self.left || !self.right) return;
         self.left.addProp("onClick", self.selectLeft);
         self.right.addProp("onClick", self.selectRight);
         self.setResult(self.result?.value.selected);

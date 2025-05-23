@@ -7,12 +7,12 @@ details: Here is a demo that showcases how to construct an interface enabling us
 config: |
   <View>
      <View style="display: flex; align-items: center; font-size: 1em;">
-        <View style="margin: 0.5em 0.5em 0 0;">
+        <View style="margin: var(--spacing-tight) var(--spacing-tight) 0 0;">
           <Header value="Task: " style="font-size: 1em;"/>
         </View>
         <Text name="task" value="$task"/>
       </View>
-     <View style="display: flex; align-items: center; box-shadow: 2px 2px 5px #999; padding: 10px; border-radius: 5px; background-color: #E0E0E0; font-size: 1.25em;">
+     <View style="display: flex; align-items: center; box-shadow: 0px 2px 5px 0px rgba(var(--color-neutral-shadow-raw) / 10%); padding: var(--spacing-tight); border-radius: 5px; background-color: var(--color-neutral-background); font-size: 1.25em; border: 1px solid var(--color-neutral-border); margin-bottom: var(--spacing-tight);">
         <View style="margin: 0 1em 0 0">
           <Header value="Prompt: "  />
         </View>
@@ -22,23 +22,31 @@ config: |
         <List name="answers" value="$items" title="All Results" />
         <Style>
           .htx-ranker-column {
-            background: #f8f8f8;
+            background: var(--color-neutral-background);
             width: 50%;
-            padding: 20px;
-            border-radius: 3px;
-            box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.1);
+            padding: var(--spacing-tight);
+            border-radius: var(--corner-radius-smaller);
+            box-shadow: 0px 2px 5px 0px rgba(var(--color-neutral-shadow-raw) / 10%);
+            border: 1px solid var(--color-neutral-border);
           }
       
           .htx-ranker-item {
-            background: #e0e0e0;
-            color: #333;
+            background: var(--color-neutral-surface);
+            color: var(--color-neutral-content);
             font-size: 16px;
             width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 3px;
-            box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.1);
+            padding: var(--spacing-tight);
+            margin-bottom: var(--spacing-tight);
+            border-radius: var(--corner-radius-smaller);
+            box-shadow: 0px 2px 5px 0px rgba(var(--color-neutral-shadow-raw) / 10%);
+            border: 1px solid var(--color-neutral-border);
           }
+          
+          
+          .htx-ranker-item:hover {
+            background: var(--color-neutral-surface-hover);
+          }
+          
           .htx-ranker-item p:last-child { display: none }
         </Style>
         <Ranker name="rank" toName="answers">

@@ -128,7 +128,7 @@ $border-thin: 1px solid rgb(137 128 152 / 16%);
       height: 40px;
       padding: 0 12px;
       border: none;
-      border-bottom: 1px solid rgb(0 0 0 / 15%);
+      border-bottom: 1px solid var(--color-neutral-border);
       font-size: 14px;
       line-height: 22px;
       background: var(--color-neutral-surface);
@@ -142,7 +142,7 @@ $border-thin: 1px solid rgb(137 128 152 / 16%);
     gap: 4px;
 
     &__item {
-      color: initial;
+      color: var(--color-neutral-content);
       background-color: var(--color-neutral-background);
       display: inline-flex;
       font-weight: 400;

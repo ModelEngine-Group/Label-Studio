@@ -7,7 +7,7 @@
                 {
                     "from_name": "pw",
                     "id": "Dx_aB91ISN",
-                    "to_name": "pw",
+                    "to_name": "txt-2",
                     "type": "pairwise",
                     "value": {
                         "selected": "right"
