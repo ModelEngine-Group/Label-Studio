@@ -387,69 +387,22 @@ meta_description: Label Studio interactive demo and playground for data labeling
   background-color: #fff;
 }
 
+.playground-app {
+  border: 1px var(--color-gray-300) solid;
+  border-radius: .75rem;
+}
 </style>
 
 <!-- html -->
 <div class="intro-wrapper">
   <div class="intro">
-    <h4>1. Choose annotation template</h4>
+    <h4>Choose annotation template</h4>
   </div>
 
   <%- include('template_titles') %>
 </div>
 
-<div>
-  <div class="editor-row">
-    <div class="config-col">
-      <div class="config-wrapper">
-        <h4 style="display: inline-block">2. Edit labeling config</h4>
-        <span class="share-buttons">
-          <i class="icon copy outline" style="cursor: pointer" title="Copy labeling config"></i>
-          <i class="icon share" style="cursor: pointer" title="Copy link to this playground"></i>
-        </span>
-      </div>
-      <div class="editor-area">
-      <!-- Textarea -->
-      <textarea name="label_config" cols="40" rows="10" class="project-form htx-html-editor"
-                id="id_label_config"></textarea>
-      </div>
-
-      <p>
-        Start typing in the config, and you can quickly preview the labeling interface.
-        At the bottom of the page, you have live serialization updates
-        of what Label Studio expects as an input and what it gives you as a result of your labeling work.
-      </p>
-    </div>
-
-    <div class="preview-col">
-      <h4>3. Inspect interface preview</h4>
-      <div class="validation"></div>
-      <div id="editor-wrap">
-      </div>
-      <div class="preview" id="preload-editor">
-        <div class="loading" style="margin: 20px; opacity: 0.8">
-            <img width="40px" src="/images/design/loading.gif">
-            <span style="position: relative; top: -14px">&nbsp;&nbsp;&nbsp;Loading Label Studio, please wait ...</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Preview in two cols -->
-<div class="data-row">
-  <div class="input-col">
-    <h4>Input preview</h4>
-    <pre class="preview" id="upload-data-example">...</pre>
-  </div>
-  <div class="output-col">
-    <h4>Output preview</h4>
-    <pre class="preview" id="data-results">...</pre>
-  </div>
-</div>
-
-</div>
-
+<iframe class="playground-app" id="label-studio-playground" width="100%" height="100%"></iframe>
 
 <div class="playground-cta">
   <h2 class="Heading Large">Want to put these templates into practice?</h2>
@@ -477,6 +430,23 @@ meta_description: Label Studio interactive demo and playground for data labeling
 
 
 <script>
+  // if localhost, use local playground
+  function getLabelStudioPlaygroundUrl() {
+    if (window.location.hostname === "localhost") {
+      return "http://localhost:4200/";
+    }
+    if (window.location.hostname === "labelstud.io") {
+      return "https://labelstud.io/playground-app/";
+    }
+    // This is for preview deployments
+    return "https://label-studio-playground.netlify.app/";
+  }
+
+  const labelStudioPlaygroundUrl = getLabelStudioPlaygroundUrl();
+  const labelStudioPlayground = document.getElementById('label-studio-playground');
+  const startTemplate = document.getElementById('start-template');
+  const templateValue = encodeURIComponent(startTemplate.innerHTML.replace(/(\r\n|\n|\r)/gm, "<br>"));
+  labelStudioPlayground.src = labelStudioPlaygroundUrl + '?config=' + templateValue;
 
   /*!
  * JavaScript Cookie v2.2.0
@@ -645,28 +615,6 @@ meta_description: Label Studio interactive demo and playground for data labeling
 	return init(function () {});
 }));
 
-
-  // copy to clipboard
-  var copyToClipboard = function (str) {
-    var el = document.createElement('textarea');  // Create a <textarea> element
-    el.value = str;                                 // Set its value to the string that you want copied
-    el.setAttribute('readonly', '');                // Make it readonly to be tamper-proof
-    el.style.position = 'absolute';
-    el.style.left = '-9999px';                      // Move outside the screen to make it invisible
-    document.body.appendChild(el);                  // Append the <textarea> element to the HTML document
-    var selected =
-      document.getSelection().rangeCount > 0        // Check if there is any content selected previously
-        ? document.getSelection().getRangeAt(0)     // Store selection if found
-        : false;                                    // Mark as false to know no selection existed before
-    el.select();                                    // Select the <textarea> content
-    document.execCommand('copy');                   // Copy - only works as a result of a user action (e.g. click events)
-    document.body.removeChild(el);                  // Remove the <textarea> element
-    if (selected) {                                 // If a selection existed before copying
-      document.getSelection().removeAllRanges();    // Unselect everything on the HTML document
-      document.getSelection().addRange(selected);   // Restore the original selection
-    }
-  };
-
   function uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
       var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -709,8 +657,12 @@ meta_description: Label Studio interactive demo and playground for data labeling
         value = value.slice(value.indexOf('<', start + starter.length + body_length + terminator.length))
       }
 
-      labelEditor.setValue(value);
-      first_render = true;
+      try {
+        value = encodeURIComponent(value.replace(/(\r\n|\n|\r)/gm, "<br>"))
+      } catch (e) {
+        console.error('Error encoding template config', e);
+      }
+      labelStudioPlayground.src = labelStudioPlaygroundUrl + '?config=' + value;
     }
 
     $('.use-template').on('click', function () {
@@ -719,241 +671,9 @@ meta_description: Label Studio interactive demo and playground for data labeling
       current_template_name = $el.text();
       current_template_category = $($el.parent().parent().find('i')[0]).attr('title');
 
-      if (labelEditor.getValue() !== '' && !confirm_already_shown) {
-        var dialog = $('#confirm-config-template-dialog');
-        dialog.modal({
-          closable: true,
-          keyboardShortcuts: true,
-          onApprove: function () {
-            addTemplateConfig($el);
-          }
-        }).modal('show');
-
-        // close on enter, unfortunately keyboardShortcuts doesn't work
-        dialog.on('keypress', function () {
-          if (event.keyCode === 13) {
-            dialog.modal('hide');
-            addTemplateConfig($el);
-          }
-        });
-
-        confirm_already_shown = true;
-
-      } else {
-        addTemplateConfig($el);
-      }
+      addTemplateConfig($el);
 
       return false;
     });
-
-    var iframeTimer = null;
-
-    function debounce(func, wait, immediate) {
-      let timeout;
-
-      return function () {
-        const context = this, args = arguments;
-        const later = () => {
-          timeout = null;
-          if (!immediate) func.apply(context, args);
-        };
-        const callNow = immediate && !timeout;
-
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
-      };
-    }
-
-    var prev_completion = null;
-
-    // serialize editor output by timer
-    setInterval(function () {
-      let iframe = document.getElementById('render-editor');
-      if (iframe !== null) {
-        let Htx = iframe.contentWindow.Htx;
-        if (typeof Htx !== 'undefined') {
-          var completion = JSON.stringify(Htx.completionStore.selected.serializeCompletion(), null, 4);
-          if (prev_completion !== completion) {
-            if (completion.length > 3000) {
-              completion = completion.slice(0, 3000) + ' ...';
-            }
-            $('#data-results').text(completion);
-            prev_completion = completion;
-          }
-        }
-      }
-    }, 500);
-
-
-    var host = "https://app.heartex.ai";
-    var url_string = window.location.href;
-    var url = new URL(url_string);
-
-    // Label code mirror
-    var labelEditor = CodeMirror.fromTextArea(document.getElementById('id_label_config'), {
-      lineNumbers: true,
-      mode: "text/html"
-    });
-    labelEditor.focus();
-
-    var _c = url.searchParams.get("config");
-    if (_c && _c.length > 0) {
-      var config = url.searchParams.get("config");
-      config = config.replace(/[<][b][r][>]/gm, "\n");
-      labelEditor.setValue(config);
-    } else {
-      labelEditor.setValue($('#start-template').html());
-    }
-    validate_config(labelEditor);
-
-    // refresh for proper line numbers drawing
-    labelEditor.refresh();
-    // add validation
-    labelEditor.on('change', debounce(function (editor) {
-      validate_config(editor);
-    }, 500));
-
-    window.labelEditor = labelEditor;
-
-    function validate_name() {
-      let name = $('#id_title').val();
-      validation_message('', 0);
-      return 0;
-    }
-
-    function validation_message(msg, status) {
-      let o = $('.validation');
-      o.text(msg);
-
-      if (status === -1) {
-        o.removeClass('hidden');
-        o.addClass('visible');
-      }
-      if (status === 0) {
-        o.removeClass('visible');
-        o.addClass('hidden');
-      }
-    }
-
-    // storage of validation results
-    // let is_collection_ok = false;
-    let is_label_ok = false;
-
-    function editor_iframe(res) {
-      // generate new iframe
-      let iframe = $('<iframe><iframe>');
-      iframe.className = "editor-preview";
-      // add iframe to wrapper div
-      $('#editor-wrap').html(iframe);
-      $('#editor-wrap').fadeIn();
-
-      iframe.on('load', function () {
-        // remove old iframe
-        $('#render-editor').hide();
-        $('#render-editor').remove();
-        // assign id to new iframe
-        iframe.attr('id', 'render-editor');
-        // force to hide undo / redo / reset buttons
-        $('#render-editor').contents().find('head').append('<style>.ls-panel{display:none;}' +
-          '.ls-editor { margin-left: 3px!important;}</style>');
-        iframe.show();
-        let obj = document.getElementById('render-editor');
-
-        // wait until all images and resources from iframe loading
-        clearTimeout(iframeTimer);
-        iframeTimer = setInterval(function () {
-          if (obj.contentWindow) {
-            obj.style.height = (obj.contentWindow.document.body.scrollHeight) + 'px';
-          }
-        }, 100);
-        // hide "..."
-        $('#preload-editor').hide();
-      });
-
-      // load new data into iframe
-      iframe.attr('srcdoc', res);
-    }
-
-    function show_render_editor(editor) {
-      let config = labelEditor.getValue();
-      edit_count++;
-      $.ajax({
-        url: host + '/demo/render-editor?full_editor=t&playground=1',
-        method: 'POST',
-        xhrFields: { withCredentials: true },
-        data: {
-            config: config,
-            lookup: lookup,
-            page_hash: page_hash,
-            user_hash: user_hash,
-            current_template_name : current_template_name,
-            current_template_category: current_template_category,
-            edit_count: edit_count
-        },
-        success: editor_iframe,
-        error: function () {
-          $('#preload-editor').show();
-        }
-      })
-    }
-
-    // send request to server with configs to validate
-    function validate_config(editor) {
-
-      // get current scheme type from current editor
-      let url = host + '/api/projects/validate/';
-      let val = labelEditor.getValue();
-
-      if (!val.length)
-        return;
-
-      // label config validation
-      $.ajax({
-        url: url,
-        method: 'POST',
-        data: {label_config: val},
-        success: function (res) {
-          is_label_ok = true;
-          validation_message('', 0);
-          $('#render-editor').show();
-          show_render_editor(editor);
-          // check_submit_button();
-        },
-        error: function (res) {
-          is_label_ok = false;
-          validation_message(res.responseJSON['label_config'][0], -1);
-          $('#render-editor').hide();
-          // check_submit_button();
-        }
-      });
-
-      // load sample task
-      $.post({
-        url: host + '/business/projects/upload-example/?playground=1',
-        data: {label_config: val}
-      })
-        .fail(function(o) {
-          $('#upload-data-example').text('...')
-        })
-        .done(function(o) {
-          $('#upload-data-example').text(JSON.stringify(JSON.parse(o), null, 4))
-        })
-    }
-
-    $('.share-buttons .copy').on('click', function() {
-       copyToClipboard(labelEditor.getValue());
-        $(event.target).css('color', 'green');
-    });
-
-    $('.share-buttons .share').on('click', function() {
-        let config = labelEditor.getValue();
-        config = encodeURIComponent(config.replace(/(\r\n|\n|\r)/gm, "<br>"));
-        let link = window.location.origin + window.location.pathname + '?config=' + config;
-        copyToClipboard(link);
-        $(event.target).css('color', 'green');
-    });
-
-
   });
 </script>

@@ -36,6 +36,11 @@
     display: flex;
     flex-direction: column;
   }
+
+  :global(.lsf-editor) {
+    min-width: 320px;
+    width: 100%;
+  }
 }
 
 body {
