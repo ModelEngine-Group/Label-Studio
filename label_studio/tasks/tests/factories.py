@@ -24,3 +24,25 @@ class AnnotationFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = Annotation
+
+    @classmethod
+    def create_hypertextlabels(cls, **kwargs):
+        return cls.create(
+            result=[
+                {
+                    'value': {
+                        'htmllabels': ['Strong negative'],
+                        'start': 1,
+                        'end': 10,
+                        'startOffset': '/text()[1]',
+                        'endOffset': '/text()[2]',
+                        'text': 'Test example phrase',
+                    },
+                    'id': 'wMmVN7k_47',
+                    'from_name': 'label',
+                    'to_name': 'text',
+                    'type': 'hypertextlabels',
+                }
+            ],
+            **kwargs,
+        )
