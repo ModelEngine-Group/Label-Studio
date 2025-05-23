@@ -9,6 +9,7 @@ class ProjectFactory(factory.django.DjangoModelFactory):
     description = factory.Faker('paragraph')
     organization = factory.SubFactory(load_func(settings.ORGANIZATION_FACTORY))
     created_by = factory.SelfAttribute('organization.created_by')
+    is_published = True
 
     class Meta:
         model = Project
