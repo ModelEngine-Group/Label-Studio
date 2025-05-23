@@ -442,6 +442,14 @@ meta_description: Label Studio interactive demo and playground for data labeling
     return "https://label-studio-playground.netlify.app/";
   }
 
+  function normalizeNewlines(text) {
+    return text.replace(/(\r\n|\r)/gm, "\n");
+  }
+
+  function encodeConfig(text) {
+    return encodeURIComponent(normalizeNewlines(text));
+  }
+
   function getStartingConfigValue() {
     const urlParams = new URLSearchParams(window.location.search);
     const config = urlParams.get('config');
@@ -449,7 +457,7 @@ meta_description: Label Studio interactive demo and playground for data labeling
       return config;
     }
     const startTemplate = document.getElementById('start-template');
-    return encodeURIComponent(startTemplate.innerHTML.replace(/(\r\n|\n|\r)/gm, "<br>"));
+    return encodeConfig(startTemplate.innerHTML);
   }
 
   const labelStudioPlaygroundUrl = getLabelStudioPlaygroundUrl();
@@ -666,11 +674,10 @@ meta_description: Label Studio interactive demo and playground for data labeling
       }
 
       try {
-        value = encodeURIComponent(value.replace(/(\r\n|\n|\r)/gm, "<br>"))
+        labelStudioPlayground.src = labelStudioPlaygroundUrl + '?config=' + encodeConfig(value);
       } catch (e) {
         console.error('Error encoding template config', e);
       }
-      labelStudioPlayground.src = labelStudioPlaygroundUrl + '?config=' + value;
     }
 
     $('.use-template').on('click', function () {

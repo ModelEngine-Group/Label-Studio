@@ -10,7 +10,13 @@ function getLabelStudioPlaygroundUrl() {
   return "https://label-studio-playground.netlify.app/";
 }
 
-const labelStudioPlaygroundUrl = getLabelStudioPlaygroundUrl();
+function normalizeNewlines(text) {
+  return text.replace(/(\r\n|\r)/gm, "\n");
+}
+
+function encodeConfig(text) {
+  return encodeURIComponent(normalizeNewlines(text));
+}
 
 function editorIframe(config, modal, id) {
   // generate new iframe
@@ -26,9 +32,9 @@ function editorIframe(config, modal, id) {
     iframe.style.display = "block";
   });
 
-  const templateValue = encodeURIComponent(config.replace(/(\r\n|\n|\r)/gm, "<br>"));
+  const templateValue = encodeConfig(config);
 
-  iframe.src = `${labelStudioPlaygroundUrl}?config=${templateValue}&mode=preview`;
+  iframe.src = `${getLabelStudioPlaygroundUrl()}?config=${templateValue}&mode=preview`;
 }
 
 function showRenderEditor(config) {
@@ -90,7 +96,7 @@ function showRenderEditor(config) {
     const htmlTemplate = `
     <div class="playground-buttons">
       <button class="code-block-open-preview">Open Preview</button>
-      <a href="/playground/?config=${encodeURIComponent(code)}" target="_blank" rel="noreferrer noopener">Launch in Playground</a>
+      <a href="/playground/?config=${encodeConfig(code)}" target="_blank" rel="noreferrer noopener">Launch in Playground</a>
     </div>
     `;
     pre.insertAdjacentHTML("beforeend", htmlTemplate);
