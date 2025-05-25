@@ -1,7 +1,7 @@
 import { format } from "date-fns/esm";
+import { Space, Tooltip } from "@humansignal/ui";
 import { Button } from "../../../components";
 import { DescriptionList } from "../../../components/DescriptionList/DescriptionList";
-import { Tooltip } from "@humansignal/ui";
 import { modal } from "../../../components/Modal/Modal";
 import { Oneof } from "../../../components/Oneof/Oneof";
 import { getLastTraceback } from "../../../utils/helpers";
@@ -21,9 +21,10 @@ export const StorageSummary = ({ target, storage, className, storageTypes = [] }
 
   // help text for tasks and annotations
   const tasks_added_help = `${last_sync_count} new tasks added during the last sync.`;
-  const tasks_total_help = `${tasks_existed} tasks that have been found and already synced will not be added to the project again.\n${
-    tasks_existed + last_sync_count
-  } tasks have been added in total for this storage.`;
+  const tasks_total_help = [
+    `${tasks_existed} tasks that have been found and already synced will not be added to the project again.`,
+    `${tasks_existed + last_sync_count} tasks have been added in total for this storage.`,
+  ].join("\n");
   const annotations_help = `${last_sync_count} annotations successfully saved during the last sync.`;
   const total_annotations_help =
     typeof storage.meta?.total_annotations !== "undefined"
@@ -36,39 +37,32 @@ export const StorageSummary = ({ target, storage, className, storageTypes = [] }
       `storage ${storage.id} in project ${storage.project} and job ${storage.last_sync_job}:\n\n` +
       `${getLastTraceback(storage.traceback)}\n\n` +
       `meta = ${JSON.stringify(storage.meta)}\n`;
+    const targetType = target === "export" ? "Target" : "Source";
 
     modal({
       title: "Storage error logs",
       body: (
         <>
-          <pre style={{ background: "#eee", borderRadius: 5, padding: 10 }}>{msg}</pre>
-          <Button
-            size="compact"
-            onClick={() => {
-              navigator.clipboard.writeText(msg);
-            }}
-          >
-            Copy
-          </Button>
-          {target === "export" ? (
-            <a
-              style={{ float: "right" }}
-              target="_blank"
-              href="https://labelstud.io/guide/storage.html#Target-storage-permissions"
-              rel="noreferrer"
+          <pre className="bg-neutral-surface-inset text-neutral-content-subtler p-base mb-base rounded-md text-xs overflow-scroll">
+            {msg}
+          </pre>
+          <Space spread>
+            <Button
+              size="compact"
+              onClick={() => {
+                navigator.clipboard.writeText(msg);
+              }}
             >
-              Check Target Storage documentation
-            </a>
-          ) : (
+              Copy
+            </Button>
             <a
-              style={{ float: "right" }}
               target="_blank"
-              href="https://labelstud.io/guide/storage.html#Source-storage-permissions"
               rel="noreferrer"
+              href={`https://labelstud.io/guide/storage.html#${targetType}-storage-permissions`}
             >
-              Check Source Storage documentation
+              Check {targetType} Storage documentation
             </a>
-          )}
+          </Space>
         </>
       ),
       style: { width: "700px" },

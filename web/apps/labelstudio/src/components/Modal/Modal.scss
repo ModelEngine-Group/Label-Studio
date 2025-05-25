@@ -12,7 +12,7 @@
   justify-content: center;
   background-color: rgba(var(--color-neutral-shadow-raw) / 70%);
   will-change: opacity;
-  backdrop-filter: blur(30px);
+  backdrop-filter: blur(2px);
 
   &_optimize &__wrapper {
     will-change: transform;
