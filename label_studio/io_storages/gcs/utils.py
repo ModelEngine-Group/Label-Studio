@@ -256,12 +256,12 @@ class GCS(object):
     ):
         bucket = client.get_bucket(bucket_name)
         blob = bucket.blob(key)
-        blob_str = blob.download_as_bytes()
+        blob = blob.download_as_bytes()
 
         if convert_to == cls.ConvertBlobTo.BASE64:
-            return base64.b64encode(blob_str)
+            return base64.b64encode(blob)
 
-        return blob_str
+        return blob
 
     @classmethod
     def read_base64(cls, f: gcs.Blob) -> Base64:

@@ -93,8 +93,8 @@ class LocalFilesImportStorageBase(LocalFilesMixin, ImportStorage):
 
         try:
             with open(path, 'rb') as f:
-                blob_str = f.read()
-                return load_tasks_json(blob_str, key)
+                blob = f.read()
+                return load_tasks_json(blob, key)
         except OSError as e:
             raise ValueError(f'Failed to read file {path}: {str(e)}')
 

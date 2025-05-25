@@ -139,12 +139,12 @@ class StorageObject:
         ]
 
 
-def load_tasks_json_lso(blob_str: bytes, key: str) -> list[StorageObject]:
+def load_tasks_json_lso(blob: bytes, key: str) -> list[StorageObject]:
     """
-    Parse blob_str containing task JSON(s) and return the validated result or raise an error.
+    Parse blob containing task JSON(s) and return the validated result or raise an error.
 
     Args:
-        blob_str (bytes): The blob string to parse.
+        blob (bytes): The blob string to parse.
         key (str): The key of the blob. Used for error messages.
 
     Returns:
@@ -160,12 +160,12 @@ def load_tasks_json_lso(blob_str: bytes, key: str) -> list[StorageObject]:
         ) from exc
 
     try:
-        value = json.loads(blob_str)
+        value = json.loads(blob)
     except json.decoder.JSONDecodeError as e:
         if flag_set('fflag_feat_root_11_support_jsonl_cloud_storage'):
             try:
                 table = pyarrow.json.read_json(
-                    pa.py_buffer(blob_str), parse_options=pa.json.ParseOptions(newlines_in_values=True)
+                    pa.py_buffer(blob), parse_options=pa.json.ParseOptions(newlines_in_values=True)
                 )
                 return StorageObject.bulk_create(table.to_pylist(), key, range(table.num_rows))
             except Exception as e:
@@ -181,7 +181,7 @@ def load_tasks_json_lso(blob_str: bytes, key: str) -> list[StorageObject]:
     _error_wrapper()
 
 
-def load_tasks_json(blob_str: str, key: str) -> list[StorageObject]:
+def load_tasks_json(blob: str, key: str) -> list[StorageObject]:
     # uses load_tasks_json_lso here and an LSE-specific implementation in LSE
     load_tasks_json_func = load_func(settings.STORAGE_LOAD_TASKS_JSON)
-    return load_tasks_json_func(blob_str, key)
+    return load_tasks_json_func(blob, key)

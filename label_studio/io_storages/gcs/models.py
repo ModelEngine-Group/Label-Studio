@@ -189,12 +189,12 @@ class GCSImportStorageBase(GCSStorageMixin, ImportStorage):
         if self.use_blob_urls:
             task = {settings.DATA_UNDEFINED_NAME: GCS.get_uri(self.bucket, key)}
             return [StorageObject(key=key, task_data=task)]
-        blob_str = GCS.read_file(
+        blob = GCS.read_file(
             client=self.get_client(),
             bucket_name=self.bucket,
             key=key,
         )
-        return load_tasks_json(blob_str, key)
+        return load_tasks_json(blob, key)
 
     def generate_http_url(self, url):
         return GCS.generate_http_url(

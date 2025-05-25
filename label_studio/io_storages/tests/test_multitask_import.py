@@ -276,8 +276,8 @@ annots_preds_task_list = [
 def test_bare_task(storage):
     task_data = bare_task_list[0]
 
-    blob_str = json.dumps(task_data).encode()
-    output = load_tasks_json(blob_str, 'test.json')
+    blob = json.dumps(task_data).encode()
+    output = load_tasks_json(blob, 'test.json')
     expected_output = [StorageObject(key='test.json', task_data=task_data)]
     assert output == expected_output
 
@@ -287,8 +287,8 @@ def test_bare_task(storage):
 def test_data_key(storage):
     task_data = {'data': bare_task_list[0]}
 
-    blob_str = json.dumps(task_data).encode()
-    output = load_tasks_json(blob_str, 'test.json')
+    blob = json.dumps(task_data).encode()
+    output = load_tasks_json(blob, 'test.json')
     expected_output = [StorageObject(key='test.json', task_data=task_data)]
     assert output == expected_output
 
@@ -298,8 +298,8 @@ def test_data_key(storage):
 def test_1elem_list(storage):
     task_data = bare_task_list[:1]
 
-    blob_str = json.dumps(task_data).encode()
-    output = load_tasks_json(blob_str, 'test.json')
+    blob = json.dumps(task_data).encode()
+    output = load_tasks_json(blob, 'test.json')
     expected_output = [
         StorageObject(key='test.json', task_data=task_data[0], row_index=0),
     ]
@@ -311,8 +311,8 @@ def test_1elem_list(storage):
 def test_2elem_list(storage):
     task_data = bare_task_list
 
-    blob_str = json.dumps(task_data).encode()
-    output = load_tasks_json(blob_str, 'test.json')
+    blob = json.dumps(task_data).encode()
+    output = load_tasks_json(blob, 'test.json')
     expected_output = [
         StorageObject(key='test.json', task_data=task_data[0], row_index=0),
         StorageObject(key='test.json', task_data=task_data[1], row_index=1),
@@ -325,8 +325,8 @@ def test_2elem_list(storage):
 def test_preds_and_annots_list(storage):
     task_data = annots_preds_task_list
 
-    blob_str = json.dumps(task_data).encode()
-    output = load_tasks_json(blob_str, 'test.json')
+    blob = json.dumps(task_data).encode()
+    output = load_tasks_json(blob, 'test.json')
 
     expected_output = [
         StorageObject(key='test.json', task_data=task_data[0], row_index=0),
@@ -340,8 +340,8 @@ def test_preds_and_annots_list(storage):
 def test_mixed_formats(storage):
     task_data = [bare_task_list[0], annots_preds_task_list[0]]
 
-    blob_str = json.dumps(task_data).encode()
-    output = load_tasks_json(blob_str, 'test.json')
+    blob = json.dumps(task_data).encode()
+    output = load_tasks_json(blob, 'test.json')
 
     expected_output = [
         StorageObject(key='test.json', task_data=task_data[0], row_index=0),
@@ -356,8 +356,8 @@ def test_mixed_formats(storage):
 def test_list_jsonl(storage):
     task_data = bare_task_list
 
-    blob_str = '\n'.join([json.dumps(task) for task in task_data]).encode()
-    output = load_tasks_json(blob_str, 'test.jsonl')
+    blob = '\n'.join([json.dumps(task) for task in task_data]).encode()
+    output = load_tasks_json(blob, 'test.jsonl')
     expected_output = [
         StorageObject(key='test.jsonl', task_data=task_data[0], row_index=0),
         StorageObject(key='test.jsonl', task_data=task_data[1], row_index=1),
@@ -371,8 +371,8 @@ def test_list_jsonl(storage):
 def test_list_jsonl_with_preds_and_annots(storage):
     task_data = annots_preds_task_list
 
-    blob_str = '\n'.join([json.dumps(task) for task in task_data]).encode()
-    output = load_tasks_json(blob_str, 'test.jsonl')
+    blob = '\n'.join([json.dumps(task) for task in task_data]).encode()
+    output = load_tasks_json(blob, 'test.jsonl')
 
     fixed_task_data_1 = task_data[1].copy()
     fixed_task_data_1['annotations'] = None  # this key exists in the output, since preds exist
@@ -395,8 +395,8 @@ def test_ff_blocks_jsonl():
 def test_mixed_formats_jsonl(storage):
     task_data = [bare_task_list[0], annots_preds_task_list[0]]
 
-    blob_str = '\n'.join([json.dumps(task) for task in task_data]).encode()
-    output = load_tasks_json(blob_str, 'test.jsonl')
+    blob = '\n'.join([json.dumps(task) for task in task_data]).encode()
+    output = load_tasks_json(blob, 'test.jsonl')
 
     # keys are copied across tasks; empty keys are correctly ignored in create_tasks()
     fixed_task_data_0 = task_data[0].copy()
