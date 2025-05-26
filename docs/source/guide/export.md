@@ -121,7 +121,144 @@ Export your brush mask labels as NumPy 2d arrays and PNG images. Each label outp
 
 ### COCO
 
-A popular machine learning format used by the [COCO dataset](http://cocodataset.org/#home) for object detection and image segmentation tasks. Supports bounding box and polygon image labeling projects that use the `BrushLabels`, `RectangleLabels`, or `PolygonLabels` tags.
+A popular machine learning format used by the [COCO dataset](http://cocodataset.org/#home) for object detection and image segmentation tasks. Supports bounding box and polygon image labeling projects that use the `BrushLabels`, `RectangleLabels`, `KeyPointLabels` (see note below), or `PolygonLabels` tags.
+
+
+{% details <b>KeyPointLabels Export Support</b> %}
+
+If using `KeyPointLabels`, you will need to add the following to your labeling config:
+
+* At least one `<RectangleLabels>` option. You will use this as a parent bounding box for the keypoints. 
+* Add a `model_index` to every `<Label>` inside your `<KeyPointLabels>` tag. The `model_index` value defines the order of the keypoint coordinates in the output array for YOLO. 
+
+For example:
+
+```xml
+<View>
+  <Image name="image" value="$image"/>
+
+  <KeyPointLabels name="kp" toName="image">
+    <Label value="nose" model_index="0"/>
+    <Label value="eye" model_index="1"/>
+    <Label value="tail" model_index="2"/>
+  </KeyPointLabels>
+
+  <RectangleLabels name="bbox" toName="image">
+    <Label value="animal"/>
+  </RectangleLabels>
+</View>
+
+```
+
+After annotating, you must drag-and-drop each keypoint region under its corresponding rectangle region in the **Regions** panel. 
+
+This establishes a parent–child hierarchy (via parentID), which is necessary for export. See the export examples below. 
+
+![Screenshot of keypoints within a bounding box](/images/import-export/keypoints.png)
+
+**Export examples**
+
+<div class="code-tabs">
+  <div data-name="Keypoints in JSON">
+```json
+[
+      {
+        "result": [
+          {
+            "id": "17n06ubOJs",
+            "type": "keypointlabels",
+            "value": {
+              "x": 6.675567423230974,
+              "y": 20.597014925373134,
+              "width": 0.26702269692923897,
+              "keypointlabels": [
+                "nose"
+              ]
+            },
+            "origin": "manual",
+            "to_name": "image",
+            "parentID": "QHG4TBXuNC",
+            "from_name": "kp",
+            "image_rotation": 0,
+            "original_width": 200,
+            "original_height": 179
+          },
+          {
+            "id": "QHG4TBXuNC",
+            "type": "rectanglelabels",
+            "value": {
+              "x": 3.871829105473965,
+              "y": 4.029850746268656,
+              "width": 94.39252336448598,
+              "height": 92.08955223880598,
+              "rotation": 0,
+              "rectanglelabels": [
+                "animal"
+              ]
+            },
+            "origin": "manual",
+            "to_name": "image",
+            "from_name": "bbox",
+            "image_rotation": 0,
+            "original_width": 200,
+            "original_height": 179
+          }
+]
+```
+  </div>
+  <div data-name="Keypoints in COCO">
+```json
+[
+    {
+      "id": 0,
+      "image_id": 0,
+      "category_id": 0,
+      "segmentation": [],
+      "bbox": [
+        7.74365821094793,
+        7.213432835820895,
+        188.78504672897196,
+        164.84029850746268
+      ],
+      "ignore": 0,
+      "iscrowd": 0,
+      "area": 31119.38345654903
+    },
+    {
+      "id": 1,
+      "image_id": 0,
+      "category_id": 0,
+      "keypoints": [
+        13,
+        37,
+        2,
+        33,
+        33,
+        2,
+        167,
+        24,
+        2
+      ],
+      "num_keypoints": 3,
+      "bbox": [
+        13,
+        24,
+        154,
+        13
+      ],
+      "iscrowd": 0
+    }
+]
+```
+  </div>
+  <div data-name="Keypoints in YOLO">
+```
+0 0.5106809078771696 0.5007462686567165 0.9439252336448598 0.9208955223880598 0.06675567423230974 0.20597014925373133 2 0.1628838451268358 0.18507462686567164 2 0.8371161548731643 0.13134328358208955 2
+```
+  </div>
+</div>
+{% enddetails %}
+
 
 ### CoNLL2003
 
@@ -189,7 +326,10 @@ Results are stored in a tab-separated tabular file with column names specified b
 
 ### YOLO
 
-Export object detection annotations in the YOLOv3 and YOLOv4 format. Supports object detection labeling projects that use the `RectangleLabels` tag. 
+Export object detection annotations in the YOLOv3 and YOLOv4 format. Supports object detection labeling projects that use the `RectangleLabels`  and `KeyPointLabels` tags. 
+
+!!! note
+    If using KeyPointLabels, see the note under [COCO](#COCO).
 
 {% insertmd includes/task_format.md %}
 
