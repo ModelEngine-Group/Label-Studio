@@ -1,6 +1,11 @@
 name: Apply linters
 
 on:
+  workflow_call:
+    inputs:
+      branch_name:
+        required: true
+        type: string
   workflow_dispatch:
     inputs:
       branch_name:
@@ -14,14 +19,48 @@ env:
 
 jobs:
   lint:
+    name: "Apply linters"
     runs-on: ubuntu-latest
-
     steps:
+      - uses: hmarr/debug-action@v3.0.0
+
+      - name: Add Workflow link to chat ops command comment
+        if: github.event.client_payload.github.payload.comment.id && github.event.client_payload.github.payload.repository.full_name
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GIT_PAT }}
+          repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
+          comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
+          body: |
+            > [Workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GIT_PAT }}
           ref: ${{ inputs.branch_name }}
+
+      - name: Checkout Actions Hub
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GIT_PAT }}
+          repository: HumanSignal/actions-hub
+          path: ./.github/actions-hub
+
+      - name: Team details
+        id: team_details
+        uses: ./.github/actions-hub/actions/team-details
+        with:
+          jira-server: "${{ vars.JIRA_SERVER }}"
+          jira-username: "${{ secrets.JIRA_USERNAME }}"
+          jira-token: "${{ secrets.JIRA_TOKEN }}"
+          github_token: "${{ secrets.GIT_PAT }}"
+        continue-on-error: true
+
+      - name: Git Configure
+        uses: ./.github/actions-hub/actions/git-configure
+        with:
+          username: "${{ steps.team_details.outputs.github-username }}"
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -46,9 +85,24 @@ jobs:
         run: make fmt-all
 
       - name: Commit changes
+        env:
+          COMMIT_MESSAGE: "Apply pre-commit linters"
+          COMMIT_MESSAGE_WORKFLOW_LINK: "Workflow run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         run: |
           git config --global user.name "robot-ci-heartex"
           git config --global user.email "robot-ci-heartex@users.noreply.github.com"
           git add .
-          git commit -m "Apply pre-commit linters" || echo "No changes to commit"
-          git push
+          git commit --allow-empty -m "${COMMIT_MESSAGE}" -m "${COMMIT_MESSAGE_WORKFLOW_LINK}"
+
+      - name: Git Push
+        id: push
+        uses: ./.github/actions-hub/actions/git-push
+
+      - name: Add reaction to chat ops command comment
+        if: always() && github.event.client_payload.github.payload.comment.id && github.event.client_payload.github.payload.repository.full_name
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GIT_PAT }}
+          repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
+          comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
+          reactions: ${{ job.status == 'success' && '+1' || '-1' }}
