@@ -7,9 +7,10 @@ export interface Lifespan {
   enabled: boolean;
   start: number;
   points: TimelineRegionKeyframe[];
+  locked?: boolean;
 }
 
-export const visualizeLifespans = (keyframes: TimelineRegionKeyframe[], step: number) => {
+export const visualizeLifespans = (keyframes: TimelineRegionKeyframe[], step: number, locked = false) => {
   if (keyframes.length === 0) return [];
 
   const lifespans: Lifespan[] = [];
@@ -29,6 +30,7 @@ export const visualizeLifespans = (keyframes: TimelineRegionKeyframe[], step: nu
         enabled: point.enabled,
         start: point.frame,
         points: [point],
+        locked,
       });
     } else if (prevPoint?.enabled) {
       lastSpan.width = (point.frame - lastSpan.points[0].frame) * step;

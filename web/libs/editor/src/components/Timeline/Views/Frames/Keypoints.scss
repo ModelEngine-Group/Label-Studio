@@ -73,6 +73,10 @@
     border-radius: 2px;
     transform: translate3d(-50%, -50%, 0) rotate(45deg);
     background-color: var(--point-color);
+
+    &_locked {
+      display: none;
+    }
   }
 
   &_timeline &__point {

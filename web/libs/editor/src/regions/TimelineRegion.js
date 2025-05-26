@@ -112,6 +112,7 @@ const Model = types
      *        In first two cases we need to update undo history only once
      */
     setRange([start, end], { mode } = {}) {
+      if (self.locked) return;
       if (mode === "new") {
         // we need to update existing history item while drawing a new region
         self.parent.annotation.history.setReplaceNextUndoState();

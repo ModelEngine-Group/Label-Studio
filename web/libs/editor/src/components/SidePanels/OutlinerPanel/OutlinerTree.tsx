@@ -218,6 +218,7 @@ const useDataTree = ({ regions, rootClass, footer }: any) => {
       },
       className: rootClass.elem("node").mod(mods).toClassName(),
       title: (data: any) => <RootTitle {...data} />,
+      locked: item.locked,
     };
   }, []);
 

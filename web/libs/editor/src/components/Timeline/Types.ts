@@ -101,6 +101,7 @@ export interface TimelineRegion {
   sequence: TimelineRegionKeyframe[];
   /** is this timeline region with spans */
   timeline?: boolean;
+  locked?: boolean;
 }
 
 export interface TimelineRegionKeyframe {

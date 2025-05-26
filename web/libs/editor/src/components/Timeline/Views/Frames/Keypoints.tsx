@@ -17,7 +17,7 @@ export interface KeypointsProps {
 
 export const Keypoints: FC<KeypointsProps> = ({ idx, region, startOffset, renderable, onSelectRegion }) => {
   const { step, seekOffset, visibleWidth, length } = useContext(TimelineContext);
-  const { label, color, visible, sequence, selected, timeline } = region;
+  const { label, color, visible, sequence, selected, timeline, locked } = region;
 
   const extraSteps = useMemo(() => {
     return Math.round(visibleWidth / 2);
@@ -50,14 +50,14 @@ export const Keypoints: FC<KeypointsProps> = ({ idx, region, startOffset, render
   const lifespans = useMemo(() => {
     if (!renderable) return [];
 
-    return visualizeLifespans(sequence, step).map((span) => {
+    return visualizeLifespans(sequence, step, locked).map((span) => {
       span.points = span.points.filter(({ frame }) => {
         return frame >= minVisibleKeypointPosition && frame <= maxVisibleKeypointPosition;
       });
 
       return span;
     });
-  }, [sequence, start, step, renderable, minVisibleKeypointPosition, maxVisibleKeypointPosition]);
+  }, [sequence, start, step, renderable, minVisibleKeypointPosition, maxVisibleKeypointPosition, locked]);
 
   const onSelectRegionHandler = useCallback(
     (e: MouseEvent<HTMLDivElement>, select?: boolean) => {
@@ -78,6 +78,7 @@ export const Keypoints: FC<KeypointsProps> = ({ idx, region, startOffset, render
       data-id={region.id}
       data-start={range[0]}
       data-end={range[1]}
+      data-locked={locked || undefined}
     >
       <Elem name="label" onClick={onSelectRegionHandler}>
         <Elem name="name">{label}</Elem>
@@ -134,10 +135,11 @@ interface LifespanItemProps {
   visible: boolean;
   isLast: boolean;
   points: number[];
+  locked?: boolean;
 }
 
 const LifespanItem: FC<LifespanItemProps> = memo(
-  ({ mainOffset, width, start, step, offset, enabled, visible, isLast, points }) => {
+  ({ mainOffset, width, start, step, offset, enabled, visible, isLast, points, locked }) => {
     const left = mainOffset + offset + step / 2;
     const right = isLast && enabled ? 0 : "auto";
     const finalWidth = isLast && enabled ? "auto" : width;
@@ -150,7 +152,7 @@ const LifespanItem: FC<LifespanItemProps> = memo(
         {points.map((frame, i) => {
           const left = (frame - start) * step;
 
-          return <Elem key={i} name="point" style={{ left }} mod={{ last: !!left }} />;
+          return <Elem key={i} name="point" style={{ left }} mod={{ last: !!left, locked }} />;
         })}
       </Elem>
     );
