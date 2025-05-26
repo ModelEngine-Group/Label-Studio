@@ -40,6 +40,7 @@ export class Modal extends React.Component {
   }
 
   componentWillUnmount() {
+    document.body.style.overflow = "";
     document.removeEventListener("keydown", this.closeOnEscape, { capture: !this.props.allowToInterceptEscape });
   }
 
