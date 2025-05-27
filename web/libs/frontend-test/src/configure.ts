@@ -8,16 +8,17 @@ import { addMatchImageSnapshotPlugin } from "cypress-image-snapshot/plugin";
 import { nxE2EPreset } from "@nx/cypress/plugins/cypress-preset";
 
 const COLLECT_COVERAGE = process.env.COLLECT_COVERAGE === "true" || process.env.COLLECT_COVERAGE === "1";
-const localPath = (p) => path.resolve(process.cwd(), p);
+const localPath = (p: string) => path.resolve(process.cwd(), p);
 
 /**
  * Override Cypress settings
- * @param {(config: Cypress.ConfigOptions) => Cypress.ConfigOptions} configModifier
- * @param {Cypress.EndToEndConfigOptions["setupNodeEvents"]?} setupNodeEvents
  */
-export default function (configModifier, setupNodeEvents) {
+export default function (
+  configModifier?: (config: Cypress.ConfigOptions) => Cypress.ConfigOptions,
+  setupNodeEvents?: Cypress.EndToEndConfigOptions["setupNodeEvents"],
+) {
   /** @type {Cypress.ConfigOptions<any>} */
-  const defaultConfig = {
+  const defaultConfig: Cypress.ConfigOptions = {
     // Assets configuration
     supportFolder: localPath("./cypress/support/"),
     videosFolder: localPath("./output/video"),
