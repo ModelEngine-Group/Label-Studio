@@ -186,6 +186,8 @@ Or:
 
 {% enddetails %}
 
+In Label Studio Enterprise and Starter Cloud editions, Parquet files can also be used to import tasks in the same way as JSON and JSONL.
+
 <br>
 
 ###### On
