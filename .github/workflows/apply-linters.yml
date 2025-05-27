@@ -3,13 +3,13 @@ name: Apply linters
 on:
   workflow_call:
     inputs:
-      branch_name:
+      pull_request_number:
         required: true
         type: string
   workflow_dispatch:
     inputs:
-      branch_name:
-        description: 'Branch name to run the workflow on'
+      pull_request_number:
+        description: 'Pull request number'
         required: true
         type: string
 
@@ -34,11 +34,15 @@ jobs:
           body: |
             > [Workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
 
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GIT_PAT }}
-          ref: ${{ inputs.branch_name }}
+
+      - name: Checkout PR
+        env:
+          PR_NUMBER: ${{ inputs.pull_request_number }}
+        run: gh pr checkout "${PR_NUMBER}"
 
       - name: Checkout Actions Hub
         uses: actions/checkout@v4
@@ -89,8 +93,6 @@ jobs:
           COMMIT_MESSAGE: "Apply pre-commit linters"
           COMMIT_MESSAGE_WORKFLOW_LINK: "Workflow run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         run: |
-          git config --global user.name "robot-ci-heartex"
-          git config --global user.email "robot-ci-heartex@users.noreply.github.com"
           git add .
           git commit --allow-empty -m "${COMMIT_MESSAGE}" -m "${COMMIT_MESSAGE_WORKFLOW_LINK}"
 
