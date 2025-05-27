@@ -528,7 +528,16 @@ export const TabStore = types
         });
         tab = self.views[self.views.length - 1];
       } else {
-        tab = yield self.getViewByKey(tabKey);
+        const viewSnapshot = {
+          key: tabKey,
+          virtual: true,
+          title: tabKey,
+          selected: {
+            all: selectedItems?.all,
+            list: selectedItems?.included ?? selectedItems?.excluded ?? [],
+          },
+        };
+        tab = yield self.addVirtualView(viewSnapshot);
       }
 
       self.selected = tab;
