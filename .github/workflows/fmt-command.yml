@@ -13,7 +13,7 @@ jobs:
     if: github.event.client_payload.slash_command.args.unnamed.arg1 == ''
     uses: ./.github/workflows/apply-linters.yml
     with:
-      pull_request_number: ${{ github.event.client_payload.github.payload.pull_request.number }}
+      pull_request_number: ${{ github.event.client_payload.github.payload.issue.number }}
     secrets: inherit
 
   help:
