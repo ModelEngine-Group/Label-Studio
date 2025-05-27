@@ -41,7 +41,8 @@ jobs:
 
       - name: Checkout PR
         env:
-          PR_NUMBER: ${{ inputs.pull_request_number }}
+          PR_NUMBER: "${{ inputs.pull_request_number }}"
+          GH_TOKEN: "${{ secrets.GIT_PAT }}"
         run: gh pr checkout "${PR_NUMBER}"
 
       - name: Checkout Actions Hub
