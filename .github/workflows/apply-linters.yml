@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       branch_name:
-        description: 'Branch name to run the workflow on'
+        description: 'Branch Name'
         required: true
         type: string
 
