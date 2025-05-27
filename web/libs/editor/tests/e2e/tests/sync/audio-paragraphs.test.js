@@ -319,6 +319,8 @@ FFlagMatrix(["fflag_feat_front_lsdv_e_278_contextual_scrolling_short"], (flags) 
 
         AtAudioView.clickPauseButton();
 
+        I.wait(1);
+
         const scrollPosition = await I.executeScript((selector) => {
           const element = document.querySelector(selector);
 

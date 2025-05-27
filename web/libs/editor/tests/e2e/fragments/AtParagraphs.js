@@ -38,7 +38,7 @@ module.exports = {
   clickFilter(...authors) {
     // Open dropdown and wait for it to appear
     I.click(locate(this._filterSelector));
-    I.wait(0.5);
+    I.waitTicks(1);
     // For the new select component, we need to select each author
     // and the dropdown is managed automatically
     for (const author of authors) {
@@ -50,16 +50,16 @@ module.exports = {
       if (hasSearchField) {
         // Try to search if field is available
         I.fillField(locate("input[data-testid='select-search-field']"), author);
-        I.wait(0.5);
+        I.waitTicks(3);
       }
 
       // Select the author option
       I.click(locate(`div[data-testid='select-option-${author}']`));
-      I.wait(0.5);
+      I.waitTicks(3);
     }
 
     // Close any open dropdown
     I.pressKey("Escape");
-    I.wait(1); // Wait for UI to update after filter change
+    I.waitTicks(3); // Wait for UI to update after filter change
   },
 };

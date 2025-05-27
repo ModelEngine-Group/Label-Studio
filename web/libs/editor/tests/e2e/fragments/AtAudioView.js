@@ -39,6 +39,7 @@ module.exports = {
     await I.executeScript(Helpers.waitForAudio);
     I.waitForInvisible(this._progressBarSelector, 30);
     I.waitForDetached("loading-progress-bar", 30);
+    I.waitTicks(2);
   },
   getCurrentAudio() {
     return I.executeScript(Helpers.getCurrentMedia, "audio");
@@ -58,7 +59,7 @@ module.exports = {
     I.moveMouse(this._stageBbox.x + x + shiftX, this._stageBbox.y + this._stageBbox.height / 2, 3);
     if (shouldRelease === false) return;
     I.pressMouseUp();
-    I.wait(1);
+    I.waitTicks(3);
   },
 
   /**
@@ -73,7 +74,7 @@ module.exports = {
     y = y !== undefined ? y : this._stageBbox.height / 2;
     I.scrollPageToTop();
     I.clickAt(this._stageBbox.x + x, this._stageBbox.y + y);
-    I.wait(1); // We gotta  wait here because clicks on the canvas are not processed immediately
+    I.waitTicks(3); // We gotta  wait here because clicks on the canvas are not processed immediately
   },
 
   clickAtBeginning() {
@@ -242,6 +243,7 @@ module.exports = {
     this.toggleControlsMenu();
     I.clearField(this._volumeInputSelector);
     I.fillField(this._volumeInputSelector, value);
+    I.seeInField(this._volumeInputSelector, value);
     this.toggleControlsMenu();
   },
 
@@ -329,6 +331,7 @@ module.exports = {
 
   async seeErrorHandler(value, selector = null) {
     selector = selector ? this[selector] : this._errorSelector;
+    I.seeElement(selector);
     const error = await I.grabTextFrom(selector);
     const matcher = new RegExp(value);
 

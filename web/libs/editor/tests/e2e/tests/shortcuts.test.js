@@ -1,6 +1,6 @@
 const assert = require("assert");
 
-Feature("Shortcuts functional");
+Feature("Shortcuts functional").config({ waitForAction: 16 });
 
 const createConfig = ({ rows = "1" }) => {
   return `<View>

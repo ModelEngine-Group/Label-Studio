@@ -106,7 +106,7 @@ const annotations = [
 ];
 
 const checkScrollToSelectedPersists = (I, label, outliner) => {
-  I.click(locate(`.lsf-${outliner ? "outliner" : "region"}-item__title`).withText(label));
+  I.click(locate(`.lsf-${outliner ? "outliner" : "region"}-item__title *`).withText(label));
   I.waitForVisible(locate(".lsf-label_selected").withText(label));
 };
 

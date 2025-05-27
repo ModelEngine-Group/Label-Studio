@@ -59,6 +59,7 @@ Scenario("Basic scenario", async ({ I, LabelStudio, AtImageView, AtSettings, AtL
   const Text = 'The "H3" header';
 
   I.pressKey("Enter");
+  I.seeFocusedElement("input");
   for (const key of 'The "H3" header') {
     I.pressKey(key);
   }

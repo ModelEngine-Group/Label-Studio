@@ -333,7 +333,7 @@ Scenario("No errors during brush export in MIG", async ({ I, LabelStudio, AtImag
   AtLabels.clickLabel("Planet");
   AtImageView.drawThroughPoints(brushRegionPoints);
 
-  // Brush might not have a chanve to finish whatewer it's
+  // Brush might not have a chance to finish whatewer it's
   // doing, so it's safer to wait a little before exporting it
   I.wait(2);
 

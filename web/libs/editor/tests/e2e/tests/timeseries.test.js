@@ -109,7 +109,7 @@ function generateData(stepsNumber) {
 
 Feature("TimeSeries datasets");
 Object.entries(scenarios).forEach(([title, scenario]) =>
-  Scenario(title, async ({ I }) => {
+  Scenario(title, async ({ I, LabelStudio }) => {
     const cfg = config(scenario);
     const params = {
       annotations: [{ id: "test", result: [] }],

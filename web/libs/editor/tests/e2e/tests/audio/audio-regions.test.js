@@ -280,9 +280,9 @@ FFlagMatrix(["fflag_feat_front_lsdv_e_278_contextual_scrolling_short"], (flags) 
       I.pressKey("1");
       AtAudioView.dragAudioElement(160, 80, false);
       I.pressKey("1");
-      I.wait(1);
+      I.waitTicks(2);
       I.pressMouseUp();
-      I.wait(1);
+      I.waitTicks(2);
 
       // checking if the created region is selected
       AtAudioView.clickAt(310);

@@ -1,5 +1,5 @@
 import { observer } from "mobx-react";
-import { type FC, useCallback, useEffect, useMemo, useRef } from "react";
+import { type FC, type ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
 import { usePersistentJSONState } from "@humansignal/core/lib/hooks/usePersistentState";
 import { TimelineContextProvider } from "../../../components/Timeline/Context";
 import { ErrorMessage } from "../../../components/ErrorMessage/ErrorMessage";
@@ -17,11 +17,12 @@ import { getCurrentTheme } from "@humansignal/ui";
 
 interface AudioUltraProps {
   item: any;
+  children: ReactNode;
 }
 
 const NORMALIZED_STEP = 0.1;
 
-const AudioUltraView: FC<AudioUltraProps> = ({ item }) => {
+const AudioUltraView: FC<AudioUltraProps> = ({ item, children }) => {
   const rootRef = useRef<HTMLElement | null>();
   const isDarkMode = getCurrentTheme() === "Dark";
 
@@ -158,9 +159,7 @@ const AudioUltraView: FC<AudioUltraProps> = ({ item }) => {
 
   return (
     <Block name="audio-tag">
-      {item.errors?.map((error: any, i: any) => (
-        <ErrorMessage key={`err-${i}`} error={error} />
-      ))}
+      {children}
       <div
         ref={(el) => {
           rootRef.current = el;
@@ -242,7 +241,10 @@ const AudioUltraWithSettings: FC<AudioUltraProps> = ({ item }) => {
 
   return (
     <TimelineContextProvider value={contextValue}>
-      <AudioUltraView item={item} />
+      <AudioUltraView item={item}>
+        {item.errors.length &&
+          item.errors?.map((error: any, i: any) => <ErrorMessage key={`err-${i}`} error={error} />)}
+      </AudioUltraView>
     </TimelineContextProvider>
   );
 };

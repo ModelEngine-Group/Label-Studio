@@ -1,4 +1,4 @@
-Feature("Video unmount").tag("@regress");
+Feature("Video unmount").tag("@regress").config({ waitForAction: 100 });
 
 Scenario("Reiniting Label Studio should not left unexpected null and video tags in DOM", async ({ I, LabelStudio }) => {
   I.amOnPage("/");

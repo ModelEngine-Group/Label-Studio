@@ -56,7 +56,7 @@ const params = { config, data };
 
 Scenario(
   "Check DateTime holds state between annotations and saves result",
-  async ({ I, AtDateTime, AtLabels, AtOutliner, LabelStudio }) => {
+  async ({ I, AtDateTime, AtLabels, AtOutliner, LabelStudio, Modals }) => {
     I.amOnPage("/");
 
     LabelStudio.init(params);
@@ -69,9 +69,9 @@ Scenario(
     ////// GLOBAL
     I.say("Check validation of required global date control");
     I.updateAnnotation();
-    I.see('DateTime "created" is required');
-    I.click("OK");
-    I.dontSee('DateTime "created" is required');
+    Modals.seeWarning('DateTime "created" is required');
+    Modals.closeWarning();
+    Modals.dontSeeWarning('DateTime "created" is required');
 
     const checks = {
       incorrect: [
@@ -84,18 +84,17 @@ Scenario(
     for (const [incorrect, error] of checks.incorrect) {
       I.fillField("input[type=date]", formatDateValue(incorrect, format));
       I.updateAnnotation();
-      I.see("is not valid");
-      I.see(error);
-      I.click("OK");
-      I.dontSee("is not valid");
+      Modals.seeWarning("is not valid");
+      Modals.seeWarning(error);
+      Modals.closeWarning();
+      Modals.dontSeeWarning("is not valid");
       assert.strictEqual(await I.grabCssPropertyFrom("[type=date]", "border-color"), "rgb(255, 0, 0)");
     }
 
     for (const [correct] of checks.correct) {
       I.fillField("input[type=date]", formatDateValue(correct, format));
       I.updateAnnotation();
-      I.dontSee("Warning");
-      I.dontSee("is not valid");
+      Modals.dontSeeWarning("is not valid");
     }
 
     // this value will be asserted at the end
@@ -118,18 +117,18 @@ Scenario(
 
     I.say("Try to submit and observe validation errors about per-regions");
     I.updateAnnotation();
-    I.see('DateTime "date" is required');
-    I.click("OK");
-    I.dontSee('DateTime "date" is required');
+    Modals.seeWarning('DateTime "date" is required');
+    Modals.closeWarning();
+    Modals.dontSeeWarning('DateTime "date" is required');
 
     // invalid region is selected on validation to reveal per-region control with error
     AtOutliner.seeSelectedRegion(regions[0].label);
     I.fillField("input[name=date-date]", formatDateValue(regions[0].dateValue, format));
     I.updateAnnotation();
     // next region with empty required date is selected and error is shown
-    I.see('DateTime "date" is required');
-    I.click("OK");
-    I.dontSee('DateTime "date" is required');
+    Modals.seeWarning('DateTime "date" is required');
+    Modals.closeWarning();
+    Modals.dontSeeWarning('DateTime "date" is required');
     AtOutliner.seeSelectedRegion(regions[1].label);
 
     I.say("Fill all per-region date fields and check it's all good");
@@ -156,8 +155,7 @@ Scenario(
     });
 
     I.updateAnnotation();
-    I.dontSee("Warning");
-    I.dontSee("is required");
+    Modals.dontSeeWarning("is required");
 
     regions.forEach((region) => {
       AtOutliner.clickRegion(region.text);

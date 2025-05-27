@@ -21,14 +21,16 @@ module.exports.config = {
       url: `http://localhost:${port}`,
       show: !headless,
       restart: "context",
-      timeout: 60000, // Action timeout after 60 seconds
-      waitForAction: headless ? 300 : 1200,
+      timeout: 30000,
+      waitForAction: headless ? 0 : 500,
       windowSize: "1200x900",
-      waitForNavigation: "networkidle",
+      waitForNavigation: "domcontentloaded",
+      waitForURL: "domcontentloaded",
       browser: "chromium",
       chromium: process.env.CHROMIUM_EXECUTABLE_PATH
         ? {
             executablePath: process.env.CHROMIUM_EXECUTABLE_PATH,
+            args: ["--disable-dev-shm-usage", "--no-sandbox", "--disable-setuid-sandbox", "--disable-gpu"],
           }
         : {},
       // to test date shifts because of timezone. (see date-time.test.js)

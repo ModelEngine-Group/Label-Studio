@@ -6,7 +6,7 @@ module.exports = {
   unselectWithHotkey() {
     // wait is necessary for "Select region after creation" cases because
     // there's delay between region creation and ability to unselect a region
-    I.wait(0.2);
+    I.waitTicks(2);
     I.pressKey(["u"]);
     AtOutliner.dontSeeSelectedRegion();
   },

@@ -15,6 +15,8 @@
     "lsf:watch": "nx run editor:build:development --watch",
     "lsf:serve": "FRONTEND_HOSTNAME=http://localhost:3000 MODE=standalone nx run editor:serve:development",
     "lsf:e2e": "cd libs/editor/tests/e2e && yarn test",
+    "lsf:e2e:parallel": "cd libs/editor/tests/e2e && yarn test:parallel",
+    "lsf:e2e:ci": "cd libs/editor/tests/e2e && yarn test:ci",
     "lsf:integration": "nx run editor:integration",
     "lsf:integration:watch": "nx run editor:integration --watch",
     "lsf:unit": "nx run editor:unit",

@@ -126,6 +126,7 @@ Scenario("Drawing with ctrl pressed", async ({ I, LabelStudio, AtOutliner, AtIma
   AtDetailsPanel.seeExpandButton();
   LabelStudio.waitForObjectsReady();
   AtOutliner.seeRegions(0);
+  I.waitTicks(2);
   const canvasSize = await AtImageView.getCanvasSize();
   const size = Math.min(canvasSize.width, canvasSize.height);
   const convertToImageSize = Helpers.getSizeConvertor(canvasSize.width, canvasSize.height);

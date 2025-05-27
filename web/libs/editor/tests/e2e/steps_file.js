@@ -22,4 +22,8 @@ module.exports = () =>
       await action();
       this._performActionEnd(name);
     },
+
+    waitTicks(n) {
+      return this.wait(0.016 * n);
+    },
   });

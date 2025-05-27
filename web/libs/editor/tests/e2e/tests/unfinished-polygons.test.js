@@ -61,7 +61,6 @@ Scenario("Drafts for unfinished polygons", async ({ I, LabelStudio, AtLabels, At
 
 Scenario("Saving polygon drawing steps to history", async ({ I, LabelStudio, AtLabels, AtImageView }) => {
   I.amOnPage("/");
-  LabelStudio.setFeatureFlags(FLAGS);
   LabelStudio.init({
     config: CONFIG,
     data: {
@@ -109,7 +108,6 @@ Scenario("Saving polygon drawing steps to history", async ({ I, LabelStudio, AtL
 
 Scenario("Init an annotation with old format of closed polygon result", async ({ I, LabelStudio, AtImageView }) => {
   I.amOnPage("/");
-  LabelStudio.setFeatureFlags(FLAGS);
   LabelStudio.init({
     config: CONFIG,
     data: {
@@ -152,7 +150,6 @@ Scenario("Init an annotation with old format of closed polygon result", async ({
 
 Scenario("Init an annotation with result of new format of polygon results", async ({ I, LabelStudio, AtImageView }) => {
   I.amOnPage("/");
-  LabelStudio.setFeatureFlags(FLAGS);
   LabelStudio.init({
     config: CONFIG,
     data: {
@@ -247,7 +244,6 @@ Scenario("Init an annotation with result of new format of polygon results", asyn
 
 Scenario("Removing a polygon by going back through history", async ({ I, LabelStudio, AtLabels, AtImageView }) => {
   I.amOnPage("/");
-  LabelStudio.setFeatureFlags(FLAGS);
   LabelStudio.init({
     config: CONFIG,
     data: {
@@ -294,7 +290,6 @@ Scenario("Removing a polygon by going back through history", async ({ I, LabelSt
 
 Scenario("Continue annotating after closing region from draft", async ({ I, LabelStudio, AtLabels, AtImageView }) => {
   I.amOnPage("/");
-  LabelStudio.setFeatureFlags(FLAGS);
   LabelStudio.init({
     config: CONFIG,
     data: {
@@ -364,7 +359,6 @@ Scenario("Change label on unfinished polygons", async ({ I, LabelStudio, AtLabel
       onSubmitDraft: saveDraftLocally,
     },
   });
-  LabelStudio.setFeatureFlags(FLAGS);
 
   LabelStudio.waitForObjectsReady();
 
@@ -398,7 +392,6 @@ Data(selectedLabelsVariants).Scenario(
     const { labels } = current;
 
     I.amOnPage("/");
-    LabelStudio.setFeatureFlags(FLAGS);
     LabelStudio.init({
       config: CONFIG_MULTIPLE,
       data: {
@@ -469,7 +462,6 @@ Data(selectedPolygonAfterCreatingVariants).Scenario(
 
     I.say(description);
     I.amOnPage("/");
-    LabelStudio.setFeatureFlags(FLAGS);
     LabelStudio.init({
       config: CONFIG,
       data: {
@@ -515,6 +507,7 @@ Data(selectedPolygonAfterCreatingVariants).Scenario(
     await AtImageView.lookForStage();
     const canvasSize = await AtImageView.getCanvasSize();
 
+    I.waitTicks(2);
     I.say("close loaded region");
     AtImageView.drawByClick(canvasSize.width * 0.1, canvasSize.height * 0.1);
 
@@ -531,6 +524,7 @@ Data(selectedPolygonAfterCreatingVariants).Scenario(
 
     I.say("go back through the history");
     I.pressKey(["CommandOrControl", "Z"]);
+    I.waitTicks(2);
     AtOutliner.dontSeeSelectedRegion();
 
     I.say("repeat creation and checking");

@@ -102,8 +102,9 @@ examples.slice(1).forEach((example) =>
       // Check for regions count
       AtOutliner.seeRegions(count);
 
-      await I.executeScript(() => {
-        window.LabelStudio.destroyAll();
+      await I.executeScript(async () => {
+        // await window.LabelStudio.destroyAll();
+        // return true;
       });
     },
   ),

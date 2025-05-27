@@ -110,7 +110,7 @@ module.exports = {
 
   setZoom(scale, x, y) {
     I.executeScript(Helpers.setZoom, [scale, x, y]);
-    I.wait(1);
+    I.waitTicks(3);
   },
 
   async getZoomProps() {
@@ -238,8 +238,11 @@ module.exports = {
     I.scrollPageToTop();
     I.moveMouse(this.stageBBox().x + x, this.stageBBox().y + y);
     I.pressMouseDown();
+    I.waitTicks(1);
     I.moveMouse(this.stageBBox().x + x + shiftX, this.stageBBox().y + y + shiftY, 3);
+    I.waitTicks(1);
     I.pressMouseUp();
+    I.waitTicks(1);
   },
   /**
    * Click through the list of points on the ImageView. Works in couple of lookForStage.
@@ -258,7 +261,7 @@ module.exports = {
       for (const point of prevPoints) {
         I.clickAt(this.stageBBox().x + point[0], this.stageBBox().y + point[1]);
       }
-      I.wait(0.5); // wait before last click to fix polygons creation
+      I.waitTicks(3); // wait before last click to fix polygons creation
     }
 
     I.clickAt(this.stageBBox().x + lastPoint[0], this.stageBBox().y + lastPoint[1]);
@@ -293,7 +296,7 @@ module.exports = {
   clickAt(x, y) {
     I.scrollPageToTop();
     I.clickAt(this.stageBBox().x + x, this.stageBBox().y + y);
-    I.wait(1); // We gotta  wait here because clicks on the canvas are not processed immediately
+    I.waitTicks(3); // We gotta  wait here because clicks on the canvas are not processed immediately
   },
   dblClickAt(x, y) {
     I.scrollPageToTop();

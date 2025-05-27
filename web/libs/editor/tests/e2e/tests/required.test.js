@@ -82,16 +82,12 @@ const result = {
 };
 const annotations = [{ id: "1", result: [result] }];
 
-Scenario("Check required param", async ({ I, LabelStudio }) => {
+Scenario("Check required param", async ({ I, LabelStudio, Modals }) => {
   const params = { config: createConfig(), data: { text } };
 
   const waitForError = (name) => {
-    I.waitForText("OK");
-    I.see("Warning");
-    I.see(`Checkbox "${name}" is required`);
-    I.seeElement(".ant-modal");
-    I.click("OK");
-    I.waitToHide(".ant-modal");
+    Modals.seeWarning(`Checkbox "${name}" is required`);
+    Modals.closeWarning();
   };
 
   I.amOnPage("/");
@@ -128,19 +124,15 @@ Scenario("Check required param", async ({ I, LabelStudio }) => {
   I.see('Checkbox "second" is required');
 });
 
-Scenario("Check required param in complex config", async ({ I, LabelStudio, AtOutliner }) => {
+Scenario("Check required param in complex config", async ({ I, LabelStudio, AtOutliner, Modals }) => {
   const params = { annotations, config: complex, data: { text } };
 
   const waitForError = (name) => {
-    I.waitForText("OK");
-    I.see("Warning");
     // Two possible errors:
     // - Checkbox "name" is required.
     // - Input for the textarea "name" is required.
-    I.see(`"${name}" is required`);
-    I.seeElement(".ant-modal");
-    I.click("OK");
-    I.waitToHide(".ant-modal");
+    Modals.seeWarning(`"${name}" is required`);
+    Modals.closeWarning();
   };
 
   I.amOnPage("/");
@@ -201,15 +193,11 @@ Scenario("Check required param in complex config", async ({ I, LabelStudio, AtOu
   I.seeAnnotationSubmitted();
 });
 
-Scenario("Check required param with visibleWhen='choice-unselected'", async ({ I, LabelStudio }) => {
+Scenario("Check required param with visibleWhen='choice-unselected'", async ({ I, LabelStudio, Modals }) => {
   const params = { config: createConfig({ visibleWhen: "choice-unselected" }), data: { text } };
   const waitForError = (name) => {
-    I.waitForText("OK");
-    I.see("Warning");
-    I.see(`Checkbox "${name}" is required`);
-    I.seeElement(".ant-modal");
-    I.click("OK");
-    I.waitToHide(".ant-modal");
+    Modals.seeWarning(`Checkbox "${name}" is required`);
+    Modals.closeWarning();
   };
 
   I.amOnPage("/");

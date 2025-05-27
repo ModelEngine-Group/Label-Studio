@@ -1,5 +1,6 @@
 const Helper = require("@codeceptjs/helper");
 const ElementNotFound = require("codeceptjs/lib/helper/errors/ElementNotFound");
+const assert = require("assert");
 
 function assertElementExists(res, locator, prefix, suffix) {
   if (!res || res.length === 0) {
@@ -56,6 +57,33 @@ class PlaywrightAddon extends Helper {
         ),
       ),
     );
+  }
+
+  async seeFocusedElement(selector, { timeout = 2000 } = {}) {
+    const startTime = Date.now();
+    const checkInterval = 16;
+
+    let isFocused = false;
+    let lastError;
+
+    while (Date.now() - startTime < timeout) {
+      try {
+        const els = await this.helpers.Playwright._locate(selector);
+        const areFocused = await Promise.all(
+          els.map((el) => el.$eval("xpath=.", (el) => el === document.activeElement)),
+        );
+        if (areFocused.some((el) => el)) {
+          isFocused = true;
+          break;
+        }
+        lastError = null;
+      } catch (error) {
+        lastError = error;
+      }
+      await this.helpers.Playwright.page.waitForTimeout(checkInterval);
+    }
+
+    assert.ok(isFocused, `Element ${selector} is not focused after ${timeout}ms${lastError ? `:\n${lastError}` : ""}`);
   }
 }
 

@@ -1,7 +1,7 @@
 const assert = require("assert");
 const Helpers = require("../helpers");
 
-Feature("Image zoom position").tag("@regress");
+Feature("Image zoom position").tag("@regress").config({ waitForAction: 50 });
 
 const IMAGE =
   "https://htx-pub.s3.us-east-1.amazonaws.com/examples/images/nick-owuor-astro-nic-visuals-wDifg5xc9Z4-unsplash.jpg";
@@ -201,7 +201,7 @@ Data(relativeCoordsFF).Scenario(
       await AtOutlinerPanel.dragResizerBy(shiftX, 0, AtOutlinerPanel.resizeRight, steps);
     }
 
-    I.wait(1);
+    I.waitTicks(3);
 
     await AtImageView.lookForStage();
 

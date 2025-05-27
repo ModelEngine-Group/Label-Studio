@@ -16,10 +16,12 @@ module.exports = {
   open() {
     I.click(this._openButtonLocator);
     I.seeElement(this._modalLocator);
+    I.waitTicks(3);
   },
   close() {
     I.click(this._closeButtonLocator);
     I.waitToHide(this._modalLocator);
+    I.waitTicks(3);
   },
   _setSettings(settings = {}) {
     for (const [setting, value] of Object.entries(settings)) {

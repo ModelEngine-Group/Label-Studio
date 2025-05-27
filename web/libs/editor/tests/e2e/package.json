@@ -8,7 +8,7 @@
     "test": "codeceptjs run",
     "test:ui": "codecept-ui run",
     "test:local": "HEADLESS=true yarn test",
-    "test:parallel": "codeceptjs run-workers",
+    "test:parallel": "codeceptjs run-workers 4",
     "test:ci": "HEADLESS=true COVERAGE=true yarn run test:parallel",
     "test:ci:no-worker": "HEADLESS=true codeceptjs run",
     "coverage:istanbul": "node ./coverage-to-istanbul.js",

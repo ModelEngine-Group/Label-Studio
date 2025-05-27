@@ -189,16 +189,45 @@ const waitForImage = () => {
 const waitForAudio = async () => {
   const audios = document.querySelectorAll("audio");
 
+  console.log(`Found ${audios.length} audio elements to wait for`);
+
   await Promise.all(
-    [...audios].map((audio) => {
-      if (audio.readyState === 4) return Promise.resolve(true);
-      return new Promise((resolve) => {
-        audio.addEventListener("durationchange", () => {
-          resolve(true);
-        });
-      });
+    [...audios].map((audio, index) => {
+      console.log(`Audio ${index} readyState: ${audio.readyState}, src: ${audio.src}`);
+
+      if (audio.readyState === 4) {
+        console.log(`Audio ${index} already loaded`);
+        return Promise.resolve(true);
+      }
+
+      return Promise.race([
+        new Promise((resolve) => {
+          if (!isNaN(audio.duration)) {
+            resolve(true);
+          }
+          audio.addEventListener("durationchange", () => {
+            console.log(`Audio ${index} durationchange event fired`);
+            resolve(true);
+          });
+
+          // Also listen for canplaythrough as a backup
+          audio.addEventListener("canplaythrough", () => {
+            console.log(`Audio ${index} canplaythrough event fired`);
+            resolve(true);
+          });
+        }),
+        // Add a timeout to prevent hanging indefinitely
+        new Promise((resolve) =>
+          setTimeout(() => {
+            console.log(`Audio ${index} timeout reached, current readyState: ${audio.readyState}`);
+            resolve(true);
+          }, 5000),
+        ),
+      ]);
     }),
   );
+
+  console.log("All audio elements are ready or timed out");
 };
 
 /**
@@ -648,7 +677,7 @@ const getRegionAbsoultePosition = async (shapeId) => {
 };
 
 const switchRegionTreeView = (viewName) => {
-  Htx.annotationStore.selected.regionStore.setView(viewName);
+  Htx.annotationStore.selected.regionStore.setGrouping(viewName);
 };
 
 const serialize = () => window.Htx.annotationStore.selected.serializeAnnotation();
@@ -854,7 +883,7 @@ async function doDrawingAction(I, { msg, fromX, fromY, toX, toY }) {
     await page.mouse.move(toX, toY);
     await page.mouse.up();
   });
-  I.wait(1); // Ensure that the tool is fully finished being created.
+  I.waitTicks(3); // Ensure that the tool is fully finished being created.
 }
 
 // `mulberry32` (simple generator with a 32-bit state)
