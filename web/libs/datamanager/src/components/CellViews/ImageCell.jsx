@@ -19,11 +19,18 @@ export const ImageCell = (column) => {
 
   if (!imgSrc) return null;
 
+  const getImageSrc = (src) => {
+    if (data.some(key => src?.includes(key))) {
+      return `${src}&level=6&col=0&row=0`;
+    }
+    return src;
+  }
+
   return renderImagePreview ? (
     <img
       {...imgDefaultProps}
       key={imgSrc}
-      src={imgSrc}
+      src={getImageSrc(imgSrc)}
       alt="Data"
       style={{
         maxHeight: "100%",

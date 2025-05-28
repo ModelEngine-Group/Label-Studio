@@ -97,6 +97,18 @@ const content = document.querySelector("#main-content");
 
 render(<App content={content.innerHTML} />, root);
 
+setTimeout(() => {
+  const script = document.createElement('script');
+  script.src = '/static/js/openseadragon.js';
+  script.defer = true;
+  document.body.appendChild(script);
+  const script2 = document.createElement('script');
+  script2.src = '/static/js/jquery.min.js';
+  script2.defer = true;
+  document.body.appendChild(script2);
+
+}, 0)
+
 if (module?.hot) {
   module.hot.accept(); // Enable HMR for React components
 }

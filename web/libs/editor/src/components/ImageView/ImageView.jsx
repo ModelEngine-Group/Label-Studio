@@ -32,6 +32,7 @@ import {
 } from "../../utils/feature-flags";
 import { Pagination } from "../../common/Pagination/Pagination";
 import { Image } from "./Image";
+import { Dragon } from "./Dragron";
 
 Konva.showWarnings = false;
 
@@ -916,9 +917,21 @@ export default observer(
 
       const imageIsLoaded = item.imageIsLoaded || !isFF(FF_LSDV_4583_6);
       const isViewingAll = store.annotationStore.viewingAll;
-
+      const isDragon = (src) => {
+        if (!src) {
+          return true;
+        }
+        const data = ['.svs', '.csp','.sdpc', 'tiff', '.ndpi', '.scn', '.mrxs', '.bif','.svslide']
+        return !data.some(key => src?.includes(key));
+      }
       return (
-        <ObjectTag item={item} className={wrapperClasses.join(" ")}>
+        (!isDragon(item?.currentImageEntity?.src) ? <>
+              <>
+                <div id="img-mem-view" style={{width: '100%', height:'100%'}}></div>
+                <Dragon imageEntity={item.currentImageEntity}></Dragon>
+              </>
+            </> :
+            <ObjectTag item={item} className={wrapperClasses.join(" ")}>
           {paginationEnabled ? (
             <div
               className={styles.pagination}
@@ -1056,7 +1069,8 @@ export default observer(
             </div>
           )}
         </ObjectTag>
-      );
+      )
+        );
     }
   },
 );
