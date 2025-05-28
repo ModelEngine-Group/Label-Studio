@@ -30,11 +30,11 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 
 RQ_QUEUES = {}
 
-SENTRY_DSN = get_env('SENTRY_DSN', 'https://68b045ab408a4d32a910d339be8591a4@o227124.ingest.sentry.io/5820521')
+SENTRY_DSN = get_env('SENTRY_DSN', '')
 SENTRY_ENVIRONMENT = get_env('SENTRY_ENVIRONMENT', 'opensource')
 
 FRONTEND_SENTRY_DSN = get_env(
-    'FRONTEND_SENTRY_DSN', 'https://5f51920ff82a4675a495870244869c6b@o227124.ingest.sentry.io/5838868'
+    'FRONTEND_SENTRY_DSN', ''
 )
 FRONTEND_SENTRY_ENVIRONMENT = get_env('FRONTEND_SENTRY_ENVIRONMENT', 'opensource')
 
