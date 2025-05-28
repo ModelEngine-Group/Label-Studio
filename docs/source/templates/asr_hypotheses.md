@@ -19,6 +19,21 @@ When you work with automatic speech transcribers, you are provided with several 
 <View>
   <Audio name="audio" value="$audio"/>
   <Choices name="transcriptions" toName="audio" value="$transcriptions" selection="highlight"/>
+  <Style>
+    .lsf-choice__item {
+      padding: var(--spacing-tighter) var(--spacing-tight);
+      box-shadow: 0 2px 4px rgba(var(--color-neutral-shadow-raw) / calc(16% * var(--shadow-intensity))) ;
+      background-color: var(--color-neutral-background);
+      border-radius: var(--corner-radius-small);
+      margin: 0 var(--spacing-tighter) var(--spacing-tighter) var(--spacing-tighter);
+      line-height: 1.6rem;
+      transition: all 150ms ease-out;
+    }
+    
+    .lsf-choice__item:hover {
+      background-color: var(--color-primary-emphasis-subtle);
+    }
+  </Style>
 </View>
 ```
 
@@ -29,19 +44,14 @@ When you work with automatic speech transcribers, you are provided with several 
   "data": {
     "audio": "https://htx-pub.s3.amazonaws.com/datasets/audio/f2btrop6.0.wav",
     "transcriptions": [{
-      "style": "padding-left: 5px; box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px; background-color: #FFFFFF",
       "value": "potrostith points out that if school based clinics were established parental permission would be required for students to receive each service offered"
     }, {
-      "style": "padding-left: 5px; box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px; background-color: #F8F8F8",
       "value": "potrostith points out that if school-based clinics were established parental permission would be required for students to receive each service offered"
     }, {
-      "style": "padding-left: 5px; box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px; background-color: #F5F5F5",
       "value": "purporting points out that if school based clinics were established parental permission would be required for students to receive each service offered"
     }, {
-      "style": "padding-left: 5px; box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px; background-color: #F0F0F0",
       "value": "pork roasted points out that if school based clinics were establish parental permission would be required for students to receive each service offered"
     }, {
-      "style": "padding-left: 5px; box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px; background-color: #E8E8E8",
       "value": "purpose it points out that if school based clinics war establish parental permission would be required for students to receive each service offered"
     }]
   }
