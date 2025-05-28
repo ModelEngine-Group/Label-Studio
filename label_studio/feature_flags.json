@@ -3176,7 +3176,7 @@
     },
     "fflag_feat_root_16_support_parquet_cloud_storage": {
       "key": "fflag_feat_root_16_support_parquet_cloud_storage",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -3198,7 +3198,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 2,
+      "version": 3,
       "deleted": false
     },
     "fflag_feature_all_optic_1421_cold_start_v2": {
@@ -3901,6 +3901,33 @@
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
       "version": 6,
+      "deleted": false
+    },
+    "fflag_fix_front_fit_31_synced_media_buffering": {
+      "key": "fflag_fix_front_fit_31_synced_media_buffering",
+      "on": false,
+      "prerequisites": [],
+      "targets": [],
+      "contextTargets": [],
+      "rules": [],
+      "fallthrough": {
+        "variation": 0
+      },
+      "offVariation": 1,
+      "variations": [
+        true,
+        false
+      ],
+      "clientSideAvailability": {
+        "usingMobileKey": false,
+        "usingEnvironmentId": false
+      },
+      "clientSide": false,
+      "salt": "6b052332b2924b2e8958631884347ba4",
+      "trackEvents": false,
+      "trackEventsFallthrough": false,
+      "debugEventsUntilDate": null,
+      "version": 2,
       "deleted": false
     },
     "fflag_fix_front_leap_218_improve_performance_of_taxonomy_search_short": {
