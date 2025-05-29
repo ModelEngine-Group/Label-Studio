@@ -8,6 +8,7 @@ description = "Global allow list"
 stopwords = [
     '''keyEntities''',
     '''shiftKey''',
+    '''duplicated''',
 ]
 paths = [
     '''gitleaks\.toml''',

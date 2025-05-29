@@ -144,41 +144,43 @@ def restore_storage_links_for_duplicated_tasks(duplicates) -> None:
     total_restored_links = 0
     for data in list(duplicates):
         tasks = duplicates[data]
-        source = None
+
+        def _get_storagelink(task):
+            for link in classes:
+                if link_id := task.get(link):
+                    return classes[link], link_id
+            return None
 
         # find first task with existing StorageLink
+        tasks_without_storagelinks = []
+        tasks_with_storagelinks = []
         for task in tasks:
-            for link in classes:
-                if link in task and task[link] is not None:
-                    # we don't support case when there are many storage links in duplicated tasks
-                    if source is not None:
-                        source = None
-                        break
-                    source = (
-                        task,
-                        classes[link],
-                        task[link],
-                    )  # last arg is a storage link id
+            if _get_storagelink(task):
+                tasks_with_storagelinks.append(task)
+            else:
+                tasks_without_storagelinks.append(task)
 
         # add storage links to duplicates
-        if source:
-            storage_link_class = source[1]  # get link name
-            for task in tasks:
-                if task['id'] != source[0]['id']:
-                    # get already existing StorageLink
-                    link_instance = storage_link_class.objects.get(id=source[2])
+        if tasks_with_storagelinks:
+            # we don't support case when there are many storage links in duplicated tasks
+            storage_link_class, storage_link_id = _get_storagelink(tasks_with_storagelinks[0])
+            # get already existing StorageLink
+            link_instance = storage_link_class.objects.get(id=storage_link_id)
 
-                    # assign existing StorageLink to other duplicated tasks
-                    link = storage_link_class(
-                        task_id=task['id'],
-                        key=link_instance.key,
-                        row_index=link_instance.row_index,
-                        row_group=link_instance.row_group,
-                        storage=link_instance.storage,
-                    )
-                    link.save()
-                    total_restored_links += 1
-                    logger.info(f"Restored storage link for task {task['id']} from source task {source[0]['id']}")
+            for task in tasks_without_storagelinks:
+                # assign existing StorageLink to other duplicated tasks
+                link = storage_link_class(
+                    task_id=task['id'],
+                    key=link_instance.key,
+                    row_index=link_instance.row_index,
+                    row_group=link_instance.row_group,
+                    storage=link_instance.storage,
+                )
+                link.save()
+                total_restored_links += 1
+                logger.info(
+                    f"Restored storage link for task {task['id']} from source task {tasks_with_storagelinks[0]['id']}"
+                )
 
     logger.info(f'Restored {total_restored_links} storage links for duplicated tasks')
 
