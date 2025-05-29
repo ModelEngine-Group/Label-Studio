@@ -3225,7 +3225,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 2,
+      "version": 4,
       "deleted": false
     },
     "fflag_feature_all_optic_1541_performance_score_on_latest_review_short": {
