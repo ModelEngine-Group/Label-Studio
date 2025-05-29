@@ -45,6 +45,8 @@ class AllPermissions(BaseModel):
     model_provider_connection_view: str = 'model_provider_connection.view'
     model_provider_connection_change: str = 'model_provider_connection.change'
     model_provider_connection_delete: str = 'model_provider_connection.delete'
+    webhooks_view: str = 'webhooks.view'
+    webhooks_change: str = 'webhooks.change'
 
 
 all_permissions = AllPermissions()

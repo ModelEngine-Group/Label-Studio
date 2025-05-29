@@ -1,10 +1,12 @@
 import django_filters
+from core.permissions import ViewClassPermission, all_permissions
 from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from projects import models as project_models
 from rest_framework import generics
+from rest_framework.exceptions import NotFound
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -55,11 +57,18 @@ class WebhookListAPI(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_class = WebhookFilterSet
+    permission_required = ViewClassPermission(
+        GET=all_permissions.webhooks_view,
+        POST=all_permissions.webhooks_change,
+    )
 
     def get_queryset(self):
         return Webhook.objects.filter(organization=self.request.user.active_organization)
 
     def perform_create(self, serializer):
+        project = serializer.validated_data.get('project')
+        if project is None or project.organization_id != self.request.user.active_organization.id:
+            raise NotFound('Project not found.')
         serializer.save(organization=self.request.user.active_organization)
 
 
