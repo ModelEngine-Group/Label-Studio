@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Checkbox, Spinner } from "@humansignal/ui";
 
 /**
@@ -33,13 +33,19 @@ export const EmailPreferences = () => {
     [user?.id],
   );
 
+  const message = useMemo(() => {
+    return window.APP_SETTINGS?.whitelabel_is_active
+      ? "Subscribe for news and tips"
+      : "Subscribe to HumanSignal news and tips from Heidi";
+  }, []);
+
   return (
     <div id="email-preferences">
       {isLoading ? (
         <Spinner />
       ) : (
         <Checkbox checked={isAllowNewsLetter} onChange={toggleHandler}>
-          Subscribe to HumanSignal news and tips from Heidi
+          {message}
         </Checkbox>
       )}
     </div>
