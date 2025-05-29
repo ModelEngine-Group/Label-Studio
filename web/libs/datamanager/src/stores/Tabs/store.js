@@ -7,7 +7,7 @@ import { Tab } from "./tab";
 import { TabColumn } from "./tab_column";
 import { TabFilterType } from "./tab_filter_type";
 import { TabHiddenColumns } from "./tab_hidden_columns";
-import { serializeJsonForUrl, deserializeJsonFromUrl } from "@humansignal/core";
+import { serializeJsonForUrl, deserializeJsonFromUrl } from "../../utils/urlJSON";
 import { isEmpty } from "../../utils/helpers";
 
 const storeValue = (name, value) => {

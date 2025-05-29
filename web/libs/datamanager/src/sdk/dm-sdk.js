@@ -47,7 +47,7 @@ import { instruments } from "../components/DataManager/Toolbar/instruments";
 import { APIProxy } from "../utils/api-proxy";
 import { FF_LSDV_4620_3_ML, isFF } from "../utils/feature-flags";
 import { objectToMap } from "../utils/helpers";
-import { serializeJsonForUrl, deserializeJsonFromUrl } from "@humansignal/core";
+import { serializeJsonForUrl, deserializeJsonFromUrl } from "../utils/urlJSON";
 import { isDefined } from "../utils/utils";
 import { APIConfig } from "./api-config";
 import { createApp } from "./app-create";
