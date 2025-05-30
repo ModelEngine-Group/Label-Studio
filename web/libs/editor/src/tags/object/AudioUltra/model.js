@@ -172,8 +172,8 @@ export const AudioModel = types.compose(
         const labels = self.activeState?.selectedValues();
 
         // use label to generate a unique key to ensure that adding/deleting can trigger changes
-        return labels ? labels.join(',') : '';
-      }
+        return labels ? labels.join(",") : "";
+      },
     }))
     ////// Sync actions
     .actions((self) => ({
