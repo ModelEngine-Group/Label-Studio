@@ -168,6 +168,12 @@ export const AudioModel = types.compose(
 
         return state?.selectedValues()?.[0];
       },
+      get activeLabelKey() {
+        const labels = self.activeState?.selectedValues();
+
+        // use label to generate a unique key to ensure that adding/deleting can trigger changes
+        return labels ? labels.join(',') : '';
+      }
     }))
     ////// Sync actions
     .actions((self) => ({
@@ -270,7 +276,7 @@ export const AudioModel = types.compose(
         afterCreate() {
           dispose = observe(
             self,
-            "activeLabel",
+            "activeLabelKey",
             () => {
               const selectedRegions = self._ws?.regions?.selected;
 
