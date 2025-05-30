@@ -1395,7 +1395,6 @@ def bulk_update_stats_project_tasks(tasks, project=None):
 
     with transaction.atomic():
         use_overlap = project._can_use_overlap()
-        maximum_annotations = project.maximum_annotations
         # update filters if we can use overlap
         if use_overlap:
             # following definition of `completed_annotations` above, count cancelled annotations
@@ -1403,9 +1402,7 @@ def bulk_update_stats_project_tasks(tasks, project=None):
             completed_annotations_f_expr = F('total_annotations')
             if project.skip_queue == project.SkipQueue.IGNORE_SKIPPED:
                 completed_annotations_f_expr += F('cancelled_annotations')
-            finished_q = Q(GreaterThanOrEqual(completed_annotations_f_expr, maximum_annotations)) | Q(
-                GreaterThanOrEqual(completed_annotations_f_expr, 1), overlap=1
-            )
+            finished_q = Q(GreaterThanOrEqual(completed_annotations_f_expr, F('overlap')))
             finished_tasks = tasks.filter(finished_q)
             finished_tasks_ids = finished_tasks.values_list('id', flat=True)
             tasks.update(is_labeled=Q(id__in=finished_tasks_ids))

@@ -192,7 +192,7 @@ stages:
 
 ---
 
-test_name: test_overlap_change_to_1
+test_name: test_overlap_change_to_1_and_adjust_cohort_percentage
 
 strict: False
 
@@ -243,16 +243,12 @@ stages:
       url: '{django_live_url}/api/projects/{project_pk}/import?return_task_ids=true&preannotated_from_fields=bbox'
     response:
       status_code: 201
-      save:
-        json:
-          first_task: "task_ids[0]"
-          second_task: "task_ids[1]"
-  - name: update_project_to_1
+  - name: update_project_to_1_and_adjust_cohort_percentage
     request:
       url: "{django_live_url}/api/projects/{project_pk}"
       json:
         maximum_annotations: 1
-        overlap_cohort_percentage: 0
+        overlap_cohort_percentage: 40
       method: PATCH
       headers:
         content-type: application/json

@@ -418,8 +418,10 @@ class Project(ProjectMixin, models.Model):
             f'{self.maximum_annotations} and percentage {self.overlap_cohort_percentage}'
         )
         # if only maximum annotations parameter is tweaked
-        if maximum_annotations_changed and (not overlap_cohort_percentage_changed or self.maximum_annotations == 1):
-            tasks_with_overlap = self.tasks.filter(overlap__gt=1)
+        if maximum_annotations_changed and not overlap_cohort_percentage_changed:
+            # if there are tasks with overlap > 1 and maximum annotations has not been set to 1, preserve the cohort.
+            # but if maximum_annotations is set to 1, then all tasks should be affected (since there is no longer a distinct cohort)
+            tasks_with_overlap = self.tasks.filter(overlap__gt=1) if self.maximum_annotations > 1 else self.tasks.all()
             if tasks_with_overlap.exists():
                 # if there is a part with overlapped tasks, affect only them
                 tasks_with_overlap.update(overlap=self.maximum_annotations)
@@ -433,8 +435,17 @@ class Project(ProjectMixin, models.Model):
             bulk_update_stats_project_tasks(tasks_with_overlap, project=self)
 
         # if cohort slider is tweaked
-        elif overlap_cohort_percentage_changed and self.maximum_annotations > 1:
-            self._rearrange_overlap_cohort()
+        elif overlap_cohort_percentage_changed:
+            if self.maximum_annotations == 1:
+                if maximum_annotations_changed:
+                    self.tasks.update(overlap=1)
+                    bulk_update_stats_project_tasks(self.tasks.all(), project=self)
+                else:
+                    logger.info(
+                        f'Project {str(self)}: cohort percentage was changed but maximum annotations was not and is 1; taking no action'
+                    )
+            else:
+                self._rearrange_overlap_cohort()
 
         # if adding/deleting tasks and cohort settings are applied
         elif tasks_number_changed and self.overlap_cohort_percentage < 100 and self.maximum_annotations > 1:
