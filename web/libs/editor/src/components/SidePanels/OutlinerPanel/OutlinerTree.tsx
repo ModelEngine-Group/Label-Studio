@@ -154,6 +154,9 @@ const OutlinerInnerTreeComponent: FC<OutlinerInnerTreeProps> = observer(({ regio
       },
     ): void => {
       const region = regionsTree.find((region: any) => region.key === node.key);
+
+      if (!region) return;
+
       // pos is equal to label name
       const pos = region.pos;
 
@@ -196,7 +199,7 @@ const OutlinerInnerTreeComponent: FC<OutlinerInnerTreeProps> = observer(({ regio
 
 const useDataTree = ({ regions, rootClass, footer }: any) => {
   const processor = useCallback((item: any, idx, _false, _null, _onClick) => {
-    const { id, type, hidden, isDrawing } = item ?? {};
+    const { id, type, hidden, isDrawing, locked } = item ?? {};
     const style = item?.background ?? item?.getOneColor?.();
     const color = chroma(style ?? "#666").alpha(1);
     const mods: Record<string, any> = { hidden, type, isDrawing };
@@ -218,7 +221,7 @@ const useDataTree = ({ regions, rootClass, footer }: any) => {
       },
       className: rootClass.elem("node").mod(mods).toClassName(),
       title: (data: any) => <RootTitle {...data} />,
-      locked: item.locked,
+      locked,
     };
   }, []);
 

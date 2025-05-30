@@ -60,6 +60,11 @@ export class CommentsSdk {
 
     const res = await this.dm.apiCall("listComments", listParams);
 
+    // Ensure request is went through and res is an array
+    if (!res?.length) {
+      return [];
+    }
+
     const commentUsers = [];
     const comments = res.map((comment) => {
       commentUsers.push(comment.created_by);
