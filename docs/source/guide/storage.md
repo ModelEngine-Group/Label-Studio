@@ -382,9 +382,9 @@ After you [configure access to your S3 bucket](#Configure-access-to-your-S3-buck
     - In the **Session Token** field, specify a session token of the temporary security credentials for an AWS account with access to your S3 bucket.
     - (Optional) Enable **Treat every bucket object as a source file** if your bucket contains BLOB storage files such as JPG, MP3, or similar file types. This setting creates a URL for each bucket object to use for labeling. Leave this option disabled if you have multiple JSON files in the bucket with one task per JSON file.
     - (Optional) Enable **Recursive scan** to perform recursive scans over the bucket contents if you have nested folders in your S3 bucket.
-    - Choose whether to disable **Use pre-signed URLs**. 
-        - All s3://... links will be resolved on the fly and converted to https URLs, if this option is on. 
-        - All s3://... objects will be preloaded into Label Studio tasks as base64 codes, if this option is off. It's not recommended way, because Label Studio task payload will be huge and UI will slow down. Also it requires GET permissions from your storage. 
+    - Choose whether to disable [**Use pre-signed URLs**](#Pre-signed-URLs-vs-storage-proxies). 
+        - **ON** - Label Studio generates a pre-signed URL to load media. 
+        - **OFF** - Label Studio proxies media using its own backend.  
     - Adjust the counter for how many minutes the pre-signed URLs are valid.
 8. Click **Add Storage**.
 
@@ -547,7 +547,9 @@ In the Label Studio UI, do the following to set up the connection:
     - In the **External ID** field, specify the external ID that identifies Label Studio to your AWS account. You can find the external ID on your **Organization** page.
     - Enable **Treat every bucket object as a source file** if your bucket contains BLOB storage files such as JPG, MP3, or similar file types. This setting creates a URL for each bucket object to use for labeling. Leave this option disabled if you have multiple JSON files in the bucket with one task per JSON file.
     - Enable **Recursive scan** to perform recursive scans over the bucket contents if you have nested folders in your S3 bucket.
-    - Choose whether to disable **Use pre-signed URLs**. If your tasks contain s3://... links, they must be pre-signed in order to be displayed in the browser.
+    - Choose whether to disable [**Use pre-signed URLs**](#Pre-signed-URLs-vs-storage-proxies). 
+      - **ON** - Label Studio generates a pre-signed URL to load media. 
+      - **OFF** - Label Studio proxies media using its own backend.  
     - Adjust the counter for how many minutes the pre-signed URLs are valid.
 8. Click **Add Storage**.
 
@@ -686,7 +688,9 @@ In the Label Studio UI, do the following to set up the connection:
 7. Adjust the remaining optional parameters:
     - In the **File Filter Regex** field, specify a regular expression to filter bucket objects. Use `.*` to collect all objects.
     - Enable **Treat every bucket object as a source file** if your bucket contains BLOB storage files such as JPG, MP3, or similar file types. This setting creates a URL for each bucket object to use for labeling, such as `gs://my-gcs-bucket/image.jpg`. Leave this option disabled if you have multiple JSON files in the bucket with one task per JSON file.
-    - Choose whether to disable **Use pre-signed URLs**. If your tasks contain gs://... links, they must be pre-signed in order to be displayed in the browser.
+    - Choose whether to disable [**Use pre-signed URLs**](#Pre-signed-URLs-vs-storage-proxies).
+      - **ON** - Label Studio generates a pre-signed URL to load media. 
+      - **OFF** - Label Studio proxies media using its own backend.  
     - Adjust the counter for how many minutes the pre-signed URLs are valid.
 8. In the **Google Application Credentials** field, add a JSON file with the GCS credentials you created to manage authentication for your bucket. 
 
@@ -951,7 +955,7 @@ Before you begin, ensure you are in the correct project:
 4. Under **Add a provider pool**, complete the following fields:
 
     * **Select a provider**: Select AWS. This is the location where the Label Studio components responsible for issuing requests are stored. 
-    * **Provider name**: Enter `Label Studio Production` or another display name. 
+    * **Provider name**: Enter `Label Studio App Production` (you can use a different display name, but you need to ensure that the corresponding provider ID is still `label-studio-app-production`)
     * **Provider ID**: Enter `label-studio-app-production`.
     * **AWS Account ID**: Enter `490065312183`.
 
@@ -964,7 +968,7 @@ Before you begin, ensure you are in the correct project:
     * Click **Edit mapping** and then add the following: 
 
         - `google.subject = assertion.arn`
-        - `attribute.aws_role = assertion.arn`
+        - `attribute.aws_role = assertion.arn.contains('assumed-role') ? assertion.arn.extract('{account_arn}assumed-role/') + 'assumed-role/' + assertion.arn.extract('assumed-role/{role_name}/') : assertion.arn` (this might be filled in by default)
         - `attribute.aws_account = assertion.account`
         - `attribute.external_id = assertion.external_id`
 
@@ -972,7 +976,7 @@ Before you begin, ensure you are in the correct project:
 
 7. Go to **IAM & Admin > Service Accounts** and find the service account you want to allow AWS (Label Studio) to impersonate. See [Service account permissions](#Service-account-permissions) above. 
 
-8. From the **Permissions** tab, click **Grant Access**. 
+8. From the **Principals with access** tab, click **Grant Access**. 
 
     ![Screenshot of grant access button](/images/storages/gcs-grant-access.png)
 
@@ -994,10 +998,10 @@ Before you begin, ensure you are in the correct project:
 Before setting up your connection in Label Studio, note the following (you will be asked to provide them)
 
 * Your pool ID - available from **IAM & Admin > Workload Identity Pools** 
-* Your provider ID - available from **IAM & Admin > Workload Identity Pools** 
+* Your provider ID - available from **IAM & Admin > Workload Identity Pools** (this should be `label-studio-app-production`)
 * Your service account email - available from **IAM & Admin > Service Accounts**. Select the service account and the email is listed under **Details**.  
-* Your Google project number - available from **IAM & Admin > Settings**. 
-* Your Google project ID - available from **IAM & Admin > Settings**. 
+* Your Google project number - available from **IAM & Admin > Settings**
+* Your Google project ID - available from **IAM & Admin > Settings**
 
 </details>
 
@@ -1013,9 +1017,9 @@ Select the **GCS (WIF auth)** storage type and then complete the following field
 | ------------------------------------------ | ------------------------------------------------- |
 | Bucket Name                                | Enter the name of the Google Cloud bucket. |
 | Bucket Prefix                              | Optionally, enter the folder name within the bucket that you would like to use.  For example, `data-set-1` or `data-set-1/subfolder-2`.  |
-| File Name Filter                           | Specify a regular expression to filter bucket objects. Use `.*` to collect all objects. |
-| Treat every bucket object as a source file | Enable this option if your bucket contains BLOB storage files such as JPG, MP3, or similar file types. This setting creates a URL for each bucket object to use for labeling, such as `gs://my-gcs-bucket/image.jpg`. Leave this option disabled if you have multiple JSON files in the bucket with one task per JSON file. |
-| Use pre-signed URLs                        | If your tasks contain `gs://…` links, they must be pre-signed in order to be displayed in the browser. |
+| File Name Filter                           | Optionally, specify a regular expression to filter bucket objects. |
+| [Treat every bucket object as a source file](#Treat-every-bucket-object-as-a-source-file) | Enable this option if your bucket contains BLOB storage files such as JPG, MP3, or similar file types. This setting creates a URL for each bucket object to use for labeling, such as `gs://my-gcs-bucket/image.jpg`. Leave this option disabled if you have are specifying your tasks in JSON files. |
+| [Use pre-signed URLs](#Pre-signed-URLs-vs-storage-proxies)                        | **ON** - Label Studio generates a pre-signed URL to load media. <br /> **OFF** - Label Studio proxies media using its own backend. |
 | Pre-signed URL counter                     | Adjust the counter for how many minutes the pre-signed URLs are valid. |
 | Workload Identity Pool ID                  | This is the ID you specified when creating the Work Identity Pool. You can find this in Google Cloud Console under **IAM & Admin > Workload Identity Pools**. |
 | Workload Identity Provider ID              | This is the ID you specified when setting up the provider. You can find this in Google Cloud Console under **IAM & Admin > Workload Identity Pools**. |
@@ -1140,7 +1144,9 @@ In the Label Studio UI, do the following to set up the connection:
     - In the **Account Name** field, specify the account name for the Azure storage. You can also set this field as an environment variable,`AZURE_BLOB_ACCOUNT_NAME`.
     - In the **Account Key** field, specify the secret key to access the storage account. You can also set this field as an environment variable,`AZURE_BLOB_ACCOUNT_KEY`.
     - Enable **Treat every bucket object as a source file** if your bucket contains BLOB storage files such as JPG, MP3, or similar file types. This setting creates a URL for each bucket object to use for labeling, for example `azure-blob://container-name/image.jpg`. Leave this option disabled if you have multiple JSON files in the bucket with one task per JSON file. 
-    - Choose whether to disable **Use pre-signed URLs**, or [shared access signatures](https://docs.microsoft.com/en-us/rest/api/storageservices/delegate-access-with-shared-access-signature). If your tasks contain azure-blob://... links, they must be pre-signed in order to be displayed in the browser.    
+    - Choose whether to disable [**Use pre-signed URLs**](#Pre-signed-URLs-vs-storage-proxies), or [shared access signatures](https://docs.microsoft.com/en-us/rest/api/storageservices/delegate-access-with-shared-access-signature). 
+      - **ON** - Label Studio generates a pre-signed URL to load media. 
+      - **OFF** - Label Studio proxies media using its own backend.    
     - Adjust the counter for how many minutes the shared access signatures are valid.
 8. Click **Add Storage**.
 9. Repeat these steps for **Target Storage** to sync completed data annotations to a container.
