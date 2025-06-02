@@ -3068,7 +3068,7 @@
     },
     "fflag_feat_optic_2125_timeseries_sync": {
       "key": "fflag_feat_optic_2125_timeseries_sync",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
