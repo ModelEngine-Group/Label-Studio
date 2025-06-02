@@ -43,7 +43,8 @@ export type SelectProps<T, A extends SelectOption<T>[]> = {
   skip?: boolean;
   labelProps?: any;
   placeholder?: ReactNode;
-  className?: string;
+  triggerClassName?: string;
+  contentClassName?: string;
   ghost?: boolean;
   width?: string;
   icon?: any;

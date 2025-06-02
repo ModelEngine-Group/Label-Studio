@@ -54,7 +54,7 @@ export const FilterDropdown = observer(
         size="small"
         options={options}
         searchable={true}
-        className="whitespace-nowrap"
+        triggerClassName="whitespace-nowrap"
         searchFilter={searchFilter}
       />
     );

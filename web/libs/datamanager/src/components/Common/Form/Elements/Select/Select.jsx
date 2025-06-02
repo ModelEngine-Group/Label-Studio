@@ -42,7 +42,7 @@ const Select = ({
               setValue(val);
               props.onChange?.(val);
             }}
-            className={rootClass.elem("list").toString()}
+            triggerClassName={rootClass.elem("list").toString()}
             options={options?.toJSON ? options.toJSON() : options}
             size={size}
           />

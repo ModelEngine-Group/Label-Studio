@@ -192,7 +192,7 @@ const RegionProperty: FC<RegionPropertyProps> = ({ property, label, region }) =>
         <Select
           value={value}
           onChange={(val) => onChangeHandler(val)}
-          className={block?.elem("select").toClassName()}
+          triggerClassName={block?.elem("select").toClassName()}
           options={options}
         />
       ) : null}

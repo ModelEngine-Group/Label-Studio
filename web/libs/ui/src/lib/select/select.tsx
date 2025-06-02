@@ -15,6 +15,7 @@ import { isDefined } from "@humansignal/core/lib/utils/helpers";
 import { IconChevron, IconChevronDown } from "@humansignal/icons";
 import clsx from "clsx";
 import styles from "./select.module.scss";
+import { cnm } from "../../utils/utils";
 
 /*
  * This file defines a custom Select component for the Design System, which uses a fully custom UI for
@@ -68,7 +69,8 @@ export const Select = forwardRef(
       isInline = false,
       isLoading = false,
       triggerProps,
-      className,
+      triggerClassName,
+      contentClassName,
       size,
       searchFilter,
       onSearch,
@@ -224,7 +226,7 @@ export const Select = forwardRef(
           <button
             variant="outline"
             aria-expanded={isOpen}
-            className={clsx(className ?? "", styles.selectTrigger, {
+            className={cnm(triggerClassName ?? "", styles.selectTrigger, {
               [styles.isInline]: isInline,
               [styles.isOpen]: isOpen,
               [styles.isDisabled]: disabled,
@@ -255,7 +257,7 @@ export const Select = forwardRef(
             )}
           </button>
         </PopoverTrigger>
-        <PopoverContent align="start" data-testid="select-popup">
+        <PopoverContent align="start" data-testid="select-popup" className={contentClassName}>
           {isLoading ? (
             <span className={styles.selectLoading} tabIndex={-1}>
               Loading...
@@ -463,7 +465,7 @@ const Option = ({
         data-disabled={disabled}
       >
         {multiple && <Checkbox tabIndex={-1} checked={isOptionSelected} indeterminate={isIndeterminate} readOnly />}
-        <div data-testid="select-option-label" className="w-full truncate">
+        <div data-testid="select-option-label" className="w-full">
           {label}
         </div>
       </div>
