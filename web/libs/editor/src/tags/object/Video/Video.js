@@ -8,6 +8,7 @@ import { SyncableMixin } from "../../../mixins/Syncable";
 import { parseValue } from "../../../utils/data";
 import { FF_VIDEO_FRAME_SEEK_PRECISION, isFF } from "../../../utils/feature-flags";
 import ObjectBase from "../Base";
+import { isDefined } from "../../../utils/utilities";
 
 /**
  * Video tag plays a simple video file. Use for video annotation tasks such as classification and transcription.
@@ -201,8 +202,10 @@ const Model = types
       video.currentTime = data.time;
     },
 
-    handleSyncSpeed({ speed }) {
-      self.speed = speed;
+    handleSyncSpeed(data) {
+      if (isDefined(data.speed)) {
+        self.speed = data.speed;
+      }
     },
 
     handleSeek() {

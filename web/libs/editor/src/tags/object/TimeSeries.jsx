@@ -1,7 +1,7 @@
 import React from "react";
 import * as d3 from "d3";
 import { inject, observer } from "mobx-react";
-import { getEnv, getRoot, getType, isAlive, types } from "mobx-state-tree";
+import { getEnv, getRoot, getType, types, isAlive } from "mobx-state-tree";
 import throttle from "lodash.throttle";
 import { Spin } from "antd";
 
@@ -21,10 +21,12 @@ import {
 } from "./TimeSeries/helpers";
 import { AnnotationMixin } from "../../mixins/AnnotationMixin";
 import PersistentStateMixin from "../../mixins/PersistentState";
+import { SyncableMixin } from "../../mixins/Syncable";
 import { parseCSV, parseValue, tryToParseJSON } from "../../utils/data";
 import { fixMobxObserve } from "../../utils/utilities";
 
 import "./TimeSeries/Channel";
+import { FF_TIMESERIES_SYNC, isFF } from "../../utils/feature-flags";
 
 /**
  * The `TimeSeries` tag can be used to label time series data. Read more about Time Series Labeling on [the time series template page](../templates/time_series.html).
@@ -85,10 +87,11 @@ const TagAttrs = types.model({
   multiaxis: types.optional(types.boolean, false), // show channels in the same view
   // visibilitycontrols: types.optional(types.boolean, false), // show channel visibility controls
   hotkey: types.maybeNull(types.string),
+  sync: types.maybeNull(types.string),
 });
 
 const Model = types
-  .model("TimeSeriesModel", {
+  .model("TimeSeriesBaseModel", {
     type: "timeseries",
     children: Types.unionArray(["channel", "timeseriesoverview", "view", "hypertext"]),
 
@@ -105,12 +108,25 @@ const Model = types
     zoomedRange: 0,
     scale: 1,
     headers: [],
+    canvasWidth: 0,
+    seekTo: null,
+    isPlaying: false,
+    playStartTime: null,
+    playStartPosition: null,
+    animationFrameId: null,
+    playbackSpeed: 1,
   }))
   .views((self) => ({
     get regionsTimeRanges() {
+      if (!isAlive(self)) return [];
       return self.regs.map((r) => {
         return [r.start, r.end];
       });
+    },
+
+    get centerTime() {
+      if (!self.brushRange || self.brushRange.length !== 2) return null;
+      return (self.brushRange[0] + self.brushRange[1]) / 2;
     },
 
     get defaultOverviewWidth() {
@@ -338,8 +354,16 @@ const Model = types
       self.scale = scale;
     },
 
+    updateCanvasWidth(width) {
+      self.canvasWidth = width;
+    },
+
     updateView() {
       self._needsUpdate = self._needsUpdate + 1;
+    },
+
+    resetSeekTo() {
+      self.seekTo = null;
     },
 
     scrollToRegion(r) {
@@ -381,6 +405,7 @@ const Model = types
       self.setZoomedRange(tr[1] - tr[0]);
       self.setScale(scale);
       self.updateView();
+      self.emitSeekSync(); // Emit sync when view range changes
     },
 
     throttledRangeUpdate() {
@@ -494,9 +519,6 @@ const Model = types
           }
           [data, headers] = parseCSV(text, separator);
         }
-        // @todo this actions might be called for detached instance with DEV-3391 FF
-        // @todo at least it should be rewritten to use MST `flow()`
-        if (!isAlive(self)) return;
         self.setData(data);
         self.setColumnNames(headers);
         self.updateValue(store);
@@ -531,6 +553,8 @@ const Model = types
         store.annotationStore.addErrors([errorBuilder.generalError(message)]);
         return;
       }
+      // if current view already restored by PersistentState
+      if (self.brushRange?.length) return;
 
       const percentToLength = (percent) => times[Math.round((times.length - 1) * percent)];
       const boundaries = self.defaultOverviewWidth.map(percentToLength);
@@ -539,6 +563,282 @@ const Model = types
     },
 
     onHotKey() {},
+
+    _handleSeek(data) {
+      if (!isAlive(self)) {
+        console.warn("TimeSeries (seek): model instance is not alive. Skipping operation.");
+        return;
+      }
+      if (typeof data.time !== "number" || isNaN(data.time)) {
+        // console.error("TimeSeries _handleSeek: Invalid data.time received.", data.time);
+        return;
+      }
+
+      const [minKey] = self.keysRange; // Native unit
+      if (minKey === undefined) {
+        // console.warn("TimeSeries _handleSeek: minKey is undefined.");
+        return;
+      }
+
+      // Convert received relative seconds to native units for view update
+      let targetNativeForSeek;
+      if (self.isDate) {
+        targetNativeForSeek = minKey + data.time * 1000;
+      } else {
+        targetNativeForSeek = minKey + data.time;
+      }
+
+      // If we're currently playing, we need to restart the playback loop with the new time
+      if (self.isPlaying) {
+        // Cancel the current animation frame
+        if (self.animationFrameId) {
+          cancelAnimationFrame(self.animationFrameId);
+          self.animationFrameId = null;
+        }
+        // Update the play start position to the new time
+        self.playStartPosition = data.time;
+        self.playStartTime = performance.now();
+        // Restart the playback loop
+        self.playbackLoop();
+      }
+
+      self._updateViewForTime(targetNativeForSeek); // _updateViewForTime expects native units
+    },
+
+    _handlePlay(data) {
+      // data.time is received in relative seconds
+      if (!isAlive(self)) {
+        console.warn("TimeSeries (play): model instance is not alive. Skipping operation.");
+        return;
+      }
+      if (typeof data.time !== "number" || isNaN(data.time)) {
+        // console.error("TimeSeries _handlePlay: Invalid data.time received.", data.time);
+        return;
+      }
+      self.isPlaying = true;
+      self.playStartTime = performance.now();
+      self.playStartPosition = data.time; // Store relative seconds as the starting point for playback progression
+      self.playbackSpeed = data.speed || 1;
+
+      if (self.animationFrameId) {
+        cancelAnimationFrame(self.animationFrameId);
+      }
+      self.playbackLoop();
+    },
+
+    _handlePause(data) {
+      // data.time is received in relative seconds
+      if (!isAlive(self)) {
+        console.warn("TimeSeries (pause): model instance is not alive. Skipping operation.");
+        return;
+      }
+      self.isPlaying = false;
+      self.playStartTime = null;
+      self.playStartPosition = null;
+
+      if (self.animationFrameId) {
+        cancelAnimationFrame(self.animationFrameId);
+        self.animationFrameId = null;
+      }
+
+      const [minKey] = self.keysRange; // Native unit
+      if (minKey === undefined || data.time === undefined) {
+        // console.warn("TimeSeries _handlePause: Essential data missing.");
+        return;
+      }
+
+      // Convert received relative seconds to native units for view update
+      let targetNativeForPause;
+      if (self.isDate) {
+        targetNativeForPause = minKey + data.time * 1000;
+      } else {
+        targetNativeForPause = minKey + data.time;
+      }
+      self._updateViewForTime(targetNativeForPause); // _updateViewForTime expects native units
+    },
+
+    playbackLoop() {
+      if (!isAlive(self)) return;
+      if (!self.isPlaying || self.playStartTime === null || self.playStartPosition === null) {
+        self.animationFrameId = null;
+        return;
+      }
+
+      const currentTime = performance.now();
+      const elapsedSeconds = (currentTime - self.playStartTime) / 1000;
+      // playStartPosition is in relative seconds, so newTimeRelativeSeconds is also relative to data start
+      const newTimeRelativeSeconds = self.playStartPosition + elapsedSeconds * self.playbackSpeed;
+
+      const [minKey, maxKey] = self.keysRange; // Native units
+      if (minKey === undefined || maxKey === undefined) {
+        // console.warn("TimeSeries playbackLoop: keysRange not available. Halting playback.");
+        self.isPlaying = false;
+        return;
+      }
+
+      // Convert the calculated relative time to native units for boundary checks and view update
+      let targetNativeForUpdate;
+      if (self.isDate) {
+        targetNativeForUpdate = minKey + newTimeRelativeSeconds * 1000;
+      } else {
+        targetNativeForUpdate = minKey + newTimeRelativeSeconds;
+      }
+
+      // Boundary checks using native units
+      if (targetNativeForUpdate >= maxKey) {
+        self.isPlaying = false;
+        self.playStartTime = null;
+        self.playStartPosition = null;
+        if (self.animationFrameId) {
+          cancelAnimationFrame(self.animationFrameId);
+          self.animationFrameId = null;
+        }
+        self._updateViewForTime(maxKey); // Update to boundary in native units
+        return;
+      }
+
+      if (targetNativeForUpdate <= minKey) {
+        self.isPlaying = false;
+        self.playStartTime = null;
+        self.playStartPosition = null;
+        if (self.animationFrameId) {
+          cancelAnimationFrame(self.animationFrameId);
+          self.animationFrameId = null;
+        }
+        self._updateViewForTime(minKey); // Update to boundary in native units
+        return;
+      }
+
+      self._updateViewForTime(targetNativeForUpdate); // Update view with native units
+      self.animationFrameId = requestAnimationFrame(self.playbackLoop);
+    },
+
+    // _updateViewForTime expects its `time` argument to be in the NATIVE units of keysRange
+    _updateViewForTime(time) {
+      if (!isAlive(self)) return;
+      if (time === null || !Number.isFinite(time)) {
+        // console.warn("TimeSeries _updateViewForTime: Received null or non-finite time.");
+        return;
+      }
+
+      const [minKey, maxKey] = self.keysRange; // Native units
+      if (minKey === undefined || maxKey === undefined || self.canvasWidth <= 0) return;
+
+      const boundedTime = Math.max(minKey, Math.min(maxKey, time)); // time is native
+      const timeRangeDurationNative = maxKey - minKey;
+
+      if (timeRangeDurationNative <= 0) return;
+
+      const centerPx = ((boundedTime - minKey) / timeRangeDurationNative) * self.canvasWidth;
+      let currentBrushWidthNative = self.brushRange[1] - self.brushRange[0]; // native units
+
+      if (currentBrushWidthNative <= 0) {
+        currentBrushWidthNative = timeRangeDurationNative * 0.1;
+        if (currentBrushWidthNative <= 0) return;
+      }
+
+      const currentPixelWidth = (currentBrushWidthNative / timeRangeDurationNative) * self.canvasWidth;
+      if (currentPixelWidth <= 0) return;
+
+      let newPixelStart = centerPx - currentPixelWidth / 2;
+      let newPixelEnd = centerPx + currentPixelWidth / 2;
+
+      if (newPixelStart < 0) {
+        const widthPx = newPixelEnd - newPixelStart;
+        newPixelStart = 0;
+        newPixelEnd = Math.min(widthPx, self.canvasWidth);
+      }
+      if (newPixelEnd > self.canvasWidth) {
+        const widthPx = newPixelEnd - newPixelStart;
+        newPixelEnd = self.canvasWidth;
+        newPixelStart = Math.max(0, self.canvasWidth - widthPx);
+      }
+      newPixelStart = Math.max(0, newPixelStart);
+      newPixelEnd = Math.min(self.canvasWidth, newPixelEnd);
+
+      if (newPixelStart >= newPixelEnd) {
+        const defaultPixelWidth = Math.max(10, self.canvasWidth * 0.1);
+        newPixelStart = centerPx - defaultPixelWidth / 2;
+        newPixelEnd = centerPx + defaultPixelWidth / 2;
+        if (newPixelStart < 0) {
+          newPixelEnd -= newPixelStart;
+          newPixelStart = 0;
+        }
+        if (newPixelEnd > self.canvasWidth) {
+          newPixelStart -= newPixelEnd - self.canvasWidth;
+          newPixelEnd = self.canvasWidth;
+        }
+        newPixelStart = Math.max(0, newPixelStart);
+        newPixelEnd = Math.min(self.canvasWidth, newPixelEnd);
+        if (newPixelStart >= newPixelEnd) return;
+      }
+
+      let newTimeStartNative = minKey + (newPixelStart / self.canvasWidth) * timeRangeDurationNative;
+      let newTimeEndNative = minKey + (newPixelEnd / self.canvasWidth) * timeRangeDurationNative;
+
+      if (
+        !Number.isFinite(newTimeStartNative) ||
+        !Number.isFinite(newTimeEndNative) ||
+        newTimeStartNative >= newTimeEndNative
+      ) {
+        newTimeStartNative = boundedTime - currentBrushWidthNative / 2;
+        newTimeEndNative = boundedTime + currentBrushWidthNative / 2;
+        if (newTimeStartNative < minKey) {
+          newTimeEndNative -= newTimeStartNative - minKey;
+          newTimeStartNative = minKey;
+        }
+        if (newTimeEndNative > maxKey) {
+          newTimeStartNative -= newTimeEndNative - maxKey;
+          newTimeEndNative = maxKey;
+        }
+        newTimeStartNative = Math.max(minKey, newTimeStartNative);
+        newTimeEndNative = Math.min(maxKey, newTimeEndNative);
+        if (
+          !Number.isFinite(newTimeStartNative) ||
+          !Number.isFinite(newTimeEndNative) ||
+          newTimeStartNative >= newTimeEndNative
+        )
+          return;
+      }
+
+      if (Number.isFinite(newTimeStartNative) && Number.isFinite(newTimeEndNative)) {
+        self.updateTR([newTimeStartNative, newTimeEndNative], self.scale); // updateTR expects native units
+        self.seekTo = boundedTime; // seekTo stores native units
+      }
+    },
+
+    registerSyncHandlers() {
+      if (!isAlive(self)) return;
+      if (isFF(FF_TIMESERIES_SYNC)) {
+        self.syncHandlers.set("seek", self._handleSeek);
+        self.syncHandlers.set("play", self._handlePlay);
+        self.syncHandlers.set("pause", self._handlePause);
+      }
+    },
+
+    emitSeekSync() {
+      if (!isAlive(self)) return;
+      if (!isFF(FF_TIMESERIES_SYNC)) return;
+
+      const centerTime = self.centerTime; // centerTime is in NATIVE units (ms if isDate, else seconds/indices)
+      if (centerTime !== null && self.sync && !self.isPlaying) {
+        const [minKey] = self.keysRange; // Native unit
+        if (minKey === undefined) {
+          // console.warn("TimeSeries emitSeekSync: minKey is undefined.");
+          return;
+        }
+        // Convert native centerTime to relative seconds for the sync message
+        let relativeTime;
+        if (self.isDate) {
+          // If native is ms, convert to relative seconds by subtracting minKey and dividing by 1000.
+          relativeTime = (centerTime - minKey) / 1000;
+        } else {
+          // If native is already seconds/indices, relative time is just offset from minKey.
+          relativeTime = centerTime - minKey;
+        }
+        self.syncSend({ time: relativeTime }, "seek");
+      }
+    },
   }));
 
 function useWidth() {
@@ -803,6 +1103,24 @@ const Overview = observer(({ item, data, series }) => {
     node && drawRegions(regions);
   });
 
+  // Add useEffect to listen for seekTo changes
+  React.useEffect(() => {
+    if (item.seekTo !== null && gb.current && isAlive(item)) {
+      const seekTimeNative = item.seekTo;
+      const [minKey, maxKey] = item.keysRange;
+      const timeRangeDurationNative = maxKey - minKey;
+      const centerPx = ((seekTimeNative - minKey) / timeRangeDurationNative) * width;
+      const range = item.brushRange.map(x);
+      const half = (range[1] - range[0]) / 2;
+      let moved = [centerPx - half, centerPx + half];
+
+      if (moved[0] < 0) moved = [0, half * 2];
+      if (moved[1] > width) moved = [width - half * 2, width];
+      gb.current.call(brush.move, moved);
+      item.resetSeekTo(); // Use the action instead of direct modification
+    }
+  }, [item.seekTo, width]);
+
   item.regs.map((r) => fixMobxObserve(r.start, r.end, r.selected, r.hidden, r.style?.fillcolor));
 
   return <div className="htx-timeseries-overview" ref={ref} />;
@@ -811,9 +1129,83 @@ const Overview = observer(({ item, data, series }) => {
 const HtxTimeSeriesViewRTS = ({ item }) => {
   const ref = React.createRef();
 
+  const handleMainAreaClick = (event) => {
+    if (!isAlive(item) || !isFF(FF_TIMESERIES_SYNC) || event.target.closest(".htx-timeseries-overview")) {
+      return;
+    }
+
+    const mainDisplayElement = ref.current;
+    if (
+      !mainDisplayElement ||
+      !item.brushRange ||
+      item.brushRange.length !== 2 ||
+      !item.margin ||
+      !item.canvasWidth ||
+      !item.keysRange ||
+      item.keysRange.length !== 2
+    ) {
+      console.warn("TimeSeries: Click handling skipped, essential data missing or component not ready.", {
+        hasRef: !!mainDisplayElement,
+        brushRange: item.brushRange,
+        margin: item.margin,
+        canvasWidth: item.canvasWidth,
+        keysRange: item.keysRange,
+      });
+      return;
+    }
+
+    const { left: marginLeft = 0, right: marginRight = 0 } = item.margin;
+    const plottingAreaWidth = item.canvasWidth - marginLeft - marginRight;
+
+    if (plottingAreaWidth <= 0) {
+      console.warn(`TimeSeries: Plotting area width (${plottingAreaWidth}) is not positive.`);
+      return;
+    }
+
+    const rect = mainDisplayElement.getBoundingClientRect();
+
+    let clickX = event.clientX - rect.left - marginLeft;
+    clickX = Math.max(0, Math.min(clickX, plottingAreaWidth));
+
+    const [brushTimeStartNative, brushTimeEndNative] = item.brushRange;
+    const brushDurationNative = brushTimeEndNative - brushTimeStartNative;
+
+    if (brushDurationNative <= 0) {
+      console.warn(`TimeSeries: Brush duration (${brushDurationNative}) is not positive.`);
+      return;
+    }
+
+    const timeClicked = brushTimeStartNative + (clickX / plottingAreaWidth) * brushDurationNative;
+    const [minKey, maxKey] = item.keysRange;
+    const finalTime = Math.max(minKey, Math.min(timeClicked, maxKey));
+
+    if (isFF(FF_TIMESERIES_SYNC)) {
+      let relativeTime;
+      if (item.isDate) {
+        relativeTime = (finalTime - minKey) / 1000;
+      } else {
+        relativeTime = finalTime - minKey;
+      }
+      item.syncSend({ time: relativeTime }, "seek");
+    }
+  };
+
   React.useEffect(() => {
     if (item?.brushRange?.length) {
       item._nodeReference = ref.current;
+
+      const updateWidth = () => {
+        if (ref.current) {
+          item.updateCanvasWidth(ref.current.offsetWidth);
+        }
+      };
+
+      updateWidth();
+      window.addEventListener("resize", updateWidth);
+
+      return () => {
+        window.removeEventListener("resize", updateWidth);
+      };
     }
   }, [item, ref]);
 
@@ -826,7 +1218,7 @@ const HtxTimeSeriesViewRTS = ({ item }) => {
     );
 
   return (
-    <div ref={ref} className="htx-timeseries">
+    <div ref={ref} className="htx-timeseries" onClick={handleMainAreaClick}>
       <ObjectTag item={item}>
         {Tree.renderChildren(item, item.annotation)}
         <Overview data={item.dataObj} series={item.dataHash} item={item} range={item.brushRange} />
@@ -837,6 +1229,7 @@ const HtxTimeSeriesViewRTS = ({ item }) => {
 
 const TimeSeriesModel = types.compose(
   "TimeSeriesModel",
+  SyncableMixin,
   ObjectBase,
   PersistentStateMixin,
   AnnotationMixin,
