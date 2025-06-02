@@ -33,7 +33,7 @@ type LSFTask = any;
 
 // @todo type LSFOptions = SnapshotIn<typeof AppStore>;
 // because those options will go as initial values for AppStore
-// but it's not types yet, so here is some excerpt of its params
+// but it's not types yet, so here is some excerpt of its parameters
 type LSFOptions = Record<string, any> & {
   interfaces: string[];
   keymap?: any;
