@@ -1,5 +1,6 @@
 import { type Instance, types } from "mobx-state-tree";
-
+import { ff } from "@humansignal/core";
+import { FF_DEV_3391 } from "../utils/feature-flags";
 /**
  * Supress all additional events during this window in ms.
  * 100ms is too short to notice, but covers enough frames (~6) for back and forth events.
@@ -134,9 +135,15 @@ const SyncableMixin = types
   /* eslint-enable @typescript-eslint/indent */
   .actions((self) => ({
     afterCreate() {
+      if (ff.isActive(FF_DEV_3391) && !self.annotationStore.initialized) {
+        return;
+      }
       if (!self.sync) return;
 
-      self.syncManager = SyncManagerFactory.get(self.sync, self.name);
+      const sync = ff.isActive(FF_DEV_3391) ? `${self.sync}@${self.annotation.id}` : self.sync;
+      const fallbackSync = ff.isActive(FF_DEV_3391) ? `${self.name}@${self.annotation.id}` : self.name;
+
+      self.syncManager = SyncManagerFactory.get(sync, fallbackSync);
       self.syncManager!.register(self as Instance<typeof SyncableMixin>);
       (self as Instance<typeof SyncableMixin>).registerSyncHandlers();
     },
