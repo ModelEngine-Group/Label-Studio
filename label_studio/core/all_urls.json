@@ -1740,6 +1740,42 @@
         "decorators": ""
     },
     {
+        "url": "/admin/session_policy/sessiontimeoutpolicy/",
+        "module": "django.contrib.admin.options.changelist_view",
+        "name": "admin:session_policy_sessiontimeoutpolicy_changelist",
+        "decorators": ""
+    },
+    {
+        "url": "/admin/session_policy/sessiontimeoutpolicy/add/",
+        "module": "django.contrib.admin.options.add_view",
+        "name": "admin:session_policy_sessiontimeoutpolicy_add",
+        "decorators": ""
+    },
+    {
+        "url": "/admin/session_policy/sessiontimeoutpolicy/<path:object_id>/history/",
+        "module": "django.contrib.admin.options.history_view",
+        "name": "admin:session_policy_sessiontimeoutpolicy_history",
+        "decorators": ""
+    },
+    {
+        "url": "/admin/session_policy/sessiontimeoutpolicy/<path:object_id>/delete/",
+        "module": "django.contrib.admin.options.delete_view",
+        "name": "admin:session_policy_sessiontimeoutpolicy_delete",
+        "decorators": ""
+    },
+    {
+        "url": "/admin/session_policy/sessiontimeoutpolicy/<path:object_id>/change/",
+        "module": "django.contrib.admin.options.change_view",
+        "name": "admin:session_policy_sessiontimeoutpolicy_change",
+        "decorators": ""
+    },
+    {
+        "url": "/admin/session_policy/sessiontimeoutpolicy/<path:object_id>/",
+        "module": "django.views.generic.base.RedirectView",
+        "name": "",
+        "decorators": ""
+    },
+    {
         "url": "/admin/<app_label>/",
         "module": "django.contrib.admin.sites.app_index",
         "name": "admin:app_list",

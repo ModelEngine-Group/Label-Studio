@@ -2,9 +2,11 @@
 """
 import logging
 import time
+from datetime import timedelta
 from uuid import uuid4
 
 import ujson as json
+from core.feature_flags import flag_set
 from core.utils.contextlog import ContextLog
 from csp.middleware import CSPMiddleware
 from django.conf import settings
@@ -212,12 +214,27 @@ class InactivitySessionTimeoutMiddleWare(CommonMiddleware):
         current_time = time.time()
         last_login = request.session['last_login'] if 'last_login' in request.session else 0
 
-        # Check if this request is too far from when the login happened
-        if (current_time - last_login) > settings.MAX_SESSION_AGE:
-            logger.info(
-                f'Request is too far from last login {current_time - last_login:.0f} > {settings.MAX_SESSION_AGE}; logout'
-            )
-            logout(request)
+        active_org = request.user.active_organization
+        if flag_set('fflag_feat_utc_46_session_timeout_policy', user=request.user) and active_org:
+            org_max_session_age = timedelta(hours=active_org.session_timeout_policy.max_session_age).total_seconds()
+            max_time_between_activity = timedelta(
+                hours=active_org.session_timeout_policy.max_time_between_activity
+            ).total_seconds()
+
+            if (current_time - last_login) > org_max_session_age:
+                logger.info(
+                    f'Request is too far from last login {current_time - last_login:.0f} > {settings.MAX_SESSION_AGE}; logout'
+                )
+                logout(request)
+
+        else:
+            max_time_between_activity = settings.MAX_TIME_BETWEEN_ACTIVITY
+            # Check if this request is too far from when the login happened
+            if (current_time - last_login) > settings.MAX_SESSION_AGE:
+                logger.info(
+                    f'Request is too far from last login {current_time - last_login:.0f} > {settings.MAX_SESSION_AGE}; logout'
+                )
+                logout(request)
 
         # Push the expiry to the max every time a new request is made to a url that indicates user activity
         # but only if it's not a URL we want to ignore
@@ -228,10 +245,7 @@ class InactivitySessionTimeoutMiddleWare(CommonMiddleware):
                 parts = str(request.path_info).split('?')
                 if len(parts) == 2 and path['query'] in parts[1]:
                     return
-
-        request.session.set_expiry(
-            settings.MAX_TIME_BETWEEN_ACTIVITY if request.session.get('keep_me_logged_in', True) else 0
-        )
+        request.session.set_expiry(max_time_between_activity if request.session.get('keep_me_logged_in', True) else 0)
 
 
 class HumanSignalCspMiddleware(CSPMiddleware):
