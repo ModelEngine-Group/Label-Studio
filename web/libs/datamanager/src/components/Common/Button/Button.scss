@@ -291,9 +291,7 @@
   display: flex;
 
   &:not(.button-group-dm_collapsed) {
-    .button-dm+.button-dm {
-      margin-left: 16px;
-    }
+    gap: var(--spacing-tight)
   }
 
   &_collapsed {

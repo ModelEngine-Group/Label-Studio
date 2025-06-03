@@ -4,7 +4,7 @@ import { isDefined } from "../../../utils/utils";
 import "./Button.scss";
 
 export const Button = forwardRef(
-  ({ children, type, extra, className, href, size, waiting, icon, tag, look, ...rest }, ref) => {
+  ({ children, type, extra, className, href, size, waiting, icon, tag, look, rawClassName, ...rest }, ref) => {
     const finalTag = (tag ?? href) ? "a" : "button";
 
     const mods = {
@@ -38,6 +38,7 @@ export const Button = forwardRef(
         mod={mods}
         className={className?.toString()}
         type={type}
+        rawClassName={rawClassName}
         {...rest}
       >
         <>

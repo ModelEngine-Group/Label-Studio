@@ -196,5 +196,8 @@ module.exports = {
   corePlugins: {
     preflight: true,
   },
-  plugins: [],
+  plugins: [
+    // ...
+    require("tailwind-scrollbar"),
+  ],
 };

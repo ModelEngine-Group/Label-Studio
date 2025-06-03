@@ -24,3 +24,4 @@ export * from "./lib/popover/popover";
 export * from "./lib/auto-sizer-table/auto-sizer-table";
 
 export * from "./shadcn";
+export * from "./utils/utils";

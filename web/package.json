@@ -216,6 +216,7 @@
     "stylelint": "^16.9.0",
     "stylelint-config-standard-scss": "^13.1.0",
     "stylelint-config-tailwindcss": "^0.0.7",
+    "tailwind-scrollbar": "3",
     "tailwindcss": "^3.x",
     "toml": "^3.0.0",
     "truncate-middle": "^1.0.6",

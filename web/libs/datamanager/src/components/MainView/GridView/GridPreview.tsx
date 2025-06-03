@@ -20,6 +20,7 @@ type GridViewContextType = {
   imageField: string | undefined;
   currentTaskId: number | null;
   setCurrentTaskId: (id: number | null) => void;
+  hasImage: boolean;
 };
 
 type TaskModalProps = GridViewContextType & { view: any; imageField: string };
@@ -29,6 +30,7 @@ export const GridViewContext = createContext<GridViewContextType>({
   imageField: undefined,
   currentTaskId: null,
   setCurrentTaskId: () => {},
+  hasImage: false,
 });
 
 const TaskModal = observer(({ view, tasks, imageField, currentTaskId, setCurrentTaskId }: TaskModalProps) => {
@@ -131,6 +133,7 @@ export const GridViewProvider: React.FC<GridViewProviderProps> = ({ children, da
   const [currentTaskId, setCurrentTaskId] = useState<number | null>(null);
   const modalRef = useRef<{ update: (props: object) => void; close: () => void } | null>(null);
   const imageField = fields.find((f) => f.currentType === "Image")?.alias;
+  const hasImage = fields.some((f) => f.currentType === "Image");
 
   const onClose = useCallback(() => {
     modalRef.current = null;
@@ -152,6 +155,7 @@ export const GridViewProvider: React.FC<GridViewProviderProps> = ({ children, da
         imageField={imageField}
         currentTaskId={currentTaskId}
         setCurrentTaskId={setCurrentTaskId}
+        hasImage={hasImage}
       />
     );
 
@@ -172,7 +176,7 @@ export const GridViewProvider: React.FC<GridViewProviderProps> = ({ children, da
   useEffect(() => () => modalRef.current?.close(), []);
 
   return (
-    <GridViewContext.Provider value={{ tasks: data, imageField, currentTaskId, setCurrentTaskId }}>
+    <GridViewContext.Provider value={{ tasks: data, imageField, currentTaskId, setCurrentTaskId, hasImage }}>
       {children}
     </GridViewContext.Provider>
   );
