@@ -1,7 +1,9 @@
+import { ImageList } from "../../examples/image_list";
+
 let viewer: any = null;
 
 export const drawSeaDragon = (src: any, width: any, height: any, tileSize: any)=> {
-  const OpenSeaDragon = (window as any)?.OpenSeaDragon;
+  const OpenSeaDragon = (window as any)?.OpenSeadragon;
   const container = document.querySelector('#img-mem-view');
   if (!src || !height || !width || !tileSize) {
     return;
@@ -23,7 +25,7 @@ export const drawSeaDragon = (src: any, width: any, height: any, tileSize: any)=
   }
 
   if (container && !viewer && OpenSeaDragon) {
-    viewer = new OpenSeadragon({
+    viewer = new OpenSeaDragon({
         id: "img-mem-view",
         tileSources: [
           {
@@ -40,7 +42,9 @@ export const drawSeaDragon = (src: any, width: any, height: any, tileSize: any)=
         prefixUrl: "/static/images/",
         showNavigator: true,
         showRotationControl: true,
-        animationTime: 0.5,
+        animationTime: 2,
+        imageLoaderLimit: 6,
+        springStiffness: 3,
         blendTime: 0.1,
         constrainDuringPan: true,
         maxZoomPixelRatio: 2,

@@ -94,7 +94,7 @@ module.exports = composePlugins(
       config.output = {
         ...config.output,
         uniqueName: "labelstudio",
-        publicPath: isDevelopment && FRONTEND_HOSTNAME ? `${FRONTEND_HOSTNAME}/react-app/` : "auto",
+        publicPath: isDevelopment && FRONTEND_HOSTNAME ? `${FRONTEND_HOSTNAME}/react-app/` : "/label-studio",
         scriptType: "text/javascript",
       };
 

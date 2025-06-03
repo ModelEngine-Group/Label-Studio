@@ -29,11 +29,14 @@ export const Dragon = observer(
 
         const tileSize = imageElement.getAttribute("TileSize");
         const width = sizeElement.getAttribute("Width");
-        const height = sizeElement.getAttribute('Height')
+        const height = sizeElement.getAttribute('Height');
+        console.log("width", width, "height", height, "tileSize", tileSize);
         viewer = drawSeaDragon(imageEntity.src, width -0,height-0,tileSize-0);
       })
 
     }
+
+    console.log("imageEntity", imageEntity);
 
     let viewer = null;
     if (imageEntity.src) {

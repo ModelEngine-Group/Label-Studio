@@ -20,6 +20,7 @@ export const ImageCell = (column) => {
   if (!imgSrc) return null;
 
   const getImageSrc = (src) => {
+    const data = ['.svs', '.csp', '.sdpc', 'tiff', '.ndpi', '.scn', '.mrxs', '.bif', '.svslide'];
     if (data.some(key => src?.includes(key))) {
       return `${src}&level=6&col=0&row=0`;
     }
