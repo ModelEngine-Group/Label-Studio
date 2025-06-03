@@ -8,6 +8,7 @@ import os
 import posixpath
 from pathlib import Path
 from wsgiref.util import FileWrapper
+from io import BytesIO
 
 import pandas as pd
 import requests
@@ -35,6 +36,8 @@ from ranged_fileresponse import RangedFileResponse
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+
+from .deepzoom_util import DeepZoomWrapper
 
 logger = logging.getLogger(__name__)
 
@@ -200,6 +203,11 @@ def localfiles_data(request):
     """Serving files for LocalFilesImportStorage"""
     user = request.user
     path = request.GET.get('d')
+
+    level = request.GET.get('level')
+    col = request.GET.get('col')
+    row = request.GET.get('row')
+
     if settings.LOCAL_FILES_SERVING_ENABLED is False:
         return HttpResponseForbidden(
             "Serving local files can be dangerous, so it's disabled by default. "
@@ -211,7 +219,10 @@ def localfiles_data(request):
     if path and request.user.is_authenticated:
         path = posixpath.normpath(path).lstrip('/')
         full_path = Path(safe_join(local_serving_document_root, path))
-        user_has_permissions = False
+
+        # Check if the file is a WSI file
+        ext = os.path.splitext(full_path)[1].lower()
+        is_wsi = ext in ['.svs', '.sdpc', '.tif', '.tiff', '.csp', '.kfb']
 
         # Try to find Local File Storage connection based prefix:
         # storage.path=/home/user, full_path=/home/user/a/b/c/1.jpg =>
@@ -219,9 +230,44 @@ def localfiles_data(request):
         localfiles_storage = LocalFilesImportStorage.objects.annotate(
             _full_path=Value(os.path.dirname(full_path), output_field=CharField())
         ).filter(_full_path__startswith=F('path'))
+
+        # Check if user has permissions to access this storage
+        user_has_permissions = False
         if localfiles_storage.exists():
             user_has_permissions = any(storage.project.has_permission(user) for storage in localfiles_storage)
 
+        if not user_has_permissions or not os.path.exists(full_path):
+            return HttpResponseNotFound()
+        
+        # Check if the file is a WSI file and has level, col, and row parameters
+        if is_wsi and level and col and row:
+            try:
+                level = int(level)
+                col = int(col)
+                row = int(row)
+            except ValueError:
+                return HttpResponseForbidden('Invalid level, col, or row parameter')
+
+            # Get the tile image
+            dz = DeepZoomWrapper(full_path)
+            tile_image = dz.get_tile(level, (col, row))
+
+            # Create a response with the tile image
+            buf = BytesIO()
+            tile_image.save(buf, 'jpeg')
+            buf.seek(0)
+            return HttpResponse(buf, content_type='image/jpeg')
+        
+        # Check if the file is a WSI file without level, col, and row parameters
+        if is_wsi:
+            # Create a DeepZoomWrapper instance
+            dz = DeepZoomWrapper(full_path)
+
+            # Get the DZI (Deep Zoom Image) for the WSI file
+            dzi_xml = dz.get_dzi(format='jpeg')
+            return HttpResponse(dzi_xml, content_type='application/xml')
+        
+        # If the file is not a WSI file, serve it as a regular file
         if user_has_permissions and os.path.exists(full_path):
             content_type, encoding = mimetypes.guess_type(str(full_path))
             content_type = content_type or 'application/octet-stream'

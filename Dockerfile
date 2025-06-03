@@ -74,10 +74,12 @@ RUN --mount=type=cache,target="/var/cache/apt",sharing=locked \
     set -eux; \
     apt-get update; \
     apt-get install --no-install-recommends -y \
-            build-essential git; \
+    build-essential git; \
     apt-get autoremove -y
 
 WORKDIR /label-studio
+
+COPY wheels/ wheels/
 
 ENV VENV_PATH="/label-studio/.venv"
 ENV PATH="$VENV_PATH/bin:$PATH"
@@ -94,10 +96,13 @@ ARG INCLUDE_DEV=false
 RUN --mount=type=cache,target=$POETRY_CACHE_DIR,sharing=locked \
     poetry check --lock && \
     if [ "$INCLUDE_DEV" = "true" ]; then \
-        poetry install --no-root --extras uwsgi --with test; \
+    poetry install --no-root --extras uwsgi --with test; \
     else \
-        poetry install --no-root --without test --extras uwsgi; \
+    poetry install --no-root --without test --extras uwsgi; \
     fi
+
+# Install extra Python packages (from wheels and PyPI)
+RUN pip install wheels/*.whl openslide-bin openslide-python loguru
 
 # Install LS
 COPY label_studio label_studio
@@ -135,8 +140,9 @@ RUN --mount=type=cache,target="/var/cache/apt",sharing=locked \
     set -eux; \
     apt-get update; \
     apt-get upgrade -y; \
-    apt-get install --no-install-recommends -y libexpat1 \
-        gnupg2 curl; \
+    apt-get install --no-install-recommends -y \
+        libexpat1 gnupg2 curl \
+        libgl1 libopenjp2-7 libnuma1 libglib2.0-0 libspeex1 libvdpau1 libgomp1; \
     apt-get autoremove -y
 
 # install nginx
