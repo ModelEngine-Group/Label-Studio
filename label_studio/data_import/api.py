@@ -186,7 +186,7 @@ task_create_response_scheme = {
 
             ```bash
             curl -H 'Authorization: Token abc123' \\
-            -X POST '{host}/api/projects/1/import' -F ‘file=@path/to/my_file.csv’
+            -X POST '{host}/api/projects/1/import' -F 'file=@path/to/my_file.csv'
             ```
 
             ### 3\. **POST with URL**
@@ -673,6 +673,8 @@ class FileUploadAPI(generics.RetrieveUpdateDestroyAPIView):
 
 
 class UploadedFileResponse(generics.RetrieveAPIView):
+    """Serve uploaded files from local drive"""
+
     permission_classes = (IsAuthenticated,)
 
     @override_report_only_csp
@@ -706,7 +708,34 @@ class UploadedFileResponse(generics.RetrieveAPIView):
 
 
 class DownloadStorageData(APIView):
-    """Check auth for nginx auth_request"""
+    """
+    Secure file download API for persistent storage (S3, GCS, Azure, etc.)
+
+    This view provides authenticated access to uploaded files and user avatars stored in
+    cloud storage or local filesystems. It supports two operational modes for optimal
+    performance and flexibility (simplicity).
+
+    ## Operation Modes:
+
+    ### 1. NGINX Mode (Default - USE_NGINX_FOR_UPLOADS=True)
+    - **High Performance**: Uses X-Accel-Redirect headers for efficient file serving
+    - **How it works**:
+      1. Validates user permissions and file access
+      2. Returns HttpResponse with X-Accel-Redirect header pointing to storage URL
+      3. NGINX intercepts and serves the file directly from storage
+    - **Benefits**: Reduces Django server load, better performance for large files
+
+    ### 2. Direct Mode (USE_NGINX_FOR_UPLOADS=False)
+    - **Direct Serving**: Django serves files using RangedFileResponse
+    - **How it works**:
+      1. Validates user permissions and file access
+      2. Opens file from storage and streams it with range request support
+      3. Supports partial content requests (HTTP 206)
+    - **Benefits**: Works without NGINX, supports range requests for media files
+
+    ## Content-Disposition Logic:
+    - **Inline**: PDFs, audio, video files - because media files are directly displayed in the browser
+    """
 
     swagger_schema = None
     http_method_names = ['get']
@@ -714,35 +743,44 @@ class DownloadStorageData(APIView):
 
     def get(self, request, *args, **kwargs):
         """Get export files list"""
-        request = self.request
         filepath = request.GET.get('filepath')
         if filepath is None:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         filepath = unquote(request.GET['filepath'])
 
-        url = None
+        file_obj = None
         if filepath.startswith(settings.UPLOAD_DIR):
             logger.debug(f'Fetch uploaded file by user {request.user} => {filepath}')
             file_upload = FileUpload.objects.filter(file=filepath).last()
 
             if file_upload is not None and file_upload.has_permission(request.user):
-                url = file_upload.file.storage.url(file_upload.file.name, storage_url=True)
+                file_obj = file_upload.file
         elif filepath.startswith(settings.AVATAR_PATH):
             user = User.objects.filter(avatar=filepath).first()
             if user is not None and request.user.active_organization.has_user(user):
-                url = user.avatar.storage.url(user.avatar.name, storage_url=True)
+                file_obj = user.avatar
 
-        if url is None:
+        if file_obj is None:
             return Response(status=status.HTTP_403_FORBIDDEN)
 
-        protocol = urlparse(url).scheme
+        # NGINX handling is the default for better performance
+        if settings.USE_NGINX_FOR_UPLOADS:
+            url = file_obj.storage.url(file_obj.name, storage_url=True)
 
-        # Let NGINX handle it
-        response = HttpResponse()
-        # The below header tells NGINX to catch it and serve, see docker-config/nginx-app.conf
-        redirect = '/file_download/' + protocol + '/' + url.replace(protocol + '://', '')
+            protocol = urlparse(url).scheme
+            response = HttpResponse()
+            # The below header tells NGINX to catch it and serve, see deploy/default.conf
+            redirect = '/file_download/' + protocol + '/' + url.replace(protocol + '://', '')
+            response['X-Accel-Redirect'] = redirect
+            response['Content-Disposition'] = f'inline; filename="{filepath}"'
+            return response
 
-        response['X-Accel-Redirect'] = redirect
-        response['Content-Disposition'] = 'inline; filename="{}"'.format(filepath)
-        return response
+        # No NGINX: standard way for direct file serving
+        else:
+            content_type, _ = mimetypes.guess_type(filepath)
+            content_type = content_type or 'application/octet-stream'
+            response = RangedFileResponse(request, file_obj.open(mode='rb'), content_type=content_type)
+            response['Content-Disposition'] = f'inline; filename="{filepath}"'
+            response['filename'] = filepath
+            return response
