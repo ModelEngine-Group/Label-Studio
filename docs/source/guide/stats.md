@@ -49,9 +49,9 @@ Review the diagram for a full explanation:
 One annotation that labels the text span "Excellent tool" as "positive", a second annotation that labels the span "tool" as "positive", and a third annotation that labels the text span "tool" as "negative".
 <br/><div style="text-align:center"><img alt="diagram showing example labeling scenario duplicated in surrounding text" src="/images/stats-agreement-example.png"/></div>
 
-The agreement score for the first two annotations is 50%, based on the intersection of the text spans. The agreement score comparing the second annotation with the third annotation is 0%, because the same text span was labeled differently. 
+The agreement score for the first two annotations is 50%, based on the intersection of the text spans. The agreement score comparing the second annotation with the third annotation is 0%, because the same text span was labeled differently. There is also a 0% match between the first and third annotations.  
 
-The task agreement conditions use a threshold of 40% to group annotations based on the agreement score, so the first and second annotations are matched with each other, and the third annotation is considered mismatched. In this case, task agreement exists for 2 of the 3 annotations, so the overall task agreement score is 67%.
+The task agreement conditions use a threshold of 40% to determine whether annotations are in agreement. Therefore, the first and second annotations are considered to be 100% in agreement. The remaining annotations have 0% agreements, so the overall task agreement score is (100 + 0 + 0)/3, or 33.33%.
 
 ## Agreement score
 
@@ -109,10 +109,44 @@ The following table lists the agreement metrics available in Label Studio Enterp
 | [Intersection over 1D timeseries spans](#Intersection-over-one-dimension-example) | TimeSeriesLabels | Time Series | Evaluates whether two given one-dimensional time series spans have points in common. |
 | [Exact matching pairwise comparison](#Exact-matching-choices-example) | Pairwise | Comparison | Evaluates whether the results exactly match. | 
 | [Exact matching rating](#Exact-matching-choices-example) | Rating | Evaluation, Rating | Evaluates the ratings assigned to tasks exactly match. |
+| [IOU distance for brushes](#Intersection-over-Union-example) | BrushLabels | Computer Vision, Object Detection | Evaluates the overlap compared to the union (IOU) of two brush mask regions. |
 
 ### Basic matching function
 
 Performs the default evaluation function for each control tag. For example for `TextArea` tag `Edit distance` metric is used.
+
+{% details <b>Default evaluation function</b> %}
+
+
+| Tag              | Basic Matching Function            |
+| :--------------: | :--------------------------------: |
+| BrushLabels      | IOU distance for brushes           |
+| Choices          | Exact match                        |
+| DateTime         | Exact match                        |
+| EllipseLabels    | Naive*                             |
+| HyperTextLabels  | Intersection over HTML Spans       |
+| KeyPointLabels   | Distance between keypoints         |
+| Labels           | 1D region intersection             |
+| Number           | Exact match                        |
+| Pairwise         | Exact match                        |
+| ParagraphLabels  | Intersection over paragraphs       |
+| PolygonLabels    | IOU over polygons                  |
+| Ranker           | Average precision                  |
+| Rating           | Exact match                        |
+| RectangleLabels  | IOU over bounding boxes            |
+| Relations        | Naive*                             |
+| Region           | 1D region intersection no labels   |
+| Shortcut         | Naive*                             |
+| Taxonomy         | Common subtree matches (IOU)       |
+| TextArea         | Levenshtein edit distance          |
+| TimeSeriesLabels | 1D region intersection timeseries  |
+| TimelineLabels   | Naive*                             |
+| VideoRectangle   | IOU                                |
+
+\* Naive -- “Naive” is Label Studio’s simplest pairwise agreement metric, and is essentially a python dictionary equality on the annotations' results.
+
+
+{% enddetails %}
 
 ### Exact matching
 
