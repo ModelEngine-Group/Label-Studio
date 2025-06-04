@@ -33,9 +33,12 @@ export const GridWidthButton = injector(({ view, isGrid, gridWidth, responsiveIm
     [view],
   );
 
-  const handleResponsiveImagesToggle = useCallback((e) => {
-    view.setGridResponsiveImage(!e.target.checked);
-  }, []);
+  const handleResponsiveImagesToggle = useCallback(
+    (e) => {
+      view.setGridResponsiveImage(!e.target.checked);
+    },
+    [view],
+  );
 
   return isGrid ? (
     <Dropdown.Trigger
