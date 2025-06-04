@@ -744,5 +744,5 @@ class DownloadStorageData(APIView):
         redirect = '/file_download/' + protocol + '/' + url.replace(protocol + '://', '')
 
         response['X-Accel-Redirect'] = redirect
-        response['Content-Disposition'] = 'attachment; filename="{}"'.format(filepath)
+        response['Content-Disposition'] = 'inline; filename="{}"'.format(filepath)
         return response
