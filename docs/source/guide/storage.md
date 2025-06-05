@@ -197,13 +197,33 @@ When enabled, Label Studio automatically lists files from the storage bucket and
 <img src="/images/source-storages-treat-on.png" class="make-intense-zoom">
 
 
-#### Pre-signed URLs vs. storage proxies
+#### Pre-signed URLs vs. Storage proxies
 
-There are two secure mechanisms in which Label Studio fetches media data from cloud storage: via proxy and via pre-signed URLS. 
+There are two secure mechanisms in which Label Studio fetches media data from cloud storage: via pre-signed URLS and via proxy. Which one you use depends on whether you have **Use pre-signed URLs** toggled on or off when setting up your source storage. **Use pre-signed URLs** is used by default. Proxy storage is enabled when **Use pre-signed URLs** is OFF.
 
-Which one you use depends on whether you have **Use pre-signed URLs** toggled on or off when setting up your source storage. Proxy storage is enabled when **Use pre-signed URLs** is OFF:
+<div class="enterprise-only">
 
-<img src="/images/storages/use-presigned-off.png" style="max-width:600px; margin: 0 auto" alt="Screenshot of storage page with use pre-signed off">
+!!! note
+    You can control whether your organization allows the use of storage proxy at the organization level: navigate to your organization's Billing page and look for the "Enable Storage Proxy" toggle. 
+
+    When "Enable Storage Proxy" is disabled, users in your organization will not be able to create or modify source storage connections that have "Presigned URLs" turned OFF. This restriction ensures that all storage connections must use presigned URLs when the "Enable Storage Proxy" at the organization level is OFF.
+
+</div>
+
+<br/>
+
+{% details <b>See more details</b> %}
+
+##### Pre-signed URLs
+
+In this scenario, your browser receives an HTTP 303 redirect to a time-limited S3/GCS/Azure presigned URL. This is the default behavior. 
+
+The main benefit to using pre-signed URLs is if you want to ensure that your media files are isolated **from** the Label Studio network as much as possible. 
+
+<img src="/images/storages/storage-proxy-presigned.png" style="max-width:600px; margin: 0 auto" alt="Diagram of presigned URL flow">
+
+The permissions required for this are already included in the cloud storage configuration documentation below. 
+
 
 ##### Proxy storage
 
@@ -276,17 +296,7 @@ Add the **Storage Blob Data Reader** role, which includes:
     * `RESOLVER_PROXY_MAX_RANGE_SIZE` - Defaults to 8 MB, and defines the largest chunk size returned per request. 
     * `RESOLVER_PROXY_TIMEOUT` - Defaults to 20 seconds, and defines the maximum time uWSGI workers spend on a single request.
 
-
-##### Pre-signed URLs
-
-In this scenario, your browser receives an HTTP 303 redirect to a time-limited S3/GCS/Azure presigned URL. This is the default behavior. 
-
-The main benefit to using pre-signed URLs is if you want to ensure that your media files are isolated **from** the Label Studio network as much as possible. 
-
-<img src="/images/storages/storage-proxy-presigned.png" style="max-width:600px; margin: 0 auto" alt="Diagram of presigned URL flow">
-
-The permissions required for this are already included in the cloud storage configuration documentation below. 
-
+{% enddetails %}
 
 ### Target storage
 
