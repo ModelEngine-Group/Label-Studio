@@ -141,7 +141,7 @@ const mockView = {
     hasNextPage: true,
     pageSize: 10,
   },
-  gridResponsiveImage: true,
+  gridFitImagesToWidth: false,
 };
 
 // Wrap components with BEM context for testing
@@ -374,7 +374,7 @@ describe("GridView", () => {
     it("adjusts cell height based on content type", () => {
       const row = mockData[0];
       const selected = { isSelected: jest.fn().mockReturnValue(false) };
-      const view = { ...mockView, gridResponsiveImage: true };
+      const view = { ...mockView, gridFitImagesToWidth: false };
 
       renderWithBEM(
         <GridViewProvider

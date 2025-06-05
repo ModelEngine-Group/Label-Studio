@@ -117,7 +117,7 @@ export const GridCell = observer(({ view, selected, row, fields, onClick, column
           name="cell-body"
           rawClassName={cnm({ "overflow-auto": !hasImage })}
           onClick={handleBodyClick}
-          mod={{ responsive: view.gridResponsiveImage }}
+          mod={{ responsive: !view.gridFitImagesToWidth }}
         >
           <GridBody view={view} row={row} fields={fields} columnCount={columnCount} />
         </Elem>
