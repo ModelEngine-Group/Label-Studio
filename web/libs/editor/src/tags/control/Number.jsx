@@ -89,10 +89,17 @@ const Model = types
         if (isDefined(self.step)) {
           const step = Number.parseFloat(self.step);
           const basis = isDefined(self.min) ? +self.min : 0;
-          const delta = (value - basis) % step;
 
-          if (delta !== 0) {
-            errors.push(`The two nearest valid values are ${value - delta} and ${value - delta + step}`);
+          const diff = value - basis;
+          const nearest = Math.round(diff / step) * step + basis;
+
+          // EPSILON will handle the floating-point imprecision of the binary representation (IEEE 754)
+          const EPSILON = 1e-8;
+          if (Math.abs(value - nearest) > EPSILON) {
+            const lower = Math.floor(diff / step) * step + basis;
+            const upper = lower + step;
+            const decimals = step.toString().split(".")[1]?.length || 0;
+            errors.push(`The two nearest valid values are ${lower.toFixed(decimals)} and ${upper.toFixed(decimals)}`);
           }
         }
         if (errors.length) {
