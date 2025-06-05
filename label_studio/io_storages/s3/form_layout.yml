@@ -98,12 +98,13 @@ ImportStorage:
   # 2 columns grid
   - columnCount: 2
     columns:
-      - width: 345
+      - width: 400
         fields:
           - type: toggle
             name: use_blob_urls
             label: Treat every bucket object as a source file
-            description: If unchecked, treat every bucket object as a JSON-formatted task. Optional
+            description: If unchecked, treat every bucket object as a JSON-formatted task
+      - fields:
           - type: toggle
             name: recursive_scan
             label: Recursive scan
@@ -111,8 +112,10 @@ ImportStorage:
       - fields:
           - type: toggle
             name: presign
-            label: Use pre-signed URLs
+            label: "Use pre-signed URLs (On)\n Proxy through Label Studio (Off)"
+            description: "When pre-signed URLs are enabled, all data bypasses Label Studio and user browsers directly read data from storage"
             value: true
+      - fields:
           - type: counter
             name: presign_ttl
             label: Expiration minutes

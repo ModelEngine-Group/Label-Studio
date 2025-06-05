@@ -42,19 +42,28 @@ ImportStorage:
         validators:
           - regexp
 
-  # 2 columns grid
-  - columnCount: 2
+  # GCS credentials
+  - columnCount: 1
+    fields: *gcs_credentials
+  # Project ID
+  - columnCount: 1
+    fields: *project_id
+
+  # 1 columns grid
+  - columnCount: 1
     columns:
-      - width: 345
+      - width: 600
         fields:
           - type: toggle
             name: use_blob_urls
             label: Treat every bucket object as a source file
-            description: If unchecked, treat every bucket object as a JSON-formatted task. Optional
-      - fields:
+            description: If unchecked, treat every bucket object as a JSON-formatted task
+      - width: 600
+        fields:
           - type: toggle
             name: presign
-            label: Use pre-signed URLs
+            label: "Use pre-signed URLs (On)\n Proxy through Label Studio (Off)"
+            description: "When pre-signed URLs are enabled, all data bypasses Label Studio and user browsers directly read data from storage"
             value: true
           - type: counter
             name: presign_ttl
@@ -62,13 +71,6 @@ ImportStorage:
             min: 1
             value: 15
             dependency: presign
-
-  # GCS credentials
-  - columnCount: 1
-    fields: *gcs_credentials
-  # Project ID
-  - columnCount: 1
-    fields: *project_id
 
 ExportStorage:
   - columnCount: 3

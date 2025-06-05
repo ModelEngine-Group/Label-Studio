@@ -47,7 +47,7 @@ ImportStorage:
       - type: toggle
         name: use_blob_urls
         label: Treat every bucket object as a source file
-        description: If unchecked, treat every bucket object as a JSON-formatted task. Optional
+        description: If unchecked, treat every bucket object as a JSON-formatted task
 
 ExportStorage:
   - columnCount: 2

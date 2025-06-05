@@ -7,10 +7,10 @@
     justify-items: stretch;
     justify-content: space-between;
     grid-template-columns: repeat(var(--column-count, 5), 1fr);
-    grid-gap: var(--row-gap, 8px) 8px;
+    grid-gap: var(--row-gap, 16px) 12px;
 
     &:not(:first-child) {
-      margin-top: 12px;
+      margin-top: 20px;
     }
 
     &__description {
