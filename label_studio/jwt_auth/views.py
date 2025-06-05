@@ -192,6 +192,7 @@ class LSAPITokenRotateView(TokenViewBase):
     authentication_classes = [JWTAuthentication, TokenAuthenticationPhaseout, SessionAuthentication]
     permission_classes = [IsAuthenticated]
     _serializer_class = 'jwt_auth.serializers.LSAPITokenRotateSerializer'
+    token_class = LSAPIToken
 
     @swagger_auto_schema(
         tags=['JWT'],
@@ -219,5 +220,9 @@ class LSAPITokenRotateView(TokenViewBase):
             return Response({'detail': 'Token is invalid or already blacklisted.'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Create a new token for the user
-        new_token = LSAPIToken.for_user(request.user)
+        new_token = self.create_token(request.user)
         return Response({'refresh': new_token.get_full_jwt()}, status=status.HTTP_200_OK)
+
+    def create_token(self, user):
+        """Create a new token for the user. Can be overridden by child classes to use different token classes."""
+        return self.token_class.for_user(user)
