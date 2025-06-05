@@ -1972,5 +1972,11 @@
         "module": "jwt_auth.views.LSAPITokenRotateView",
         "name": "jwt_auth:token_rotate",
         "decorators": ""
+    },
+    {
+        "url": "/api/session-policy/",
+        "module": "session_policy.api.SessionTimeoutPolicyView",
+        "name": "session_policy:session-policy",
+        "decorators": ""
     }
 ]

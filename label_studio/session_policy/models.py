@@ -12,15 +12,15 @@ class SessionTimeoutPolicy(models.Model):
     )
 
     max_session_age = models.IntegerField(
-        _('Max session age (hours)'),
-        default=192,  # 8 days
-        help_text='Number of hours that a session can be active before needing to re-login',
+        _('Max session age (minutes)'),
+        default=(8 * 24 * 60),  # 8 days
+        help_text='Number of minutes that a session can be active before needing to re-login',
     )
 
     max_time_between_activity = models.IntegerField(
-        _('Max time (hours) between activity'),
-        default=72,  # 3 days
-        help_text='Number of hours that a session stays active without any activity',
+        _('Max time (minutes) between activity'),
+        default=(3 * 24 * 60),  # 3 days
+        help_text='Number of minutes that a session stays active without any activity',
     )
 
     created_at = models.DateTimeField(_('created at'), auto_now_add=True)

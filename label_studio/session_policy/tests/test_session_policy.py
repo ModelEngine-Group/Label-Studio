@@ -24,7 +24,7 @@ def test_session_timeout_policy(fflag_feat_utc_46_session_timeout_policy_on):
     response = client.get('/api/projects/')
     assert response.status_code == status.HTTP_200_OK
 
-    # Get the session timeout policy and set it to 0 hours
+    # Get the session timeout policy and set it to 0 minutes
     # Object already exists after the first request since its an AutoOneToOneField
     timeout_policy = SessionTimeoutPolicy.objects.get(organization=organization)
     timeout_policy.max_session_age = 0
@@ -34,3 +34,42 @@ def test_session_timeout_policy(fflag_feat_utc_46_session_timeout_policy_on):
     # Next API call should fail due to session timeout
     response = client.get('/api/projects/')
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+@pytest.mark.django_db
+def test_session_policy_api(fflag_feat_utc_46_session_timeout_policy_on):
+    # Create organization and user
+    organization = OrganizationFactory()
+    client = APIClient()
+    user = organization.created_by
+    user.set_password('testpass123')
+    user.save()
+
+    # Login to create a session
+    response = client.post('/user/login/', {'email': user.email, 'password': 'testpass123'})
+    assert response.status_code == status.HTTP_302_FOUND
+
+    # Get initial session policy
+    response = client.get('/api/session-policy/')
+    assert response.status_code == status.HTTP_200_OK
+    data = response.json()
+    assert data['max_session_age'] == 8 * 24 * 60  # 8 days in minutes
+    assert data['max_time_between_activity'] == 3 * 24 * 60  # 3 days in minutes
+
+    # Update session policy
+    new_policy = {
+        'max_session_age': 60,  # 1 hour
+        'max_time_between_activity': 30,  # 30 minutes
+    }
+    response = client.patch('/api/session-policy/', new_policy, format='json')
+    assert response.status_code == status.HTTP_200_OK
+    data = response.json()
+    assert data['max_session_age'] == new_policy['max_session_age']
+    assert data['max_time_between_activity'] == new_policy['max_time_between_activity']
+
+    # Get updated session policy
+    response = client.get('/api/session-policy/')
+    assert response.status_code == status.HTTP_200_OK
+    data = response.json()
+    assert data['max_session_age'] == new_policy['max_session_age']
+    assert data['max_time_between_activity'] == new_policy['max_time_between_activity']
