@@ -38,7 +38,7 @@ const queryClient = new QueryClient({
 });
 
 const browserHistory = createBrowserHistory({
-  basename: "",
+  basename: baseURL.pathname || "/",
   // callback is an async way to confirm or decline going to another page in the context of routing. It accepts `true` or `false`
   getUserConfirmation: (message, callback) => {
     // `history.block` doesn't block events, so in the case of listeners,
