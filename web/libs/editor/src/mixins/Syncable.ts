@@ -1,4 +1,6 @@
 import { type Instance, types } from "mobx-state-tree";
+import { ff } from "@humansignal/core";
+import { FF_DEV_3391 } from "../utils/feature-flags";
 
 /**
  * Supress all additional events during this window in ms.
@@ -136,7 +138,20 @@ const SyncableMixin = types
     afterCreate() {
       if (!self.sync) return;
 
-      self.syncManager = SyncManagerFactory.get(self.sync, self.name);
+      let sync = self.sync;
+      let fallbackSync = self.name;
+
+      if (ff.isActive(FF_DEV_3391)) {
+        if (!self.annotationStore.initialized) return;
+
+        // different annotations have their own independent trees and should have independent
+        // sync managers; also history items are also independent, so should have the same
+        const postfix = `@${self.annotationOrHistoryItem?.id}`;
+        sync += postfix;
+        fallbackSync += postfix;
+      }
+
+      self.syncManager = SyncManagerFactory.get(sync, fallbackSync);
       self.syncManager!.register(self as Instance<typeof SyncableMixin>);
       (self as Instance<typeof SyncableMixin>).registerSyncHandlers();
     },

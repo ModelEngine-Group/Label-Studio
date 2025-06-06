@@ -38,6 +38,10 @@ export const AnnotationMixin = types.model("AnnotationMixin", {}).views((self) =
     return as?.selectedHistory ?? as?.selected;
   },
 
+  get annotationOrHistoryItem() {
+    return Types.getParentOfTypeString(self, "Annotation") ?? Types.getParentOfTypeString(self, "HistoryItem");
+  },
+
   get annotationStore() {
     const root = getRoot(self);
 
