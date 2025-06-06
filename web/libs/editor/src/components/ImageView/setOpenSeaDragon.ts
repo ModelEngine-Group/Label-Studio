@@ -1,7 +1,7 @@
 let viewer: any = null;
 
 export const drawSeaDragon = (src: any, width: any, height: any, tileSize: any)=> {
-  const OpenSeaDragon = (window as any)?.OpenSeaDragon;
+  const OpenSeaDragon = (window as any)?.OpenSeadragon;
   const container = document.querySelector('#img-mem-view');
   if (!src || !height || !width || !tileSize) {
     return;
@@ -23,7 +23,7 @@ export const drawSeaDragon = (src: any, width: any, height: any, tileSize: any)=
   }
 
   if (container && !viewer && OpenSeaDragon) {
-    viewer = new OpenSeadragon({
+    viewer = new OpenSeaDragon({
         id: "img-mem-view",
         tileSources: [
           {

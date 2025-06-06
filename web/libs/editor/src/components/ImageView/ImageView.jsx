@@ -923,7 +923,7 @@ export default observer(
         }
         const data = ['.svs', '.csp','.sdpc', 'tiff', '.ndpi', '.scn', '.mrxs', '.bif','.svslide']
         return !data.some(key => src?.includes(key));
-      }
+      }      
       return (
         (!isDragon(item?.currentImageEntity?.src) ? <>
               <>
