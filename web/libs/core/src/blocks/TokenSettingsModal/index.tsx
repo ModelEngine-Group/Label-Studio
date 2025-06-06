@@ -6,6 +6,7 @@ import { Form, Input, Toggle } from "apps/labelstudio/src/components/Form";
 import { Button } from "apps/labelstudio/src/components/Button/Button";
 import type { AuthTokenSettings } from "@humansignal/core/pages/AccountSettings/types";
 import { type ChangeEvent, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export const TokenSettingsModal = ({
   showTTL,
@@ -33,6 +34,7 @@ function TokenSettingsModalView({
   showTTL,
   onSaved,
 }: { settings: AuthTokenSettings; showTTL?: boolean; onSaved?: () => void }) {
+  const { t } = useTranslation();
   const [enableTTL, setEnableTTL] = useState(settings.api_tokens_enabled);
   const queryClient = useAtomValue(queryClientAtom);
   const reloadSettings = () => {
@@ -43,18 +45,18 @@ function TokenSettingsModalView({
     <Form action="accessTokenUpdateSettings" onSubmit={reloadSettings}>
       <Form.Row columnCount={1}>
         <Toggle
-          label="Personal Access Tokens"
+          label={t('common_label_personal_access_tokens')}
           name="api_tokens_enabled"
-          description="Enable increased token authentication security"
+          description={t('common_description_for_personal_access_tokens')}
           checked={settings.api_tokens_enabled ?? false}
           onChange={(e: ChangeEvent<HTMLInputElement>) => setEnableTTL(e.target.checked)}
         />
       </Form.Row>
       <Form.Row columnCount={1}>
         <Toggle
-          label="Legacy Tokens"
+          label={t('common_label_legacy_tokens')}
           name="legacy_api_tokens_enabled"
-          description="Enable legacy access tokens, these do not expire"
+          description={t('common_description_for_legacy_tokens')}
           checked={settings.legacy_api_tokens_enabled ?? true}
         />
       </Form.Row>
@@ -62,11 +64,11 @@ function TokenSettingsModalView({
         <Form.Row columnCount={1}>
           <Input
             name="api_token_ttl_days"
-            label="Time-to-Live (optional, Personal Access Token only)"
-            description="The number of days, after creation, that the token will be valid for. After this time period a user will need to create a new access token"
+            label={t('common_label_time_to_live')}
+            description={t('common_description_for_time_to_live')}
             labelProps={{
               description:
-                "The number of days, after creation, that the token will be valid for. After this time period a user will need to create a new access token",
+              t('common_description_for_time_to_live'),
             }}
             disabled={!enableTTL}
             type="number"
@@ -77,7 +79,7 @@ function TokenSettingsModalView({
         </Form.Row>
       )}
       <Form.Actions>
-        <Button type="submit">Save</Button>
+        <Button type="submit">{t('common_button_save')}</Button>
       </Form.Actions>
     </Form>
   );

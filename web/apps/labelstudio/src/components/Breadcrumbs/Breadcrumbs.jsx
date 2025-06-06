@@ -7,10 +7,12 @@ import { absoluteURL } from "../../utils/helpers";
 import { Dropdown } from "../Dropdown/Dropdown";
 import { Menu } from "../Menu/Menu";
 import "./Breadcrumbs.scss";
+import {useTranslation} from "react-i18next";
 
 const { Block, Elem } = BemWithSpecifiContext();
 
 export const Breadcrumbs = () => {
+  const {t} = useTranslation();
   const config = useConfig();
   const reactBreadcrumbs = useBreadcrumbs();
   const findComponent = useFindRouteComponent();
@@ -35,10 +37,10 @@ export const Breadcrumbs = () => {
           const href = item.href ?? item.path;
 
           const isInternal = findComponent(href) !== null;
-
+          
           const title = (
             <Elem tag="span" name="label" mod={{ faded: index === item.length - 1 }}>
-              {item.title}
+             {t(item.title)}
             </Elem>
           );
 

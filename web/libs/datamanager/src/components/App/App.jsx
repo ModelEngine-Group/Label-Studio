@@ -7,6 +7,7 @@ import { Spinner } from "../Common/Spinner";
 import { DataManager } from "../DataManager/DataManager";
 import { Labeling } from "../Label/Label";
 import "./App.scss";
+import "./i18n";
 
 class ErrorBoundary extends React.Component {
   state = {

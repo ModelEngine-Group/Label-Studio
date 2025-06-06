@@ -8,8 +8,10 @@ import { Checkbox, Spinner } from "@humansignal/ui";
 import { useAPI } from "apps/labelstudio/src/providers/ApiProvider";
 import { useConfig } from "apps/labelstudio/src/providers/ConfigProvider";
 import { useCurrentUser } from "apps/labelstudio/src/providers/CurrentUser";
+import { useTranslation } from "react-i18next";
 
 export const EmailPreferences = () => {
+  const {t} = useTranslation();
   const config = useConfig();
   const { user } = useCurrentUser();
   const api = useAPI();
@@ -39,7 +41,7 @@ export const EmailPreferences = () => {
         <Spinner />
       ) : (
         <Checkbox checked={isAllowNewsLetter} onChange={toggleHandler}>
-          Subscribe to HumanSignal news and tips from Heidi
+          {t("common_caption_for_subscribe_info")}
         </Checkbox>
       )}
     </div>

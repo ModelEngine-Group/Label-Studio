@@ -8,6 +8,7 @@ import { Block, Elem } from "../../../utils/bem";
 import { isDefined } from "../../../utils/helpers";
 import "./PeopleList.scss";
 import { CopyableTooltip } from "../../../components/CopyableTooltip/CopyableTooltip";
+import { useTranslation } from "react-i18next";
 
 export const PeopleList = ({ onSelect, selectedUser, defaultSelected }) => {
   const api = useAPI();
@@ -15,8 +16,7 @@ export const PeopleList = ({ onSelect, selectedUser, defaultSelected }) => {
   const [currentPage] = usePage("page", 1);
   const [currentPageSize] = usePageSize("page_size", 30);
   const [totalItems, setTotalItems] = useState(0);
-
-  console.log({ currentPage, currentPageSize });
+  const { t } = useTranslation();
 
   const fetchUsers = useCallback(async (page, pageSize) => {
     const response = await api.callApi("memberships", {
@@ -66,13 +66,13 @@ export const PeopleList = ({ onSelect, selectedUser, defaultSelected }) => {
               <Elem name="header">
                 <Elem name="column" mix="avatar" />
                 <Elem name="column" mix="email">
-                  Email
+                  {t("common_label_email")}
                 </Elem>
                 <Elem name="column" mix="name">
-                  Name
+                  {t("common_label_name")}
                 </Elem>
                 <Elem name="column" mix="last-activity">
-                  Last Activity
+                  {t("common_label_last_activity")}
                 </Elem>
               </Elem>
               <Elem name="body">

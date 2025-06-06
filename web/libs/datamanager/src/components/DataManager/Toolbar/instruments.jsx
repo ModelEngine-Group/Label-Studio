@@ -15,6 +15,7 @@ import { LoadingPossum } from "./LoadingPossum";
 import { OrderButton } from "./OrderButton";
 import { RefreshButton } from "./RefreshButton";
 import { ViewToggle } from "./ViewToggle";
+import i18n from 'i18next';
 
 const style = {
   minWidth: "80px",
@@ -26,7 +27,7 @@ const style = {
  * If expired it renders disabled Import button with a tooltip.
  */
 const ImportButtonWithChecks = ({ size }) => {
-  const simpleButton = <ImportButton size={size}>Import</ImportButton>;
+  const simpleButton = <ImportButton size={size}>{i18n.t('common_button_import')}</ImportButton>;
   const isOpenSource = !window.APP_SETTINGS.billing;
   // Check if user is self-serve; Enterprise flag === false is the main condition
   const isSelfServe = isFF(FF_SELF_SERVE) && window.APP_SETTINGS.billing?.enterprise === false;
@@ -58,7 +59,7 @@ const ImportButtonWithChecks = ({ size }) => {
     >
       <Block name="button-wrapper">
         <ImportButton disabled size={size}>
-          Import
+          {i18n.t('common_button_import')}
         </ImportButton>
       </Block>
     </Tooltip>
@@ -82,7 +83,7 @@ export const instruments = {
       <FieldsButton
         wrapper={FieldsButton.Checkbox}
         trailingIcon={<Icon {...iconProps} />}
-        title={"Columns"}
+        title={i18n.t('common_button_columns')}
         size={size}
         style={style}
         openUpwardForShortViewport={false}
@@ -123,7 +124,7 @@ export const instruments = {
   "export-button": ({ size }) => {
     return (
       <Interface name="export">
-        <ExportButton size={size}>Export</ExportButton>
+        <ExportButton size={size}>{i18n.t('common_button_export')}</ExportButton>
       </Interface>
     );
   },

@@ -6,6 +6,7 @@ import { OutlinerTree } from "./OutlinerTree";
 import { ViewControls } from "./ViewControls";
 import "./OutlinerPanel.scss";
 import { IconInfo } from "../../../assets/icons/outliner";
+import { useTranslation } from "react-i18next";
 
 interface OutlinerPanelProps extends PanelProps {
   regions: any;
@@ -102,6 +103,7 @@ const OutlinerStandAlone: FC<OutlinerPanelProps> = ({ regions }) => {
 };
 
 const OutlinerTreeComponent: FC<OutlinerTreeComponentProps> = observer(({ regions }) => {
+  const { t } = useTranslation();
   const allRegionsHidden = regions?.regions?.length > 0 && regions?.filter?.length === 0;
 
   const hiddenRegions = useMemo(() => {
@@ -115,8 +117,8 @@ const OutlinerTreeComponent: FC<OutlinerTreeComponentProps> = observer(({ region
       {allRegionsHidden ? (
         <Block name="filters-info">
           <IconInfo width={21} height={20} />
-          <Elem name="filters-title">All regions hidden</Elem>
-          <Elem name="filters-description">Adjust or remove the filters to view</Elem>
+          <Elem name="filters-title">{t('common_description_for_all_regions_hidden')}</Elem>
+          <Elem name="filters-description">{t('common_description_for_filters_description')}</Elem>
         </Block>
       ) : regions?.regions?.length > 0 ? (
         <>
@@ -129,14 +131,14 @@ const OutlinerTreeComponent: FC<OutlinerTreeComponentProps> = observer(({ region
                   <Elem name="filters-title">
                     There {hiddenRegions === 1 ? "is" : "are"} {hiddenRegions} hidden region{hiddenRegions > 1 && "s"}
                   </Elem>
-                  <Elem name="filters-description">Adjust or remove filters to view</Elem>
+                  <Elem name="filters-description">{t('common_description_for_filters_description')}</Elem>
                 </Block>
               )
             }
           />
         </>
       ) : (
-        <Elem name="empty">Regions not added</Elem>
+        <Elem name="empty">{t('common_label_regions_not_added')}</Elem>
       )}
     </>
   );

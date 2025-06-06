@@ -8,6 +8,7 @@ import { atomWithQuery } from "jotai-tanstack-query";
 import { useAtomValue } from "jotai";
 import { Modal } from "apps/labelstudio/src/components/Modal/ModalPopup";
 import { Button } from "apps/labelstudio/src/components";
+import {useTranslation} from 'react-i18next';
 
 const linkAtom = atomWithQuery(() => ({
   queryKey: ["invite-link"],
@@ -28,6 +29,7 @@ export function InviteLink({
   onOpened?: () => void;
   onClosed?: () => void;
 }) {
+  const { t } = useTranslation();
   const modalRef = useRef<Modal>();
   useEffect(() => {
     if (modalRef.current && opened) {
@@ -40,7 +42,7 @@ export function InviteLink({
   return (
     <Modal
       ref={modalRef}
-      title="Invite people"
+      title={t('common_title_invite_people')}
       opened={opened}
       bareFooter={true}
       body={<InvitationModal />}
@@ -53,14 +55,14 @@ export function InviteLink({
 }
 
 const InvitationModal = () => {
+  const {t} = useTranslation();
   const { data: link } = useAtomValue(linkAtom);
   return (
     <Block name="invite">
       <Input value={link} style={{ width: "100%" }} readOnly />
 
       <Description style={{ marginTop: 16 }}>
-        Invite people to join your Label Studio instance. People that you invite have full access to all of your
-        projects.{" "}
+        {t('common_tip_for_invite_people')}
         <a
           href="https://labelstud.io/guide/signup.html"
           target="_blank"
@@ -69,7 +71,7 @@ const InvitationModal = () => {
             __lsa("docs.organization.add_people.learn_more", { href: "https://labelstud.io/guide/signup.html" })
           }
         >
-          Learn more
+          {t('common_button_learn_more')}
         </a>
         .
       </Description>
@@ -78,6 +80,7 @@ const InvitationModal = () => {
 };
 
 const InvitationFooter = () => {
+  const { t } = useTranslation();
   const { copyText, copied } = useTextCopy();
   const { refetch, data: link } = useAtomValue(linkAtom);
 
@@ -85,12 +88,12 @@ const InvitationFooter = () => {
     <Space spread>
       <Space>
         <Button variant="secondary" style={{ width: 170 }} onClick={() => refetch()}>
-          Reset Link
+          {t('common_button_reset_link')}
         </Button>
       </Space>
       <Space>
         <Button look="primary" style={{ width: 170 }} onClick={() => copyText(link!)}>
-          {copied ? "Copied!" : "Copy link"}
+          {copied ? t('common_button_copied') : t('common_button_copy_link')}
         </Button>
       </Space>
     </Space>

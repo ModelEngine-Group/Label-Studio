@@ -18,6 +18,8 @@ import { TokenSettingsModal } from "@humansignal/core/blocks/TokenSettingsModal"
 import { InviteLink } from "./InviteLink";
 import { useToast } from "@humansignal/ui";
 import { debounce } from "@humansignal/core/lib/utils/debounce";
+import i18n from 'i18next';
+import { useTranslation} from "react-i18next";
 
 const InvitationModal = ({ link }) => {
   return (
@@ -31,8 +33,8 @@ const InvitationModal = ({ link }) => {
       />
 
       <Description style={{ marginTop: 16 }}>
-        Invite people to join your Label Studio instance. People that you invite have full access to all of your
-        projects.{" "}
+        {t('common_caption_for_invite_people')}
+        {t('common_button_learn_more')}
         <a
           href="https://labelstud.io/guide/signup.html"
           target="_blank"
@@ -41,7 +43,7 @@ const InvitationModal = ({ link }) => {
             __lsa("docs.organization.add_people.learn_more", { href: "https://labelstud.io/guide/signup.html" })
           }
         >
-          Learn more
+          {t('common_button_learn_more')}
         </a>
         .
       </Description>
@@ -50,6 +52,7 @@ const InvitationModal = ({ link }) => {
 };
 
 export const PeoplePage = () => {
+  const { t } = useTranslation();
   const api = useAPI();
   const inviteModal = useRef();
   const apiSettingsModal = useRef();
@@ -71,12 +74,12 @@ export const PeoplePage = () => {
 
   const apiTokensSettingsModalProps = useMemo(
     () => ({
-      title: "API Token Settings",
+      title: t('common_title_api_token_setting'),
       style: { width: 480 },
       body: () => (
         <TokenSettingsModal
           onSaved={() => {
-            toast.show({ message: "API Token settings saved" });
+            toast.show({ message: t("common_tip_for_api_token_saved") });
             apiSettingsModal.current?.close();
           }}
         />
@@ -101,9 +104,9 @@ export const PeoplePage = () => {
           <Space />
 
           <Space>
-            {isFF(FF_AUTH_TOKENS) && <Button onClick={showApiTokenSettingsModal}>API Tokens Settings</Button>}
+            {isFF(FF_AUTH_TOKENS) && <Button onClick={showApiTokenSettingsModal}>{t('common_title_api_token_setting')}</Button>}
             <Button icon={<LsPlus />} primary onClick={() => setInvitationOpen(true)}>
-              Add People
+              {t('common_button_add_people')}
             </Button>
           </Space>
         </Space>
@@ -124,7 +127,6 @@ export const PeoplePage = () => {
       <InviteLink
         opened={invitationOpen}
         onClosed={() => {
-          console.log("hidden");
           setInvitationOpen(false);
         }}
       />
@@ -132,5 +134,5 @@ export const PeoplePage = () => {
   );
 };
 
-PeoplePage.title = "People";
+PeoplePage.title = i18n.t('common_title_people') || 'People';
 PeoplePage.path = "/";

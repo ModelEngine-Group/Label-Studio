@@ -7,6 +7,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
 import { useCopyText } from "../../../lib/hooks/useCopyText";
 import styles from "./PersonalJWTToken.module.scss";
+import { useTranslation } from "react-i18next";
 
 /**
  * FIXME: This is legacy imports. We're not supposed to use such statements
@@ -100,6 +101,7 @@ export function PersonalJWTToken() {
   const tokens = useAtomValue(tokensListAtom);
   const revokeToken = useAtomValue(revokeTokenAtom);
   const createToken = useAtomValue(refreshTokenAtom);
+  const { t } = useTranslation();
 
   const tokensListClassName = clsx({
     [styles.tokensList]: tokens.data && tokens.data.length,
@@ -143,7 +145,7 @@ export function PersonalJWTToken() {
     <div className={styles.personalAccessToken}>
       <div className={tokensListClassName}>
         {tokens.isLoading ? (
-          <div>loading...</div>
+          <div>{t('common_label_loading')}</div>
         ) : tokens.isSuccess && tokens.data && tokens.data.length ? (
           <div>
             <Label text="Access Token" className={styles.label} />
@@ -160,7 +162,7 @@ export function PersonalJWTToken() {
                       <div className={styles.tokenString}>{token.token}</div>
                     </div>
                     <Button look="destructive" onClick={() => revoke(token.token)}>
-                      Revoke
+                      {t('common_button_revoke')}
                     </Button>
                   </div>
                 );
@@ -174,7 +176,7 @@ export function PersonalJWTToken() {
       <Tooltip title="You can only have one active token" disabled={!disallowAddingTokens}>
         <div style={{ width: "max-content" }}>
           <Button disabled={disallowAddingTokens || dialogOpened} onClick={openDialog}>
-            Create New Token
+            {t('common_button_create_new_token')}
           </Button>
         </div>
       </Tooltip>

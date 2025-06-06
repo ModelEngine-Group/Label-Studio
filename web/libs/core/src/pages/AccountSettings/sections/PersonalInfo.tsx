@@ -6,6 +6,7 @@ import styles from "../AccountSettings.module.scss";
 import { useCurrentUserAtom } from "@humansignal/core/lib/hooks/useCurrentUser";
 import { atomWithMutation } from "jotai-tanstack-query";
 import { useAtomValue } from "jotai";
+import {  useTranslation} from "react-i18next";
 
 /**
  * FIXME: This is legacy imports. We're not supposed to use such statements
@@ -40,6 +41,7 @@ const updateUserAvatarAtom = atomWithMutation(() => ({
 }));
 
 export const PersonalInfo = () => {
+  const { t } = useTranslation();
   const toast = useToast();
   const { user, fetch: refetchUser, isInProgress: userInProgress, updateAsync: updateUser } = useCurrentUserAtom();
   const updateUserAvatar = useAtomValue(updateUserAvatarAtom);
@@ -123,7 +125,7 @@ export const PersonalInfo = () => {
           <div className={styles.flexRow}>
             <div className={styles.flex1}>
               <Input
-                label="First Name"
+                label={t('common_label_first_name')}
                 value={fname}
                 onChange={(e: React.KeyboardEvent<HTMLInputElement>) => setFname(e.currentTarget.value)}
                 name="first_name"
@@ -131,7 +133,7 @@ export const PersonalInfo = () => {
             </div>
             <div className={styles.flex1}>
               <Input
-                label="Last Name"
+                label={t('common_label_last_name')}
                 value={lname}
                 onChange={(e: React.KeyboardEvent<HTMLInputElement>) => setLname(e.currentTarget.value)}
                 name="last_name"
@@ -140,11 +142,13 @@ export const PersonalInfo = () => {
           </div>
           <div className={styles.flexRow}>
             <div className={styles.flex1}>
-              <Input label="E-mail" type="email" readOnly={true} value={user?.email} />
+              <Input 
+                label={t('common_label_email')}
+                type="email" readOnly={true} value={user?.email} />
             </div>
             <div className={styles.flex1}>
               <Input
-                label="Phone"
+                label={t('common_label_phone')}
                 type="phone"
                 onChange={(e: React.KeyboardEvent<HTMLInputElement>) => setPhone(e.currentTarget.value)}
                 value={phone}

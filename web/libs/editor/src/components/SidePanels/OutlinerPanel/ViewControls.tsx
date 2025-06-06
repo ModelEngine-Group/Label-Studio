@@ -22,6 +22,7 @@ import { SidePanelsContext } from "../SidePanelsContext";
 import "./ViewControls.scss";
 import { FF_DEV_3873, isFF } from "../../../utils/feature-flags";
 import { observer } from "mobx-react";
+import {useTranslation} from 'react-i18next';
 
 const { Block, Elem } = BemWithSpecifiContext();
 
@@ -44,28 +45,29 @@ export const ViewControls: FC<ViewControlsProps> = observer(
   ({ ordering, regions, orderingDirection, onOrderingChange, onGroupingChange, onFilterChange }) => {
     const grouping = regions.group;
     const context = useContext(SidePanelsContext);
+    const {t} = useTranslation();
     const getGroupingLabels = useCallback((value: GroupingOptions): LabelInfo => {
       switch (value) {
         case "manual":
           return {
-            label: "Group Manually",
-            selectedLabel: isFF(FF_DEV_3873) ? "Manual" : "Manual Grouping",
+            label: t('common_label_group_manually'),
+            selectedLabel: isFF(FF_DEV_3873) ? t('common_label_manual') : t('common_label_manual_grouping'),
             icon: <IconList />,
-            tooltip: "Manually Grouped",
+            tooltip: t('common_label_manually_grouped'),
           };
         case "label":
           return {
-            label: "Group by Label",
-            selectedLabel: isFF(FF_DEV_3873) ? "By Label" : "Grouped by Label",
+            label: t('common_label_group_by_label'),
+            selectedLabel: isFF(FF_DEV_3873) ? t('common_label_by_label') : t('common_label_grouped_by_label'),
             icon: <IconTagAlt />,
-            tooltip: "Grouped by Label",
+            tooltip: t('common_label_grouped_by_label'),
           };
         case "type":
           return {
-            label: "Group by Tool",
-            selectedLabel: isFF(FF_DEV_3873) ? "By Tool" : "Grouped by Tool",
+            label: t('common_label_group_by_tool'),
+            selectedLabel: isFF(FF_DEV_3873) ? t('common_label_by_tool') : t('common_label_grouped_by_tool'),
             icon: <IconCursor />,
-            tooltip: "Grouped by Tool",
+            tooltip: t('common_label_grouped_by_tool'),
           };
       }
     }, []);
@@ -74,14 +76,14 @@ export const ViewControls: FC<ViewControlsProps> = observer(
       switch (value) {
         case "date":
           return {
-            label: "Order by Time",
-            selectedLabel: "By Time",
+            label: t('common_label_order_by_time'),
+            selectedLabel: t('common_label_by_time'),
             icon: <IconDetails />,
           };
         case "score":
           return {
-            label: "Order by Score",
-            selectedLabel: "By Score",
+            label: t('common_label_order_by_time'),
+            selectedLabel: t('common_label_by_score'),
             icon: <IconSpeed />,
           };
       }

@@ -10,49 +10,52 @@ import { CreateProject } from "../CreateProject/CreateProject";
 import { InviteLink } from "../Organization/PeoplePage/InviteLink";
 import { Heading, Sub } from "@humansignal/typography";
 import { Link } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
+import i18n from 'i18next';
 
 const PROJECTS_TO_SHOW = 10;
 
-const resources = [
-  {
-    title: "Documentation",
-    url: "https://labelstud.io/guide/",
-  },
-  {
-    title: "API Documentation",
-    url: "https://api.labelstud.io/api-reference/introduction/getting-started",
-  },
-  {
-    title: "Release Notes",
-    url: "https://labelstud.io/learn/categories/release-notes/",
-  },
-  {
-    title: "LabelStud.io Blog",
-    url: "https://labelstud.io/blog/",
-  },
-  {
-    title: "Slack Community",
-    url: "https://slack.labelstud.io",
-  },
-];
+  const resources = [
+    {
+      title: i18n.t('common_title_documentation'),
+      url: "https://labelstud.io/guide/",
+    },
+    {
+      title: i18n.t('common_title_api_documentation'),
+      url: "https://api.labelstud.io/api-reference/introduction/getting-started",
+    },
+    {
+      title: i18n.t('common_title_release_notes'),
+      url: "https://labelstud.io/learn/categories/release-notes/",
+    },
+    {
+      title: i18n.t('common_title_label_stud.io_blog'),
+      url: "https://labelstud.io/blog/",
+    },
+    {
+      title: i18n.t('common_title_slack_community'),
+      url: "https://slack.labelstud.io",
+    },
+  ];
 
-const actions = [
-  {
-    title: "Create Project",
-    icon: IconFolderAdd,
-    type: "createProject",
-  },
-  {
-    title: "Invite People",
-    icon: IconUserAdd,
-    type: "invitePeople",
-  },
-] as const;
+  const actions = [
+    {
+      title: i18n.t('common_button_create_project'),
+      icon: IconFolderAdd,
+      type: "createProject",
+    },
+    {
+      title: i18n.t('common_button_invite_people'),
+      icon: IconUserAdd,
+      type: "invitePeople",
+    },
+  ] as const;
 
-type Action = (typeof actions)[number]["type"];
+  type Action = (typeof actions)[number]["type"];
 
 export const HomePage: Page = () => {
   const api = useAPI();
+  const { t } = useTranslation();
   const [creationDialogOpen, setCreationDialogOpen] = useState(false);
   const [invitationOpen, setInvitationOpen] = useState(false);
   const { data, isFetching, isSuccess, isError } = useQuery({
@@ -82,8 +85,8 @@ export const HomePage: Page = () => {
       <div className="grid grid-cols-[minmax(0,1fr)_450px] gap-6">
         <section className="flex flex-col gap-6">
           <div className="flex flex-col gap-1">
-            <Heading size={1}>Welcome 👋</Heading>
-            <Sub>Let's get you started.</Sub>
+            <Heading size={1}>{t('common_title_welcome')} 👋</Heading>
+            <Sub>{t('common_subtitle_get_started_tip')}</Sub>
           </div>
           <div className="flex justify-start gap-4">
             {actions.map((action) => {
@@ -105,9 +108,9 @@ export const HomePage: Page = () => {
             title={
               data && data?.count > 0 ? (
                 <>
-                  Recent Projects{" "}
+                {t('common_title_recent_projects')}
                   <a href="/projects" className="text-lg font-normal hover:underline">
-                    View All
+                  {t('common_button_view_all')}
                   </a>
                 </>
               ) : null
@@ -118,7 +121,7 @@ export const HomePage: Page = () => {
                 <Spinner />
               </div>
             ) : isError ? (
-              <div className="h-64 flex justify-center items-center">can't load projects</div>
+              <div className="h-64 flex justify-center items-center">{t('common_tip_load_project_error')}</div>
             ) : isSuccess && data.results.length === 0 ? (
               <div className="flex flex-col justify-center items-center border border-lsBorderSubtle bg-lsPrimaryEmphasisSubtle rounded-lg h-64">
                 <div
@@ -128,10 +131,10 @@ export const HomePage: Page = () => {
                 >
                   <IconFolder />
                 </div>
-                <Heading size={2}>Create your first project</Heading>
-                <Sub>Import your data and set up the labeling interface to start annotating</Sub>
+                <Heading size={2}>{t('common_title_create_first_project')}</Heading>
+                <Sub>{t('common_subtitle_import_data_first')}</Sub>
                 <Button className="mt-4" onClick={() => setCreationDialogOpen(true)}>
-                  Create Project
+                  {t('common_button_create_project')}
                 </Button>
               </div>
             ) : isSuccess && data.results.length > 0 ? (
@@ -145,7 +148,7 @@ export const HomePage: Page = () => {
         </section>
         <section className="flex flex-col gap-6">
           <HeidiTips collection="projectSettings" />
-          <SimpleCard title="Resources" description="Learn, explore and get help">
+          <SimpleCard title={t('common_title_resources')} description={t('common_subtitle_resources_description')}>
             <ul>
               {resources.map((link) => {
                 return (

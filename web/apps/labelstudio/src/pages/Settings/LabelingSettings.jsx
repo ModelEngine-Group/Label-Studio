@@ -56,7 +56,6 @@ export const LabelingSettings = () => {
       const configIsEmpty = project.label_config.replace(/\s/g, "") === "<View></View>";
       const hasTasks = project.task_number > 0;
 
-      console.log({ hasConfig, configIsEmpty, hasTasks, project });
       return hasConfig && !configIsEmpty && hasTasks;
     }
     return false;
@@ -89,5 +88,5 @@ export const LabelingSettings = () => {
   );
 };
 
-LabelingSettings.title = "Labeling Interface";
+LabelingSettings.title = "标注接口";
 LabelingSettings.path = "/labeling";

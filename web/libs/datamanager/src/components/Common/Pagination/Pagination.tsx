@@ -14,6 +14,7 @@ import { useValueTracker } from "../Form/Utils";
 import "./Pagination.scss";
 import { useUpdateEffect } from "../../../hooks/useUpdateEffect";
 import { Select } from "../Form/Elements";
+import { useTranslation } from "react-i18next";
 
 interface PaginationProps {
   name?: string | (() => string);
@@ -81,6 +82,8 @@ export const Pagination: FC<PaginationProps> = forwardRef<any, PaginationProps>(
     },
     ref,
   ) => {
+    const { t } = useTranslation();
+
     const [inputMode, setInputMode] = useState(false);
     const [currentPage, setCurrentPage] = useValueTracker(props.page);
     const [waiting, setWaiting] = useValueTracker(props.waiting);
@@ -298,7 +301,7 @@ export const Pagination: FC<PaginationProps> = forwardRef<any, PaginationProps>(
             <Select
               size={size}
               value={pageSize}
-              options={pageSizeOptions.map((v) => ({ label: `${v} per page`, value: v }))}
+              options={pageSizeOptions.map((v) => ({ label: `${v} ${t('common_label_per_page')}`, value: v }))}
               onChange={(e: any) => {
                 const newPageSize = Number.parseInt(e.target.value);
 

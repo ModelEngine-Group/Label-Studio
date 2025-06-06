@@ -29,6 +29,7 @@ import { FF_HOMEPAGE } from "../../utils/feature-flags";
 import { IconHome } from "@humansignal/ui";
 import { pages } from "@humansignal/core";
 import { isFF } from "../../utils/feature-flags";
+import { useTranslation } from 'react-i18next';
 
 export const MenubarContext = createContext();
 
@@ -55,7 +56,7 @@ export const Menubar = ({ enabled, defaultOpened, defaultPinned, children, onSid
   const useMenuRef = useRef();
   const { user, fetch, isInProgress } = useCurrentUser();
   const location = useFixedLocation();
-
+  const { t } = useTranslation();
   const config = useConfig();
   const [sidebarOpened, setSidebarOpened] = useState(defaultOpened ?? false);
   const [sidebarPinned, setSidebarPinned] = useState(defaultPinned ?? false);
@@ -151,14 +152,14 @@ export const Menubar = ({ enabled, defaultOpened, defaultPinned, children, onSid
             align="right"
             content={
               <Menu>
-                <Menu.Item icon={<LsSettings />} label="Account &amp; Settings" href={pages.AccountSettingsPage.path} />
+                <Menu.Item icon={<LsSettings />} label={t('common_label_account_settings')} href={pages.AccountSettingsPage.path} />
                 {/* <Menu.Item label="Dark Mode"/> */}
-                <Menu.Item icon={<LsDoor />} label="Log Out" href={absoluteURL("/logout")} data-external />
+                <Menu.Item icon={<LsDoor />} label={t('common_label_log_out')} href={absoluteURL("/logout")} data-external />
                 {showNewsletterDot && (
                   <>
                     <Menu.Divider />
                     <Menu.Item className={cn("newsletter-menu-item")} href={pages.AccountSettingsPage.path}>
-                      <span>Please check new notification settings in the Account & Settings page</span>
+                      <span>{t('common_tip_for_check_new_notification')}</span>
                       <span className={cn("newsletter-menu-badge")} />
                     </Menu.Item>
                   </>
@@ -186,9 +187,9 @@ export const Menubar = ({ enabled, defaultOpened, defaultPinned, children, onSid
               style={{ width: 240 }}
             >
               <Menu>
-                {isFF(FF_HOMEPAGE) && <Menu.Item label="Home" to="/" icon={<IconHome />} data-external exact />}
-                <Menu.Item label="Projects" to="/projects" icon={<IconFolder />} data-external exact />
-                <Menu.Item label="Organization" to="/organization" icon={<IconPersonInCircle />} data-external exact />
+                {isFF(FF_HOMEPAGE) && <Menu.Item label={t('Home')} to="/" icon={<IconHome />} data-external exact />}
+                <Menu.Item label={t('Projects')} to="/projects" icon={<IconFolder />} data-external exact />
+                <Menu.Item label={t('Organization')} to="/organization" icon={<IconPersonInCircle />} data-external exact />
 
                 <Menu.Spacer />
 
@@ -198,7 +199,7 @@ export const Menubar = ({ enabled, defaultOpened, defaultPinned, children, onSid
                   onClick={sidebarPin}
                   active={sidebarPinned}
                 >
-                  {sidebarPinned ? "Unpin menu" : "Pin menu"}
+                  {sidebarPinned ? t('common_label_unpin_menu') : t('common_label_pin_menu')}
                 </Menu.Item>
               </Menu>
             </Dropdown>

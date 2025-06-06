@@ -921,12 +921,12 @@ export default observer(
         if (!src) {
           return true;
         }
-        const data = ['.svs', '.csp','.sdpc', 'tiff', '.ndpi', '.scn', '.mrxs', '.bif','.svslide']
+        const data = ['.svs', '.csp', '.kfb', '.sdpc', '.tiff', '.ndpi', '.scn', '.mrxs', '.svslide', '.bif'];
         return !data.some(key => src?.includes(key));
-      }      
+      }
       return (
         (!isDragon(item?.currentImageEntity?.src) ? <>
-              <>
+                        <>
                 <div id="img-mem-view" style={{width: '100%', height:'100%'}}></div>
                 <Dragon imageEntity={item.currentImageEntity}></Dragon>
               </>
@@ -1070,7 +1070,7 @@ export default observer(
           )}
         </ObjectTag>
       )
-        );
+      );
     }
   },
 );

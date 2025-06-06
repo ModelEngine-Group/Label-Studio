@@ -5,6 +5,7 @@ import { Filters } from "../Filters/Filters";
 import { Badge } from "./Badge/Badge";
 import { Button } from "./Button/Button";
 import { Dropdown } from "./Dropdown/Dropdown";
+import { useTranslation} from 'react-i18next';
 
 const buttonInjector = inject(({ store }) => {
   const { viewsStore, currentView } = store;
@@ -20,10 +21,10 @@ export const FiltersButton = buttonInjector(
   observer(
     React.forwardRef(({ activeFiltersNumber, size, sidebarEnabled, viewsStore, ...rest }, ref) => {
       const hasFilters = activeFiltersNumber > 0;
-
+      const { t } = useTranslation();
       return (
         <Button ref={ref} size={size} onClick={() => sidebarEnabled && viewsStore.toggleSidebar()} {...rest}>
-          Filters{" "}
+          {t('common_button_filters')}
           {hasFilters && (
             <Badge size="small" style={{ marginLeft: 5 }}>
               {activeFiltersNumber}

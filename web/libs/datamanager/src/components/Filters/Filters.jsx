@@ -7,6 +7,7 @@ import { Icon } from "../Common/Icon/Icon";
 import { Tooltip } from "@humansignal/ui";
 import { FilterLine } from "./FilterLine/FilterLine";
 import "./Filters.scss";
+import {useTranslation} from "react-i18next";
 
 const injector = inject(({ store }) => ({
   store,
@@ -17,7 +18,7 @@ const injector = inject(({ store }) => ({
 
 export const Filters = injector(({ views, currentView, filters }) => {
   const { sidebarEnabled } = views;
-
+  const {t} = useTranslation();
   const fields = React.useMemo(
     () =>
       currentView.availableFilters.reduce((res, filter) => {
@@ -66,12 +67,12 @@ export const Filters = injector(({ views, currentView, filters }) => {
             />
           ))
         ) : (
-          <Elem name="empty">No filters applied</Elem>
+          <Elem name="empty">{t('common_label_no_filters_applied')}</Elem>
         )}
       </Elem>
       <Elem name="actions">
         <Button type="primary" size="small" onClick={() => currentView.createFilter()} icon={<FaPlus />}>
-          Add {filters.length ? "Another Filter" : "Filter"}
+          {t('common_button_add')} {filters.length ? t('common_label_another_filter') : t('common_label_filter')}
         </Button>
 
         {!sidebarEnabled ? (

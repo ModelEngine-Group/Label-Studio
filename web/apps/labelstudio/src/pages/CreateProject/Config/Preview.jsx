@@ -5,6 +5,7 @@ import "./Config.scss";
 import { EMPTY_CONFIG } from "./Template";
 import { API_CONFIG } from "../../../config/ApiConfig";
 import { useAPI } from "../../../providers/ApiProvider";
+import { useTranslation } from "react-i18next";
 
 const configClass = cn("configure");
 
@@ -22,6 +23,7 @@ export const Preview = ({ config, data, error, loading, project }) => {
   // @see comment about dependencies above
   loadDependencies();
 
+  const { t } = useTranslation();
   const [storeReady, setStoreReady] = useState(false);
   const lsf = useRef(null);
   const rootRef = useRef();
@@ -135,7 +137,7 @@ export const Preview = ({ config, data, error, loading, project }) => {
 
   return (
     <div className={configClass.elem("preview")}>
-      <h3>UI Preview</h3>
+      <h3>{t('common_title_ui_preview')}</h3>
       {error && (
         <div className={configClass.elem("preview-error")}>
           <h2>

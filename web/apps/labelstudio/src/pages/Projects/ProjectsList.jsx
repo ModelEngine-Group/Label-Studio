@@ -7,10 +7,12 @@ import { LsBulb, LsCheck, LsEllipsis, LsMinus } from "../../assets/icons";
 import { Button, Dropdown, Menu, Pagination } from "../../components";
 import { Block, Elem } from "../../utils/bem";
 import { absoluteURL } from "../../utils/helpers";
+import { useTranslation } from 'react-i18next';
 
 const DEFAULT_CARD_COLORS = ["#FFFFFF", "#FDFDFC"];
 
 export const ProjectsList = ({ projects, currentPage, totalItems, loadNextPage, pageSize }) => {
+  const { t } = useTranslation();
   return (
     <>
       <Elem name="list">
@@ -21,7 +23,7 @@ export const ProjectsList = ({ projects, currentPage, totalItems, loadNextPage, 
       <Elem name="pages">
         <Pagination
           name="projects-list"
-          label="Projects"
+          label={t('common_title_projects')}
           page={currentPage}
           totalItems={totalItems}
           urlParamName="page"
@@ -50,6 +52,7 @@ export const EmptyProjectsList = ({ openModal }) => {
 };
 
 const ProjectCard = ({ project }) => {
+  const { t } = useTranslation();
   const color = useMemo(() => {
     return DEFAULT_CARD_COLORS.includes(project.color) ? null : project.color;
   }, [project]);
@@ -80,8 +83,8 @@ const ProjectCard = ({ project }) => {
               <Dropdown.Trigger
                 content={
                   <Menu contextual>
-                    <Menu.Item href={`/projects/${project.id}/settings`}>Settings</Menu.Item>
-                    <Menu.Item href={`/projects/${project.id}/data?labeling=1`}>Label</Menu.Item>
+                    <Menu.Item href={`/projects/${project.id}/settings`}>{t('common_title_settings')}</Menu.Item>
+                    <Menu.Item href={`/projects/${project.id}/data?labeling=1`}>{t('common_button_label')}</Menu.Item>
                   </Menu>
                 }
               >

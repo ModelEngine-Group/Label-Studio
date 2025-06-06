@@ -25,6 +25,7 @@ import { LSQueryClient } from "../utils/query-client";
 import { RootPage } from "./RootPage";
 import "@humansignal/ui/src/tailwind.css";
 import "./App.scss";
+import "./i18n";
 
 const baseURL = new URL(APP_SETTINGS.hostname || location.origin);
 export const UNBLOCK_HISTORY_MESSAGE = "UNBLOCK_HISTORY";

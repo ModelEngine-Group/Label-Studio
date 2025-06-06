@@ -7,6 +7,7 @@ import { Block, Elem } from "../../utils/bem";
 import { ModelVersionSelector } from "./AnnotationSettings/ModelVersionSelector";
 import { ProjectContext } from "../../providers/ProjectProvider";
 import { Divider } from "../../components/Divider/Divider";
+import { useTranslation } from "react-i18next";
 
 export const AnnotationSettings = () => {
   const { project, fetchProject } = useContext(ProjectContext);
@@ -14,6 +15,7 @@ export const AnnotationSettings = () => {
   const formRef = useRef();
   const [collab, setCollab] = useState(null);
 
+  const { t } = useTranslation();
   useEffect(() => {
     pageContext.setProps({ formRef });
   }, [formRef]);
@@ -25,7 +27,7 @@ export const AnnotationSettings = () => {
   return (
     <Block name="annotation-settings">
       <Elem name={"wrapper"}>
-        <h1>Annotation Settings</h1>
+        <h1>{t("common_title_annotation_settings")}</h1>
         <Block name="settings-wrapper">
           <Form
             ref={formRef}
@@ -35,15 +37,15 @@ export const AnnotationSettings = () => {
             onSubmit={updateProject}
           >
             <Form.Row columnCount={1}>
-              <Elem name={"header"}>Labeling Instructions</Elem>
+              <Elem name={"header"}>{t('common_title_labeling_instructions')}</Elem>
               <div style={{ color: "var(--sand_600)", fontSize: "14px" }}>
-                <p style={{ marginBottom: "0" }}>Write instructions to help users complete labeling tasks.</p>
+                <p style={{ marginBottom: "0" }}>{t('common_subtitle_labeling_instruction_tip1')}</p>
                 <p style={{ marginTop: "8px" }}>
-                  The instruction field supports HTML markup and it allows use of images, iframes (pdf).
+                  {t('common_subtitle_labeling_instruction_tip2')}
                 </p>
               </div>
               <div>
-                <Toggle label="Show before labeling" name="show_instruction" />
+                <Toggle label={t('common_label_show_before_labeling')} name="show_instruction" />
               </div>
               <TextArea name="expert_instruction" style={{ minHeight: 128, maxWidth: "520px" }} />
             </Form.Row>
@@ -52,11 +54,11 @@ export const AnnotationSettings = () => {
 
             <Form.Row columnCount={1}>
               <br />
-              <Elem name={"header"}>Prelabeling</Elem>
+              <Elem name={"header"}>{t('common_title_prelabeling')}</Elem>
               <div>
                 <Toggle
-                  label="Use predictions to prelabel tasks"
-                  description={<span>Enable and select which set of predictions to use for prelabeling.</span>}
+                  label={t('common_label_use_predictions_to_prelabel_tasks')}
+                  description={<span>{t('common_tip_for_prelabeling')}</span>}
                   name="show_collab_predictions"
                   onChange={(e) => {
                     setCollab(e.target.checked);
@@ -69,10 +71,10 @@ export const AnnotationSettings = () => {
 
             <Form.Actions>
               <Form.Indicator>
-                <span case="success">Saved!</span>
+                <span case="success">{t('common_label_saved')}</span>
               </Form.Indicator>
               <Button type="submit" look="primary" style={{ width: 120 }}>
-                Save
+                {t('common_button_save')}
               </Button>
             </Form.Actions>
           </Form>
@@ -82,5 +84,5 @@ export const AnnotationSettings = () => {
   );
 };
 
-AnnotationSettings.title = "Annotation";
+AnnotationSettings.title = "标注";
 AnnotationSettings.path = "/annotation";

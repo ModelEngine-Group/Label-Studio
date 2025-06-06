@@ -9,6 +9,7 @@ import Form from "../../Common/Form/Form";
 import { Menu } from "../../Common/Menu/Menu";
 import { Modal } from "../../Common/Modal/ModalPopup";
 import "./ActionsButton.scss";
+import { useTranslation } from 'react-i18next';
 
 const isFFLOPSE3 = isFF(FF_LOPS_E_3);
 const injector = inject(({ store }) => ({
@@ -34,7 +35,7 @@ export const ActionsButton = injector(
     const formRef = useRef();
     const selectedCount = store.currentView.selectedCount;
     const actions = store.availableActions.filter((a) => !a.hidden).sort((a, b) => a.order - b.order);
-
+    const { t } = useTranslation();
     const invokeAction = (action, destructive) => {
       if (action.dialog) {
         const { type: dialogType, text, form, title } = action.dialog;
@@ -135,7 +136,7 @@ export const ActionsButton = injector(
         disabled={!hasSelected}
       >
         <Button size={size} disabled={!hasSelected} {...rest}>
-          {selectedCount > 0 ? `${selectedCount} ${recordTypeLabel}${selectedCount > 1 ? "s" : ""}` : "Actions"}
+          {selectedCount > 0 ? `${selectedCount} ${recordTypeLabel}${selectedCount > 1 ? "s" : ""}` : t('common_button_actions')}
           <FaAngleDown size="16" style={{ marginLeft: 4 }} color="#566fcf" />
         </Button>
       </Dropdown.Trigger>
