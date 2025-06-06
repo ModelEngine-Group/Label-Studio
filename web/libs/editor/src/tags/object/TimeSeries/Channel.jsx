@@ -688,6 +688,8 @@ class ChannelD3 extends React.Component {
       .attr("marker-end", item.markersize > 0 ? `url(#${markerId})` : "");
 
     this.renderTracker();
+    this.renderPlayhead();
+    this.updatePlayhead(this.props.cursorTime);
     this.updateTracker(0); // initial value, will be updated in setRangeWithScaling
     this.renderYAxis();
     this.setRangeWithScaling(range);
@@ -797,6 +799,9 @@ class ChannelD3 extends React.Component {
     this.renderXAxis();
     this.renderYAxis();
     this.updateTracker(this.x(this.trackerX));
+
+    // Sync playhead with new scale/domain
+    this.updatePlayhead(this.props.cursorTime);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -827,6 +832,11 @@ class ChannelD3 extends React.Component {
     }
 
     this.renderBrushes(this.props.ranges, flushBrushes);
+
+    const cursorChanged = this.props.cursorTime !== prevProps.cursorTime;
+    if (cursorChanged || width !== prevState.width || flushBrushes) {
+      this.updatePlayhead(this.props.cursorTime);
+    }
   }
 
   render() {
@@ -837,6 +847,60 @@ class ChannelD3 extends React.Component {
 
     return <div className="htx-timeseries-channel" ref={this.ref} />;
   }
+
+  /*
+   * Render persistent playhead (cursor that shows current playback position).
+   * The line is separate from the hover tracker and is updated via `updatePlayhead`.
+   */
+  renderPlayhead = () => {
+    if (this.playhead) return; // already rendered
+
+    // Create a group to hold both line and triangle
+    this.playhead = this.main
+      .append("g")
+      .attr("class", "playhead")
+      .attr("pointer-events", "none")
+      .style("display", "none");
+
+    const color = this.props.item.parent?.cursorcolor || "var(--color-neutral-inverted-surface)";
+
+    // Vertical line
+    this.playheadLine = this.playhead
+      .append("line")
+      .attr("y1", 6) // Start below small handle
+      .attr("y2", this.height)
+      .attr("stroke", color)
+      .attr("stroke-width", 2);
+
+    // Upside-down house handle at top (pentagon like audio player)
+    this.playheadHandle = this.playhead
+      .append("polygon")
+      .attr("points", "-4,0 4,0 4,7 1,10 -1,10 -4,7") // Upside-down house shape
+      .attr("fill", color);
+  };
+
+  /*
+   * Update playhead position on timeline.
+   * @param {number|null} time Native time value. If null, hides playhead.
+   */
+  updatePlayhead = (time) => {
+    if (!this.playhead) return;
+
+    if (time === null || !Number.isFinite(time)) {
+      this.playhead.style("display", "none");
+      return;
+    }
+
+    // Check if time is within current x domain to avoid drawing off-screen
+    const domain = this.x.domain();
+    if (time < domain[0] || time > domain[1]) {
+      this.playhead.style("display", "none");
+      return;
+    }
+
+    const px = this.x(time) + 0.5; // align to pixel grid like tracker
+    this.playhead.attr("transform", `translate(${px},0)`).style("display", "block");
+  };
 }
 
 const ChannelD3Observed = observer(ChannelD3);
@@ -857,6 +921,7 @@ const HtxChannelViewD3 = ({ item }) => {
       series={item.parent?.dataHash}
       range={item.parent?.brushRange}
       ranges={item.parent?.regs}
+      cursorTime={item.parent?.cursorTime}
     />
   );
 };

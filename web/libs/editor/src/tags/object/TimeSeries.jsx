@@ -62,6 +62,7 @@ import { FF_TIMESERIES_SYNC, isFF } from "../../utils/feature-flags";
  * @param {string} value Key used to look up the data, either URLs for your time-series if valueType=url, otherwise expects JSON
  * @param {url|json} [valueType=url] Format of time series data provided. If set to "url" then Label Studio loads value references inside `value` key, otherwise it expects JSON.
  * @param {string} [sync] Object name to sync with.
+ * @param {string} [cursorColor] Color of the playback cursors used in sync (hex or any SVG-compatible color string)
  * @param {string} [timeColumn] Column name or index that provides temporal values. If your time series data has no temporal column then one is automatically generated.
  * @param {string} [timeFormat] Pattern used to parse values inside timeColumn, parsing is provided by d3, and follows `strftime` implementation
  * @param {string} [timeDisplayFormat] Format used to display temporal value. Can be a number or a date. If a temporal column is a date, use strftime to format it. If it's a number, use [d3 number](https://github.com/d3/d3-format#locale_format) formatting.
@@ -89,6 +90,9 @@ const TagAttrs = types.model({
   // visibilitycontrols: types.optional(types.boolean, false), // show channel visibility controls
   hotkey: types.maybeNull(types.string),
   sync: types.maybeNull(types.string),
+
+  // Color of the playback cursors (hex or any SVG-compatible color string)
+  cursorcolor: types.optional(types.string, "var(--color-neutral-inverted-surface)"),
 });
 
 const Model = types
@@ -116,6 +120,10 @@ const Model = types
     playStartPosition: null,
     animationFrameId: null,
     playbackSpeed: 1,
+    // Cursor position in native units (same units as keysRange). Used for visual playhead.
+    cursorTime: null,
+    // Suppress sync while user drags overview
+    suppressSync: false,
   }))
   .views((self) => ({
     get regionsTimeRanges() {
@@ -365,6 +373,28 @@ const Model = types
 
     resetSeekTo() {
       self.seekTo = null;
+    },
+
+    /**
+     * Suppress sync while user drags overview
+     */
+    setSuppressSync(flag) {
+      self.suppressSync = flag;
+    },
+
+    /**
+     * Update cursorTime & seekTo without changing view.
+     */
+    setCursorAndSeek(time) {
+      self.cursorTime = time;
+      self.seekTo = time;
+    },
+
+    /**
+     * Update cursorTime only (no brush move).
+     */
+    setCursor(time) {
+      self.cursorTime = time;
     },
 
     scrollToRegion(r) {
@@ -805,6 +835,9 @@ const Model = types
       if (Number.isFinite(newTimeStartNative) && Number.isFinite(newTimeEndNative)) {
         self.updateTR([newTimeStartNative, newTimeEndNative], self.scale); // updateTR expects native units
         self.seekTo = boundedTime; // seekTo stores native units
+
+        // Update persistent cursor position for rendering playhead
+        self.cursorTime = boundedTime;
       }
     },
 
@@ -820,6 +853,7 @@ const Model = types
     emitSeekSync() {
       if (!isAlive(self)) return;
       if (!isFF(FF_TIMESERIES_SYNC)) return;
+      if (self.suppressSync) return;
 
       const centerTime = self.centerTime; // centerTime is in NATIVE units (ms if isDate, else seconds/indices)
       if (centerTime !== null && self.sync && !self.isPlaying) {
@@ -898,6 +932,7 @@ const Overview = observer(({ item, data, series }) => {
   const gChannels = React.useRef();
   const gAxis = React.useRef();
   const gb = React.useRef();
+  const cursorLine = React.useRef();
 
   const scale = item.isDate ? d3.scaleTime() : d3.scaleLinear();
   const x = scale.domain(d3.extent(data[idX])).range([0, width]);
@@ -917,6 +952,9 @@ const Overview = observer(({ item, data, series }) => {
     } else {
       startX = null;
     }
+
+    // Suppress sync while user drags overview
+    item.setSuppressSync(true);
   }
 
   function brushed() {
@@ -985,6 +1023,9 @@ const Overview = observer(({ item, data, series }) => {
       if (moved[1] > width) moved = [width - half * 2, width];
       gb.current.call(brush.move, moved);
     }
+
+    // Re-enable sync after drag ends (next tick to let range settle)
+    setTimeout(() => item.setSuppressSync(false), 0);
   }
 
   const brush = d3
@@ -1068,6 +1109,29 @@ const Overview = observer(({ item, data, series }) => {
     // give a bit more space for brush moving
     gb.current.select(".handle--w").style("transform", "translate(-1px, 0)");
     gb.current.select(".handle--e").style("transform", "translate(1px, 0)");
+
+    // Playhead cursor with triangle handle
+    cursorLine.current = focus.current
+      .append("g")
+      .attr("class", "overview-playhead")
+      .attr("pointer-events", "none")
+      .style("display", "none");
+
+    const cursorColor = item.cursorcolor || "var(--color-neutral-inverted-surface)";
+
+    // Vertical line
+    cursorLine.current
+      .append("line")
+      .attr("y1", 5) // Start below small handle
+      .attr("y2", focusHeight)
+      .attr("stroke", cursorColor)
+      .attr("stroke-width", 2);
+
+    // Upside-down house handle at top (pentagon like audio player)
+    cursorLine.current
+      .append("polygon")
+      .attr("points", "-4,0 4,0 4,7 1,10 -1,10 -4,7") // Upside-down house shape (1.5x wider)
+      .attr("fill", cursorColor);
   }, [node]);
 
   React.useEffect(() => {
@@ -1121,6 +1185,22 @@ const Overview = observer(({ item, data, series }) => {
       item.resetSeekTo(); // Use the action instead of direct modification
     }
   }, [item.seekTo, width]);
+
+  // Update playhead position on cursorTime or width changes
+  React.useEffect(() => {
+    if (!cursorLine.current) return;
+    const time = item.cursorTime;
+    if (time === null || !Number.isFinite(time)) {
+      cursorLine.current.style("display", "none");
+      return;
+    }
+    const pos = x(time);
+    if (!Number.isFinite(pos)) {
+      cursorLine.current.style("display", "none");
+      return;
+    }
+    cursorLine.current.attr("transform", `translate(${pos},0)`).style("display", "block");
+  }, [item.cursorTime, width]);
 
   item.regs.map((r) => fixMobxObserve(r.start, r.end, r.selected, r.hidden, r.style?.fillcolor));
 
@@ -1180,12 +1260,23 @@ const HtxTimeSeriesViewRTS = ({ item }) => {
     const [minKey, maxKey] = item.keysRange;
     const finalTime = Math.max(minKey, Math.min(timeClicked, maxKey));
 
+    const insideView = item.brushRange && finalTime >= item.brushRange[0] && finalTime <= item.brushRange[1];
+
+    if (insideView) {
+      // Just move cursor without changing brush range
+      item.setCursor(finalTime);
+    } else if (typeof item._updateViewForTime === "function") {
+      // Re-center only when outside current view
+      item._updateViewForTime(finalTime);
+    }
+
     if (isFF(FF_TIMESERIES_SYNC)) {
+      const referenceTime = insideView ? finalTime : (item.centerTime ?? finalTime);
       let relativeTime;
       if (item.isDate) {
-        relativeTime = (finalTime - minKey) / 1000;
+        relativeTime = (referenceTime - minKey) / 1000;
       } else {
-        relativeTime = finalTime - minKey;
+        relativeTime = referenceTime - minKey;
       }
       item.syncSend({ time: relativeTime }, "seek");
     }
