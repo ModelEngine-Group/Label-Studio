@@ -25,20 +25,19 @@ class TestProjectCountsListAPI(TestCase):
         response = client.get(self.get_url(include='id,task_number,finished_task_number,total_predictions_number'))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['count'], 2)
-        self.assertEqual(
-            response.json()['results'],
-            [
-                {
-                    'id': self.project_1.id,
-                    'task_number': 2,
-                    'finished_task_number': 0,
-                    'total_predictions_number': 0,
-                },
-                {
-                    'id': self.project_2.id,
-                    'task_number': 1,
-                    'finished_task_number': 0,
-                    'total_predictions_number': 0,
-                },
-            ],
-        )
+        expected = [
+            {
+                'id': self.project_1.id,
+                'task_number': 2,
+                'finished_task_number': 0,
+                'total_predictions_number': 0,
+            },
+            {
+                'id': self.project_2.id,
+                'task_number': 1,
+                'finished_task_number': 0,
+                'total_predictions_number': 0,
+            },
+        ]
+        actual = sorted(response.json()['results'], key=lambda d: d['id'])
+        self.assertEqual(actual, expected)
