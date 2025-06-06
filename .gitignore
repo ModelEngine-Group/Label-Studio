@@ -80,3 +80,5 @@ docker-compose.override.yml
 
 # Local Netlify folder
 .netlify
+
+CLAUDE.local.md
