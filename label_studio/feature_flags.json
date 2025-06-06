@@ -3122,7 +3122,7 @@
     },
     "fflag_feat_optic_2125_timeseries_sync": {
       "key": "fflag_feat_optic_2125_timeseries_sync",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -3144,7 +3144,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 4,
+      "version": 5,
       "deleted": false
     },
     "fflag_feat_optic_378_limit_projects_per_page_to_ten_short": {
