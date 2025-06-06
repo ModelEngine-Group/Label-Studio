@@ -96,7 +96,7 @@ const GeneralSettings = observer(({ store }) => {
                       <SettingsTag key={tag}>{tag}</SettingsTag>
                     ))}
                   </Elem>
-                  <Block name="description">{EditorSettings[obj].newUI.description}</Block>
+                  <Elem name="description">{EditorSettings[obj].newUI.description}</Elem>
                 </Block>
                 <Toggle
                   key={index}
