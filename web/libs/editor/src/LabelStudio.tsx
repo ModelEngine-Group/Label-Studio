@@ -188,7 +188,7 @@ export class LabelStudio {
   }
 
   // To support React 18 properly, we need to use createRoot
-  // and render the app with it, and properly unmount it and cleanup all references.
+  // and render the app with it, and properly unmount it and cleanup all references
   async createAppV18() {
     const { store } = await configureStore(this.options, this.events);
     const rootElement = this.getRootElement(this.root);
