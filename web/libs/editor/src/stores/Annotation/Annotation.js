@@ -194,11 +194,26 @@ const _Annotation = types
       user = user.id;
     }
 
+    const getCreatedBy = (snapshot) => {
+      if (snapshot.type === "prediction") {
+        const modelVersion = snapshot.model_version?.trim() ?? "";
+        return modelVersion || "Admin";
+      }
+
+      return snapshot.createdBy ?? "Admin";
+    };
+
+    const getCreatedAt = (snapshot) => {
+      return snapshot.draft_created_at ?? snapshot.created_at ?? snapshot.createdDate;
+    };
+
     return {
       ...sn,
       ...(isFF(FF_DEV_3391) ? { root } : {}),
       user,
       editable: sn.editable ?? sn.type === "annotation",
+      createdBy: getCreatedBy(sn),
+      createdDate: getCreatedAt(sn),
       ground_truth: sn.honeypot ?? sn.ground_truth ?? false,
       skipped: sn.skipped || sn.was_cancelled,
       acceptedState: sn.accepted_state ?? sn.acceptedState ?? null,
