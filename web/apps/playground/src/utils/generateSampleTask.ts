@@ -19,6 +19,23 @@ const randomFloat = (min: number, max: number) => Math.random() * (max - min) + 
 
 const BEGIN_OF_TIME = new Date("2020-01-02T00:00:00.000Z").getTime();
 
+const parseTypeAndOption = (valueType: string) => {
+  const [, type, sep] = valueType.match(/^(\w+)(.)?/) ?? [];
+  const options: Record<string, string> = {};
+
+  if (sep) {
+    const pairs = valueType.split(sep).slice(1);
+
+    pairs.forEach((pair) => {
+      const [k, v] = pair.split("=", 2);
+
+      options[k] = v ?? true; // options without values are `true`
+    });
+  }
+
+  return { type, sep, options };
+};
+
 const generateTimeseriesData = (
   timeColumn?: string,
   columns?: string[],
@@ -44,7 +61,7 @@ const generateTimeseriesData = (
   // Output as json object with columns as top level keys, and the arrays of values
   const resultData = Object.values(headers).reduce(
     (acc, header, index) => {
-      acc[header] = data.map((row) => row[index]);
+      acc[header.toLowerCase()] = data.map((row) => row[index]);
       return acc;
     },
     {} as Record<any, any[]>,
@@ -69,8 +86,8 @@ global.fetch = async (url: string) => {
     const values = params.get("values");
     const separator = params.get("sep") || ",";
     const type = params.get("type") || "csv";
-    const columns = values?.split(",") || [];
     const timeFormat = params.get("tf");
+    const columns = values?.split(separator) || [];
     const data = generateTimeseriesData(timeColumn, columns, {
       type: type as "csv" | "json",
       separator,
@@ -158,12 +175,20 @@ export async function generateSampleTaskFromConfig(config: string): Promise<{
     if (data[key] !== undefined) return; // already set
 
     // Detect valueType="url" or valueList
-    const valueType = node.getAttribute("valueType") || node.getAttribute("valuetype");
-    const onlyUrls = valueType === "url";
+    const getValueType = (node: Element) => node.getAttribute("valueType") || node.getAttribute("valuetype");
+    const valueType = getValueType(node);
     const isInline = node.getAttribute("inline") === "true";
     const isValueList = node.hasAttribute("valueList");
     let tag = node.tagName.toLowerCase();
+    let onlyUrls = valueType === "url";
     const value = node.getAttribute("value");
+    // If some other usage of a value is a url, then it's a url, lets skip this one
+    if (
+      valueType !== "url" &&
+      valueNodes.some((n) => n.getAttribute("value") === value && getValueType(n)?.includes("url"))
+    ) {
+      return;
+    }
     if (tag === "image" && value?.includes("ocr")) {
       tag = "ocr";
     } else if (tag === "text" && (value?.includes("coref") || value?.includes("long"))) {
@@ -179,38 +204,40 @@ export async function generateSampleTaskFromConfig(config: string): Promise<{
       } else {
         tag = "website";
       }
-    } else if (tag === "timeseries" && (value?.includes("csv") || !valueType?.includes("json"))) {
-      const csvUrl = new URL(SAMPLE_CSV);
+    } else if (tag === "timeseries") {
+      const isJson = valueType?.includes("json");
+      onlyUrls = onlyUrls || !isJson;
       const columns = Array.from(node.children).filter((child) => child.tagName === "Channel");
       const timeColumn = node.getAttribute("timeColumn");
-      const csvSeparator = node.getAttribute("sep");
+      let csvSeparator = node.getAttribute("sep");
       const timeFormat = node.getAttribute("timeFormat");
-      const values = columns.map((c) => c.getAttribute("column") || "").join(",");
+      const resolver = node.getAttribute("resolver");
+      let type = isJson ? "json" : "csv";
+
+      if (resolver) {
+        const { type: _type, sep } = parseTypeAndOption(resolver);
+        csvSeparator = sep;
+        type = _type as "csv" | "json";
+      }
+      const values = columns.map((c) => c.getAttribute("column") || "").join(csvSeparator ?? ",");
 
       if (onlyUrls) {
+        const csvUrl = new URL(SAMPLE_CSV);
         // Check children nodes Channel for columns
         if (timeColumn) csvUrl.searchParams.set("time", timeColumn);
         if (values) csvUrl.searchParams.set("values", values);
         if (csvSeparator) csvUrl.searchParams.set("sep", csvSeparator);
         if (timeFormat) csvUrl.searchParams.set("tf", timeFormat);
+        if (type) csvUrl.searchParams.set("type", type);
         data[key] = csvUrl.toString();
       } else {
         data[key] = generateTimeseriesData(timeColumn ?? "time", values.split(","), {
-          type: "csv",
+          type: isJson ? "json" : "csv",
           separator: csvSeparator ?? ",",
           timeFormat: timeFormat ?? undefined,
+          stringify: !isJson,
         });
       }
-      return;
-    } else if (tag === "timeseries" && valueType?.includes("json")) {
-      const columns = Array.from(node.children)
-        .filter((child) => child.tagName === "Channel")
-        .map((c) => c.getAttribute("column") || "");
-      const timeColumn = node.getAttribute("timeColumn") || "None";
-      data[key] = generateTimeseriesData(timeColumn, columns, {
-        type: "json",
-        stringify: false,
-      });
       return;
     }
 
