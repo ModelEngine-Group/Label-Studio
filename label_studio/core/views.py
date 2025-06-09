@@ -9,6 +9,7 @@ import posixpath
 from pathlib import Path
 from wsgiref.util import FileWrapper
 from io import BytesIO
+import time
 
 import pandas as pd
 import requests
@@ -39,7 +40,17 @@ from rest_framework.views import APIView
 
 from .deepzoom_util import DeepZoomWrapper
 
+# Create dedicated loggers with direct console output
 logger = logging.getLogger(__name__)
+
+# Create a WSI logger specifically for WSI operations
+wsi_logger = logging.getLogger('server')
+if not wsi_logger.handlers:
+    wsi_handler = logging.StreamHandler()
+    wsi_handler.setFormatter(logging.Formatter('[%(asctime)s] [WSI] %(levelname)s: %(message)s'))
+    wsi_logger.addHandler(wsi_handler)
+    wsi_logger.setLevel(logging.INFO)  # Make sure it's visible
+    wsi_logger.propagate = False  # Don't propagate to root logger
 
 
 _PARAGRAPH_SAMPLE = None
@@ -200,81 +211,183 @@ def heidi_tips(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def localfiles_data(request):
-    """Serving files for LocalFilesImportStorage"""
+    """Serving files for LocalFilesImportStorage with optimized WSI handling"""
+    # Start timing the entire request
+    api_start = time.time()
+    
+    # Log request details
+    request_path = request.GET.get('d', '')
+    wsi_logger.debug(f'Request: {request_path}')
+    
     user = request.user
     path = request.GET.get('d')
-
     level = request.GET.get('level')
     col = request.GET.get('col')
     row = request.GET.get('row')
 
+    wsi_logger.info(f'Request started: path={path}, level={level}, col={col}, row={row}')
+
     if settings.LOCAL_FILES_SERVING_ENABLED is False:
+        wsi_logger.debug(f'Request rejected: LOCAL_FILES_SERVING_ENABLED is False')
         return HttpResponseForbidden(
             "Serving local files can be dangerous, so it's disabled by default. "
             'You can enable it with LOCAL_FILES_SERVING_ENABLED environment variable, '
             'please check docs: https://labelstud.io/guide/storage.html#Local-storage'
         )
 
+    # Start timing path resolution and permissions
+    path_start = time.time()
+    
     local_serving_document_root = settings.LOCAL_FILES_DOCUMENT_ROOT
     if path and request.user.is_authenticated:
         path = posixpath.normpath(path).lstrip('/')
         full_path = Path(safe_join(local_serving_document_root, path))
+        
+        wsi_logger.debug(f'Path resolution: {time.time() - path_start:.4f}s, full_path={full_path}')
 
         # Check if the file is a WSI file
         ext = os.path.splitext(full_path)[1].lower()
         is_wsi = ext in ['.svs', '.sdpc', '.tif', '.tiff', '.csp', '.kfb']
+        
+        # Log file type
+        wsi_logger.debug(f'File type check: extension={ext}, is_wsi={is_wsi}')
 
+        # Start timing database operations
+        db_start = time.time()
+        
         # Try to find Local File Storage connection based prefix:
         # storage.path=/home/user, full_path=/home/user/a/b/c/1.jpg =>
         # full_path.startswith(path) => True
         localfiles_storage = LocalFilesImportStorage.objects.annotate(
             _full_path=Value(os.path.dirname(full_path), output_field=CharField())
         ).filter(_full_path__startswith=F('path'))
-
+        
+        wsi_logger.debug(f'Database query: {time.time() - db_start:.4f}s')
+        
+        # Start timing permission check
+        perm_start = time.time()
+        
         # Check if user has permissions to access this storage
         user_has_permissions = False
         if localfiles_storage.exists():
             user_has_permissions = any(storage.project.has_permission(user) for storage in localfiles_storage)
-
-        if not user_has_permissions or not os.path.exists(full_path):
+            
+        wsi_logger.debug(f'Permission check: {time.time() - perm_start:.4f}s, has_permission={user_has_permissions}')
+        
+        # Log file existence
+        if not os.path.exists(full_path):
+            wsi_logger.debug(f'File not found: {full_path}')
+            return HttpResponseNotFound()
+        elif not user_has_permissions:
+            wsi_logger.debug(f'Permission denied for user: {user.email}')
             return HttpResponseNotFound()
         
-        # Check if the file is a WSI file and has level, col, and row parameters
-        if is_wsi and level and col and row:
-            try:
-                level = int(level)
-                col = int(col)
-                row = int(row)
-            except ValueError:
-                return HttpResponseForbidden('Invalid level, col, or row parameter')
-
-            # Get the tile image
-            dz = DeepZoomWrapper(full_path)
-            tile_image = dz.get_tile(level, (col, row))
-
-            # Create a response with the tile image
-            buf = BytesIO()
-            tile_image.save(buf, 'jpeg')
-            buf.seek(0)
-            return HttpResponse(buf, content_type='image/jpeg')
-        
-        # Check if the file is a WSI file without level, col, and row parameters
+        # Optimized WSI file handling
         if is_wsi:
-            # Create a DeepZoomWrapper instance
-            dz = DeepZoomWrapper(full_path)
+            # Start timing WSI processing
+            wsi_start = time.time()
+            
+            # Import SLIDE_CACHE here to avoid circular imports
+            from .wsi_optimizations import SLIDE_CACHE
+            wsi_logger.debug(f'Import modules: {time.time() - wsi_start:.4f}s')
+            
+            # Get the slide from cache or load it
+            cache_start = time.time()
+            try:
+                # Check if we have a cache hit before accessing
+                cache_hit = full_path in SLIDE_CACHE._cache
+                
+                # Get the slide (either from cache or load it)
+                dz = SLIDE_CACHE.get(full_path)
+                cache_time = time.time() - cache_start
+                
+                # Log cache access details
+                cache_size = len(SLIDE_CACHE._cache)
+                cache_max = SLIDE_CACHE.cache_size
+                wsi_logger.info(f'Slide cache access: time={cache_time:.4f}s, hit={cache_hit}, size={cache_size}/{cache_max}')
+            except Exception as e:
+                wsi_logger.error(f"Error loading file {full_path}: {e}")
+                return HttpResponseNotFound()
+                
+            # Serve a specific tile if level, col, and row are provided
+            if level and col and row:
+                try:
+                    level = int(level)
+                    col = int(col)
+                    row = int(row)
+                    wsi_logger.debug(f'Parsing tile parameters: level={level}, col={col}, row={row}')
+                except ValueError:
+                    wsi_logger.error(f'Invalid tile parameters: level={level}, col={col}, row={row}')
+                    return HttpResponseForbidden('Invalid level, col, or row parameter')
 
-            # Get the DZI (Deep Zoom Image) for the WSI file
-            dzi_xml = dz.get_dzi(format='jpeg')
-            return HttpResponse(dzi_xml, content_type='application/xml')
+                try:
+                    # Start timing tile extraction
+                    tile_start = time.time()
+                    
+                    # Get the tile bytes directly (optimized for transfer)
+                    # Use quality 75 for JPEG, matches server.py settings
+                    tile_bytes = dz.get_tile_bytes(level, (col, row), format='jpeg', quality=75)
+                    
+                    # Log tile extraction time
+                    tile_time = time.time() - tile_start
+                    
+                    # Return the tile with proper content type
+                    total_time = time.time() - api_start
+                    cache_hit = 'hit' if full_path in SLIDE_CACHE._cache else 'miss'
+                    wsi_logger.info(f'Tile served: path={full_path}, level={level}, col={col}, row={row}, cache={cache_hit}, tile_time={tile_time:.4f}s, total_time={total_time:.4f}s')
+                    
+                    # Print a performance summary to make it easy to spot slow operations
+                    wsi_logger.info(f'WSI PERFORMANCE SUMMARY - Tile: cache={cache_hit}, tile_extraction={tile_time:.4f}s, total={total_time:.4f}s')
+                    
+                    return HttpResponse(tile_bytes, content_type='image/jpeg')
+                except Exception as e:
+                    wsi_logger.error(f"Error getting tile for {full_path} at level {level}, col={col}, row={row}: {e}")
+                    return HttpResponseNotFound()
+            else:
+                # Return DZI XML for the WSI file
+                try:
+                    # Start timing DZI generation
+                    dzi_start = time.time()
+                    
+                    dzi_xml = dz.get_dzi(format='jpeg')
+                    
+                    # Log DZI generation time
+                    dzi_time = time.time() - dzi_start
+                    total_time = time.time() - api_start
+                    cache_hit = 'hit' if full_path in SLIDE_CACHE._cache else 'miss'
+                    
+                    wsi_logger.info(f'DZI served: path={full_path}, cache={cache_hit}, dzi_time={dzi_time:.4f}s, total_time={total_time:.4f}s')
+                    
+                    # Print a performance summary
+                    wsi_logger.info(f'WSI PERFORMANCE SUMMARY - DZI: cache={cache_hit}, generation={dzi_time:.4f}s, total={total_time:.4f}s')
+                    
+                    return HttpResponse(dzi_xml, content_type='application/xml')
+                except Exception as e:
+                    wsi_logger.error(f"Error getting DZI for {full_path}: {e}")
+                    return HttpResponseNotFound()
         
         # If the file is not a WSI file, serve it as a regular file
         if user_has_permissions and os.path.exists(full_path):
+            # Start timing regular file serving
+            file_start = time.time()
+            
             content_type, encoding = mimetypes.guess_type(str(full_path))
             content_type = content_type or 'application/octet-stream'
+            
+            # Log file serving time
+            file_time = time.time() - file_start
+            total_time = time.time() - api_start
+            wsi_logger.info(f'Regular file served: path={full_path}, content_type={content_type}, file_time={file_time:.4f}s, total_time={total_time:.4f}s')
+            
+            # Print a performance summary for comparison
+            wsi_logger.info(f'WSI PERFORMANCE SUMMARY - Regular file: size={os.path.getsize(full_path)}, file_time={file_time:.4f}s, total={total_time:.4f}s')
+            
             return RangedFileResponse(request, open(full_path, mode='rb'), content_type)
         else:
             return HttpResponseNotFound()
 
+    # Log total time for rejected requests
+    wsi_logger.info(f'Request rejected: total_time={time.time() - api_start:.4f}s')
     return HttpResponseForbidden()
 
 
