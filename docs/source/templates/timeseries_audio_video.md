@@ -82,7 +82,7 @@ To specify a time-based time series, use the following format:
   <TimeSeriesLabels name="timelinelabels" toName="accel_timeseries">
     <Label value="A"/>
     <Label value="B"/>
-  </TimeSeriesLabels>	
+  </TimeSeriesLabels>  
 
   <TimeSeries 
               name="accel_timeseries"
@@ -94,8 +94,10 @@ To specify a time-based time series, use the following format:
               overviewWidth="10%"
               fixedScale="true"
   >
-    <Channel column="accel_x" strokeColor="#FF0000" height="100"/>
-    <Channel column="accel_y" strokeColor="#00FF00" height="100"/>
+    <MultiChannel>
+      <Channel column="accel_x" strokeColor="#FF0000" height="100"/>
+      <Channel column="accel_y" strokeColor="#00FF00" height="100"/>
+    </MultiChannel>
   </TimeSeries>
   
   <TimeSeries 
@@ -116,8 +118,8 @@ To specify a time-based time series, use the following format:
 
 <!-- {
   "video": "https://app.heartex.ai/static/samples/opossum_snow.mp4",
-  "accel_data": "https://app.heartex.ai/samples/time-series.csv?time=time&values=accel_x%2Caccel_y&sep=%2C&tf=%H:%M:%S.%f",
-  "gyro_data": "https://app.heartex.ai/samples/time-series.csv?time=time&values=gyro_x%2Cgyro_y&sep=%2C&tf=%H:%M:%S.%f"
+  "accel_data": "https://app.humansignal.com/samples/time-series.csv?time=time&values=accel_x%2Caccel_y&sep=%2C&tf=%H:%M:%S.%f",
+  "gyro_data": "https://app.humansignal.com/samples/time-series.csv?time=time&values=gyro_x%2Cgyro_y&sep=%2C&tf=%H:%M:%S.%f"
 }
 -->
 ```
