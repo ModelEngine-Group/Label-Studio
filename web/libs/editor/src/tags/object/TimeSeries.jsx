@@ -25,9 +25,12 @@ import { SyncableMixin } from "../../mixins/Syncable";
 import { parseCSV, parseValue, tryToParseJSON } from "../../utils/data";
 import { fixMobxObserve } from "../../utils/utilities";
 
+import "./TimeSeries/MultiChannel";
 import "./TimeSeries/Channel";
+import { getChannelColor } from "./TimeSeries/palette";
 import { FF_TIMESERIES_SYNC, isFF } from "../../utils/feature-flags";
-
+import { FF_MULTICHANNEL_TS } from "@humansignal/core/lib/utils/feature-flags";
+import { ff } from "@humansignal/core";
 /**
  * The `TimeSeries` tag can be used to label time series data. Read more about Time Series Labeling on [the time series template page](../templates/time_series.html).
  *
@@ -98,7 +101,7 @@ const TagAttrs = types.model({
 const Model = types
   .model("TimeSeriesBaseModel", {
     type: "timeseries",
-    children: Types.unionArray(["channel", "timeseriesoverview", "view", "hypertext"]),
+    children: Types.unionArray(["channel", "timeseriesoverview", "view", "hypertext", "multichannel"]),
 
     width: 840,
     margin: types.frozen({ top: 20, right: 20, bottom: 30, left: 50, min: 10, max: 10 }),
@@ -126,6 +129,18 @@ const Model = types
     suppressSync: false,
   }))
   .views((self) => ({
+    // This condition shows that essential data missing or component not ready
+    get isNotReady() {
+      return (
+        !self.brushRange ||
+        self.brushRange.length !== 2 ||
+        !self.margin ||
+        !self.canvasWidth ||
+        !self.keysRange ||
+        self.keysRange.length !== 2
+      );
+    },
+
     get regionsTimeRanges() {
       if (!isAlive(self)) return [];
       return self.regs.map((r) => {
@@ -162,6 +177,24 @@ const Model = types
 
     get parseTimeFn() {
       return self.timeformat && self.timecolumn ? d3.utcParse(self.timeformat) : Number;
+    },
+
+    get channelsMap() {
+      const res = {};
+      const itemsToVisit = [...self.children];
+      let item;
+      while ((item = itemsToVisit.shift())) {
+        if (item.type === "channel") {
+          res[item.columnName] = item;
+        } else {
+          itemsToVisit.push(...item.children);
+        }
+      }
+      return res;
+    },
+
+    get channels() {
+      return Object.values(self.channelsMap);
     },
 
     parseTime(time) {
@@ -346,6 +379,17 @@ const Model = types
   }))
 
   .actions((self) => ({
+    afterCreate() {
+      self.channels.forEach((channel, idx) => {
+        if (channel.strokecolor === "") {
+          channel.strokecolor = getChannelColor(idx);
+        }
+        if (channel.markercolor === "") {
+          channel.markercolor = getChannelColor(idx);
+        }
+      });
+    },
+
     setData(data) {
       self.data = data;
       self.valueLoaded = true;
@@ -395,6 +439,36 @@ const Model = types
      */
     setCursor(time) {
       self.cursorTime = time;
+    },
+
+    /**
+     * Restart playback from a specific time position
+     * @param {number} time - The time in native units to restart playback from
+     */
+    restartPlaybackFromTime(time) {
+      if (!self.isPlaying) return;
+
+      // Cancel the current animation frame
+      if (self.animationFrameId) {
+        cancelAnimationFrame(self.animationFrameId);
+        self.animationFrameId = null;
+      }
+
+      // Convert native time to relative seconds for playback state
+      const [minKey] = self.keysRange;
+      let relativeTimeForPlayback;
+      if (self.isDate) {
+        relativeTimeForPlayback = (time - minKey) / 1000;
+      } else {
+        relativeTimeForPlayback = time - minKey;
+      }
+
+      // Update the play start position to the new time
+      self.playStartPosition = relativeTimeForPlayback;
+      self.playStartTime = performance.now();
+
+      // Restart the playback loop
+      self.playbackLoop();
     },
 
     scrollToRegion(r) {
@@ -871,8 +945,41 @@ const Model = types
           // If native is already seconds/indices, relative time is just offset from minKey.
           relativeTime = centerTime - minKey;
         }
-        self.syncSend({ time: relativeTime }, "seek");
+        // Include current playing state to prevent other media from pausing during seek
+        self.syncSend({ time: relativeTime, playing: self.isPlaying }, "seek");
       }
+    },
+
+    plotClickHandler(timeClicked) {
+      if (!isAlive(self) || !isFF(FF_TIMESERIES_SYNC) || !self.sync) return;
+      if (self.isNotReady) return;
+
+      const [minKey, maxKey] = self.keysRange;
+      const finalTime = Math.max(minKey, Math.min(timeClicked, maxKey));
+
+      const insideView = self.brushRange && finalTime >= self.brushRange[0] && finalTime <= self.brushRange[1];
+
+      if (insideView) {
+        // Just move cursor without changing brush range
+        self.setCursor(finalTime);
+      } else if (typeof self._updateViewForTime === "function") {
+        // Re-center only when outside current view
+        self._updateViewForTime(finalTime);
+      }
+
+      // If we're currently playing, update the playback state to restart from the clicked position
+      if (self.isPlaying) {
+        self.restartPlaybackFromTime(finalTime);
+      }
+
+      let relativeTime;
+      if (self.isDate) {
+        relativeTime = (finalTime - minKey) / 1000;
+      } else {
+        relativeTime = finalTime - minKey;
+      }
+      // Include current playing state to prevent other media from pausing during seek
+      self.syncSend({ time: relativeTime, playing: self.isPlaying }, "seek");
     },
   }));
 
@@ -913,7 +1020,7 @@ const Overview = observer(({ item, data, series }) => {
   const { margin, keyColumn: idX } = item;
   const width = Math.max(fullWidth - margin.left - margin.right, 0);
   // const data = store.task.dataObj;
-  let keys = item.children.map((c) => c.columnName);
+  let keys = Object.keys(item.channelsMap);
 
   if (item.overviewchannels) {
     const channels = item.overviewchannels
@@ -1039,7 +1146,7 @@ const Overview = observer(({ item, data, series }) => {
     .on("end", brushended);
 
   const drawPath = (key) => {
-    const channel = item.children.find((c) => c.columnName === key);
+    const channel = item.channelsMap[key];
     const color = channel ? channel.strokecolor : "steelblue";
     const y = d3
       .scaleLinear()
@@ -1141,7 +1248,7 @@ const Overview = observer(({ item, data, series }) => {
         .attr("viewBox", [0, 0, width + margin.left + margin.right, focusHeight + margin.bottom]);
 
       gChannels.current.selectAll("path").remove();
-      for (const key of keys) drawPath(key);
+      for (const key of Object.keys(item.channelsMap)) drawPath(key);
 
       drawAxis();
       // gb.current.selectAll("*").remove();
@@ -1270,6 +1377,11 @@ const HtxTimeSeriesViewRTS = ({ item }) => {
       item._updateViewForTime(finalTime);
     }
 
+    // If we're currently playing, update the playback state to restart from the clicked position
+    if (item.isPlaying) {
+      item.restartPlaybackFromTime(finalTime);
+    }
+
     if (isFF(FF_TIMESERIES_SYNC)) {
       const referenceTime = insideView ? finalTime : (item.centerTime ?? finalTime);
       let relativeTime;
@@ -1278,7 +1390,8 @@ const HtxTimeSeriesViewRTS = ({ item }) => {
       } else {
         relativeTime = referenceTime - minKey;
       }
-      item.syncSend({ time: relativeTime }, "seek");
+      // Include current playing state to prevent other media from pausing during seek
+      item.syncSend({ time: relativeTime, playing: item.isPlaying }, "seek");
     }
   };
 
@@ -1310,7 +1423,11 @@ const HtxTimeSeriesViewRTS = ({ item }) => {
     );
 
   return (
-    <div ref={ref} className="htx-timeseries" onClick={handleMainAreaClick}>
+    <div
+      ref={ref}
+      className="htx-timeseries"
+      onClick={ff.isActive(FF_MULTICHANNEL_TS) ? undefined : handleMainAreaClick}
+    >
       <ObjectTag item={item}>
         {Tree.renderChildren(item, item.annotation)}
         <Overview data={item.dataObj} series={item.dataHash} item={item} range={item.brushRange} />

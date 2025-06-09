@@ -116,8 +116,8 @@ To specify a time-based time series, use the following format:
 
 <!-- {
   "video": "https://app.heartex.ai/static/samples/opossum_snow.mp4",
-  "accel_data": "https://app.heartex.ai/samples/time-series.csv?time=time&values=accel_x%2Caccel_y&sep=%2C&tf=%H:%m:%d.%f",
-  "gyro_data": "https://app.heartex.ai/samples/time-series.csv?time=time&values=gyro_x%2Cgyro_y&sep=%2C&tf=%H:%m:%d.%f"
+  "accel_data": "https://app.heartex.ai/samples/time-series.csv?time=time&values=accel_x%2Caccel_y&sep=%2C&tf=%H:%M:%S.%f",
+  "gyro_data": "https://app.heartex.ai/samples/time-series.csv?time=time&values=gyro_x%2Cgyro_y&sep=%2C&tf=%H:%M:%S.%f"
 }
 -->
 ```
@@ -180,7 +180,7 @@ To specify an index-based time series, use the following format:
 
 #### Labeling configuration
 
-<br><br>
+<br>
 
 {% details <b>Index-based TimeSeries (no timestamps at X axis)</b> %}
 

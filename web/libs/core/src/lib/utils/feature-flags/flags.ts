@@ -87,3 +87,8 @@ export const FF_THEME_TOGGLE = "fflag_feat_front_optic_1217_theme_toggle_short";
  * Enables the summary view for annotations
  */
 export const FF_SUMMARY = "fflag_feat_front_leap_2036_annotations_summary";
+
+/**
+ * TimeSeries Multi-channel functionality
+ */
+export const FF_MULTICHANNEL_TS = "fflag_feat_front_bros58_timeseries_multichannel_short";

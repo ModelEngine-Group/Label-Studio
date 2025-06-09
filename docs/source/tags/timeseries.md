@@ -49,3 +49,39 @@ Labeling configuration for time series data stored in the task field `ts` in Lab
   </TimeSeries>
 </View>
 ```
+
+## MultiChannel
+
+The `MultiChannel` tag is used to group multiple channels together in a time series visualization. Use this tag within a `TimeSeries` tag to organize and display multiple data channels in a single view.
+
+{% insertmd includes/tags/multichannel.md %}
+
+### Example
+
+Labeling configuration for time series data with multiple channels grouped together:
+
+```html
+<View>
+  <TimeSeries name="ts" value="$timeseries" valuetype="json"
+              timeColumn="time"
+              timeFormat="%Y-%m-%d %H:%M:%S.%f"
+              timeDisplayFormat="%Y-%m-%d"
+              overviewChannels="velocity">
+    <MultiChannel>
+      <Channel column="velocity"
+               units="miles/h"
+               displayFormat=",.1f"
+               legend="Velocity"/>
+
+      <Channel column="acceleration"
+               units="miles/h^2"
+               displayFormat=",.1f"
+               legend="Acceleration"/>
+    </MultiChannel>
+  </TimeSeries>
+  <TimeSeriesLabels name="label" toName="ts">
+    <Label value="Run" background="red"/>
+    <Label value="Walk" background="green"/>
+  </TimeSeriesLabels>
+</View>
+```
