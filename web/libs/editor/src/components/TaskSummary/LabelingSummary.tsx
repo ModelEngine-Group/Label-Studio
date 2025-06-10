@@ -1,57 +1,151 @@
-import { IconSparks, Userpic } from "@humansignal/ui";
-import type { MSTAnnotation } from "../../stores/types";
-import { SummaryBadge } from "./SummaryBadge";
-import type { ControlTag } from "./types";
+import { useMemo } from "react";
+import { cnm, IconSparks, Userpic } from "@humansignal/ui";
+import { flexRender, getCoreRowModel, useReactTable, createColumnHelper } from "@tanstack/react-table";
+import type { ColumnDef, Row } from "@tanstack/react-table";
+import type { MSTAnnotation, MSTResult } from "../../stores/types";
 import { renderers } from "./labelings";
+import { ResizeHandler } from "./ResizeHandler";
+import { SummaryBadge } from "./SummaryBadge";
+import type { AnnotationSummary, ControlTag, RendererType } from "./types";
 
 type Props = {
   annotations: MSTAnnotation[];
   controls: ControlTag[];
+  onSelect: (entity: AnnotationSummary) => void;
 };
 
-export const LabelingSummary = ({ annotations, controls }: Props) => {
-  return (
-    <table className="mb-wide border border-neutral-border rounded-small border-collapse">
-      <thead>
-        <tr className="*:text-left *:whitespace-nowrap *:px-4 *:py-2">
-          <th>Annotation ID</th>
-          {controls.map((control) => (
-            <th key={control.name}>
-              {control.name} <SummaryBadge>{control.type}</SummaryBadge>
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {annotations.map((annotation) => (
-          <tr key={annotation.id} className="odd:bg-neutral-surface">
-            <td className="px-4 py-2 whitespace-nowrap flex gap-tight items-center">
-              <Userpic
-                user={annotation.user}
-                className={annotation.type === "prediction" ? "!bg-accent-plum-subtle text-accent-plum-bold" : ""}
-              >
-                {annotation.type === "prediction" && <IconSparks style={{ width: 18, height: 18 }} />}
-              </Userpic>
-              <span>{annotation.user?.displayName ?? annotation.createdBy}</span>
-              <span>#{annotation.pk}</span>
-            </td>
-            {controls.map((control) => {
-              // display only submitted results, not the current draft
-              const results = (annotation.versions.result ?? []).filter((result) => result.from_name === control.name);
-              const renderer = renderers[control.type];
-              const text = !results.length
-                ? "-"
-                : (renderer?.(results, control) ?? `${results.length} result${results.length > 1 ? "s" : ""}`);
+const cellFn = (control: ControlTag, render: RendererType) => (props: { row: Row<AnnotationSummary> }) => {
+  const annotation = props.row.original;
+  const results = annotation.results.filter((result) => result.from_name === control.name);
+  const content = !results.length
+    ? "-"
+    : (render?.(results, control) ?? `${results.length} result${results.length > 1 ? "s" : ""}`);
+  return content;
+};
 
-              return (
-                <td key={control.name} className="px-4 py-2">
-                  {text}
-                </td>
-              );
-            })}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+const convertPredictionResult = (result: MSTResult) => {
+  const json = result.toJSON();
+  return {
+    ...json,
+    // those are real results, so they have full names with @annotation-id postfix
+    from_name: json.from_name.replace(/@.*$/, ""),
+  };
+};
+
+const columnHelper = createColumnHelper<AnnotationSummary>();
+
+export const LabelingSummary = ({ annotations: all, controls, onSelect }: Props) => {
+  const annotations: AnnotationSummary[] = all.map((annotation) => ({
+    id: annotation.pk,
+    type: annotation.type,
+    user: annotation.user,
+    createdBy: annotation.user?.displayName ?? annotation.createdBy,
+    results:
+      annotation.type === "prediction"
+        ? (annotation.results?.map(convertPredictionResult) ?? [])
+        : (annotation.versions.result ?? []),
+  }));
+  const columns = useMemo(() => {
+    const columns: ColumnDef<AnnotationSummary, any>[] = controls.map((control) =>
+      columnHelper.display({
+        id: control.name,
+        header: () => (
+          <>
+            {control.name}{" "}
+            <SummaryBadge>
+              {control.per_region ? "per-region " : ""}
+              {control.type}
+            </SummaryBadge>
+          </>
+        ),
+        cell: cellFn(control, renderers[control.type]),
+        size: 250,
+      }),
+    );
+    columns.unshift({
+      header: "Annotation ID",
+      accessorKey: "id",
+      size: 200,
+      minSize: 150,
+      cell: ({ row }) => {
+        const annotation = row.original;
+
+        return (
+          <div className="flex gap-tight items-center cursor-pointer" onClick={() => onSelect(annotation)}>
+            <Userpic
+              user={annotation.user}
+              className={annotation.type === "prediction" ? "!bg-accent-plum-subtle text-accent-plum-bold" : ""}
+            >
+              {annotation.type === "prediction" && <IconSparks size={18} />}
+            </Userpic>
+            <span>{annotation.user?.displayName ?? annotation.createdBy}</span>
+            <span>#{annotation.id}</span>
+          </div>
+        );
+      },
+    });
+    return columns;
+  }, [controls, onSelect]);
+
+  const table = useReactTable<AnnotationSummary>({
+    data: annotations,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    columnResizeMode: "onChange",
+    enableColumnResizing: true,
+    defaultColumn: {
+      minSize: 80,
+      maxSize: 800,
+    },
+  });
+
+  return (
+    <div className="overflow-x-auto pb-tight mb-base">
+      <div className="border border-neutral-border rounded-small border-collapse overflow-hidden w-max">
+        <div>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <div
+              key={headerGroup.id}
+              className={cnm(
+                "flex [&>*]:flex-shrink-0 [&>*]:px-4 [&>*]:py-2 bg-neutral-surface",
+                "[&>*]:text-left [&>*]:whitespace-nowrap",
+              )}
+            >
+              {headerGroup.headers.map((header) => (
+                <div
+                  key={header.id}
+                  style={{
+                    width: header.getSize(),
+                    position: "relative",
+                  }}
+                >
+                  <div className="overflow-hidden text-ellipsis">
+                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                  </div>
+                  <ResizeHandler header={header} />
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+        <div>
+          {table.getRowModel().rows.map((row) => (
+            <div
+              key={row.id}
+              className={cnm(
+                "flex [&>*]:flex-shrink-0 even:bg-neutral-surface [&_td]:align-top [&>*]:px-4 [&>*]:py-2",
+                "[&>*]:overflow-hidden [&>*]:text-ellipsis",
+              )}
+            >
+              {row.getVisibleCells().map((cell) => (
+                <div key={cell.id} style={{ width: cell.column.getSize() }}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 };

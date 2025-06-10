@@ -29,7 +29,7 @@ export const ViewAll = ({ store: annotationStore, annotations, root }: Props) =>
       <div>
         <div className={styles.tabs}>
           <Tab title="Summary" active={tab === "summary"} onSelect={() => setTab("summary")} />
-          <Tab title="Grid" active={tab === "compare"} onSelect={() => setTab("compare")} />
+          <Tab title="Compare" active={tab === "compare"} onSelect={() => setTab("compare")} />
         </div>
         {tab === "summary" && (
           <div>

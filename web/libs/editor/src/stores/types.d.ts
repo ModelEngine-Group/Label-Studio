@@ -193,6 +193,9 @@ export type MSTStore = {
     selectedHistory: object | null;
     store: MSTStore;
     names: Map<string, MSTTag>;
+
+    selectAnnotation: (id: string | number) => void;
+    selectPrediction: (id: string | number) => void;
   };
   commentStore: MSTCommentStore;
 

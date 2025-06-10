@@ -1,32 +1,114 @@
+import { useMemo } from "react";
+import { flexRender, getCoreRowModel, useReactTable, createColumnHelper } from "@tanstack/react-table";
+import { cnm } from "@humansignal/ui";
 import { SummaryBadge } from "./SummaryBadge";
+import { ResizeHandler } from "./ResizeHandler";
 import type { ObjectTypes } from "./types";
 
-type DataSummaryProps = {
-  data_types: ObjectTypes;
-  data: Record<string, any>;
-};
+export const DataSummary = ({ data_types }: { data_types: ObjectTypes }) => {
+  const data: Record<string, any> = useMemo(() => {
+    return Object.fromEntries(Object.entries(data_types).map(([field, { value }]) => [field, value]));
+  }, [data_types]);
 
-export const DataSummary = ({ data_types, data }: DataSummaryProps) => {
+  const columns = useMemo(() => {
+    const columnHelper = createColumnHelper<Record<string, any>>();
+
+    return Object.entries(data_types).map(([field, { type }]) =>
+      columnHelper.accessor(field, {
+        id: field,
+        header: () => (
+          <>
+            {field} <SummaryBadge>{type}</SummaryBadge>
+          </>
+        ),
+        cell: ({ getValue }) => {
+          const value = getValue();
+
+          // super simple support for images
+          // @todo create a proper data type handler for all data types
+          if (type === "image") {
+            return <img src={value} alt={field} className="w-full" />;
+          }
+
+          // List: [{ id: <id>, body: text, title: text }, ...]
+          // Paragraphs: [{ <nameKey>: name, <textKey>: text }, ...]
+          if (Array.isArray(value)) {
+            return JSON.stringify(value);
+          }
+
+          // Timeseries: <channel name>: [array of values]
+          // Table: <key>: <value>
+          if (typeof value === "object") {
+            return Object.entries(value)
+              .map(([key, value]) => `${key}: ${String(value).substring(0, 300)}`)
+              .join("\n");
+          }
+
+          return value;
+        },
+        size: 300,
+        maxSize: 800,
+      }),
+    );
+  }, [data_types]);
+
+  const table = useReactTable({
+    data: [data],
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    columnResizeMode: "onChange",
+    enableColumnResizing: true,
+    defaultColumn: {
+      minSize: 80,
+      maxSize: 800,
+    },
+  });
+
   return (
-    <table className="table-auto w-full">
-      <thead>
-        <tr>
-          {Object.entries(data_types).map(([field, { type }]) => (
-            <th key={field} className="px-4 py-2 text-left whitespace-nowrap">
-              {field} <SummaryBadge>{type}</SummaryBadge>
-            </th>
+    <div className="overflow-x-auto pb-tight mb-base">
+      <div className="border border-neutral-border rounded-small border-collapse overflow-hidden w-max">
+        <div>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <div
+              key={headerGroup.id}
+              className={cnm(
+                "flex [&>*]:flex-shrink-0 [&>*]:px-4 [&>*]:py-2 bg-neutral-surface",
+                "[&>*]:overflow-hidden [&>*]:text-ellipsis [&>*]:text-left [&>*]:whitespace-nowrap",
+              )}
+            >
+              {headerGroup.headers.map((header) => (
+                <div
+                  key={header.id}
+                  style={{
+                    width: header.getSize(),
+                    position: "relative",
+                  }}
+                >
+                  {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                  <ResizeHandler header={header} />
+                </div>
+              ))}
+            </div>
           ))}
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          {Object.entries(data_types).map(([field, { value }]) => (
-            <td key={field} className="px-4 py-2 align-top">
-              {typeof value === "object" ? JSON.stringify(value) : value}
-            </td>
+        </div>
+        <div>
+          {table.getRowModel().rows.map((row) => (
+            <div
+              key={row.id}
+              className={cnm(
+                "flex [&>*]:flex-shrink-0 even:bg-neutral-surface [&_td]:align-top [&>*]:px-4 [&>*]:py-2",
+                "[&>*]:overflow-hidden [&>*]:text-ellipsis",
+              )}
+            >
+              {row.getVisibleCells().map((cell) => (
+                <div key={cell.id} style={{ width: cell.column.getSize() }}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </div>
+              ))}
+            </div>
           ))}
-        </tr>
-      </tbody>
-    </table>
+        </div>
+      </div>
+    </div>
   );
 };

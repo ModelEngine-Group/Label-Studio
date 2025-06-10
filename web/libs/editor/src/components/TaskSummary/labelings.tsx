@@ -1,9 +1,7 @@
-import type { ReactNode } from "react";
+import { cnm } from "@humansignal/ui";
 import type { RawResult } from "../../stores/types";
-import { contrastColor, convertToRGBA } from "../../utils/colors";
-import type { ControlTag } from "./types";
-
-type RendererType = (results: RawResult[], control: ControlTag) => ReactNode;
+import type { RendererType } from "./types";
+import { getLabelCounts } from "./utils";
 
 const resultValue = (result: RawResult) => {
   if (result.type === "textarea") {
@@ -15,37 +13,29 @@ const resultValue = (result: RawResult) => {
 
 const LabelsRenderer: RendererType = (results, control) => {
   const labels = results.flatMap(resultValue).flat();
-  const labelAmounts: [string, number][] = Object.entries(
-    labels.reduce((acc, label) => {
-      acc[label] = (acc[label] || 0) + 1;
-      return acc;
-    }, {}),
-  );
-  const labelColors = Object.fromEntries(
-    Object.entries(control.label_attrs).map(([lbl, attr]) => [lbl, attr.background]),
-  );
 
   if (!labels.length) return "-";
 
-  return (
-    <span className="flex gap-2">
-      {labelAmounts.map(([label, amount]) => {
-        const color = labelColors[label];
-        const background = color ? convertToRGBA(color, 0.3) : undefined;
+  const labelCounts = getLabelCounts(labels, control.label_attrs);
 
-        return (
-          <span
-            className="inline-block px-2 whitespace-nowrap rounded-4"
-            style={{
-              borderLeft: `4px solid ${color ?? "var(--color-grape-200)"}`,
-              color: background ? contrastColor(background) : undefined,
-              background: background ?? "var(--color-grape-200)",
-            }}
-          >
-            <b>{amount}</b> {label}
-          </span>
-        );
-      })}
+  return (
+    <span className="flex gap-2 flex-wrap">
+      {Object.entries(labelCounts)
+        .filter(([_, data]) => data.count > 0)
+        .map(([label, data]) => {
+          return (
+            <span
+              className="inline-block px-2 whitespace-nowrap rounded-4"
+              style={{
+                borderLeft: `4px solid ${data.border}`,
+                color: data.color,
+                background: data.background,
+              }}
+            >
+              <b>{data.count}</b> {label}
+            </span>
+          );
+        })}
     </span>
   );
 };
@@ -61,23 +51,26 @@ export const renderers: Record<string, RendererType> = {
   timeserieslabels: LabelsRenderer,
   paragraphlabels: LabelsRenderer,
   timelinelabels: LabelsRenderer,
-  number: (results, control) => {
+  number: (results) => {
     if (!results.length) return "-";
 
     return resultValue(results[0]);
   },
-  choices: (results, control) => {
+  choices: (results) => {
     const choices = results.flatMap(resultValue).flat();
     const unique = [...new Set(choices)];
 
     if (!choices.length) return null;
 
     return (
-      <span className="flex gap-2">
+      <span className="flex gap-2 flex-wrap">
         {unique.map((choice) => (
           <span
             key={choice}
-            className="inline-block px-2 bg-primary-background border border-primary-emphasis text-accent-grape-dark whitespace-nowrap rounded-4 mr-2"
+            className={cnm(
+              "inline-block whitespace-nowrap rounded-4 px-2",
+              "bg-primary-background border border-primary-emphasis text-accent-grape-dark",
+            )}
           >
             {choice}
           </span>
@@ -89,6 +82,20 @@ export const renderers: Record<string, RendererType> = {
     if (!results.length) return "-";
     if (control.per_region) return null;
 
-    return resultValue(results[0]);
+    const value = resultValue(results[0]);
+
+    if (!value) return null;
+
+    return <span className="text-ellipsis line-clamp-6">{value}</span>;
+  },
+  rating: (results, control) => {
+    if (!results.length) return "-";
+    if (control.per_region) return null;
+
+    const value = resultValue(results[0]);
+
+    if (!value) return null;
+
+    return "★".repeat(value);
   },
 };
