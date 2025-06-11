@@ -2,11 +2,11 @@ import { getRoot, types } from "mobx-state-tree";
 import { observer } from "mobx-react";
 import { Collapse } from "antd";
 
-import ProcessAttrsMixin from "../../mixins/ProcessAttrs";
 import Registry from "../../core/Registry";
-
 import Types from "../../core/Types";
 import Tree from "../../core/Tree";
+import { AnnotationMixin } from "../../mixins/AnnotationMixin";
+import ProcessAttrsMixin from "../../mixins/ProcessAttrs";
 import { isSelfServe } from "../../utils/billing";
 import { FF_BULK_ANNOTATION, isFF } from "../../utils/feature-flags";
 import { guidGenerator } from "../../utils/unique";
@@ -116,7 +116,7 @@ const Model = types
     },
   }));
 
-const CollapseModel = types.compose("CollapseModel", Model, ProcessAttrsMixin);
+const CollapseModel = types.compose("CollapseModel", AnnotationMixin, Model, ProcessAttrsMixin);
 
 const HtxCollapse = observer(({ item }) => {
   const isBulkMode = isFF(FF_BULK_ANNOTATION) && !isSelfServe() && item.store.hasInterface("annotation:bulk");
@@ -126,7 +126,7 @@ const HtxCollapse = observer(({ item }) => {
       {item.children
         .filter((i) => i.type === "panel" && (!isBulkMode || i.isIndependent))
         .map((i) => (
-          <Panel key={i._value} header={i._value}>
+          <Panel key={i._value} header={i._value} forceRender>
             {Tree.renderChildren(i, item.annotation)}
           </Panel>
         ))}
