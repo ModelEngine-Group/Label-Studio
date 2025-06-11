@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useMemo, useState } from "react";
+import { forwardRef, useCallback, useEffect, useMemo, useState } from "react";
 import clsx from "clsx";
 import { Label } from "@humansignal/ui";
 import styles from "./toggle.module.scss";
@@ -40,6 +40,16 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
       setIsChecked(initialChecked);
     }, [initialChecked]);
 
+    const onChangeHandler = useCallback(
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (typeof checked === "undefined") {
+          setIsChecked(e.target.checked);
+        }
+        onChange?.(e);
+      },
+      [onChange, checked],
+    );
+
     const formField = (
       <div
         className={clsx(
@@ -59,10 +69,7 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
           className={clsx(styles.toggle__input)}
           type="checkbox"
           checked={isChecked}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setIsChecked(e.target.checked);
-            onChange?.(e);
-          }}
+          onChange={onChangeHandler}
         />
         <span className={clsx(styles.toggle__indicator)} />
       </div>
