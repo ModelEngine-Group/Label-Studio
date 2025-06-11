@@ -85,8 +85,20 @@
       }
     }
 
+    &_bottom-left {
+      margin-left: calc(-1 * (var(--offset-x) - var(--pointer-size) / 2));
+
+      --animation-start: 10px;
+
+      &::before {
+        top: 0;
+        left: 24px;
+        transform: translate(-50%, -50%) rotate(45deg);
+      }
+    }
+
     &_top-left {
-      margin-left: calc(calc(var(--offset-x) - (var(--pointer-size) / 2)) * -1);
+      margin-left: calc(-1 * (var(--offset-x) - var(--pointer-size) / 2));
 
       --animation-start: -10px;
 
@@ -98,7 +110,7 @@
     }
 
     &_top-right {
-      margin-left: calc(calc(var(--offset-x) - (var(--pointer-size) / 2)));
+      margin-left: calc(var(--offset-x) - (var(--pointer-size) / 2));
 
       --animation-start: -10px;
 
