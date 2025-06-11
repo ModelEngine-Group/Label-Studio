@@ -100,6 +100,7 @@ export function PersonalJWTToken() {
   const tokens = useAtomValue(tokensListAtom);
   const revokeToken = useAtomValue(revokeTokenAtom);
   const createToken = useAtomValue(refreshTokenAtom);
+  const queryClient = useAtomValue(queryClientAtom);
 
   const tokensListClassName = clsx({
     [styles.tokensList]: tokens.data && tokens.data.length,
@@ -135,7 +136,10 @@ export function PersonalJWTToken() {
       style: { width: 680 },
       body: CreateTokenForm,
       closeOnClickOutside: false,
-      onHidden: () => setDialogOpened(false),
+      onHidden: () => {
+        setDialogOpened(false);
+        queryClient.invalidateQueries({ queryKey: ACCESS_TOKENS_QUERY_KEY });
+      },
     });
   }
 
