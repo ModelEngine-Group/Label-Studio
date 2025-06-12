@@ -74,7 +74,7 @@ export const CommentItem: FC<any> = observer(
         return (
           <Elem name="date">
             <Tooltip alignment="top-right" title={new Date(time).toLocaleString()}>
-              <>{`${isEdited ? "updated" : ""} ${humanDateDiff(time)}`}</>
+              <span>{`${isEdited ? "updated" : ""} ${humanDateDiff(time)}`}</span>
             </Tooltip>
           </Elem>
         );

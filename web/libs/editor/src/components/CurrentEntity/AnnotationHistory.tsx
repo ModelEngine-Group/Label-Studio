@@ -255,7 +255,7 @@ const HistoryItemComponent: FC<{
             {date && (
               <Elem name="date">
                 <Tooltip alignment="top-right" title={new Date(date).toLocaleString()}>
-                  <>{humanDateDiff(date)}</>
+                  <span>{humanDateDiff(date)}</span>
                 </Tooltip>
               </Elem>
             )}
