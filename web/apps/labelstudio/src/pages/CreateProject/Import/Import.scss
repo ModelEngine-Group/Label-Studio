@@ -6,7 +6,13 @@
 
   &__error {
     color: var(--color-negative-content);
-    padding: 0 32px;
+    border: 1px solid var(--color-negative-border);
+    background: var(--color-negative-background);
+    border-radius: var(--corner-radius-small);
+    padding: var(--spacing-base);
+    margin: 0 var(--spacing-wider) var(--spacing-wide);
+    display: flex;
+    gap: var(--spacing-tight);
   }
 
   button {
@@ -85,8 +91,8 @@
   }
 
   &__file-status {
-    background: var(--kale_400);
-    border: 1px solid var(--kale_400);
+    background: var(--color-positive-surface);
+    border: 1px solid var(--color-positive-surface);
     border-radius: 4px;
     width: 160px;
     height: 6px;
@@ -94,7 +100,7 @@
 
     &_uploading {
       border: 1px solid var(--color-primary-border-subtle);
-      background-color: var(--grape_500);
+      background-color: var(--color-primary-surface);
       background-repeat: repeat;
       background-position: 40px;
       background-size: 37px 100%;
@@ -143,6 +149,8 @@
     height: 20px;
   }
 
+
+
   &__csv-handling {
     margin: 0 auto;
 
@@ -176,10 +184,11 @@
 
 /* Import files via dropzone */
 .dropzone {
-  padding: 32px;
+  padding: 0 32px 32px;
   margin: 0;
   min-height: 100%;
   position: relative;
+  display: flex;
 
   a {
     color: var(--color-primary-content);
@@ -189,25 +198,39 @@
     }
   }
 
-  &_hovered {
-    opacity: 0.5;
+  &::before {
+    content:"";
+    transition: all 300ms ease-out;
+    position: absolute;
+    inset: 16px 48px 48px;
+    pointer-events: none;
+    border: 2px dashed transparent;
+    border-radius: var(--corner-radius-small);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 32px;
+    color: var(--color-neutral-content);
+    font-weight: 500;
+    font-size: 28px;
+  }
 
+  &_hovered {
     &::before {
-      content: "";
+      content: "Drop file(s) to upload";
       position: absolute;
-      inset: 8px;
-      border: 2px dashed var(--color-primary-border);
-      border-radius: 10px;
-      pointer-events: none;
+      inset: 0 32px 32px;
+      border: 2px dashed var(--color-primary-border-subtle);
+      background: var(--color-primary-emphasis);
+      font-size: 32px;
+      box-shadow: inset 2px 2px 24px 0 rgba(var(--color-primary-shadow-raw) / 10%), inset 2px 2px 8px 0 rgba(var(--color-primary-shadow-raw) / 15%);
     }
   }
 
-  &_hovered &__content {
-    opacity: 1;
-  }
-
   &__icon {
-    color: var(--grape_500);
+    color: var(--color-primary-icon);
   }
 
   label {
@@ -219,13 +242,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     cursor: pointer;
     background: var(--color-primary-background);
-    border: 1px dashed var(--color-primary-border);
+    border: 1px solid var(--color-primary-border-subtler);
     color: var(--color-neutral-content-subtle);
-    padding: 2rem;
-    width: 40rem;
-    border-radius: 8px;
+    padding: var(--spacing-base);
+    border-radius: var(--corner-radius-small);
+    transition: all 150ms ease-out;
 
     & > *:not(:first-child) {
       margin-top: 32px;
@@ -241,12 +265,16 @@
     dl {
       display: grid;
       grid-template: auto / auto auto;
-      font-size: 12px;
-      line-height: 20px;
+      font-size: 14px;
+      line-height: 24px;
       gap: 0 30px;
 
       dt {
         color: var(--color-neutral-content);
+      }
+      
+      dd {
+        font-weight: normal;
       }
 
       dt:last-of-type,
@@ -254,6 +282,11 @@
         margin-top: 20px;
       }
     }
+
+    &:hover {
+      border-color: var(--color-primary-border);
+    }
+
   }
 }
 
