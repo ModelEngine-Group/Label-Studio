@@ -567,10 +567,6 @@ export const AppStore = types
       const requests = [self.fetchProject(), self.fetchUsers()];
 
       if (!isLabelStream || (self.project?.show_annotation_history && task)) {
-        if (self.SDK.type === "dm") {
-          requests.push(self.fetchActions());
-        }
-
         if (self.SDK.settings?.onlyVirtualTabs && self.project?.show_annotation_history && !task) {
           requests.push(
             self.viewsStore.addView(
