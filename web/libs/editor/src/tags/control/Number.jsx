@@ -14,6 +14,7 @@ import ClassificationBase from "./ClassificationBase";
 import PerItemMixin from "../../mixins/PerItem";
 import { FF_LSDV_4583, isFF } from "../../utils/feature-flags";
 import { cn } from "../../utils/bem";
+import { safeNumber, positiveNumber } from "../../utils/number";
 
 /**
  * The Number tag supports numeric classification. Use to classify tasks using numbers.
@@ -171,15 +172,15 @@ const Model = types
       },
 
       increaseValue() {
-        if (self.number >= Number(self.max)) {
-          self.setNumber(0);
-        } else {
-          if (self.number > 0) {
-            self.setNumber(self.number + 1);
-          } else {
-            self.setNumber(1);
-          }
-        }
+        const min = safeNumber(self.min, 0);
+        const max = safeNumber(self.max, Number.POSITIVE_INFINITY);
+        const step = positiveNumber(self.step);
+        const defaultValue = safeNumber(self.defaultvalue, min);
+        const current = safeNumber(self.number, defaultValue);
+
+        const next = current + step > max ? min : current + step;
+
+        self.setNumber(next);
       },
 
       onHotKey() {
