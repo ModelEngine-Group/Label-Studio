@@ -60,6 +60,12 @@ export const FF_REGION_VISIBILITY_FROM_URL = "fflag_feat_front_optic_1553_url_ba
  */
 export const FF_AVERAGE_AGREEMENT_SCORE_POPOVER = "fflag_feat_all_leap_2042_average_agreement_score_popover";
 
+/**
+ * Allow to filter tasks in Data Manager by control tag labels used in annotation results
+ * @link https://app.launchdarkly.com/projects/default/flags/fflag_root_13_annotation_results_filtering
+ */
+export const FF_ANNOTATION_RESULTS_FILTERING = "fflag_root_13_annotation_results_filtering";
+
 // Customize flags
 const flags = {};
 

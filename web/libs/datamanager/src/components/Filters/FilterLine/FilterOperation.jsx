@@ -56,8 +56,21 @@ export const FilterOperation = observer(({ filter, field, operator, value }) => 
   };
   const availableOperators = filter.cellView?.filterOperators;
   const Input = selected?.input;
-  const operatorList = allowedFilterOperations(types, getRoot(filter)?.SDK?.type);
-  const operators = operatorList.map(({ key, label }) => ({ value: key, label }));
+  let operatorList = allowedFilterOperations(types, getRoot(filter)?.SDK?.type);
+  if (filter.filter.field.isAnnotationResultsFilterColumn) {
+    // We want at most one of "equal" or "contains" per filter type
+    // They resolve to the same backend query in this custom case
+    const hasEqualOperators = operatorList.some((o) => ["equal", "not_equal"].includes(o.key));
+    const allowedOperators = hasEqualOperators ? ["equal", "not_equal"] : ["contains", "not_contains"];
+    operatorList = operatorList.filter((op) => allowedOperators.includes(op.key));
+  }
+  const operators = operatorList.map(({ key, label }) => {
+    if (filter.filter.field.isAnnotationResultsFilterColumn) {
+      if (key === "contains") label = "includes all";
+      if (key === "not_contains") label = "does not include all";
+    }
+    return { value: key, label };
+  });
 
   return Input ? (
     <>

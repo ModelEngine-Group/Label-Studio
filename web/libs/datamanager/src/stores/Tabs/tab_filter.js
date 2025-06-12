@@ -123,6 +123,10 @@ export const TabFilter = types
         self.setOperator(self.component[0].key);
       }
 
+      if (filterChanged) {
+        self.setValue(null);
+      }
+
       if (save) self.saved();
     },
 

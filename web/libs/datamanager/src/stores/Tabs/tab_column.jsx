@@ -143,7 +143,7 @@ export const TabColumn = types
         const childColumns = [].concat(...self.children.map((subColumn) => subColumn.asField));
 
         result.push(...childColumns);
-      } else {
+      } else if (!self.isAnnotationResultsFilterColumn) {
         result.push({
           ...self,
           id: self.key,
@@ -193,6 +193,11 @@ export const TabColumn = types
       const cellView = CellViews[self.type] ?? CellViews[normalizeCellAlias(self.alias)];
 
       return cellView?.filterable !== false;
+    },
+
+    get isAnnotationResultsFilterColumn() {
+      // these columns are not visible in the column selector, but are used for filtering
+      return self.id.includes("annotations_results_json.") || self.id.endsWith(":annotations_results_json");
     },
   }))
   .actions((self) => ({

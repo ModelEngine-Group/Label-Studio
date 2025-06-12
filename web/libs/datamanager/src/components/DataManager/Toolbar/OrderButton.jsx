@@ -25,6 +25,9 @@ export const OrderButton = injector(({ size, ordering, view, ...rest }) => {
           onReset={() => view.setOrdering(null)}
           resetTitle="Default"
           selected={ordering?.field}
+          filter={(col) => {
+            return col.orderable ?? col.original?.orderable;
+          }}
           wrapper={({ column, children }) => (
             <Space style={{ width: "100%", justifyContent: "space-between" }}>
               {children}

@@ -49,6 +49,13 @@ export const FilterLine = observer(({ filter, availableFilters, index, view, sid
             width={80}
             dropdownWidth={120}
             dropdownClassName={dropdownClassName}
+            // Search on filter.title instead of filter.id
+            searchFilter={(option, query) => {
+              const original = option?.original ?? option;
+              const title = original?.field?.title ?? original?.title ?? "";
+              const parentTitle = original?.field?.parent?.title ?? "";
+              return `${title} ${parentTitle}`.toLowerCase().includes(query.toLowerCase());
+            }}
             onChange={(value) => filter.setFilterDelayed(value)}
             optionRender={({ item: { original: filter } }) => (
               <Elem name="selector">
