@@ -114,6 +114,7 @@ const TagAttrs = types.model({
   splitchannels: types.optional(types.boolean, false),
   decoder: types.optional(types.enumeration(["ffmpeg", "webaudio"]), "webaudio"),
   player: types.optional(types.enumeration(["html5", "webaudio"]), "html5"),
+  spectrogram: types.optional(types.boolean, false),
 });
 
 export const AudioModel = types.compose(

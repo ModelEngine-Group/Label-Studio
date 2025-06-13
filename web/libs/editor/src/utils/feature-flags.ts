@@ -18,6 +18,12 @@ export const FF_DEV_2669 = "ff_front_dev_2669_paragraph_author_filter_210622_sho
 export const FF_DEV_2671 = "ff_front_dev_2671_anchor_rotate_bbox_010722_short";
 
 /**
+ * Enable audio spectrograms
+ * @link https://app.launchdarkly.com/default/production/features/fflag_feat_optic_2123_audio_spectrograms
+ */
+export const FF_AUDIO_SPECTROGRAMS = "fflag_feat_optic_2123_audio_spectrograms";
+
+/**
  * Audio v3 - new Audio UI Library
  * @link https://app.launchdarkly.com/default/production/features/ff_front_dev_2715_audio_3_280722_short
  */

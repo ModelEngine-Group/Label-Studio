@@ -14,6 +14,7 @@ import type { Padding } from "./Common/Style";
 import { clamp, getCursorTime } from "./Common/Utils";
 import type { PlayheadOptions } from "./Visual/PlayHead";
 import type { Layer } from "./Visual/Layer";
+import type { SpectrogramScale } from "./Analysis/FFTProcessor";
 
 export interface WaveformOptions {
   /** URL of an audio or video */
@@ -127,9 +128,6 @@ export interface WaveformOptions {
    * - paged - move the view to the cursor
    */
   followCursor?: "center" | "paged" | false;
-
-  // Spectro styles
-  // @todo: implement the sepctrogram
 
   // Other options
   seekStep?: number;
@@ -320,7 +318,7 @@ export class Waveform extends Events<WaveformEventTypes> {
     const time = this.currentTime;
 
     this.visualizer.updateCursorToTime(time);
-    this.visualizer.redrawCursor();
+    this.visualizer.transferImage();
   }
 
   seek(value: number) {
@@ -342,7 +340,7 @@ export class Waveform extends Events<WaveformEventTypes> {
 
     const scrollLeft = clamp(time / this.duration - offset, 0, 1);
 
-    this.visualizer.setScrollLeft(scrollLeft, true, true);
+    this.visualizer.setScrollLeft(scrollLeft);
     this.invoke("scroll", [scrollLeft]);
   }
 
@@ -525,13 +523,22 @@ export class Waveform extends Events<WaveformEventTypes> {
     }
   }
 
+  updateSpectrogramConfig(config: {
+    fftSamples?: number;
+    melBands?: number;
+    windowingFunction?: string;
+    colorScheme?: string;
+    minDb?: number;
+    maxDb?: number;
+    hopFactor?: number;
+    scale?: SpectrogramScale;
+  }) {
+    this.visualizer.updateSpectrogramConfig(config);
+  }
+
   /**
    * Waveform amplification factor
    */
-  get amp() {
-    return this.visualizer.getAmp();
-  }
-
   set amp(value: number) {
     this.visualizer.setAmp(value);
   }
@@ -550,9 +557,6 @@ export class Waveform extends Events<WaveformEventTypes> {
     return this.media.sampleRate;
   }
 
-  get isDrawing() {
-    return this.visualizer.isDrawing;
-  }
   /**
    * Initialize events
    */

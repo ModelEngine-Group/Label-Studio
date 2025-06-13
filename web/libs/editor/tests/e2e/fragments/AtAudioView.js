@@ -11,10 +11,14 @@ module.exports = {
   _volumeSliderSelector: ".lsf-audio-slider__range",
   _volumeInputSelector: ".lsf-audio-slider__input",
   _muteButtonSelector: ".lsf-audio-control__mute-button",
-  _playbackSpeedSliderSelector: ".lsf-audio-config__modal > .lsf-audio-slider:nth-child(1) .lsf-audio-slider__range",
-  _playbackSpeedInputSelector: ".lsf-audio-config__modal > .lsf-audio-slider:nth-child(1) .lsf-audio-slider__input",
-  _amplitudeSliderSelector: ".lsf-audio-config__modal > .lsf-audio-slider:nth-child(2) .lsf-audio-slider__range",
-  _amplitudeInputSelector: ".lsf-audio-config__modal > .lsf-audio-slider:nth-child(2) .lsf-audio-slider__input",
+  _playbackSpeedSliderSelector:
+    ".lsf-audio-config__modal > .lsf-audio-config__scroll-content > .lsf-audio-slider:nth-child(2) .lsf-audio-slider__range",
+  _playbackSpeedInputSelector:
+    ".lsf-audio-config__modal > .lsf-audio-config__scroll-content > .lsf-audio-slider:nth-child(2) .lsf-audio-slider__input",
+  _amplitudeSliderSelector:
+    ".lsf-audio-config__modal > .lsf-audio-config__scroll-content > .lsf-audio-slider:nth-child(3) .lsf-audio-slider__range",
+  _amplitudeInputSelector:
+    ".lsf-audio-config__modal > .lsf-audio-config__scroll-content > .lsf-audio-slider:nth-child(3) .lsf-audio-slider__input",
   _hideTimelineButtonSelector: ".lsf-audio-config__buttons > .lsf-audio-config__menu-button:nth-child(1)",
   _hideWaveformButtonSelector: ".lsf-audio-config__buttons > .lsf-audio-config__menu-button:nth-child(2)",
   _audioElementSelector: '[data-testid="waveform-audio"]',

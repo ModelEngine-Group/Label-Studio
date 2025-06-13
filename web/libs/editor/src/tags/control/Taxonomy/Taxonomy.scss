@@ -89,6 +89,10 @@ body :global(.ant-select-arrow) {
   color: var(--color-neutral-icon);
 }
 
+body :global(.ant-select-single .ant-select-selection-item) {
+  color: var(--color-neutral-content);
+}
+
 body :global(.ant-empty-description) {
   color: var(--color-neutral-content-subtler);
 }

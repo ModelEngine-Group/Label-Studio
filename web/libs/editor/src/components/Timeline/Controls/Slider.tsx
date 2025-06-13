@@ -8,6 +8,7 @@ import "./Slider.scss";
 
 export interface SliderProps {
   description?: string;
+  showInput?: boolean;
   info?: string;
   max: number;
   min: number;
@@ -16,7 +17,16 @@ export interface SliderProps {
   onChange: (e: React.FormEvent<HTMLInputElement>) => void;
 }
 
-export const Slider: FC<SliderProps> = ({ description, info, max, min, value, step = 1, onChange }) => {
+export const Slider: FC<SliderProps> = ({
+  description,
+  info,
+  max,
+  min,
+  value,
+  step = 1,
+  showInput = true,
+  onChange,
+}) => {
   const sliderRef = useRef<HTMLDivElement>();
   const [valueError, setValueError] = useState<number | string | undefined>();
 
@@ -66,19 +76,21 @@ export const Slider: FC<SliderProps> = ({ description, info, max, min, value, st
             </Tooltip>
           )}
         </Elem>
-        <Elem
-          name="input"
-          tag="input"
-          type="text"
-          mod={
-            valueError !== undefined &&
-            (typeof valueError === "string" || valueError > max || valueError < min) && { error: "control" }
-          }
-          min={min}
-          max={max}
-          value={valueError === undefined ? value : valueError}
-          onChange={handleChangeInputValue}
-        />
+        {showInput && (
+          <Elem
+            name="input"
+            tag="input"
+            type="text"
+            mod={
+              valueError !== undefined &&
+              (typeof valueError === "string" || valueError > max || valueError < min) && { error: "control" }
+            }
+            min={min}
+            max={max}
+            value={valueError === undefined ? value : valueError}
+            onChange={handleChangeInputValue}
+          />
+        )}
       </Elem>
     );
   };

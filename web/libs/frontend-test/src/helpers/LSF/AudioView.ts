@@ -213,14 +213,21 @@ export const AudioView = {
   zoomIn({ times = 1, speed = 4 }) {
     cy.log(`Zoom in by ${times} times)`);
     for (let i = 0; i < times; i++) {
-      this.visualizer.trigger("wheel", "center", "center", { deltaY: -speed, ctrlKey: true, metaKey: true });
+      this.visualizer.trigger("wheel", "center", "center", {
+        deltaY: -speed,
+        ctrlKey: true,
+        metaKey: true,
+      });
     }
   },
 
   scroll({ times = 1, speed = 4, backward = false }) {
     cy.log(`Scroll by ${times} times)`);
     for (let i = 0; i < times; i++) {
-      this.visualizer.trigger("wheel", "center", "center", { deltaX: 0, deltaY: backward ? -speed : speed });
+      this.visualizer.trigger("wheel", "center", "center", {
+        deltaX: 0,
+        deltaY: backward ? -speed : speed,
+      });
     }
   },
 

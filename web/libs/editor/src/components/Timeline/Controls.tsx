@@ -120,6 +120,10 @@ export const Controls: FC<TimelineControlsProps> = memo(
           <ConfigControl
             onSetModal={onSetConfigModal}
             onAmpChange={props.onAmpChange}
+            onSpectrogramFftSamplesChange={props.onSpectrogramFftSamplesChange}
+            onNumberOfMelBandsChange={props.onNumberOfMelBandsChange}
+            onSpectrogramWindowingFunctionChange={props.onSpectrogramWindowingFunctionChange}
+            onSpectrogramColorSchemeChange={props.onSpectrogramColorSchemeChange}
             configModal={configModal}
             onSpeedChange={(speed: number) => onSpeedChange?.(speed)}
             speed={props.speed || 0}

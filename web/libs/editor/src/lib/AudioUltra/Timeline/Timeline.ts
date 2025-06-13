@@ -216,14 +216,24 @@ export class Timeline {
 
     const factor = 10 ** 10;
 
+    // Enforce a minimum pixel spacing between labels to prevent overlap
+    const minLabelSpacing = 40; // px, adjust as needed
+    let lastLabelX = Number.NEGATIVE_INFINITY;
+
     for (let i = segmentStart; i < segmentEnd; i += interval) {
       const time = toPrecision(i, precision);
-
       const isLabelInterval = Math.round(time * factor) % Math.round(labelInterval * factor);
+      const x = this.mapToPx(i - exactStart);
 
-      const intervalType: TimelineMark["type"] = isLabelInterval === 0 ? "label" : "mark";
-
-      this.renderInterval({ x: this.mapToPx(i - exactStart), time, type: intervalType, includeMs });
+      let intervalType: TimelineMark["type"] = "mark";
+      if (isLabelInterval === 0) {
+        // Only draw label if far enough from previous
+        if (x - lastLabelX >= minLabelSpacing) {
+          intervalType = "label";
+          lastLabelX = x;
+        }
+      }
+      this.renderInterval({ x, time, type: intervalType, includeMs });
     }
   }
 
