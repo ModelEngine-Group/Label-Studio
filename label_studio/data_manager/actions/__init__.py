@@ -56,6 +56,10 @@ def get_all_actions(user, project):
         if callable(form_generator):
             action['dialog']['form'] = form_generator(user, project)
 
+        disabled_generator = action.get('disabled')
+        if callable(disabled_generator):
+            action['disabled'] = disabled_generator(user, project)
+
     return actions
 
 

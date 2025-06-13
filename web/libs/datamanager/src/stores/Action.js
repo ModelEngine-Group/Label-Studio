@@ -42,6 +42,8 @@ export const Action = types
     id: StringOrNumberID,
     dialog: types.maybeNull(ActionDialog),
     order: types.integer,
+    disabled: types.optional(types.boolean, false),
+    disabled_reason: types.optional(types.string, ""),
     title: isFFLOPSE3 ? types.union(types.string, HtmlOrReact) : types.string,
     ...(isFFLOPSE3
       ? {

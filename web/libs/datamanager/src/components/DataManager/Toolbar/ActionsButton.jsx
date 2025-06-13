@@ -9,6 +9,7 @@ import Form from "../../Common/Form/Form";
 import { Menu } from "../../Common/Menu/Menu";
 import { Modal } from "../../Common/Modal/ModalPopup";
 import "./ActionsButton.scss";
+import { Tooltip } from "@humansignal/ui";
 
 const isFFLOPSE3 = isFF(FF_LOPS_E_3);
 const injector = inject(({ store }) => ({
@@ -96,19 +97,23 @@ const ActionButton = ({ action, parentRef, store, formRef }) => {
   }
 
   return (
-    <Menu.Item
-      size="small"
-      key={action.id}
-      danger={isDeleteAction}
-      onClick={onClick}
-      className={`actionButton${action.isSeparator ? "_isSeparator" : action.isTitle ? "_isTitle" : ""} ${
-        action.disabled ? "actionButton_disabled" : ""
-      }`}
-      icon={isDeleteAction && <IconTrash />}
-      title={action.disabled ? action.disabledReason : null}
-    >
-      {action.title}
-    </Menu.Item>
+    <Tooltip key={action.id} title={action.disabled_reason} disabled={!action.disabled} alignment="bottom-center">
+      <div>
+        <Menu.Item
+          size="small"
+          key={action.id}
+          danger={isDeleteAction}
+          onClick={onClick}
+          className={`actionButton${action.isSeparator ? "_isSeparator" : action.isTitle ? "_isTitle" : ""} ${
+            action.disabled ? "actionButton_disabled" : ""
+          }`}
+          icon={isDeleteAction && <IconTrash />}
+          title={action.disabled ? action.disabledReason : null}
+        >
+          {action.title}
+        </Menu.Item>
+      </div>
+    </Tooltip>
   );
 };
 
