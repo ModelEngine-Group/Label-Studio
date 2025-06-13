@@ -92,3 +92,8 @@ export const FF_SUMMARY = "fflag_feat_front_leap_2036_annotations_summary";
  * TimeSeries Multi-channel functionality
  */
 export const FF_MULTICHANNEL_TS = "fflag_feat_front_bros58_timeseries_multichannel_short";
+
+/**
+ * Enables enterprise email notifications
+ */
+export const FF_ENTERPRISE_EMAIL_NOTIFICATIONS = "fflag_feat_front_fit_183_email_notifications_short";
