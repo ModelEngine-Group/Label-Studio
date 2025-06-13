@@ -134,25 +134,6 @@ jobs:
           python3 $(pwd)/label_studio/core/version.py
           cat $(pwd)/label_studio/core/version_.py
 
-      - name: Download feature flags
-        env:
-          LAUNCHDARKLY_COMMUNITY_SDK_KEY: ${{ secrets.LAUNCHDARKLY_COMMUNITY_SDK_KEY }}
-        run: |
-          set -xeuo pipefail
-          curl \
-            --connect-timeout 30 \
-            --retry 5 \
-            --retry-delay 10 \
-            -H "Authorization: $LAUNCHDARKLY_COMMUNITY_SDK_KEY" \
-            "https://sdk.launchdarkly.com/sdk/latest-all" >"${{ env.LAUNCHDARKLY_DOWNLOAD_PATH }}"
-          if [ "$(jq 'has("flags")' <<< cat ${{ env.LAUNCHDARKLY_DOWNLOAD_PATH }})" = "true" ]; then
-            echo "feature_flags.json is valid"
-          else
-            echo "feature_flags.json is invalid"
-            cat ${{ env.LAUNCHDARKLY_DOWNLOAD_PATH }}
-            exit 1
-          fi
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.10.0
 
@@ -173,15 +154,15 @@ jobs:
 
           release_dir=release_${{ inputs.release_tag }}
           echo "release_dir=$release_dir" >> $GITHUB_OUTPUT
+          
           mkdir -p $release_dir
           cp label_studio/core/version_.py $release_dir/
-          cp ${{ env.LAUNCHDARKLY_DOWNLOAD_PATH }} $release_dir/
+
           cd $release_dir
 
           cat <<EOF > "${{ env.RELEASE_DOCKERFILE }}"
           FROM ${{ env.IMAGE_NAME }}:${{ steps.get_info.outputs.image_version }}
           COPY --chown=54546:0 version_.py /label-studio/label_studio/core/version_.py
-          COPY --chown=54546:0 ${{ env.LAUNCHDARKLY_DOWNLOAD_PATH }} /label-studio/label_studio/feature_flags.json
           EOF
 
       - name: Extract Docker metadata

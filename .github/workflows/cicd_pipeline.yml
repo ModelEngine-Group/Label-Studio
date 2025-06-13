@@ -408,8 +408,7 @@ jobs:
           jira_username: "${{ secrets.JIRA_USERNAME }}"
           jira_token: "${{ secrets.JIRA_TOKEN }}"
           jira_release_prefix: "LS OpenSource"
-          launchdarkly_sdk_key: "${{ secrets.LAUNCHDARKLY_COMMUNITY_SDK_KEY }}"
-          launchdarkly_environment: "community"
+          launchdarkly_path: "label_studio/feature_flags.json"
           helm_chart_repo: "HumanSignal/charts"
           helm_chart_path: "heartex/label-studio/Chart.yaml"
 
