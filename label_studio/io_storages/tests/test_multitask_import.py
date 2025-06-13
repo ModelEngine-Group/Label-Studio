@@ -374,11 +374,9 @@ def test_list_jsonl_with_preds_and_annots(storage):
     blob = '\n'.join([json.dumps(task) for task in task_data]).encode()
     output = load_tasks_json(blob, 'test.jsonl')
 
-    fixed_task_data_1 = task_data[1].copy()
-    fixed_task_data_1['annotations'] = None  # this key exists in the output, since preds exist
     expected_output = [
         StorageObject(key='test.jsonl', task_data=task_data[0], row_index=0),
-        StorageObject(key='test.jsonl', task_data=fixed_task_data_1, row_index=1),
+        StorageObject(key='test.jsonl', task_data=task_data[1], row_index=1),
     ]
     assert output == expected_output
 
@@ -398,18 +396,27 @@ def test_mixed_formats_jsonl(storage):
     blob = '\n'.join([json.dumps(task) for task in task_data]).encode()
     output = load_tasks_json(blob, 'test.jsonl')
 
-    # keys are copied across tasks; empty keys are correctly ignored in create_tasks()
-    fixed_task_data_0 = task_data[0].copy()
-    fixed_task_data_0['data'] = None
-    fixed_task_data_0['predictions'] = None
-    fixed_task_data_0['annotations'] = None
-
-    fixed_task_data_1 = task_data[1].copy()
-    fixed_task_data_1['text'] = None
-
     expected_output = [
-        StorageObject(key='test.jsonl', task_data=fixed_task_data_0, row_index=0),
-        StorageObject(key='test.jsonl', task_data=fixed_task_data_1, row_index=1),
+        StorageObject(key='test.jsonl', task_data=task_data[0], row_index=0),
+        StorageObject(key='test.jsonl', task_data=task_data[1], row_index=1),
+    ]
+    assert output == expected_output
+
+    create_tasks(storage, output)
+
+
+@mock_feature_flag('fflag_feat_root_11_support_jsonl_cloud_storage', True, 'io_storages.utils')
+def test_list_jsonl_with_datetimes(storage):
+    task_data = [
+        {'data': {'text': 'Test task 1', 'created_at': '2021-01-01T00:00:00Z'}},
+        {'data': {'text': 'Test task 2', 'created_at': '2021-01-02T00:00:00Z'}},
+    ]
+
+    blob = '\n'.join([json.dumps(task) for task in task_data]).encode()
+    output = load_tasks_json(blob, 'test.jsonl')
+    expected_output = [
+        StorageObject(key='test.jsonl', task_data=task_data[0], row_index=0),
+        StorageObject(key='test.jsonl', task_data=task_data[1], row_index=1),
     ]
     assert output == expected_output
 

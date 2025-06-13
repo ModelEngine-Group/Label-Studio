@@ -1,13 +1,12 @@
 """This file and its contents are licensed under the Apache License 2.0. Please see the included NOTICE for copyright information and LICENSE for a copy of the license.
 """
+import io
 import json
 import logging
 import re
 from dataclasses import dataclass
 from typing import Optional, Union
 
-import pyarrow as pa
-import pyarrow.json
 from core.feature_flags import flag_set
 from core.utils.common import load_func
 from django.conf import settings
@@ -164,10 +163,11 @@ def load_tasks_json_lso(blob: bytes, key: str) -> list[StorageObject]:
     except json.decoder.JSONDecodeError as e:
         if flag_set('fflag_feat_root_11_support_jsonl_cloud_storage'):
             try:
-                table = pyarrow.json.read_json(
-                    pa.py_buffer(blob), parse_options=pa.json.ParseOptions(newlines_in_values=True)
-                )
-                return StorageObject.bulk_create(table.to_pylist(), key, range(table.num_rows))
+                value = []
+                with io.BytesIO(blob) as f:
+                    for line in f:
+                        value.append(json.loads(line))
+                return StorageObject.bulk_create(value, key, range(len(value)))
             except Exception as e:
                 _error_wrapper(e)
         else:
