@@ -2,7 +2,7 @@ import factory
 from core.utils.common import load_func
 from django.conf import settings
 from faker import Faker
-from tasks.models import Annotation, Prediction, Task
+from tasks.models import Annotation, AnnotationDraft, Prediction, Task
 
 
 class TaskFactory(factory.django.DjangoModelFactory):
@@ -46,6 +46,23 @@ class AnnotationFactory(factory.django.DjangoModelFactory):
             ],
             **kwargs,
         )
+
+
+class AnnotationDraftFactory(factory.django.DjangoModelFactory):
+    task = factory.SubFactory(TaskFactory)
+    user = factory.SubFactory(load_func(settings.USER_FACTORY))
+    result = [
+        {
+            'value': {'choices': ['neg']},
+            'id': 'wMmVN7k_47',
+            'from_name': 'sentiment',
+            'to_name': 'text',
+            'type': 'choices',
+        }
+    ]
+
+    class Meta:
+        model = AnnotationDraft
 
 
 class PredictionFactory(factory.django.DjangoModelFactory):

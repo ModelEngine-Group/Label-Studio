@@ -11,6 +11,7 @@ from django.conf import settings
 from projects.models import Project
 from tasks.functions import update_tasks_counters
 from tasks.models import Annotation, AnnotationDraft, Prediction, Task
+from users.models import User
 from webhooks.models import WebhookAction
 from webhooks.utils import emit_webhooks_for_instance
 
@@ -76,11 +77,15 @@ def delete_tasks_annotations(project, queryset, **kwargs):
     :param project: project instance
     :param queryset: filtered tasks db queryset
     """
+    request = kwargs['request']
+    annotator_id = request.data.get('annotator')
+
     task_ids = queryset.values_list('id', flat=True)
     annotations = Annotation.objects.filter(task__id__in=task_ids)
-    count = annotations.count()
+    if annotator_id:
+        annotations = annotations.filter(completed_by=int(annotator_id))
 
-    # take only tasks where annotations were deleted
+    # take only tasks where annotations are going to be deleted
     real_task_ids = set(list(annotations.values_list('task__id', flat=True)))
     annotations_ids = list(annotations.values('id'))
     # remove deleted annotations from project.summary
@@ -88,9 +93,11 @@ def delete_tasks_annotations(project, queryset, **kwargs):
     # also remove drafts for the task. This includes task and annotation level
     # drafts by design.
     drafts = AnnotationDraft.objects.filter(task__id__in=task_ids)
+    if annotator_id:
+        drafts = drafts.filter(user=int(annotator_id))
     project.summary.remove_created_drafts_and_labels(drafts)
 
-    annotations.delete()
+    count, _ = annotations.delete()
     drafts.delete()  # since task-level annotation drafts will not have been deleted by CASCADE
     emit_webhooks_for_instance(project.organization, project, WebhookAction.ANNOTATIONS_DELETED, annotations_ids)
     request = kwargs['request']
@@ -107,6 +114,31 @@ def delete_tasks_annotations(project, queryset, **kwargs):
         postprocess(project, tasks, **kwargs)
 
     return {'processed_items': count, 'detail': 'Deleted ' + str(count) + ' annotations'}
+
+
+def delete_tasks_annotations_form(user, project):
+    annotator_ids = list(Annotation.objects.filter(project=project).values_list('completed_by', flat=True))
+    draft_annotator_ids = list(AnnotationDraft.objects.filter(task__project=project).values_list('user', flat=True))
+    users = User.objects.filter(id__in=annotator_ids + draft_annotator_ids)
+    return [
+        {
+            'columnCount': 1,
+            'fields': [
+                {
+                    'type': 'select',
+                    'name': 'annotator',
+                    'required': False,
+                    'label': 'Annotator',
+                    'options': [
+                        {'value': str(user.id), 'label': user.get_full_name() or user.username or user.email}
+                        for user in users
+                    ],
+                    'placeholder': 'All',
+                    'searchable': True,
+                }
+            ],
+        }
+    ]
 
 
 def delete_tasks_predictions(project, queryset, **kwargs):
@@ -164,8 +196,11 @@ actions = [
         'title': 'Delete Annotations',
         'order': 101,
         'dialog': {
-            'text': 'You are going to delete all annotations from the selected tasks. Please confirm your action.',
+            'text': 'You are going to delete annotations from the selected tasks.\n'
+            'You can select specific annotators to delete annotations for.\n'
+            'Please confirm your action.',
             'type': 'confirm',
+            'form': delete_tasks_annotations_form,
         },
     },
     {
