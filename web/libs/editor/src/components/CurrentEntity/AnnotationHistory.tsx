@@ -17,7 +17,7 @@ import {
 } from "@humansignal/icons";
 import { Tooltip, Userpic } from "@humansignal/ui";
 import { Space } from "../../common/Space/Space";
-import { Block, Elem } from "../../utils/bem";
+import { Block, cn, Elem } from "../../utils/bem";
 import { humanDateDiff, userDisplayName } from "../../utils/utilities";
 import { EmptyState } from "../SidePanels/Components/EmptyState";
 import "./AnnotationHistory.scss";
@@ -142,7 +142,13 @@ const AnnotationHistoryComponent: FC<any> = ({
   if (shouldShowEmptyState) {
     return (
       <Block name="annotation-history" mod={{ inline, empty: true }}>
-        {sectionHeader && <Elem name="section-head">{sectionHeader}</Elem>}
+        {sectionHeader && (
+          <div
+            className={`${cn("annotation-history").elem("section-head").toString()}${showEmptyState ? " sr-only" : ""}`}
+          >
+            {sectionHeader}
+          </div>
+        )}
         {renderEmptyState ? renderEmptyState() : defaultEmptyState}
       </Block>
     );
