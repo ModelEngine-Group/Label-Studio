@@ -56,6 +56,10 @@ export default class TransformerComponent extends Component {
     const selectedNodes = [];
 
     selectedRegions.forEach((shape) => {
+      if (shape.height < 0) {
+        shape.flipRegion?.();
+      }
+
       const shapeContainer = stage.findOne((node) => {
         return node.hasName(shape.id) && node.parent;
       });
@@ -194,7 +198,7 @@ export default class TransformerComponent extends Component {
           // borderStroke={"red"}
           boundBoxFunc={this.constrainSizes}
           anchorSize={8}
-          flipEnabled={false}
+          flipEnabled={true}
           zoomedIn={this.props.item.zoomScale > 1}
           onDragStart={(e) => {
             const {
@@ -242,7 +246,7 @@ export default class TransformerComponent extends Component {
           // borderStroke={"red"}
           boundBoxFunc={this.constrainSizes}
           anchorSize={8}
-          flipEnabled={false}
+          flipEnabled={true}
           zoomedIn={this.props.item.zoomScale > 1}
           onDragStart={(e) => {
             const {

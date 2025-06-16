@@ -262,6 +262,76 @@ Data(shapesTable.filter(({ shapeName }) => shapes[shapeName].hasMoveToolTransfor
   },
 );
 
+// Currently flipping is handled correctly only for rectangles.
+Data(shapesTable.filter(({ shapeName }) => shapeName === "Rectangle")).Scenario(
+  "Flip region during resizing",
+  async ({ I, LabelStudio, AtImageView, AtOutliner, AtPanels, current }) => {
+    const { shapeName } = current;
+    const Shape = shapes[shapeName];
+    const AtDetailsPanel = AtPanels.usePanel(AtPanels.PANEL.DETAILS);
+
+    I.amOnPage("/");
+    LabelStudio.init(getParamsWithShape(shapeName, Shape.params));
+    AtDetailsPanel.collapsePanel();
+    LabelStudio.waitForObjectsReady();
+    AtOutliner.seeRegions(0);
+    await AtImageView.lookForStage();
+    const canvasSize = await AtImageView.getCanvasSize();
+    const convertToImageSize = Helpers.getSizeConvertor(canvasSize.width, canvasSize.height);
+    let rectangleResult;
+
+    // Draw a region in bbox {x1:50,y1:50,x2:150,y2:150}
+    I.pressKey(Shape.hotKey);
+    drawShapeByBbox(Shape, 50, 50, 100, 100, AtImageView);
+    AtOutliner.seeRegions(1);
+    AtOutliner.dontSeeIncompleteRegion();
+
+    // Select the shape
+    AtImageView.clickAt(100, 100);
+    AtOutliner.seeSelectedRegion();
+
+    // Switch to move tool to force appearance of transformer
+    I.pressKey("v");
+    const isTransformerExist = await AtImageView.isTransformerExist();
+
+    assert.strictEqual(isTransformerExist, true);
+
+    // Flip the shape horizontally
+    // Move the left anchor to the right further than region width, effectively flipping it and reducing width to 50px
+    AtImageView.drawByDrag(50, 100, 150, 0);
+    // Check resulting sizes
+    rectangleResult = await LabelStudio.serialize();
+    const exceptedResult = Shape.byBBox(150, 50, 50, 100).result;
+
+    Asserts.deepEqualWithTolerance(rectangleResult[0].value, convertToImageSize(exceptedResult));
+
+    // new center of the region
+    const center = [150 + 25, 50 + 50];
+
+    // Rotate the shape by 45 degrees, rotation handle is 50px above the top anchor
+    // we move the rotation handle to the right to rotate the shape by 45 degrees
+    AtImageView.drawByDrag(center[0], 0, center[1], 0);
+
+    rectangleResult = await LabelStudio.serialize();
+    Asserts.deepEqualWithTolerance(rectangleResult[0].value.rotation, 45);
+
+    // Flip the shape and keep the width;
+    // we have to move the rotation handle to the left and down twice the width of the region,
+    // with respect to 45° rotation
+    const shift = (50 * 2) / Math.SQRT2;
+    AtImageView.drawByDrag(center[0] - 25 / Math.SQRT2, center[1] - 25 / Math.SQRT2, shift, shift);
+
+    const rotatedResult = {
+      ...convertToImageSize(Shape.byBBox(center[0] + 25 / Math.SQRT2, center[1] + 125 / Math.SQRT2, 50, 100).result),
+      rotation: 180 + 45,
+    };
+
+    rectangleResult = await LabelStudio.serialize();
+    // flipping is not very precise, so we have to increase the tolerance
+    Asserts.deepEqualWithTolerance(rectangleResult[0].value, rotatedResult, 0);
+  },
+);
+
 Data(shapesTable.filter(({ shapeName }) => shapes[shapeName].hasMoveToolTransformer)).Scenario(
   "Resizing a single region with zoom",
   async ({ I, LabelStudio, AtImageView, AtOutliner, AtPanels, Regions, current }) => {
