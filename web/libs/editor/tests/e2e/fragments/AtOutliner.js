@@ -63,7 +63,7 @@ module.exports = {
   dontSeeRegions(count) {
     count && I.dontSeeElement(this.locateRegionItemList().at(count));
     count === +count && I.dontSeeElement(this.locateRegionItemIndex(count));
-    !count && I.see("Regions not added");
+    !count && I.see("Labeled regions will appear here");
   },
   clickRegion(idxOrText) {
     I.click(this.locateRegion(idxOrText));

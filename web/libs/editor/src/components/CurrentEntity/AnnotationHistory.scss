@@ -9,6 +9,20 @@
     margin-bottom: 8px;
   }
 
+  &__section-head {
+    display: flex;
+    padding: 8px 0;
+    font-size: 15px;
+    font-weight: 500;
+    align-items: center;
+    justify-content: space-between;
+
+    span {
+      color: var(--color-neutral-content-subtler);
+      font-weight: normal;
+    }
+  }
+
   &__divider {
     height: 1px;
     position: relative;

@@ -33,6 +33,10 @@
       align-items: center;
       justify-content: space-between;
 
+      &[data-hidden="true"] {
+        @apply sr-only;
+      }
+
       span {
         color: var(--color-neutral-content-subtler);
         font-weight: normal;

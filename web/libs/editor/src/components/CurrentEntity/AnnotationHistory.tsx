@@ -13,11 +13,13 @@ import {
   IconCheck,
   IconDraftCreated,
   IconSparks,
+  IconHistoryRewind,
 } from "@humansignal/icons";
 import { Tooltip, Userpic } from "@humansignal/ui";
 import { Space } from "../../common/Space/Space";
 import { Block, Elem } from "../../utils/bem";
 import { humanDateDiff, userDisplayName } from "../../utils/utilities";
+import { EmptyState } from "../SidePanels/Components/EmptyState";
 import "./AnnotationHistory.scss";
 
 type HistoryItemType =
@@ -51,7 +53,7 @@ const DraftState: FC<{
   annotation: any;
   inline?: boolean;
   isSelected?: boolean;
-}> = observer(({ annotation, inline, isSelected }) => {
+}> = observer(({ annotation, inline, isSelected }: { annotation: any; inline?: boolean; isSelected?: boolean }) => {
   const hasChanges = annotation.history.hasChanges;
   const store = annotation.list; // @todo weird name
   const infoIsHidden = store.store.hasInterface("annotations:hide-info");
@@ -108,6 +110,9 @@ const AnnotationHistoryComponent: FC<any> = ({
   history,
   enabled = true,
   inline = false,
+  showEmptyState = true,
+  sectionHeader,
+  renderEmptyState,
 }) => {
   const annotation = annotationStore.selected;
   const lastItem = history?.length ? history[0] : null;
@@ -119,10 +124,34 @@ const AnnotationHistoryComponent: FC<any> = ({
   const isDraftSelected =
     !annotationStore.selectedHistory && (annotation.draftSelected || (!annotation.versions.draft && hasChanges));
 
+  // Determine if the empty state should be shown
+  const hasDraft = annotation?.versions?.draft;
+  const hasHistory = history && history.length > 0;
+  const shouldShowEmptyState = showEmptyState && !hasChanges && !hasDraft && !hasHistory;
+
+  // Default empty state component
+  const defaultEmptyState = (
+    <EmptyState
+      icon={<IconHistoryRewind width={24} height={24} />}
+      header="View annotation activity"
+      description={<>See a log of user actions for this annotation</>}
+    />
+  );
+
+  // If we should show empty state, render it
+  if (shouldShowEmptyState) {
+    return (
+      <Block name="annotation-history" mod={{ inline, empty: true }}>
+        {sectionHeader && <Elem name="section-head">{sectionHeader}</Elem>}
+        {renderEmptyState ? renderEmptyState() : defaultEmptyState}
+      </Block>
+    );
+  }
+
   return (
     <Block name="annotation-history" mod={{ inline }}>
+      {sectionHeader && <Elem name="section-head">{sectionHeader}</Elem>}
       <DraftState annotation={annotation} isSelected={isDraftSelected} inline={inline} />
-
       {enabled &&
         history.length > 0 &&
         history.map((item: any) => {
