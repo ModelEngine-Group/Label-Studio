@@ -42,6 +42,36 @@ When you filter or sort the data before you label it, you modify which tasks and
 
 <img src="/images/data-manager-filters.png" class="gif-border">
 
+<div class="opensource-only">
+
+!!! error Enterprise
+    In Label Studio Enterprise, you can use advanced filters against annotation results. For more information, see our [Enterprise documentation](https://docs.humansignal.com/guide/manage_data#Filter-annotation-results). 
+
+</div>
+
+<div class="enterprise-only">
+
+### Filter annotation results
+
+You can also filter on individual annotation results within a task:
+
+<img src="/images/data-manager-filters-lse.png" class="gif-border" >
+
+!!! note
+    In Label Studio Community and Starter Cloud, the `Annotation results` filter is an unstructured text search across all annotations for the task, and the example above would not be achievable.
+
+The following tags are supported:
+- All `Labels` tags (ex. `Labels`, `ParagraphLabels`, ...)
+- `Choices`
+- `Taxonomy`
+- `Rating`
+
+**Known limitations:**
+- [Taxonomies loaded using `apiUrl`](/templates/taxonomy) will not be detected.
+
+
+</div>
+
 ### Example: Label new data first
 Sort the data in your project by date to focus on labeling the newest data first.
 
