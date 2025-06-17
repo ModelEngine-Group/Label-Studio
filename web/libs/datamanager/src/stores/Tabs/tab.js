@@ -8,11 +8,10 @@ import { TabSelectedItems } from "./tab_selected_items";
 import { History } from "../../utils/history";
 import { CustomJSON, StringOrNumberID, ThresholdType } from "../types";
 import { clamp } from "../../utils/helpers";
-import { FF_ANNOTATION_RESULTS_FILTERING, FF_SELF_SERVE, isFF } from "../../utils/feature-flags";
+import { FF_ANNOTATION_RESULTS_FILTERING, isFF } from "../../utils/feature-flags";
 
 const THRESHOLD_MIN = 0;
 const THRESHOLD_MIN_DIFF = 0.001;
-const isSelfServe = isFF(FF_SELF_SERVE) && window.APP_SETTINGS.billing?.enterprise === false;
 
 export const Tab = types
   .model("View", {
@@ -111,7 +110,7 @@ export const Tab = types
     },
 
     get currentFilters() {
-      if (isFF(FF_ANNOTATION_RESULTS_FILTERING) && !isSelfServe) {
+      if (isFF(FF_ANNOTATION_RESULTS_FILTERING)) {
         return self.filters.filter((f) => f.target === self.target);
       }
       return self.filters.filter((f) => f.target === self.target && !f.field.isAnnotationResultsFilterColumn);
