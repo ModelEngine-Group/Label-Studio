@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Mapping, Optional
 from core.redis import start_job_async_or_sync
 from django.db.models import QuerySet
 from django.utils.functional import cached_property
+from projects.functions.utils import get_unique_ids_list
 
 if TYPE_CHECKING:
     from users.models import User
@@ -22,11 +23,8 @@ class ProjectMixin:
         :param from_scratch: Skip calculated tasks
         """
         # get only id from queryset to decrease data size in job
-        if not (isinstance(tasks_queryset, set) or isinstance(tasks_queryset, list)):
-            tasks_queryset = set(tasks_queryset.values_list('id', flat=True))
-        start_job_async_or_sync(
-            self._update_tasks_counters_and_is_labeled, list(tasks_queryset), from_scratch=from_scratch
-        )
+        task_ids = get_unique_ids_list(tasks_queryset)
+        start_job_async_or_sync(self._update_tasks_counters_and_is_labeled, task_ids, from_scratch=from_scratch)
 
     def update_tasks_counters_and_task_states(
         self,
@@ -46,11 +44,10 @@ class ProjectMixin:
         :param from_scratch: Skip calculated tasks
         """
         # get only id from queryset to decrease data size in job
-        if not (isinstance(tasks_queryset, set) or isinstance(tasks_queryset, list)):
-            tasks_queryset = set(tasks_queryset.values_list('id', flat=True))
+        task_ids = get_unique_ids_list(tasks_queryset)
         start_job_async_or_sync(
             self._update_tasks_counters_and_task_states,
-            tasks_queryset,
+            task_ids,
             maximum_annotations_changed,
             overlap_cohort_percentage_changed,
             tasks_number_changed,

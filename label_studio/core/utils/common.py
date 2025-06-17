@@ -630,6 +630,24 @@ def batch(iterable, n=1):
         yield iterable[ndx : min(ndx + n, l)]
 
 
+def batched_iterator(iterable, n):
+    """
+    TODO: replace with itertools.batched when we drop support for Python < 3.12
+    """
+
+    iterator = iter(iterable)
+    while True:
+        batch = []
+        for _ in range(n):
+            try:
+                batch.append(next(iterator))
+            except StopIteration:
+                if batch:
+                    yield batch
+                return
+        yield batch
+
+
 def round_floats(o):
     if isinstance(o, float):
         return round(o, 2)

@@ -4,16 +4,14 @@ import os
 import shutil
 import sys
 
-from core.bulk_update_utils import bulk_update
 from core.models import AsyncMigrationStatus
 from core.redis import start_job_async_or_sync
-from core.utils.common import batch
+from core.utils.common import batch, batched_iterator
 from data_export.mixins import ExportMixin
 from data_export.models import DataExport
 from data_export.serializers import ExportDataSerializer
 from data_manager.managers import TaskQuerySet
 from django.conf import settings
-from django.db import transaction
 from django.db.models import Count, Q
 from organizations.models import Organization
 from projects.models import Project
@@ -181,8 +179,6 @@ def update_tasks_counters(queryset, from_scratch=True):
     :param from_scratch: Skip calculated tasks
     :return: Count of updated tasks
     """
-    objs = []
-
     total_annotations = Count('annotations', distinct=True, filter=Q(annotations__was_cancelled=False))
     cancelled_annotations = Count('annotations', distinct=True, filter=Q(annotations__was_cancelled=True))
     total_predictions = Count('predictions', distinct=True)
@@ -211,15 +207,26 @@ def update_tasks_counters(queryset, from_scratch=True):
         new_total_predictions=total_predictions,
     )
 
-    for task in queryset.only('id', 'total_annotations', 'cancelled_annotations', 'total_predictions'):
-        task.total_annotations = task.new_total_annotations
-        task.cancelled_annotations = task.new_cancelled_annotations
-        task.total_predictions = task.new_total_predictions
-        objs.append(task)
-    with transaction.atomic():
-        bulk_update(
-            objs,
-            update_fields=['total_annotations', 'cancelled_annotations', 'total_predictions'],
-            batch_size=settings.BATCH_SIZE,
-        )
-    return len(objs)
+    updated_count = 0
+
+    tasks_iterator = queryset.only('id', 'total_annotations', 'cancelled_annotations', 'total_predictions').iterator(
+        chunk_size=settings.BATCH_SIZE
+    )
+
+    for _batch in batched_iterator(tasks_iterator, settings.BATCH_SIZE):
+        batch_list = []
+        for task in _batch:
+            task.total_annotations = task.new_total_annotations
+            task.cancelled_annotations = task.new_cancelled_annotations
+            task.total_predictions = task.new_total_predictions
+            batch_list.append(task)
+
+        if batch_list:
+            Task.objects.bulk_update(
+                batch_list,
+                ['total_annotations', 'cancelled_annotations', 'total_predictions'],
+                batch_size=settings.BATCH_SIZE,
+            )
+            updated_count += len(batch_list)
+
+    return updated_count
