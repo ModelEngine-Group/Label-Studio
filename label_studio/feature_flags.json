@@ -4013,7 +4013,7 @@
     },
     "fflag_fix_front_dev_3391_interactive_view_all": {
       "key": "fflag_fix_front_dev_3391_interactive_view_all",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -4035,7 +4035,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 3,
+      "version": 4,
       "deleted": false
     },
     "fflag_fix_front_dev_3793_relative_coords_short": {
@@ -4536,6 +4536,33 @@
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
       "version": 3,
+      "deleted": false
+    },
+    "fflag_front_feat_bros_87_pixel_wise_16062025_short": {
+      "key": "fflag_front_feat_bros_87_pixel_wise_16062025_short",
+      "on": false,
+      "prerequisites": [],
+      "targets": [],
+      "contextTargets": [],
+      "rules": [],
+      "fallthrough": {
+        "variation": 0
+      },
+      "offVariation": 1,
+      "variations": [
+        true,
+        false
+      ],
+      "clientSideAvailability": {
+        "usingMobileKey": false,
+        "usingEnvironmentId": false
+      },
+      "clientSide": false,
+      "salt": "f769d3e1c79142c6a2480c62a3b0d44e",
+      "trackEvents": false,
+      "trackEventsFallthrough": false,
+      "debugEventsUntilDate": null,
+      "version": 2,
       "deleted": false
     },
     "fflag_optic_all_optic_1938_storage_proxy": {
