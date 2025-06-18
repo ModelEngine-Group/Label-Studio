@@ -409,6 +409,7 @@ jobs:
           jira_token: "${{ secrets.JIRA_TOKEN }}"
           jira_release_prefix: "LS OpenSource"
           launchdarkly_path: "label_studio/feature_flags.json"
+          ignore_tags: "internal"
           helm_chart_repo: "HumanSignal/charts"
           helm_chart_path: "heartex/label-studio/Chart.yaml"
 
