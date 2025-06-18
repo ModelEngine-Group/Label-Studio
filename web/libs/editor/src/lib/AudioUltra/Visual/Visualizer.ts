@@ -253,7 +253,7 @@ export class Visualizer extends Events<VisualizerEvents> {
     }
 
     this.invoke("initialized", [this]);
-    this.transferImage();
+    setTimeout(() => this.draw(), 10);
   }
 
   private setInitialZoom() {
