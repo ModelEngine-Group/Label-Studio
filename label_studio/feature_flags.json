@@ -1110,7 +1110,7 @@
     },
     "fflag_feat_all_fit_29_org_settings_page": {
       "key": "fflag_feat_all_fit_29_org_settings_page",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -1132,7 +1132,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 2,
+      "version": 3,
       "deleted": false
     },
     "fflag_feat_all_leap_1081_reviewer_flow_updates": {
@@ -2393,7 +2393,7 @@
     },
     "fflag_feat_front_fit_183_email_notifications_short": {
       "key": "fflag_feat_front_fit_183_email_notifications_short",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -2415,7 +2415,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 2,
+      "version": 3,
       "deleted": false
     },
     "fflag_feat_front_leap_1173_disable_postpone_skip_short": {
@@ -2528,7 +2528,7 @@
     },
     "fflag_feat_front_leap_2036_annotations_summary": {
       "key": "fflag_feat_front_leap_2036_annotations_summary",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -2550,7 +2550,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 2,
+      "version": 3,
       "deleted": false
     },
     "fflag_feat_front_leap_482_self_serve_short": {
@@ -3149,7 +3149,7 @@
     },
     "fflag_feat_optic_2123_audio_spectrograms": {
       "key": "fflag_feat_optic_2123_audio_spectrograms",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -3171,7 +3171,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 2,
+      "version": 3,
       "deleted": false
     },
     "fflag_feat_optic_2125_timeseries_sync": {
@@ -3338,7 +3338,7 @@
     },
     "fflag_feat_utc_46_session_timeout_policy": {
       "key": "fflag_feat_utc_46_session_timeout_policy",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -3360,7 +3360,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 2,
+      "version": 3,
       "deleted": false
     },
     "fflag_feature_all_optic_1421_cold_start_v2": {
@@ -4594,7 +4594,7 @@
     },
     "fflag_root_13_annotation_results_filtering": {
       "key": "fflag_root_13_annotation_results_filtering",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -4616,7 +4616,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 2,
+      "version": 3,
       "deleted": false
     },
     "fix_backend_dev_3134_exclude_deactivated_users": {
