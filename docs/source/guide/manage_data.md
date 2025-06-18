@@ -45,7 +45,7 @@ When you filter or sort the data before you label it, you modify which tasks and
 <div class="opensource-only">
 
 !!! error Enterprise
-    In Label Studio Enterprise, you can use advanced filters against annotation results. For more information, see our [Enterprise documentation](https://docs.humansignal.com/guide/manage_data#Filter-annotation-results). 
+    In Label Studio Enterprise and Starter Cloud, you can use advanced filters against annotation results. For more information, see our [Enterprise documentation](https://docs.humansignal.com/guide/manage_data#Filter-annotation-results). 
 
 </div>
 
@@ -58,7 +58,7 @@ You can also filter on individual annotation results within a task:
 <img src="/images/data-manager-filters-lse.png" class="gif-border" >
 
 !!! note
-    In Label Studio Community and Starter Cloud, the `Annotation results` filter is an unstructured text search across all annotations for the task, and the example above would not be achievable.
+    In Label Studio Community, the `Annotation results` filter is an unstructured text search across all annotations for the task, and the example above would not be achievable.
 
 The following tags are supported:
 - All `Labels` tags (ex. `Labels`, `ParagraphLabels`, ...)
