@@ -6,7 +6,7 @@ import { FF_IMAGE_MEMORY_USAGE, isFF } from "../../../utils/feature-flags";
 const fileLoader = new FileLoader();
 
 export const ImageEntity = types
-  .model({
+  .model("ImageEntity", {
     id: types.identifier,
     src: types.string,
     index: types.number,

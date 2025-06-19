@@ -16,6 +16,8 @@ import { TimelineLabelsModel } from "./TimelineLabels";
 import { VideoRectangleModel } from "./VideoRectangle";
 
 import { BrushLabelsModel } from "./BrushLabels";
+import { BitmaskLabelsModel } from "./BitmaskLabels";
+import { BitmaskModel } from "./Bitmask";
 import { BrushModel } from "./Brush";
 import { EllipseLabelsModel } from "./EllipseLabels";
 import { EllipseModel } from "./Ellipse";
@@ -43,6 +45,8 @@ export {
   HyperTextLabelsModel,
   LabelsModel,
   ParagraphLabelsModel,
+  BitmaskLabelsModel,
+  BitmaskModel,
   TimeSeriesLabelsModel,
   TimelineLabelsModel,
   VideoRectangleModel,

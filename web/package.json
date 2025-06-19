@@ -107,6 +107,7 @@
     "react-window-infinite-loader": "^1.0.5",
     "sanitize-html": "^2.14.0",
     "shadcn": "^2.1.8",
+    "simplify-js": "^1.2.4",
     "storybook": "^8.5.0",
     "strman": "^2.0.1",
     "tailwind-merge": "^2.6.0",

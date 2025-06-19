@@ -35,6 +35,9 @@ import { RELATIVE_STAGE_HEIGHT, RELATIVE_STAGE_WIDTH, SNAP_TO_PIXEL_MODE } from 
 import MultiItemObjectBase from "../MultiItemObjectBase";
 
 const IMAGE_PRELOAD_COUNT = 3;
+const ZOOM_INTENSITY = 0.009;
+const MIN_ZOOM = 0.1;
+const MAX_ZOOM = 100;
 
 /**
  * The `Image` tag shows an image on the page. Use for all image annotation tasks to display an image on the labeling interface.
@@ -138,6 +141,8 @@ const IMAGE_CONSTANTS = {
   keypointlabels: "keypointlabels",
   polygonlabels: "polygonlabels",
   brushlabels: "brushlabels",
+  bitmaskModel: "BitmaskModel",
+  bitmasklabels: "bitmasklabels",
   brushModel: "BrushModel",
   ellipselabels: "ellipselabels",
 };
@@ -279,8 +284,27 @@ const Model = types
       }[self.rotation];
     },
 
+    get stageToImageRatio() {
+      const ent = self.currentImageEntity;
+      return Math.min(ent.naturalWidth / self.stageWidth, ent.naturalHeight / self.stageHeight);
+    },
+
+    get imageIsSmallerThanStage() {
+      const ent = self.currentImageEntity;
+      return ent.naturalWidth < self.stageWidth || ent.naturalHeight < self.stageHeight;
+    },
+
     get stageScale() {
       return self.zoomScale;
+    },
+
+    get layerZoomScalePosition() {
+      return {
+        scaleX: self.zoomScale,
+        scaleY: self.zoomScale,
+        x: self.zoomingPositionX + self.alignmentOffset.x,
+        y: self.zoomingPositionY + self.alignmentOffset.y,
+      };
     },
 
     get hasTools() {
@@ -400,6 +424,7 @@ const Model = types
         if (
           item.type === IMAGE_CONSTANTS.rectanglelabels ||
           item.type === IMAGE_CONSTANTS.brushlabels ||
+          item.type === IMAGE_CONSTANTS.bitmasklabels ||
           item.type === IMAGE_CONSTANTS.ellipselabels
         ) {
           returnedControl = item;
@@ -914,17 +939,20 @@ const Model = types
       self.resetZoomPositionToCenter();
     },
 
-    handleZoom(val, mouseRelativePos = { x: self.canvasSize.width / 2, y: self.canvasSize.height / 2 }) {
+    handleZoom(val, mouseRelativePos = { x: self.canvasSize.width / 2, y: self.canvasSize.height / 2 }, pinch = false) {
       if (val) {
         let zoomScale = self.currentZoom;
 
-        zoomScale = val > 0 ? zoomScale * self.zoomBy : zoomScale / self.zoomBy;
+        const newZoom = clamp(self.currentZoom * Math.exp(val * (pinch ? -1 : 1) * ZOOM_INTENSITY), MIN_ZOOM, MAX_ZOOM);
+        zoomScale = pinch ? newZoom : val > 0 ? zoomScale * self.zoomBy : zoomScale / self.zoomBy;
+
         if (self.negativezoom !== true && zoomScale <= 1) {
           self.setZoom(1);
           self.setZoomPosition(0, 0);
           self.updateImageAfterZoom();
           return;
         }
+
         if (zoomScale <= 1) {
           self.setZoom(zoomScale);
           self.setZoomPosition(0, 0);
