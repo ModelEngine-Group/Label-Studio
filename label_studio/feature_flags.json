@@ -4619,6 +4619,33 @@
       "version": 3,
       "deleted": false
     },
+    "fflag_root_45_better_user_filter": {
+      "key": "fflag_root_45_better_user_filter",
+      "on": false,
+      "prerequisites": [],
+      "targets": [],
+      "contextTargets": [],
+      "rules": [],
+      "fallthrough": {
+        "variation": 0
+      },
+      "offVariation": 1,
+      "variations": [
+        true,
+        false
+      ],
+      "clientSideAvailability": {
+        "usingMobileKey": false,
+        "usingEnvironmentId": false
+      },
+      "clientSide": false,
+      "salt": "90a29371fb66450f8789bee910cf4e68",
+      "trackEvents": false,
+      "trackEventsFallthrough": false,
+      "debugEventsUntilDate": null,
+      "version": 2,
+      "deleted": false
+    },
     "fix_backend_dev_3134_exclude_deactivated_users": {
       "key": "fix_backend_dev_3134_exclude_deactivated_users",
       "on": false,
