@@ -15,7 +15,6 @@ import { TimelineRegionModel } from "./TimelineRegion";
 import { TimeSeriesRegionModel } from "./TimeSeriesRegion";
 import { ParagraphsRegionModel } from "./ParagraphsRegion";
 import { VideoRectangleRegionModel } from "./VideoRectangleRegion";
-import { BitmaskRegionModel } from "./BitmaskRegion";
 
 // general Area type for classification Results which doesn't belong to any real Area
 const ClassificationArea = types.compose(
@@ -53,7 +52,6 @@ const Area = types.union(
         // `sequence` and `ranges` are used for video regions
         !sn.sequence &&
         !sn.ranges &&
-        !sn.imageDataURL &&
         sn.value &&
         Object.values(sn.value).length <= 1
       )
@@ -86,7 +84,6 @@ const Area = types.union(
   EllipseRegionModel,
   PolygonRegionModel,
   BrushRegionModel,
-  BitmaskRegionModel,
   VideoRectangleRegionModel,
   ClassificationArea,
 );

@@ -40,14 +40,12 @@ const Result = types
       "keypoint",
       "polygon",
       "brush",
-      "bitmask",
       "ellipse",
       "magicwand",
       "rectanglelabels",
       "keypointlabels",
       "polygonlabels",
       "brushlabels",
-      "bitmasklabels",
       "ellipselabels",
       "timeserieslabels",
       "timelinelabels",
@@ -84,7 +82,6 @@ const Result = types
       brushlabels: types.maybe(types.array(types.string)),
       timeserieslabels: types.maybe(types.array(types.string)),
       timelinelabels: types.maybe(types.array(types.string)), // new one
-      bitmasklabels: types.maybe(types.array(types.string)),
       taxonomy: types.frozen(), // array of arrays of strings
       sequence: types.frozen(),
     }),

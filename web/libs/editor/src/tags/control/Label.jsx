@@ -83,7 +83,6 @@ const Model = types
       "TimelineLabels",
       "TimeSeriesLabels",
       "ParagraphLabels",
-      "BitmaskLabels",
     ]),
   })
   .volatile((self) => {

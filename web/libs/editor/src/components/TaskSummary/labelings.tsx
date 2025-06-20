@@ -51,7 +51,6 @@ export const renderers: Record<string, RendererType> = {
   timeserieslabels: LabelsRenderer,
   paragraphlabels: LabelsRenderer,
   timelinelabels: LabelsRenderer,
-  bitmasklabels: LabelsRenderer,
   number: (results) => {
     if (!results.length) return "-";
 
