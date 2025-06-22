@@ -54,7 +54,7 @@ def forward_migration(migration_name):
             logger.info(f'Deleted {total_deleted} duplicate ProjectMember entries for project ID {project_id}.')
 
     except Exception as e:
-        migration.status = AsyncMigrationStatus.STATUS_FAILED
+        migration.status = AsyncMigrationStatus.STATUS_ERROR
         migration.save()
         logger.error(f'Async migration {migration_name} failed: {e}')
         raise
