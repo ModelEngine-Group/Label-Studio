@@ -145,7 +145,14 @@ export const create = (columns) => {
 
         self.setLoading(taskID);
 
-        const taskData = yield self.root.apiCall("task", { taskID });
+        // Pass label stream mode context to the backend API call
+        const isLabelStream = getRoot(self).SDK?.mode === "labelstream";
+        const taskParams = { taskID };
+        if (isLabelStream) {
+          taskParams.interaction = "labelstream";
+        }
+
+        const taskData = yield self.root.apiCall("task", taskParams);
 
         if (taskData.status === 404) {
           self.finishLoading(taskID);
