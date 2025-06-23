@@ -65,6 +65,7 @@ export const renderers: Record<string, RendererType> = {
   timeserieslabels: LabelsRenderer,
   paragraphlabels: LabelsRenderer,
   timelinelabels: LabelsRenderer,
+  bitmasklabels: LabelsRenderer,
   datetime: (results, control) => {
     if (!results.length) return "-";
     if (control.per_region) return null;

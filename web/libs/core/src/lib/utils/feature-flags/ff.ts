@@ -1,4 +1,4 @@
-import { FF_SAMPLE_DATASETS } from "./flags";
+import { FF_BITMASK, FF_SAMPLE_DATASETS } from "./flags";
 
 const FEATURE_FLAGS = window.APP_SETTINGS?.feature_flags || {};
 
@@ -12,6 +12,7 @@ const FLAGS_OVERRIDE: Record<string, boolean> = {
   // Add your flags overrides as following:
   // [FF_FLAG_NAME]: boolean
   [FF_SAMPLE_DATASETS]: true,
+  [FF_BITMASK]: true,
 };
 
 /**
@@ -19,7 +20,8 @@ const FLAGS_OVERRIDE: Record<string, boolean> = {
  */
 export const isActive = (id: string) => {
   const defaultValue = window.APP_SETTINGS?.feature_flags_default_value === true;
-  const isSentryOSS = window?.APP_SETTINGS?.sentry_environment === "opensource";
+  const isSentryOSS =
+    window?.APP_SETTINGS?.sentry_environment === "opensource" || process.env.NODE_ENV === "development";
 
   if (isSentryOSS && id in FLAGS_OVERRIDE) return FLAGS_OVERRIDE[id];
   if (id in FEATURE_FLAGS) return FEATURE_FLAGS[id] ?? defaultValue;

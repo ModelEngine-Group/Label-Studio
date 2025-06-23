@@ -5,6 +5,8 @@ import { FF_LSDV_4711, isFF } from "../../utils/feature-flags";
 import messages from "../../utils/messages";
 import { ErrorMessage } from "../ErrorMessage/ErrorMessage";
 import "./Image.scss";
+import { ff } from "@humansignal/core";
+import { FF_BITMASK } from "@humansignal/core/lib/utils/feature-flags";
 
 /**
  * Coordinates in relative mode belong to a data domain consisting of percentages in the range from 0 to 100
@@ -84,7 +86,16 @@ if (isFF(FF_LSDV_4711)) imgDefaultProps.crossOrigin = "anonymous";
 const ImageRenderer = observer(
   forwardRef(({ src, onLoad, imageTransform, isLoaded }, ref) => {
     const imageStyles = useMemo(() => {
-      const style = imageTransform ?? {};
+      // We can't just skip rendering the image because we need its dimensions to be set
+      // so we just hide it with 0x0 dimensions.
+      //
+      // Real dimension will still be available via `naturalWidth` and `naturalHeight`
+      const style = ff.isActive(FF_BITMASK)
+        ? {
+            width: 0,
+            height: 0,
+          }
+        : imageTransform;
 
       return { ...style, maxWidth: "unset", visibility: isLoaded ? "visible" : "hidden" };
     }, [imageTransform, isLoaded]);

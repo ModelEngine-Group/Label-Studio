@@ -134,7 +134,8 @@ const _detect = (region) => {
     case "ellipseregion":
     case "polygonregion":
     case "keypointregion":
-    case "brushregion": {
+    case "brushregion":
+    case "bitmaskregion": {
       const bbox = region.bboxCoordsCanvas;
 
       return bbox

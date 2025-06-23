@@ -108,6 +108,12 @@ const NodeViews = {
     altIcon: IconBrushToolSmart,
   }),
 
+  BitmaskRegionModel: NodeView({
+    name: "Brush",
+    icon: IconBrushTool,
+    altIcon: IconBrushToolSmart,
+  }),
+
   ChoicesModel: NodeView({
     name: "Classification",
     icon: ApartmentOutlined,
