@@ -70,6 +70,8 @@ const SettingsModel = types
     videoHopSize: types.optional(types.number, 10),
 
     isDestroying: types.optional(types.boolean, false),
+
+    videoDrawOutside: types.optional(types.boolean, false),
   })
   .views((self) => ({
     get annotation() {
@@ -235,6 +237,10 @@ const SettingsModel = types
 
     setProperty(name, value) {
       self[name] = value;
+    },
+
+    toggleProperty(name) {
+      self[name] = !self[name];
     },
   }));
 
