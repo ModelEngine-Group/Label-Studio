@@ -12,6 +12,7 @@ type Props = {
   annotations: MSTAnnotation[];
   controls: ControlTag[];
   onSelect: (entity: AnnotationSummary) => void;
+  hideInfo: boolean;
 };
 
 const cellFn = (control: ControlTag, render: RendererType) => (props: { row: Row<AnnotationSummary> }) => {
@@ -34,12 +35,20 @@ const convertPredictionResult = (result: MSTResult) => {
 
 const columnHelper = createColumnHelper<AnnotationSummary>();
 
-export const LabelingSummary = ({ annotations: all, controls, onSelect }: Props) => {
+export const LabelingSummary = ({ hideInfo, annotations: all, controls, onSelect }: Props) => {
+  const currentUser = window.APP_SETTINGS?.user;
   const annotations: AnnotationSummary[] = all.map((annotation) => ({
     id: annotation.pk,
     type: annotation.type,
-    user: annotation.user,
-    createdBy: annotation.user?.displayName ?? annotation.createdBy,
+    user: hideInfo ? { email: currentUser?.id === annotation.user?.id ? "Me" : "User" } : annotation.user,
+    createdBy:
+      annotation.type === "prediction"
+        ? annotation.createdBy
+        : hideInfo
+          ? currentUser?.id === annotation.user?.id
+            ? "Me"
+            : "User"
+          : (annotation.user?.displayName ?? "User"),
     results:
       annotation.type === "prediction"
         ? (annotation.results?.map(convertPredictionResult) ?? [])
@@ -82,8 +91,8 @@ export const LabelingSummary = ({ annotations: all, controls, onSelect }: Props)
             >
               {annotation.type === "prediction" && <IconSparks size={18} />}
             </Userpic>
-            <span>{annotation.user?.displayName ?? annotation.createdBy}</span>
-            <span>#{annotation.id}</span>
+            <span>{annotation.createdBy}</span>
+            {!hideInfo && <span>#{annotation.id}</span>}
           </button>
         );
       },

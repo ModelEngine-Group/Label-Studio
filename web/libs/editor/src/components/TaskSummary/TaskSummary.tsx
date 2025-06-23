@@ -93,7 +93,12 @@ const TaskSummary = ({ annotations: all, store: annotationStore }: TaskSummaryPr
     <div className="p-4">
       <h2 className="px-4 mb-4">Review Summary</h2>
       <NumbersSummary values={values} />
-      <LabelingSummary annotations={annotations} controls={controls} onSelect={onSelect} />
+      <LabelingSummary
+        annotations={annotations}
+        controls={controls}
+        onSelect={onSelect}
+        hideInfo={annotationStore.store.hasInterface("annotations:hide-info")}
+      />
       <h2 className="px-4">Task Data</h2>
       <DataSummary data_types={dataTypes} />
     </div>
