@@ -696,12 +696,16 @@ class TimeSeriesVisualizerD3 extends React.Component {
 
     let { series } = this.props;
 
+    if (this.optimizedSeries) {
+      channel.useOptimizedData = this.useOptimizedData;
+      series = this.optimizedSeries;
+    }
+
     series = series.filter((x) => {
       return x[column] !== null;
     });
 
     if (this.optimizedSeries) {
-      channel.useOptimizedData = this.useOptimizedData;
       channel.optimizedSeries = series;
     }
 
@@ -731,6 +735,7 @@ class TimeSeriesVisualizerD3 extends React.Component {
       .domain(d3.extent(values))
       .range([height - margin.max, margin.min]);
 
+    channel.x = this.x.copy();
     channel.plotX = this.x.copy();
     channel.y = y;
 
@@ -743,7 +748,7 @@ class TimeSeriesVisualizerD3 extends React.Component {
       .line()
       .defined((d) => d[time] >= range[0] && d[time] <= range[1])
       .y((d) => channel.y(d[column]))
-      .x((d) => this.x(d[time]));
+      .x((d) => channel.x(d[time]));
 
     const marker = this.defs
       .append("marker")
@@ -755,7 +760,7 @@ class TimeSeriesVisualizerD3 extends React.Component {
 
     markerSymbol(marker, item.markersymbol, item.markersize, item.markercolor);
 
-    channel.path = this.pathContainer.append("path").datum(series).attr("d", this.line);
+    channel.path = this.pathContainer.append("path").datum(series).attr("d", channel.line);
     // to render different zoomed slices of path
     channel.path2 = this.pathContainer.append("path");
 
@@ -776,20 +781,29 @@ class TimeSeriesVisualizerD3 extends React.Component {
   }
 
   setRangeWithScaling(range) {
-    for (const channelItem of this.props.channels) {
-      this.setChannelRangeWithScaling(channelItem, range);
-    }
-  }
-  setChannelRangeWithScaling(channelItem, range) {
-    const column = channelItem.columnName;
-    const channel = this.channels[column];
     this.x.domain(range);
     const current = this.x.range();
-    const all = channel.plotX.domain().map(this.x);
+    const all = this.plotX.domain().map(this.x);
     const scale = (all[1] - all[0]) / (current[1] - current[0]);
     const left = Math.max(0, Math.floor((this.zoomStep * (current[0] - all[0])) / (all[1] - all[0])));
     const right = Math.max(0, Math.floor((this.zoomStep * (current[1] - all[0])) / (all[1] - all[0])));
     const translate = all[0] - current[0];
+
+    const { item } = this.props;
+    if (item.timerange) {
+      const timerange = item.timerange.split(",").map(Number);
+
+      this.x.domain(timerange);
+    }
+
+    for (const channelItem of this.props.channels) {
+      this.setChannelRangeWithScaling(channelItem, range, { left, right, translate, scale });
+    }
+  }
+  setChannelRangeWithScaling(channelItem, range, { left, right, translate, scale }) {
+    const column = channelItem.columnName;
+    const channel = this.channels[column];
+    channel.x.domain(range);
 
     let translateY = 0;
     let scaleY = 1;
@@ -806,7 +820,7 @@ class TimeSeriesVisualizerD3 extends React.Component {
     if (item.timerange) {
       const timerange = item.timerange.split(",").map(Number);
 
-      this.x.domain(timerange);
+      channel.x.domain(timerange);
     }
 
     if (!fixedscale) {
@@ -843,13 +857,13 @@ class TimeSeriesVisualizerD3 extends React.Component {
 
     // zoomStep - zoom level when we need to switch between optimized and original data
     const strongZoom = scale > this.zoomStep;
-    const haveToSwitchData = strongZoom === this.useOptimizedData;
+    const haveToSwitchData = strongZoom === channel.useOptimizedData;
 
     if (channel.optimizedSeries && haveToSwitchData) {
       channel.useOptimizedData = !channel.useOptimizedData;
       if (channel.useOptimizedData) {
         channel.path.datum(channel.optimizedSeries);
-        channel.path.attr("d", this.line);
+        channel.path.attr("d", channel.line);
       } else {
         channel.path.attr("transform", "");
       }
