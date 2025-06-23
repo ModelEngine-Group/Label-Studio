@@ -780,7 +780,6 @@ if ENABLE_CSP := get_bool_env('ENABLE_CSP', True):
         "'self'",
         "'report-sample'",
         "'unsafe-inline'",
-        "'unsafe-eval'",
         'blob:',
         'browser.sentry-cdn.com',
         'https://*.googletagmanager.com',
