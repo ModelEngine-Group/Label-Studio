@@ -29,9 +29,6 @@ const TaskSummary = ({ annotations: all, store: annotationStore }: TaskSummaryPr
     }
   };
 
-  // Check if agreement should be shown based on project settings
-  const showAgreement = annotationStore.store.project?.review_settings?.show_agreement_to_reviewers ?? true;
-
   const controlTags: [string, MSTControlTag][] = allTags.filter(([_, control]) => control.isControlTag) as [
     string,
     MSTControlTag,
@@ -46,7 +43,7 @@ const TaskSummary = ({ annotations: all, store: annotationStore }: TaskSummaryPr
   // place all controls with the same to_name together
   const grouped = Object.groupBy(controlsList, (control) => control.to_name);
   // show global classifications first, then labels, then per-regions
-  const controls = Object.entries(grouped).flatMap(([_, controls]) => sortControls(controls!));
+  const controls = Object.entries(grouped).flatMap(([_, controls]) => sortControls(controls ?? []));
 
   const objectTags: ObjectTagEntry[] = allTags.filter(
     ([_, tag]) => tag.isObjectTag && tag.value.includes("$"),
@@ -62,15 +59,15 @@ const TaskSummary = ({ annotations: all, store: annotationStore }: TaskSummaryPr
       {
         type: object.type,
         value:
-          "parsedValue" in object
-            ? object.parsedValue
-            : (object.dataObj ?? object._url ?? object._value ?? object.value),
+          // @ts-expect-error parsedValue, dataObj and _url are very specific and not added to types
+          object.parsedValue ?? object.dataObj ?? object._url ?? object._value ?? object.value,
       },
     ]),
   );
 
   const values = [
-    ...(showAgreement && typeof task?.agreement === "number"
+    // if agreement is unavailable for current user it's undefined
+    ...(typeof task?.agreement === "number"
       ? [
           {
             title: "Agreement",

@@ -24,10 +24,20 @@ export const DataSummary = ({ data_types }: { data_types: ObjectTypes }) => {
         cell: ({ getValue }) => {
           const value = getValue();
 
-          // super simple support for images
+          // super simple support for images, audio, and video
           // @todo create a proper data type handler for all data types
           if (type === "image") {
             return <img src={value} alt={field} className="w-full" />;
+          }
+
+          if (type === "audio") {
+            // biome-ignore lint/a11y/useMediaCaption: that's user's media, captions can't be used
+            return <audio src={value} controls className="w-full" />;
+          }
+
+          if (type === "video") {
+            // biome-ignore lint/a11y/useMediaCaption: that's user's media, captions can't be used
+            return <video src={value} controls className="w-full" />;
           }
 
           // List: [{ id: <id>, body: text, title: text }, ...]

@@ -6,6 +6,7 @@ type RawResult = {
 };
 
 type MSTResult = {
+  toJSON(): unknown;
   id: string;
   area: MSTRegion;
   annotation: MSTAnnotation;

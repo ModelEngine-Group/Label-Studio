@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { cnm, IconSparks, Userpic } from "@humansignal/ui";
 import { flexRender, getCoreRowModel, useReactTable, createColumnHelper } from "@tanstack/react-table";
 import type { ColumnDef, Row } from "@tanstack/react-table";
-import type { MSTAnnotation, MSTResult } from "../../stores/types";
+import type { MSTAnnotation, MSTResult, RawResult } from "../../stores/types";
 import { renderers } from "./labelings";
 import { ResizeHandler } from "./ResizeHandler";
 import { SummaryBadge } from "./SummaryBadge";
@@ -24,7 +24,7 @@ const cellFn = (control: ControlTag, render: RendererType) => (props: { row: Row
 };
 
 const convertPredictionResult = (result: MSTResult) => {
-  const json = result.toJSON();
+  const json = result.toJSON() as RawResult;
   return {
     ...json,
     // those are real results, so they have full names with @annotation-id postfix
@@ -46,7 +46,7 @@ export const LabelingSummary = ({ annotations: all, controls, onSelect }: Props)
         : (annotation.versions.result ?? []),
   }));
   const columns = useMemo(() => {
-    const columns: ColumnDef<AnnotationSummary, any>[] = controls.map((control) =>
+    const columns: ColumnDef<AnnotationSummary, unknown>[] = controls.map((control) =>
       columnHelper.display({
         id: control.name,
         header: () => (
@@ -71,7 +71,11 @@ export const LabelingSummary = ({ annotations: all, controls, onSelect }: Props)
         const annotation = row.original;
 
         return (
-          <div className="flex gap-tight items-center cursor-pointer" onClick={() => onSelect(annotation)}>
+          <button
+            type="button"
+            className="flex gap-tight items-center cursor-pointer"
+            onClick={() => onSelect(annotation)}
+          >
             <Userpic
               user={annotation.user}
               className={annotation.type === "prediction" ? "!bg-accent-plum-subtle text-accent-plum-bold" : ""}
@@ -80,7 +84,7 @@ export const LabelingSummary = ({ annotations: all, controls, onSelect }: Props)
             </Userpic>
             <span>{annotation.user?.displayName ?? annotation.createdBy}</span>
             <span>#{annotation.id}</span>
-          </div>
+          </button>
         );
       },
     });
