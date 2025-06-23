@@ -12,7 +12,8 @@ from data_export.models import DataExport
 from data_export.serializers import ExportDataSerializer
 from data_manager.managers import TaskQuerySet
 from django.conf import settings
-from django.db.models import Count, Q
+from django.db.models import Count, F, Q
+from django.db.models.lookups import GreaterThanOrEqual
 from organizations.models import Organization
 from projects.models import Project
 from tasks.models import Annotation, Prediction, Task
@@ -230,3 +231,20 @@ def update_tasks_counters(queryset, from_scratch=True):
             updated_count += len(batch_list)
 
     return updated_count
+
+
+def bulk_update_is_labeled_by_overlap(tasks_ids, project):
+    if not tasks_ids:
+        return
+
+    completed_annotations_f_expr = F('total_annotations')
+    if project.skip_queue == project.SkipQueue.IGNORE_SKIPPED:
+        completed_annotations_f_expr += F('cancelled_annotations')
+    finished_q = Q(GreaterThanOrEqual(completed_annotations_f_expr, F('overlap')))
+
+    batch_size = settings.BATCH_SIZE
+    for i in range(0, len(tasks_ids), batch_size):
+        batch_ids = tasks_ids[i : i + batch_size]
+
+        Task.objects.filter(id__in=batch_ids, project=project).filter(finished_q).update(is_labeled=True)
+        Task.objects.filter(id__in=batch_ids, project=project).exclude(finished_q).update(is_labeled=False)
