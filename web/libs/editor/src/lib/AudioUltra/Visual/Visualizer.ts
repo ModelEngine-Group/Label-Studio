@@ -154,7 +154,7 @@ export class Visualizer extends Events<VisualizerEvents> {
       backgroundLayer,
       config: {
         renderId: this.renderId,
-        waveHeight: this.waveHeight,
+        waveHeight: this.waveformHeight,
         padding: this.padding,
         reservedSpace: this.reservedSpace,
         waveColor: this.waveColor,
@@ -1092,14 +1092,13 @@ export class Visualizer extends Events<VisualizerEvents> {
     if (!spectrogramLayer?.isVisible) return 0;
 
     const channelCount = this.audio?.channelCount ?? 1;
-    const totalAvailableHeight = this.waveHeight;
 
     if (this.splitChannels) {
       // Each channel gets an equal split of the spectrogram area
-      return totalAvailableHeight / channelCount;
+      return this.waveHeight / channelCount;
     }
     // Spectrogram uses the full height when not split
-    return totalAvailableHeight;
+    return this.waveHeight;
   }
 
   setAmp(amp: number) {

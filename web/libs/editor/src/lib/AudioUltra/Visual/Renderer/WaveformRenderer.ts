@@ -105,7 +105,7 @@ export class WaveformRenderer implements Renderer<WaveformRendererConfig> {
   renderWave(context: RenderContext, channelNumber: number, layer: Layer, iStart: number, iEnd: number): boolean {
     const renderId = this.config.renderId;
     const audio = this.audio;
-    const height = this.config.waveHeight / (audio?.channelCount ?? 1);
+    const height = this.config.waveHeight;
     const scrollLeftPx = context.scrollLeftPx;
     const zoom = context.zoom;
     const amp = this.config.amp ?? 1;
@@ -139,7 +139,7 @@ export class WaveformRenderer implements Renderer<WaveformRendererConfig> {
     let x = 0;
     const audio = this.audio;
     const channelCount = audio?.channelCount ?? 1;
-    const height = this.config.waveHeight / channelCount;
+    const height = this.config.waveHeight;
     const scrollLeftPx = context.scrollLeftPx;
     const dataLength = context.dataLength;
     this.lastWaveformRenderedScrollLeftPx = scrollLeftPx;
