@@ -175,6 +175,8 @@ class ViewSerializer(serializers.ModelSerializer):
                 self._create_filters(filter_group=filter_group, filters_data=filters_data)
 
                 validated_data['filter_group_id'] = filter_group.id
+                # rather than defaulting to 0, we should get the current count and set it as the index
+                validated_data['order'] = View.objects.filter(project=validated_data['project']).count()
             view = self.Meta.model.objects.create(**validated_data)
 
             return view
