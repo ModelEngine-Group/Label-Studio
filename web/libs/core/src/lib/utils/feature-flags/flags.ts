@@ -1,20 +1,10 @@
 //// LEGACY FLAGS ////
 // Consider all pre-XFN flags legacy. Should be revised and removed.
-/**
- * Aync import for task data
- * @deprecated
- */
-export const FF_LSDV_4915 = "fflag_feat_all_lsdv_4915_async_task_import_13042023_short";
 
 /**
  * Fix displaying of created_at in the review mode
  */
 export const FF_DEV_1480 = "ff_front_dev_1480_created_on_in_review_180122_short";
-
-/**
- * Notifications
- */
-export const FF_DEV_1658 = "ff_front_dev_1658_notification_center_170222_short";
 
 /**
  * Model version selector per model backend

@@ -6,9 +6,8 @@ Different thoughts and investingations related to LSF init.
 
 We have 3 UI versions: old (awful), medium (outliner v1), modern (draggable panels)
 
-Flags:
+Flag:
 
-- `ff_front_1170_outliner_030222_short` — initial **FF_1170**
 - `fflag_feat_front_dev_3873_labeling_ui_improvements_short` — modern **FF_3873**
 
 Components:
