@@ -14,7 +14,7 @@ on:
         required: true
 
 env:
-  NODE: "18"
+  NODE: "22"
   FRONTEND_MONOREPO_DIR: "web"
   FRONTEND_BUILD_COMMIT_MESSAGE: "ci: Build tag docs"
   DOCS_TARGET_DIR: "docs/source/includes/tags"
