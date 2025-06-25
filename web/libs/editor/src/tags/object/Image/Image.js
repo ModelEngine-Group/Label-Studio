@@ -929,13 +929,29 @@ const Model = types
       self.resetZoomPositionToCenter();
     },
 
+    /**
+     * Handle zoom events from mouse wheel or trackpad pinch
+     * @param {number} val - The delta value from the wheel event (positive = zoom in, negative = zoom out)
+     * @param {Object} mouseRelativePos - The mouse position relative to the canvas
+     * @param {boolean} pinch - Whether this is a trackpad pinch event (true) or mouse wheel event (false)
+     */
     handleZoom(val, mouseRelativePos = { x: self.canvasSize.width / 2, y: self.canvasSize.height / 2 }, pinch = false) {
       if (val) {
         let zoomScale = self.currentZoom;
 
-        const newZoom = clamp(self.currentZoom * Math.exp(val * (pinch ? -1 : 1) * ZOOM_INTENSITY), MIN_ZOOM, MAX_ZOOM);
-        zoomScale = pinch ? newZoom : val > 0 ? zoomScale * self.zoomBy : zoomScale / self.zoomBy;
+        if (pinch) {
+          // Smooth exponential zoom for trackpad pinch gestures
+          // This provides a more natural feel for pinch-to-zoom
+          const newZoom = clamp(self.currentZoom * Math.exp(-val * ZOOM_INTENSITY), MIN_ZOOM, MAX_ZOOM);
+          zoomScale = newZoom;
+        } else {
+          // Discrete zoom steps for mouse wheel
+          // Uses the zoomBy factor (default 1.1) for predictable zoom levels
+          zoomScale = val > 0 ? zoomScale * self.zoomBy : zoomScale / self.zoomBy;
+          zoomScale = clamp(zoomScale, MIN_ZOOM, MAX_ZOOM);
+        }
 
+        // Handle negative zoom restrictions
         if (self.negativezoom !== true && zoomScale <= 1) {
           self.setZoom(1);
           self.setZoomPosition(0, 0);
@@ -943,6 +959,7 @@ const Model = types
           return;
         }
 
+        // Handle zoom out to fit or smaller
         if (zoomScale <= 1) {
           self.setZoom(zoomScale);
           self.setZoomPosition(0, 0);
@@ -950,7 +967,7 @@ const Model = types
           return;
         }
 
-        // DON'T TOUCH THIS
+        // Zoom to point (mouse position) - keeps the point under the cursor in the same position
         let stageScale = self.zoomScale;
 
         const mouseAbsolutePos = {

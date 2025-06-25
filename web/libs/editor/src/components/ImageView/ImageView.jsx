@@ -544,6 +544,10 @@ export default observer(
     skipNextMouseUp = false;
     mouseDownPoint = null;
 
+    // Track zoom events for better detection
+    zoomEventHistory = [];
+    lastZoomTime = 0;
+
     constructor(props) {
       super(props);
 
@@ -583,12 +587,14 @@ export default observer(
       // shape we can click on. Here we're relying on cursor position and non-transparent pixels
       // of the mask to detect cursor-region collision.
       if (ff.isActive(FF_BITMASK)) {
-        const selectedRegion = item.selectedRegions.find((r) => r.type === "bitmaskregion");
-        const currentTool = item.getToolsManager().findSelectedTool().toolName;
+        const hasSelected = item.selectedRegions.some((r) => r.type === "bitmaskregion");
+        const isBitmask = ["BitmaskTool", "BitmaskEraserTool"].includes(
+          item.getToolsManager().findSelectedTool().toolName,
+        );
 
         // We want to avoid weird behavior here with drawing while selecting another region
         // so we just do nothing when clicked outside AND we have a tool selected
-        if (selectedRegion && currentTool === "BitmaskTool") {
+        if (hasSelected && isBitmask) {
           return;
         }
 
@@ -827,6 +833,7 @@ export default observer(
       // for a full explanation.
       if (!e.evt.ctrlKey && !e.evt.shiftKey && ff.isActive(FF_BITMASK)) {
         if (item.regs.some((r) => r.isDrawing)) return;
+        if (!item.regs.some((r) => r.type === "bitmaskregion")) return;
         requestAnimationFrame(() => {
           for (const region of item.regs) {
             region.setHighlight(false);
@@ -876,18 +883,93 @@ export default observer(
     };
 
     /**
-     * Handle to zoom
+     * Detect if a zoom event is from a trackpad pinch or mouse wheel
+     * Uses pattern analysis to distinguish between the two input methods
+     * @param {Object} event - The wheel event object
+     * @returns {boolean} - True if trackpad pinch, false if mouse wheel
+     */
+    detectTrackpadPinch = (event) => {
+      const now = Date.now();
+      const timeSinceLastZoom = now - this.lastZoomTime;
+      this.lastZoomTime = now;
+
+      // Add current event to history
+      this.zoomEventHistory.push({
+        deltaY: Math.abs(event.deltaY),
+        time: now,
+      });
+
+      // Keep only recent events (last 500ms)
+      this.zoomEventHistory = this.zoomEventHistory.filter((event) => now - event.time < 500);
+
+      if (this.zoomEventHistory.length >= 3) {
+        // Analyze the pattern of recent events
+        const recentEvents = this.zoomEventHistory.slice(-3);
+        const avgDeltaY = recentEvents.reduce((sum, event) => sum + event.deltaY, 0) / recentEvents.length;
+        const avgTimeBetween =
+          recentEvents.reduce((sum, event, i) => {
+            if (i === 0) return 0;
+            return sum + (event.time - recentEvents[i - 1].time);
+          }, 0) /
+          (recentEvents.length - 1);
+
+        // Trackpad characteristics:
+        // - High frequency (low time between events, < 50ms)
+        // - Mostly small values (avg deltaY < 80, allowing for occasional larger values)
+        // - Smooth progression (but more forgiving)
+        const isHighFrequency = avgTimeBetween < 50;
+        const isMostlySmallValues = avgDeltaY < 80;
+        const isSmoothProgression = recentEvents.every((event, i) => {
+          if (i === 0) return true;
+          const prevEvent = recentEvents[i - 1];
+          return Math.abs(event.deltaY - prevEvent.deltaY) < 50; // More forgiving
+        });
+
+        // Additional check: if we have more history, check if this looks like a trackpad pattern
+        let hasTrackpadPattern = false;
+        if (this.zoomEventHistory.length >= 5) {
+          const allRecentEvents = this.zoomEventHistory.slice(-5);
+          const smallValueCount = allRecentEvents.filter((event) => event.deltaY < 50).length;
+          const highFreqCount = allRecentEvents.filter((event, i) => {
+            if (i === 0) return true;
+            return event.time - allRecentEvents[i - 1].time < 50;
+          }).length;
+
+          // If most events are small values and high frequency, it's likely trackpad
+          hasTrackpadPattern = smallValueCount >= 3 && highFreqCount >= 3;
+        }
+
+        return (isHighFrequency && isMostlySmallValues && isSmoothProgression) || hasTrackpadPattern;
+      }
+
+      // Fallback for first few events: use deltaY size
+      return Math.abs(event.deltaY) < 30; // Slightly more forgiving
+    };
+
+    /**
+     * Handle zoom and pan events from mouse wheel and trackpad
+     * Supports:
+     * - Ctrl/Cmd + mouse wheel: Zoom in/out with discrete steps
+     * - Ctrl/Cmd + trackpad pinch: Smooth pinch-to-zoom
+     * - Two-finger scroll: Pan the image when zoomed in
      */
     handleZoom = (e) => {
-      if (e.evt?.ctrlKey || e.evt?.metaKey || e.evt?.shiftKey) {
+      if (e.evt?.ctrlKey || e.evt?.metaKey) {
         e.evt.preventDefault();
 
         const { item } = this.props;
         const stage = item.stageRef;
 
-        item.handleZoom(e.evt.deltaY, stage.getPointerPosition(), e.evt.ctrlKey || e.evt.metaKey);
+        // Detect if this is a trackpad pinch or mouse wheel event
+        const isTrackpadPinch = this.detectTrackpadPinch(e.evt);
+
+        // For trackpad pinch, use smooth exponential zoom
+        // For mouse wheel with Ctrl/Cmd, use discrete zoom steps
+        const pinchToZoom = isTrackpadPinch;
+
+        item.handleZoom(e.evt.deltaY, stage.getPointerPosition(), pinchToZoom);
       } else if (e.evt) {
-        // Two fingers scroll
+        // Two fingers scroll (panning) - only when zoomed in
         const { item } = this.props;
 
         const maxScrollX = Math.round(item.stageWidth * item.zoomScale) - item.stageWidth;
