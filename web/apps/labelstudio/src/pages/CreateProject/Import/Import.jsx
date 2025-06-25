@@ -508,19 +508,28 @@ export const ImportPage = ({
             {ff.isFF(ff.FF_JSON_PREVIEW) && (
               <div className="w-full h-full flex flex-col min-h-[400px]">
                 {projectConfigured ? (
-                  <SimpleCard title="Expected input preview" className="w-full h-full">
+                  <SimpleCard
+                    title="Expected Input Preview"
+                    className="w-full h-full overflow-hidden flex flex-col"
+                    contentClassName="h-[calc(100%-48px)]"
+                    flushContent
+                  >
                     {sampleConfig.data ? (
-                      <CodeBlock
-                        title="Expected input preview"
-                        code={sampleConfig?.data ?? ""}
-                        className="w-full h-full"
-                      />
+                      <div className={importClass.elem("code-wrapper")}>
+                        <CodeBlock
+                          title="Expected Input Preview"
+                          code={sampleConfig?.data ?? ""}
+                          className="w-full h-full"
+                        />
+                      </div>
                     ) : sampleConfig.isLoading ? (
                       <div className="w-full flex justify-center py-12">
                         <Spinner className="h-6 w-6" />
                       </div>
                     ) : sampleConfig.isError ? (
-                      <div className="w-full pt-4 text-lg text-negative-content">Unable to load sample data</div>
+                      <div className="w-[calc(100%-24px)] text-lg text-negative-content bg-negative-background border m-3 rounded-md border-negative-border-subtle p-4">
+                        Something went wrong, the sample data could not be loaded.
+                      </div>
                     ) : null}
                   </SimpleCard>
                 ) : (
