@@ -346,13 +346,48 @@ class ProjectSummarySerializer(serializers.ModelSerializer):
 class ProjectImportSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectImport
-        fields = '__all__'
+        fields = [
+            'id',
+            'project',
+            'preannotated_from_fields',
+            'commit_to_project',
+            'return_task_ids',
+            'status',
+            'url',
+            'error',
+            'created_at',
+            'updated_at',
+            'finished_at',
+            'task_count',
+            'annotation_count',
+            'prediction_count',
+            'duration',
+            'file_upload_ids',
+            'could_be_tasks_list',
+            'found_formats',
+            'data_columns',
+            'tasks',
+            'task_ids',
+        ]
 
 
 class ProjectReimportSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectReimport
-        fields = '__all__'
+        fields = [
+            'id',
+            'project',
+            'status',
+            'error',
+            'task_count',
+            'annotation_count',
+            'prediction_count',
+            'duration',
+            'file_upload_ids',
+            'files_as_tasks_list',
+            'found_formats',
+            'data_columns',
+        ]
 
 
 class ProjectModelVersionExtendedSerializer(serializers.Serializer):
