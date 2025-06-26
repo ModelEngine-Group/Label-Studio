@@ -212,6 +212,12 @@ export class Visualizer extends Events<VisualizerEvents> {
     // as a result of multichannel or differently configured waveHeight
     this.setContainerHeight();
 
+    // Update regions layer height to match the current visualizer height
+    const regionsLayer = this.getLayer("regions");
+    if (regionsLayer) {
+      regionsLayer.height = this.height;
+    }
+
     // Set renderers array
     this.renderers = [this.waveformRenderer];
     if (isFF(FF_AUDIO_SPECTROGRAMS) && this.spectrogramRenderer) {
@@ -967,6 +973,10 @@ export class Visualizer extends Events<VisualizerEvents> {
         // Only update height for layers that should match the waveform height
         if (layer.name === "waveform" || layer.name === "spectrogram" || layer.name === "spectrogram-grid") {
           layer.height = this.waveformHeight;
+        }
+        // Update regions layer height to match the full visualizer height
+        if (layer.name === "regions") {
+          layer.height = this.height;
         }
       }
     });
