@@ -17,8 +17,11 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="#272727">  <!-- iOS Safari -->
 
   <!-- Preload fonts -->
-  <link rel="preload" href="{{settings.HOSTNAME}}{% static 'fonts/Figtree-Regular.ttf' %}" type="font" crossorigin="anonymous">
-  <link rel="preload" href="{{settings.HOSTNAME}}{% static 'fonts/Figtree-SemiBold.ttf' %}" type="font" crossorigin="anonymous">
+  <link rel="preload" href="{{ settings.HOSTNAME }}/static/fonts/Figtree-Regular.ttf" as="font" type="font/ttf"
+    crossorigin="anonymous">
+  <link rel="preload" href="{{ settings.HOSTNAME }}/static/fonts/Figtree-SemiBold.ttf" as="font" type="font/ttf"
+    crossorigin="anonymous">
+
 
   <!-- CSS -->
   {% block app-css %}
