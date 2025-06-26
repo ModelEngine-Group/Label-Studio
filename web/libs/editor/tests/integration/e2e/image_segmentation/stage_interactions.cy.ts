@@ -1,6 +1,7 @@
 import { ImageView, LabelStudio, Sidebar } from "@humansignal/frontend-test/helpers/LSF";
 import { Hotkeys } from "@humansignal/frontend-test/helpers/LSF/Hotkeys";
 import { imageData, imageToolsConfig } from "../../data/image_segmentation/stage_interactions";
+import { TWO_FRAMES_TIMEOUT } from "../utils/constants";
 
 beforeEach(() => {
   LabelStudio.addFeatureFlagsOnPageLoad({
@@ -118,7 +119,7 @@ describe("Image Segmentation Stage Interactions", () => {
       ],
       false,
     );
-    cy.wait(32); // Two frames to be sure
+    cy.wait(TWO_FRAMES_TIMEOUT); // Two frames to be sure
     ImageView.clickAtRelative(0.8, 0.1);
     Sidebar.hasRegions(1);
     // dblclick

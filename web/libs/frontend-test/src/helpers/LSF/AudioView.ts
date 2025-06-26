@@ -2,6 +2,7 @@ import TriggerOptions = Cypress.TriggerOptions;
 import ObjectLike = Cypress.ObjectLike;
 import ClickOptions = Cypress.ClickOptions;
 import { LabelStudio } from "@humansignal/frontend-test/helpers/LSF/LabelStudio";
+import { TWO_FRAMES_TIMEOUT } from "../../../../editor/tests/integration/e2e/utils/constants";
 
 type MouseInteractionOptions = Partial<TriggerOptions & ObjectLike & MouseEvent>;
 
@@ -85,7 +86,7 @@ export const AudioView = {
      * which for now we are going to compensate by waiting approximately 2 frames of render (16 * 2 = 32 milliseconds)
      * @todo: remove wait when `isReady` in audio become more precise
      */
-    cy.wait(32);
+    cy.wait(TWO_FRAMES_TIMEOUT);
   },
   get playButton() {
     return cy.get(`.lsf-audio-tag [data-testid="playback-button:play"]`);
