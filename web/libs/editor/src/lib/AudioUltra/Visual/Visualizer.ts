@@ -962,6 +962,7 @@ export class Visualizer extends Events<VisualizerEvents> {
     // Update layer dimensions
     const mainLayer = this.getLayer("main");
     if (mainLayer) {
+      mainLayer.pixelRatio = this.pixelRatio;
       mainLayer.width = this.width;
       mainLayer.height = this.height;
     }
@@ -969,6 +970,7 @@ export class Visualizer extends Events<VisualizerEvents> {
     // Update other layers
     this.layers.forEach((layer) => {
       if (layer.name !== "main") {
+        layer.pixelRatio = this.pixelRatio;
         layer.width = this.width;
         // Only update height for layers that should match the waveform height
         if (layer.name === "waveform" || layer.name === "spectrogram" || layer.name === "spectrogram-grid") {

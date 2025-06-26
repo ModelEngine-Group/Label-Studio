@@ -79,7 +79,7 @@ export class Layer extends Events<LayerEvents> {
    * Float value of the layer opacity between 0 and 1.
    */
   private opacity = 1;
-  private pixelRatio = 1;
+  public pixelRatio = 1;
 
   name: string;
 
