@@ -51,6 +51,21 @@ const DISPLAY_ACTION = "display";
 const INTERRUPT_ACTION = "interrupt";
 
 /**
+ * Safely get the jsonValue of a JSHandle, handling "Target closed" and other errors.
+ * @param {any} arg - The JSHandle to get the value from
+ * @returns {Promise<any>} - The value, or undefined if target closed, or a fallback string on other errors
+ */
+async function safeJsonValue(arg) {
+  try {
+    return await arg.jsonValue();
+  } catch (error) {
+    if (error.message && error.message.includes("Target closed")) return;
+
+    console.error(error);
+  }
+}
+
+/**
  * This plugin can monitor three types of errors inside the browser. They are console errors, console warnings and uncaught errors.
  * Depending on the configuration it could show the problems during the tests and throw exceptions at the scenario level to make the test fail  when it is necessary.
  * @param {errorsCollectorConfig} config
@@ -122,12 +137,14 @@ module.exports = (config) => {
         const args = msg.args();
 
         for (let i = 0; i < args.length; i++) {
-          args[i] = await args[i].jsonValue();
+          args[i] = await safeJsonValue(args[i]);
+          if (args[i] === undefined) return; // Target closed, skip processing
         }
 
         this.handleMessage(messageType, format(...args));
       }
     });
+
     page.on("pageerror", (exception) => {
       this.handleMessage(UNCAUGHT_ERROR, exception);
     });
