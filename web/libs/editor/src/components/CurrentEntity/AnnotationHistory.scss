@@ -1,8 +1,8 @@
 .annotation-history {
-  margin: 0 0 8px;
+  margin: var(--spacing-tighter) 0;
 
   &_inline {
-    padding: 0 8px;
+    padding: 0 var(--spacing-tighter);
   }
 
   &__title {

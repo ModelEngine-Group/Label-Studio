@@ -31,7 +31,7 @@ jest.mock("../RegionDetails", () => ({
 
 jest.mock("../RegionItem", () => ({
   RegionItem: ({ region, mainDetails, metaDetails }: any) => (
-    <div data-testid="region-item">
+    <div data-testid="detailed-region">
       <div data-testid="region-id">{region.id}</div>
       {mainDetails && <div data-testid="main-details">Main Details</div>}
       {metaDetails && <div data-testid="meta-details">Meta Details</div>}
@@ -221,18 +221,18 @@ describe("DetailsPanel", () => {
         expect(description).toHaveTextContent("Select a region to view its properties, metadata and available actions");
       });
 
-      it("does not render selection details header when no selection", () => {
+      it("does not render region details on info panel when no selection", () => {
         render(<Info selection={mockSelectionEmpty} />);
 
-        const allElems = screen.getAllByTestId("elem");
-        const selectionDetailsElem = allElems.find((elem) => elem.textContent === "Selection Details");
-        expect(selectionDetailsElem).toBeUndefined();
+        const detailedRegions = screen.queryAllByTestId("detailed-region");
+        expect(detailedRegions).toHaveLength(0);
       });
 
-      it("does not render regions panel when no selection", () => {
+      it("does not render info panel when no selection", () => {
         render(<Info selection={mockSelectionEmpty} />);
 
-        expect(screen.queryByTestId("region-item")).not.toBeInTheDocument();
+        const detailedRegions = screen.queryAllByTestId("detailed-region");
+        expect(detailedRegions).toHaveLength(0);
       });
 
       it("renders empty state when selection is null", () => {
@@ -257,19 +257,18 @@ describe("DetailsPanel", () => {
         expect(screen.queryByTestId("empty-state")).not.toBeInTheDocument();
       });
 
-      it("renders selection details header when regions are selected", () => {
+      it("renders selection details when regions are selected", () => {
         render(<Info selection={mockSelectionWithRegions} />);
 
-        const allElems = screen.getAllByTestId("elem");
-        const selectionDetailsElem = allElems.find((elem) => elem.textContent === "Selection Details");
-        expect(selectionDetailsElem).toBeInTheDocument();
+        const detailedRegions = screen.getAllByTestId("detailed-region");
+        expect(detailedRegions).toHaveLength(2);
       });
 
-      it("renders region items when regions are selected", () => {
+      it("renders region info with specific regions selected", () => {
         render(<Info selection={mockSelectionWithRegions} />);
 
-        const regionItems = screen.getAllByTestId("region-item");
-        expect(regionItems).toHaveLength(2);
+        const detailedRegions = screen.getAllByTestId("detailed-region");
+        expect(detailedRegions).toHaveLength(2);
 
         // Check that specific regions are rendered
         expect(screen.getByText("region1")).toBeInTheDocument();
@@ -313,7 +312,8 @@ describe("DetailsPanel", () => {
         expect(screen.queryByTestId("empty-state")).not.toBeInTheDocument();
 
         // But also won't render region items since list is empty
-        expect(screen.queryByTestId("region-item")).not.toBeInTheDocument();
+        const detailedRegions = screen.queryAllByTestId("detailed-region");
+        expect(detailedRegions).toHaveLength(0);
       });
     });
   });

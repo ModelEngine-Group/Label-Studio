@@ -42,7 +42,7 @@ export const RegionItem: FC<RegionItemProps> = observer(
     }, [region.background, region.style]);
 
     return (
-      <Block name="detailed-region" mod={{ compact }}>
+      <Block name="detailed-region" mod={{ compact }} data-testid="detailed-region">
         <Elem name="head" style={{ color: color.css() }}>
           <Elem name="title">
             <Elem name="icon">

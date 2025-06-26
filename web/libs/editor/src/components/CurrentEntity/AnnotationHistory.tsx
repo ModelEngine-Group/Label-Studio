@@ -143,11 +143,7 @@ const AnnotationHistoryComponent: FC<any> = ({
     return (
       <Block name="annotation-history" mod={{ inline, empty: true }}>
         {sectionHeader && (
-          <div
-            className={`${cn("annotation-history").elem("section-head").toString()}${showEmptyState ? " sr-only" : ""}`}
-          >
-            {sectionHeader}
-          </div>
+          <div className={`${cn("annotation-history").elem("section-head").toString()} sr-only`}>{sectionHeader}</div>
         )}
         {renderEmptyState ? renderEmptyState() : defaultEmptyState}
       </Block>
@@ -156,7 +152,9 @@ const AnnotationHistoryComponent: FC<any> = ({
 
   return (
     <Block name="annotation-history" mod={{ inline }}>
-      {sectionHeader && <Elem name="section-head">{sectionHeader}</Elem>}
+      {sectionHeader && (
+        <div className={`${cn("annotation-history").elem("section-head").toString()} sr-only`}>{sectionHeader}</div>
+      )}
       <DraftState annotation={annotation} isSelected={isDraftSelected} inline={inline} />
       {enabled &&
         history.length > 0 &&

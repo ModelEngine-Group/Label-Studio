@@ -144,7 +144,6 @@ const InfoTab: FC<any> = inject("store")(
               />
             ) : (
               <>
-                <Elem name="section-head">Selection Details</Elem>
                 <RegionsPanel regions={selection} />
               </>
             )}
