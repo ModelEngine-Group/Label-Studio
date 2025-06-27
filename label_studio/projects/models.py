@@ -28,7 +28,7 @@ from core.utils.common import (
 from core.utils.db import batch_update_with_retry, fast_first
 from django.conf import settings
 from django.core.validators import MaxLengthValidator, MinLengthValidator
-from django.db import models, transaction
+from django.db import connection, models, transaction
 from django.db.models import Avg, BooleanField, Case, Count, JSONField, Max, Q, Sum, Value, When
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
@@ -1100,6 +1100,43 @@ class Project(ProjectMixin, models.Model):
             recalculate_all_stats(self.id, **recalculate_stats_counts)
 
         return objs
+
+    def get_task_batch_size(self):
+        """Calculate optimal batch size based on task data size"""
+        # For SQLite, use default MAX_TASK_BATCH_SIZE
+        if settings.DJANGO_DB == settings.DJANGO_DB_SQLITE:
+            return settings.MAX_TASK_BATCH_SIZE
+
+        # Using raw SQL to ensure we use the specific index task_proj_octlen_idx
+        # which is optimized for this query pattern (project_id, octet_length DESC)
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT id,
+                       octet_length(data::text) AS bytes
+                FROM   task
+                WHERE  project_id = %s
+                ORDER  BY octet_length(data::text) DESC
+                LIMIT  1
+            """,
+                [self.id],
+            )
+
+            row = cursor.fetchone()
+            if not row or not row[1]:
+                return settings.MAX_TASK_BATCH_SIZE
+
+            max_data_size = row[1]
+
+        batch_size = settings.TASK_DATA_PER_BATCH // max_data_size
+
+        if batch_size > settings.MAX_TASK_BATCH_SIZE:
+            batch_size = settings.MAX_TASK_BATCH_SIZE
+        elif batch_size < 1:
+            batch_size = 1
+
+        logger.info(f'Project {self.id}: max task data size {max_data_size} bytes, calculated batch size {batch_size}')
+        return batch_size
 
     def __str__(self):
         return f'{self.title} (id={self.id})' or _('Business number %d') % self.pk

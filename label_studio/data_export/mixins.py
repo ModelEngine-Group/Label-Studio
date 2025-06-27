@@ -8,6 +8,7 @@ from datetime import datetime
 from functools import reduce
 
 import django_rq
+from core.feature_flags import flag_set
 from core.redis import redis_connected
 from core.utils.common import batch
 from core.utils.io import (
@@ -197,14 +198,20 @@ class ExportMixin:
             self.counters = {'task_number': 0}
             all_tasks = self.project.tasks
             logger.debug('Tasks filtration')
-            task_ids = (
+            task_ids = list(
                 self._get_filtered_tasks(all_tasks, task_filter_options=task_filter_options)
                 .distinct()
                 .values_list('id', flat=True)
+                .iterator(chunk_size=1000)
             )
             base_export_serializer_option = self._get_export_serializer_option(serialization_options)
             i = 0
-            BATCH_SIZE = 1000
+
+            if flag_set('fflag_fix_back_plt_807_batch_size_26062025_short', self.project.organization.created_by):
+                BATCH_SIZE = self.project.get_task_batch_size()
+            else:
+                BATCH_SIZE = settings.BATCH_SIZE
+
             for ids in batch(task_ids, BATCH_SIZE):
                 i += 1
                 tasks = list(self.get_task_queryset(ids, annotation_filter_options))
