@@ -272,6 +272,10 @@ export class Layer extends Events<LayerEvents> {
   copyToBuffer() {
     this.createBufferCanvas();
 
+    // This needs to be updated to ensure it has the same pixel ratio as the canvas it is copying from/to
+    this._bufferCanvas.width = this.canvas.width;
+    this._bufferCanvas.height = this.canvas.height;
+
     // Copy the current canvas to the buffer
     this._bufferContext.imageSmoothingEnabled = false;
     this._bufferContext.clearRect(0, 0, this._bufferCanvas.width, this._bufferCanvas.height);
