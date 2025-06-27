@@ -741,6 +741,7 @@ export default class DomManager {
     const range: Range = new Range();
     const lastRanges = [];
 
+    if (!selection) return "";
     // save previous selection
     for (let idx = 0; idx < selection.rangeCount; idx++) {
       lastRanges.push(selection.getRangeAt(idx));
