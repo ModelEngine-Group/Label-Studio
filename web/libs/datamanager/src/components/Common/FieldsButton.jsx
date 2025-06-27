@@ -15,9 +15,11 @@ const injector = inject(({ store }) => {
 const FieldsMenu = observer(({ columns, WrapperComponent, onClick, onReset, selected, resetTitle }) => {
   const MenuItem = (col, onClick) => {
     return (
-      <Menu.Item key={col.key} name={col.key} onClick={onClick}>
+      <Menu.Item key={col.key} name={col.key} onClick={onClick} disabled={col.disabled}>
         {WrapperComponent && col.wra !== false ? (
-          <WrapperComponent column={col}>{col.title}</WrapperComponent>
+          <WrapperComponent column={col} disabled={col.disabled}>
+            {col.title}
+          </WrapperComponent>
         ) : (
           col.title
         )}
@@ -118,13 +120,14 @@ export const FieldsButton = injector(
   },
 );
 
-FieldsButton.Checkbox = observer(({ column, children }) => {
+FieldsButton.Checkbox = observer(({ column, children, disabled }) => {
   return (
     <Checkbox
       size="small"
       checked={!column.hidden}
       onChange={column.toggleVisibility}
       style={{ width: "100%", height: "100%" }}
+      disabled={disabled}
     >
       {children}
     </Checkbox>

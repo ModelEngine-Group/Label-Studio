@@ -17,7 +17,7 @@ import { Common } from "../types/Common";
  *
  * @param {{field: FieldConfig}} param0
  */
-export const FilterOperation = observer(({ filter, field, operator, value }) => {
+export const FilterOperation = observer(({ filter, field, operator, value, disabled }) => {
   const cellView = filter.cellView;
   const types = cellView?.customOperators ?? [
     ...(FilterInputs[filter.filter.currentType] ?? FilterInputs.String),
@@ -78,7 +78,7 @@ export const FilterOperation = observer(({ filter, field, operator, value }) => 
         <FilterDropdown
           placeholder="Condition"
           value={filter.operator}
-          disabled={types.length === 1}
+          disabled={types.length === 1 || disabled}
           items={availableOperators ? operators.filter((op) => availableOperators.includes(op.value)) : operators}
           onChange={onOperatorSelected}
         />
@@ -92,6 +92,7 @@ export const FilterOperation = observer(({ filter, field, operator, value }) => 
           value={value}
           onChange={onChange}
           size="small"
+          disabled={disabled}
         />
       </Elem>
     </>

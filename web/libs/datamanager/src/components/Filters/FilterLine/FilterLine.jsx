@@ -67,11 +67,18 @@ export const FilterLine = observer(({ filter, availableFilters, index, view, sid
                 )}
               </Elem>
             )}
+            disabled={filter.field.disabled}
           />
         </Elem>
       </GroupWrapper>
       <GroupWrapper wrap={sidebar}>
-        <FilterOperation filter={filter} value={filter.currentValue} operator={filter.operator} field={filter.field} />
+        <FilterOperation
+          filter={filter}
+          value={filter.currentValue}
+          operator={filter.operator}
+          field={filter.field}
+          disabled={filter.field.disabled}
+        />
       </GroupWrapper>
       <Elem name="remove">
         <Button
@@ -82,6 +89,7 @@ export const FilterLine = observer(({ filter, availableFilters, index, view, sid
             e.stopPropagation();
             filter.delete();
           }}
+          disabled={filter.field.disabled}
           icon={<Icon icon={IconClose} size={12} />}
         />
       </Elem>

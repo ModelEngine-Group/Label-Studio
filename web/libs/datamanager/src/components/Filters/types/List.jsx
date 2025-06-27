@@ -7,7 +7,7 @@ function defaultFilterItems(items) {
   return items?.toJSON ? items.toJSON() : items;
 }
 
-export const VariantSelect = observer(({ filter, schema, onChange, multiple, value, placeholder }) => {
+export const VariantSelect = observer(({ filter, schema, onChange, multiple, value, placeholder, disabled }) => {
   if (!schema) return <></>;
   const { items } = schema;
 
@@ -35,6 +35,7 @@ export const VariantSelect = observer(({ filter, schema, onChange, multiple, val
       searchFilter={filter.cellView?.searchFilter}
       onChange={(value) => onChange(value)}
       placeholder={placeholder ?? "Select value"}
+      disabled={disabled}
     />
   );
 });

@@ -33,6 +33,22 @@
     white-space: nowrap;
     user-select: none;
 
+    &[disabled] {
+      &:hover {
+        background-color: transparent !important;
+        cursor: not-allowed;
+      }
+
+      * {
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+
+      > * {
+        opacity: 0.5;
+      }
+    }
+
     &-icon {
       margin-right: 10px;
       object-fit: contain;
