@@ -3810,13 +3810,13 @@
         },
         "mono": {
           "$type": "fontFamily",
-          "$value": "IBMPlexMono",
+          "$value": "IBM Plex Mono,monospace",
           "$description": "",
           "$variable_metadata": {
             "name": "typography/font-family/mono",
             "figmaId": "VariableID:2646:12151",
             "modes": {
-              "value": "IBMPlexMono"
+              "value": "IBM Plex Mono,monospace"
             }
           }
         }
