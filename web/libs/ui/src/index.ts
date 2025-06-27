@@ -14,6 +14,7 @@ export * from "./lib/Tooltip/Tooltip";
 export * from "./lib/Userpic/Userpic";
 export * from "./lib/code-block/code-block";
 export * from "./lib/code-editor/code-editor";
+export * from "./lib/typography/typography";
 
 export * from "./assets/icons";
 export * from "./lib/simple-card";

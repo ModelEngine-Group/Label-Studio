@@ -6,7 +6,7 @@ addons.register(ADDON_ID, () => {
   addons.add(TOOL_ID, {
     type: types.TOOL,
     title: "Toggle Theme",
-    match: ({ tabId, viewMode }) => !tabId && viewMode === "story",
+    match: ({ tabId, viewMode }: any) => !tabId && (viewMode === "story" || viewMode === "docs"),
     render: ThemeTool,
-  });
+  } as any);
 });

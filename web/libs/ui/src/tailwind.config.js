@@ -69,6 +69,14 @@ module.exports = {
         // Add all letter spacings from tokens
         ...tokens.typography.letterSpacing,
       },
+      fontFamily: {
+        // Add all font families from tokens
+        ...tokens.typography.fontFamily,
+      },
+      fontWeight: {
+        // Add all font weights from tokens
+        ...tokens.typography.fontWeight,
+      },
       spacing: {
         4.5: "1.125rem",
         5.5: "1.375rem",

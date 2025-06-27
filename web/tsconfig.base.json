@@ -27,7 +27,6 @@
       "@humansignal/frontend-test/*": ["libs/frontend-test/src/*"],
       "@humansignal/icons": ["libs/ui/src/assets/icons"],
       "@humansignal/shad/*": ["./libs/ui/src/shad/*"],
-      "@humansignal/typography": ["libs/ui/src/typography"],
       "@humansignal/ui": ["libs/ui/src/index.ts"],
       "@humansignal/ui/*": ["libs/ui/src/*"]
     },

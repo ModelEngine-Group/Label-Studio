@@ -1,5 +1,5 @@
 import type { Page } from "../types/Page";
-import { SimpleCard, Spinner } from "@humansignal/ui";
+import { SimpleCard, Spinner, Typography } from "@humansignal/ui";
 import { IconExternal, IconFolderAdd, IconHumanSignal, IconUserAdd, IconFolderOpen } from "@humansignal/icons";
 import { HeidiTips } from "../../components/HeidiTips/HeidiTips";
 import { useQuery } from "@tanstack/react-query";
@@ -7,8 +7,6 @@ import { useAPI } from "../../providers/ApiProvider";
 import { useState } from "react";
 import { CreateProject } from "../CreateProject/CreateProject";
 import { InviteLink } from "../Organization/PeoplePage/InviteLink";
-import { Heading, Sub } from "@humansignal/typography";
-import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import { Button } from "../../components";
 
@@ -54,7 +52,6 @@ type Action = (typeof actions)[number]["type"];
 
 export const HomePage: Page = () => {
   const api = useAPI();
-  const history = useHistory();
   const [creationDialogOpen, setCreationDialogOpen] = useState(false);
   const [invitationOpen, setInvitationOpen] = useState(false);
   const { data, isFetching, isSuccess, isError } = useQuery({
@@ -84,8 +81,12 @@ export const HomePage: Page = () => {
       <div className="grid grid-cols-[minmax(0,1fr)_450px] gap-6">
         <section className="flex flex-col gap-6">
           <div className="flex flex-col gap-1">
-            <Heading size={1}>Welcome 👋</Heading>
-            <Sub>Let's get you started.</Sub>
+            <Typography variant="headline" size="small">
+              Welcome 👋
+            </Typography>
+            <Typography size="small" className="text-neutral-content-subtler">
+              Let's get you started.
+            </Typography>
           </div>
           <div className="flex justify-start gap-4">
             {actions.map((action) => {
@@ -129,8 +130,12 @@ export const HomePage: Page = () => {
                 >
                   <IconFolderOpen />
                 </div>
-                <Heading size={2}>Create your first project</Heading>
-                <Sub>Import your data and set up the labeling interface to start annotating</Sub>
+                <Typography variant="headline" size="small">
+                  Create your first project
+                </Typography>
+                <Typography size="small" className="text-neutral-content-subtler">
+                  Import your data and set up the labeling interface to start annotating
+                </Typography>
                 <Button primary rawClassName="mt-4" onClick={() => setCreationDialogOpen(true)}>
                   Create Project
                 </Button>
