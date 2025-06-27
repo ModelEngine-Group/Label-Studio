@@ -84,4 +84,14 @@ export default {
     onChangeEvent: "toggleSmoothing",
     defaultValue: true,
   },
+  invertedZoom: {
+    newUI: {
+      tags: "Image Tag",
+      title: "Invert zoom direction",
+      description: "Invert the direction of scroll-to-zoom",
+    },
+    description: "Enable inverted zoom direction",
+    onChangeEvent: "toggleInvertedZoom",
+    defaultValue: false,
+  },
 };

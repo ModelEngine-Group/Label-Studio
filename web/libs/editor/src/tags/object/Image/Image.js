@@ -38,6 +38,7 @@ const IMAGE_PRELOAD_COUNT = 3;
 const ZOOM_INTENSITY = 0.009;
 const MIN_ZOOM = 0.1;
 const MAX_ZOOM = 100;
+const MAX_ZOOM_CHANGE_PER_EVENT = 0.3; // Maximum zoom change per wheel event (30%)
 
 /**
  * The `Image` tag shows an image on the page. Use for all image annotation tasks to display an image on the labeling interface.
@@ -929,27 +930,47 @@ const Model = types
       self.resetZoomPositionToCenter();
     },
 
+    getInertialZoom(val) {
+      const invert = getRoot(self).settings.invertedZoom ? 1 : -1;
+
+      // Invert the delta value so that:
+      // - Pinch out (positive deltaY) zooms in
+      // - Pinch in (negative deltaY) zooms out
+      // - Scroll up (positive deltaY) zooms in
+      // - Scroll down (negative deltaY) zooms out
+      const invertedVal = val * invert;
+
+      // Calculate the zoom change using exponential formula
+      // This provides smooth zooming for both mouse wheel and trackpad pinch
+      const zoomChange = Math.exp(invertedVal * ZOOM_INTENSITY);
+
+      // Limit the maximum zoom change per event to prevent aggressive zooming
+      // This prevents users from accidentally zooming too far with a single wheel event
+      const limitedZoomChange = Math.max(
+        1 - MAX_ZOOM_CHANGE_PER_EVENT,
+        Math.min(1 + MAX_ZOOM_CHANGE_PER_EVENT, zoomChange),
+      );
+
+      return clamp(self.currentZoom * limitedZoomChange, MIN_ZOOM, MAX_ZOOM);
+    },
+
     /**
      * Handle zoom events from mouse wheel or trackpad pinch
-     * @param {number} val - The delta value from the wheel event (positive = zoom in, negative = zoom out)
+     * Unified smooth zoom behavior that works well for both input methods
+     * @param {number} val - The delta value from the wheel event
      * @param {Object} mouseRelativePos - The mouse position relative to the canvas
-     * @param {boolean} pinch - Whether this is a trackpad pinch event (true) or mouse wheel event (false)
      */
-    handleZoom(val, mouseRelativePos = { x: self.canvasSize.width / 2, y: self.canvasSize.height / 2 }, pinch = false) {
+    handleZoom(
+      val,
+      mouseRelativePos = { x: self.canvasSize.width / 2, y: self.canvasSize.height / 2 },
+      isEvent = false,
+    ) {
       if (val) {
-        let zoomScale = self.currentZoom;
-
-        if (pinch) {
-          // Smooth exponential zoom for trackpad pinch gestures
-          // This provides a more natural feel for pinch-to-zoom
-          const newZoom = clamp(self.currentZoom * Math.exp(-val * ZOOM_INTENSITY), MIN_ZOOM, MAX_ZOOM);
-          zoomScale = newZoom;
-        } else {
-          // Discrete zoom steps for mouse wheel
-          // Uses the zoomBy factor (default 1.1) for predictable zoom levels
-          zoomScale = val > 0 ? zoomScale * self.zoomBy : zoomScale / self.zoomBy;
-          zoomScale = clamp(zoomScale, MIN_ZOOM, MAX_ZOOM);
-        }
+        const zoomScale = isEvent
+          ? self.getInertialZoom(val)
+          : val > 0
+            ? self.currentZoom * self.zoomBy
+            : self.currentZoom / self.zoomBy;
 
         // Handle negative zoom restrictions
         if (self.negativezoom !== true && zoomScale <= 1) {

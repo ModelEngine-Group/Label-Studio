@@ -72,6 +72,8 @@ const SettingsModel = types
     isDestroying: types.optional(types.boolean, false),
 
     videoDrawOutside: types.optional(types.boolean, false),
+
+    invertedZoom: types.optional(types.boolean, false),
   })
   .views((self) => ({
     get annotation() {
@@ -229,6 +231,14 @@ const SettingsModel = types
 
     setSmoothing(value) {
       self.enableSmoothing = value;
+    },
+
+    toggleInvertedZoom() {
+      self.invertedZoom = !self.invertedZoom;
+    },
+
+    setInvertedZoom(value) {
+      self.invertedZoom = value;
     },
 
     setVideoHopSize(value) {
