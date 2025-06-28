@@ -172,6 +172,7 @@ export { ReactComponent as IconPause } from "./pause.svg";
 export { ReactComponent as IconPencil } from "./pencil.svg";
 export { ReactComponent as IconPersonInCircle } from "./person-circle.svg";
 export { ReactComponent as IconPin } from "./pin.svg";
+export { ReactComponent as IconUprightPin } from "./upright-pin.svg";
 export { ReactComponent as IconPlay } from "./play.svg";
 export { ReactComponent as IconPlaylistStarFullColor } from "./playlist-star-full-color.svg";
 export { ReactComponent as IconPlus } from "./plus.svg";
