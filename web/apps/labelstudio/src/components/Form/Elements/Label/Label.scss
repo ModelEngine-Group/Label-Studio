@@ -6,7 +6,7 @@
     display: flex;
     margin-bottom: 0;
     font-size: 14px;
-    line-height: 120%;
+    line-height: 1.25rem;
   }
 
   &__description {
@@ -27,6 +27,25 @@
     }
   }
 
+  &__footer {
+    font-size: var(--font-size-14);
+    color: var(--color-neutral-content-subtler);
+    font-weight: 400;
+    line-height: 140%;
+    white-space: pre-line;  // enable \n support in footer texts
+    margin-top: var(--spacing-tightest);
+
+    a {
+      color: var(--color-primary-content);
+      text-decoration: underline;
+
+      &:hover {
+        text-decoration: none;
+        color: var(--color-primary-content-hover);
+      }
+    }
+  }
+
   &__field {
     line-height: 0;
   }
@@ -34,7 +53,25 @@
   &__label {
     display: flex;
     align-items: center;
+    gap: 4px;
     white-space: pre-line;  // enable \n support in label texts
+    margin-bottom: var(--spacing-tightest);
+  }
+
+  &__tooltip {
+    display: flex;
+    align-items: center;
+    height: 20px;
+    width: 20px;
+    font-size: 0;
+    color: var(--color-primary-content);
+    margin-left: 4px;
+
+    svg {
+      height: 100%;
+      width: 100%;
+      fill: var(--color-neutral-icon);
+    }
   }
 
   &_size_large &__text {
@@ -55,7 +92,7 @@
   &[data-required] &__text::after {
     content: "Required";
     font-size: 0.825rem;
-    color: var(--sand_500);
+    color: var(--color-neutral-content-subtler);
     margin-left: 0.325rem;
   }
 
@@ -81,12 +118,28 @@
     grid-template-columns: 1fr auto;
   }
 
-  &_placement_left:not(.label-ls_withDescription) {
+  &_placement_left:not(.label-ls_withDescription, .label-ls_withFooter) {
     grid-template-areas: "label field";
   }
 
-  &_placement_right:not(.label-ls_withDescription) {
+  &_placement_right:not(.label-ls_withDescription, .label-ls_withFooter) {
     grid-template-areas: "field label";
+  }
+
+  &_placement_left.label-ls_withDescription.label-ls_withFooter {
+    grid-template-areas: "label field" "description field" "footer footer";
+  }
+
+  &_placement_right.label-ls_withDescription.label-ls_withFooter {
+    grid-template-areas: "field label" "field description" "footer footer";
+  }
+
+  &_placement_left.label-ls_withFooter:not(.label-ls_withDescription) {
+    grid-template-areas: "label field" "footer footer";
+  }
+
+  &_placement_right.label-ls_withFooter:not(.label-ls_withDescription) {
+    grid-template-areas: "field label" "footer footer";
   }
 
   &_empty &__text,
@@ -110,6 +163,11 @@
   &_placement_right &__description,
   &_placement_left &__description {
     grid-area: description;
+  }
+
+  &_placement_right &__footer,
+  &_placement_left &__footer {
+    grid-area: footer;
   }
 
   &_placement_right.label-ls_withDescription &__field {

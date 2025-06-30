@@ -2,7 +2,8 @@
 title_container_prefix: &title_container_prefix
   - type: text
     name: title
-    label: Storage Title
+    label: Storage Name
+    required: true
   - type: text
     name: container
     label: Container Name
@@ -11,7 +12,7 @@ title_container_prefix: &title_container_prefix
     name: prefix
     label: Container Prefix
 
-# 1x3 grid
+# 1x2 grid
 azure_params: &azure_params
   - type: password
     name: account_name
@@ -27,7 +28,6 @@ azure_params: &azure_params
     skipAutofill: true
     allowEmpty: false
     protectedValue: true
-  - null
 
 ImportStorage:
   # Title, Bucket, Prefix
@@ -46,25 +46,35 @@ ImportStorage:
   - columnCount: 3
     fields: *azure_params
 
-  # 1 columns grid
+  # Import method selection
   - columnCount: 1
+    fields:
+      - type: select
+        name: use_blob_urls
+        label: Import method
+        description: Choose how to import your data from storage
+        placeholder: "Select an option"
+        required: true
+        options:
+          - value: true
+            label: "Files - Automatically creates a task for each storage object (e.g. JPG, MP3, TXT)"
+          - value: false
+            label: "JSON - Treat each JSON or JSONL file as a task definition (one or more tasks per file)"
+
+  # 2 columns grid
+  - columnCount: 2
     columns:
-      - width: 600
-        fields:
-          - type: toggle
-            name: use_blob_urls
-            label: Treat every bucket object as a source file
-            description: If unchecked, treat every bucket object as a JSON-formatted task
-      - width: 600
+      - width: 468
         fields:
           - type: toggle
             name: presign
-            label: "Use pre-signed URLs (On)\n Proxy through Label Studio (Off)"
-            description: "When pre-signed URLs are enabled, all data bypasses Label Studio and user browsers directly read data from storage"
+            label: "Use pre-signed URLs (On)\n Proxy through the platform (Off)"
+            description: "When pre-signed URLs are enabled, all data bypasses the platform and user browsers directly read data from storage"
             value: true
+      - fields:
           - type: counter
             name: presign_ttl
-            label: Expiration minutes
+            label: Expire pre-signed URLs (minutes)
             min: 1
             value: 15
             dependency: presign

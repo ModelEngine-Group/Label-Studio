@@ -1,7 +1,8 @@
 redis_title: &redis_title
   - type: text
     name: title
-    label: Storage Title
+    label: Storage Name
+    required: true
 
 # 2x2 grid
 redis_params: &redis_params
@@ -41,13 +42,20 @@ ImportStorage:
         validators:
           - regexp
 
-  # 2 columns grid
+  # Import method selection
   - columnCount: 1
     fields:
-      - type: toggle
+      - type: select
         name: use_blob_urls
-        label: Treat every bucket object as a source file
-        description: If unchecked, treat every bucket object as a JSON-formatted task
+        label: Import method
+        description: Choose how to import your data from storage
+        placeholder: "Select an option"
+        required: true
+        options:
+          - value: true
+            label: "Files - Automatically creates a task for each storage object (e.g. JPG, MP3, TXT)"
+          - value: false
+            label: "JSON - Treat each JSON or JSONL file as a task definition (one or more tasks per file)"
 
 ExportStorage:
   - columnCount: 2
