@@ -572,7 +572,11 @@ main {
   cursor: pointer;
 }
 
-.page-sidebar-list li:has(.page-sidebar-children-link[aria-current="page"]) .page-sidebar-toggle-children-list svg {
+.page-tier-enterprise .page-header nav button.page-sidebar-toggle-children-list {
+  color: var(--color-gray-900);
+}
+
+.page-sidebar .page-sidebar-list li:has(.page-sidebar-children-link[aria-current="page"]) > .page-sidebar-toggle-children-list svg {
   transform: rotate(180deg);
 }
 
@@ -2612,7 +2616,7 @@ code.hljs {
 }
 
 .page-tier-enterprise .page-header nav>button+ul ul {
-  background-color: var(--color-gray-700);
+  background-color: var(--color-gray-000);
 }
 
 .page-tier-enterprise #docsearch-input {
