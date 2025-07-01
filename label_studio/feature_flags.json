@@ -3147,6 +3147,33 @@
       "version": 2,
       "deleted": false
     },
+    "fflag_feat_utc_135_duplicate_project_explicit": {
+      "key": "fflag_feat_utc_135_duplicate_project_explicit",
+      "on": false,
+      "prerequisites": [],
+      "targets": [],
+      "contextTargets": [],
+      "rules": [],
+      "fallthrough": {
+        "variation": 0
+      },
+      "offVariation": 1,
+      "variations": [
+        true,
+        false
+      ],
+      "clientSideAvailability": {
+        "usingMobileKey": false,
+        "usingEnvironmentId": false
+      },
+      "clientSide": false,
+      "salt": "510fe10de3224a9a8cc3c95e2e06a211",
+      "trackEvents": false,
+      "trackEventsFallthrough": false,
+      "debugEventsUntilDate": null,
+      "version": 2,
+      "deleted": false
+    },
     "fflag_feat_utc_46_session_timeout_policy": {
       "key": "fflag_feat_utc_46_session_timeout_policy",
       "on": true,
@@ -3743,7 +3770,7 @@
     },
     "fflag_fix_back_plt_807_batch_size_26062025_short": {
       "key": "fflag_fix_back_plt_807_batch_size_26062025_short",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -3765,7 +3792,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 2,
+      "version": 3,
       "deleted": false
     },
     "fflag_fix_bros_95_drafts_from_other_users": {
