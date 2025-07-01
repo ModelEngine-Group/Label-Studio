@@ -449,7 +449,7 @@
   --letter-spacing--15: -0.0094rem;
   --letter-spacing--10: -0.0063rem;
   --font-family-base: "Figtree";
-  --font-family-mono: "IBM Plex Mono,monospace";
+  --font-family-mono: "IBM Plex Mono", monospace;
   --corner-radius-0: var(--spacing-0);
   --corner-radius-2: var(--spacing-50);
   --corner-radius-4: var(--spacing-100);
