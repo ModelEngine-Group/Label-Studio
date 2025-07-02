@@ -34,7 +34,7 @@ Restrict access to the server itself by opening only the [required ports](/guide
 
 Secure user access to Label Studio to protect data integrity and allow changes to be performed only by those with access to the system.
 
-Each user must create an account with a password of at least 8 characters, allowing you to track who has access to Label Studio and which actions they perform.
+Each user must create an account with a password between 8 and 128 characters, allowing you to track who has access to Label Studio and which actions they perform.
 
 <div class="opensource-only">
 
@@ -63,9 +63,9 @@ Access to the REST API is restricted by user role and requires an access token t
 
 ## Enable SSRF protection for production environments
 
-When deploying Label Studio into a production environment, set the `SSRF_PROTECTION_ENABLED` environment variable to `true`. 
+When deploying Label Studio into a production environment, set the `SSRF_PROTECTION_ENABLED` environment variable to `true`.
 
-This variable is disabled by default to support users who are working with data in their local environments. However, it should be enabled in production usage. 
+This variable is disabled by default to support users who are working with data in their local environments. However, it should be enabled in production usage.
 
 
 ## Secure access to data in Label Studio
@@ -75,7 +75,7 @@ Data in Label Studio is stored in one or two places, depending on your deploymen
 - Project settings and configuration details are stored in Label Studio's internal database.
 - Input data (texts, images, audio files) is hosted by external data storage and provided to the Label Studio by using URI links. The data is not stored in Label Studio directly, the content is retrieved client-side only.
 - Project annotations are stored in the internal database, and optionally can be stored in a local file directory, a Redis database, or cloud storage buckets on Amazon Web Services (AWS), Google Cloud Platform (GCP), or Microsoft Azure.
-  
+
 
 !!! info Tip
     There are several advanced security options for AWS and GCP storage, including:
@@ -101,7 +101,7 @@ Combine workspaces, projects, users, and roles. This approach helps configure an
 
 #### Source storage logic and security
 
-Label Studio's cloud storage integration performs two key operations: 
+Label Studio's cloud storage integration performs two key operations:
 * **Task sync and import**
 * **Media file serving**
 
@@ -133,13 +133,13 @@ To ensure maximum security and isolation of your data behind a VPC, only allow a
 
 2. **Establish secure connection** between Storage and Users' Browsers:
     - Configure a VPC private endpoint and route VPN traffic to it so that users' browsers can securely access the S3 bucket using only your Virtual Private Network (VPN).
-    - Or limit your storage access to certain IPs or VPCs. 
+    - Or limit your storage access to certain IPs or VPCs.
 
 **Configuration examples:**
   - [AWS S3 Storage: IP Filtering and VPN for Enhanced Security](storage#IP-Filtering-and-VPN-for-Enhanced-Security-for-S3-storage).
   - [Google Cloud Storage: IP Filtering for Enhanced Security](storage#IP-Filtering-for-Enhanced-Security-for-GCS-storage).
 
-<i>This image shows how you can securely configure source cloud storages with Label Studio using your VPC and IP restrictions</i> 
+<i>This image shows how you can securely configure source cloud storages with Label Studio using your VPC and IP restrictions</i>
 
 <img width="49%" style="display: inline-block; margin-right: 5px;" src="/images/storages/cloud-storage-ip-restriction.jpg" alt="Label Studio + Cloud Storage IP Restriction" class="make-intense-zoom" />
 
@@ -165,7 +165,7 @@ Label Studio collects usage statistics including the number of page visits, numb
 
 <div class="opensource-only">
 
-You can disable data collection by setting the environment variable `COLLECT_ANALYTICS` to `False`. 
+You can disable data collection by setting the environment variable `COLLECT_ANALYTICS` to `False`.
 
 </div>
 
@@ -191,7 +191,7 @@ CUSTOM_CA_CERTS=/tmp/my.cert
 
 1. Upload your self-signed certificate as a k8s secret.
    Upload `my.cert` as a secrets with a name `test-my-root-cert`:
-   
+
 ```yaml
 kubectl create secret generic test-my-root-cert --from-file=file=my.cert
 ```
