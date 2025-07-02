@@ -8,7 +8,6 @@ STALE_FEATURE_FLAGS = {
     'fflag_fix_all_lsdv_4971_async_reimport_09052023_short': True,
     # Jan 16
     'fflag_feat_front_optic_767_annotator_project_multiselect_short': True,
-    'fflag_fix_back_leap_612_explore_review_09042024_short': True,
     'fflag_fix_optic_214_extra_blank_dashboard_charts_short': True,
     'fflag_fix_optic_391_tasks_outside_low_agreement_project_counts_short': True,
     'fflag_feat_all_optic_520_annotator_report_short': True,
