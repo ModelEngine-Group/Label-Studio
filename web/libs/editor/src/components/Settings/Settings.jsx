@@ -13,6 +13,7 @@ import * as TagSettings from "./TagSettings";
 import { IconClose } from "@humansignal/icons";
 import { Checkbox, Toggle } from "@humansignal/ui";
 import { FF_DEV_3873, isFF } from "../../utils/feature-flags";
+import { ff } from "@humansignal/core";
 
 const HotkeysDescription = () => {
   const columns = [
@@ -64,7 +65,10 @@ const HotkeysDescription = () => {
 
 const newUI = isFF(FF_DEV_3873) ? { newUI: true } : {};
 
-const editorSettingsKeys = Object.keys(EditorSettings);
+const editorSettingsKeys = Object.keys(EditorSettings).filter((key) => {
+  const flag = EditorSettings[key].flag;
+  return flag ? ff.isActive(flag) : true;
+});
 
 if (isFF(FF_DEV_3873)) {
   const enableTooltipsIndex = editorSettingsKeys.findIndex((key) => key === "enableTooltips");

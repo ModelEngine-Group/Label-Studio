@@ -1,3 +1,5 @@
+import { FF_BITMASK } from "@humansignal/core/lib/utils/feature-flags";
+
 export default {
   enableHotkeys: {
     newUI: {
@@ -93,5 +95,6 @@ export default {
     description: "Enable inverted zoom direction",
     onChangeEvent: "toggleInvertedZoom",
     defaultValue: false,
+    flag: FF_BITMASK,
   },
 };
