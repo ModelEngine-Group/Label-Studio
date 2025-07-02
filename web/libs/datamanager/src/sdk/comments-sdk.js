@@ -71,8 +71,13 @@ export class CommentsSdk {
       return { ...comment, created_by: comment.created_by.id };
     });
 
-    if (commentUsers.length) {
-      this.lsf.store.enrichUsers(commentUsers);
+    if (commentUsers.length && this.lsf?.store?.enrichUsers) {
+      try {
+        this.lsf.store.enrichUsers(commentUsers);
+      } catch (error) {
+        console.warn("Failed to enrich comment users:", error.message);
+        return [];
+      }
     }
 
     return comments;
