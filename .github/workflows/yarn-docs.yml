@@ -22,12 +22,11 @@ on:
 env:
   NODE: "18"
   FRONTEND_MONOREPO_DIR: "web"
-  FRONTEND_BUILD_COMMIT_MESSAGE: "chore: Yarn docs"
 
 jobs:
   build:
     name: "Yarn docs"
-    if: "${{ github.event.commit.message != 'chore: Yarn docs' }}"
+    if: "${{ github.event.commit.message != 'docs: Update tag docs and autocomplete dictionary' }}"
     runs-on: ubuntu-latest
     steps:
       - uses: hmarr/debug-action@v3.0.0
@@ -58,7 +57,7 @@ jobs:
 
       - name: "Commit and Push"
         env:
-          COMMIT_MESSAGE: "chore: Yarn docs"
+          COMMIT_MESSAGE: "docs: Update tag docs and autocomplete dictionary""
           WORKFLOW_LINK: "Workflow run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         run: |
           git add "${{ env.FRONTEND_MONOREPO_DIR }}" || true
