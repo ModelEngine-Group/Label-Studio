@@ -624,6 +624,7 @@ const Model = types
           }
           [data, headers] = parseCSV(text, separator);
         }
+        if (!isAlive(self)) return;
         self.setData(data);
         self.setColumnNames(headers);
         self.updateValue(store);
