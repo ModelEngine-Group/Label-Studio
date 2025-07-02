@@ -88,8 +88,10 @@ module.exports.config = {
       ],
     },
     // coverage: {
-    //   enabled: true,
+    //   enabled: enableCoverage,
     //   coverageDir: 'output/coverage',
+    //   include: ["**/*.{js,jsx,ts,tsx}"],
+    //   exclude: ["**/*.d.ts", "**/node_modules/**", "**/examples/**"],
     // },
     disableDefaultInit: {
       require: "./plugins/disableDefaultInit.js",
@@ -105,6 +107,8 @@ module.exports.config = {
       enabled: enableCoverage,
       uniqueFileName: true,
       coverageDir: "../coverage",
+      include: ["**/*.{js,jsx,ts,tsx}"],
+      exclude: ["**/*.d.ts", "**/node_modules/**", "**/examples/**"],
       actionCoverage: {
         enabled: false,
         include: ["**/src/**"],

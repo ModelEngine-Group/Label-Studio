@@ -10,6 +10,7 @@
     "@thi.ng/rle-pack": "^3.1.30",
     "antd": "^4.3.3",
     "chroma-js": "^2.1.1",
+    "colormap": "^2.3.2",
     "d3": "^5.16.0",
     "date-fns": "^2.20.1",
     "emoji-regex": "^7.0.3",
@@ -39,9 +40,11 @@
     "sanitize-html": "^2.12.1",
     "strman": "^2.0.1",
     "wavesurfer.js": "^6.0.1",
-    "xpath-range": "^1.1.1",
-    "colormap": "^2.3.2",
-    "webfft": "^1.0.3"
+    "webfft": "^1.0.3",
+    "xpath-range": "^1.1.1"
   },
-  "main": "src/index.js"
+  "main": "src/index.js",
+  "devDependencies": {
+    "babel-plugin-istanbul": "^7.0.0"
+  }
 }

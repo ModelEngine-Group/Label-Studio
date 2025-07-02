@@ -12,7 +12,11 @@ Scenario("Reiniting Label Studio should not left unexpected null and video tags 
       data: { video: "./public/files/opossum_intro.webm" },
     });
 
-    I.wait((i * i) / 1000000);
+    // Add a small delay to ensure proper cleanup between reinitializations
+    // Note that for the smaller values, NODE_ENV=development results in slower cleanup for mounted components (likely due to MobX providers)
+    // and fails the test with "Reiniting Label Studio should not left unexpected null and video tags in DOM:"
+    // However, we need NODE_ENV=development to collect coverage
+    I.wait(0.1);
   }
   I.dontSeeElementInDOM({ xpath: "//body/video[position()=2]" });
   I.dontSee("null");

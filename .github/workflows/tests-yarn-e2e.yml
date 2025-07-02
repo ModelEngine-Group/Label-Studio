@@ -52,7 +52,7 @@ jobs:
         timeout-minutes: 2
         working-directory: ${{ env.FRONTEND_MONOREPO_DIR }}
         env:
-          NODE_ENV: production
+          NODE_ENV: development
           BUILD_NO_MINIMIZATION: true
         run: |
           set -xeuo pipefail
@@ -70,14 +70,27 @@ jobs:
         working-directory: ${{ env.FRONTEND_MONOREPO_DIR }}
         env:
           HEADLESS: true
+          COVERAGE: true
         run: |
           yarn lsf:e2e:ci
+
+      - name: Upload coverage to Codecov
+        if: ${{ always() && github.event.pull_request.head.repo.fork == false && github.event.pull_request.user.login != 'dependabot[bot]' }}
+        uses: codecov/codecov-action@v5
+        with:
+          name: lsf-e2e
+          directory: web/libs/editor/tests/coverage
+          token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: true
+          fail_ci_if_error: true
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: e2e output
-          path: "web/libs/editor/tests/e2e/output"
+          path: |
+            web/libs/editor/tests/e2e/output
+            web/libs/editor/tests/coverage
 
       - name: Kill LSO server
         if: always()
