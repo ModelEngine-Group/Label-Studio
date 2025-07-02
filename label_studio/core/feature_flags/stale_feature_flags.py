@@ -9,7 +9,6 @@ STALE_FEATURE_FLAGS = {
     # Jan 16
     'fflag_feat_front_optic_767_annotator_project_multiselect_short': True,
     'fflag_fix_optic_214_extra_blank_dashboard_charts_short': True,
-    'fflag_fix_optic_391_tasks_outside_low_agreement_project_counts_short': True,
     'feat_all_optic_71_dashboard_multiple_labeling_group_support_v1_01092023_short': True,
     'fflag_feat_front_prod_281_project_list_search_19072023_short': True,
     'fflag_feat_all_lsdv_e_295_project_level_roles_via_saml_scim_ldap_short': True,
