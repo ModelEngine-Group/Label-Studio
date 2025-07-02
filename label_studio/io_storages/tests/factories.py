@@ -2,7 +2,13 @@ import factory
 from core.utils.common import load_func
 from django.conf import settings
 from io_storages.base_models import ImportStorage, ProjectStorageMixin
-from io_storages.models import AzureBlobImportStorage, GCSImportStorage, RedisImportStorage, S3ImportStorage
+from io_storages.models import (
+    AzureBlobExportStorage,
+    AzureBlobImportStorage,
+    GCSImportStorage,
+    RedisImportStorage,
+    S3ImportStorage,
+)
 
 
 class StorageFactory(factory.django.DjangoModelFactory):
@@ -93,3 +99,8 @@ class RedisImportStorageBaseFactory(RedisStorageMixinFactory, ImportStorageFacto
 class RedisImportStorageFactory(RedisImportStorageBaseFactory, ProjectStorageMixinFactory):
     class Meta:
         model = RedisImportStorage
+
+
+class AzureBlobExportStorageFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = AzureBlobExportStorage
