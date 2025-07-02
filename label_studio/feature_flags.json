@@ -3795,6 +3795,60 @@
       "version": 3,
       "deleted": false
     },
+    "fflag_fix_back_plt_811_finished_task_number_01072025_short": {
+      "key": "fflag_fix_back_plt_811_finished_task_number_01072025_short",
+      "on": true,
+      "prerequisites": [],
+      "targets": [],
+      "contextTargets": [],
+      "rules": [],
+      "fallthrough": {
+        "variation": 0
+      },
+      "offVariation": 1,
+      "variations": [
+        true,
+        false
+      ],
+      "clientSideAvailability": {
+        "usingMobileKey": false,
+        "usingEnvironmentId": false
+      },
+      "clientSide": false,
+      "salt": "7f13c327ad9e4ba9819c9a843b99ed4c",
+      "trackEvents": false,
+      "trackEventsFallthrough": false,
+      "debugEventsUntilDate": null,
+      "version": 3,
+      "deleted": false
+    },
+    "fflag_fix_back_plt_811_projects_pagination_01072025_short": {
+      "key": "fflag_fix_back_plt_811_projects_pagination_01072025_short",
+      "on": true,
+      "prerequisites": [],
+      "targets": [],
+      "contextTargets": [],
+      "rules": [],
+      "fallthrough": {
+        "variation": 0
+      },
+      "offVariation": 1,
+      "variations": [
+        true,
+        false
+      ],
+      "clientSideAvailability": {
+        "usingMobileKey": false,
+        "usingEnvironmentId": false
+      },
+      "clientSide": false,
+      "salt": "9460cf1d97b343a9a1376d031d4a1a9d",
+      "trackEvents": false,
+      "trackEventsFallthrough": false,
+      "debugEventsUntilDate": null,
+      "version": 3,
+      "deleted": false
+    },
     "fflag_fix_bros_95_drafts_from_other_users": {
       "key": "fflag_fix_bros_95_drafts_from_other_users",
       "on": true,
@@ -4432,7 +4486,7 @@
     },
     "fflag_front_feat_bros_87_pixel_wise_16062025_short": {
       "key": "fflag_front_feat_bros_87_pixel_wise_16062025_short",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -4454,7 +4508,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 2,
+      "version": 4,
       "deleted": false
     },
     "fflag_optic_all_optic_1938_storage_proxy": {
