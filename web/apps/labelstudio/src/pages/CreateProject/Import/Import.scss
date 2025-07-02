@@ -50,7 +50,7 @@
     line-height: 1em;
   }
 
-  & > header {
+  &>header {
     font-size: 14px;
     padding: 24px 32px;
     background: var(--color-neutral-background);
@@ -75,7 +75,8 @@
       box-shadow: inset 0 1px 2px rgba(var(--color-neutral-shadow-raw) / 12%);
       transition: all 150ms ease-out;
 
-      &:focus, &:focus-visible {
+      &:focus,
+      &:focus-visible {
         border-color: var(--color-neutral-border-bolder);
         outline: none;
         box-shadow: 0 0 0 4px var(--color-primary-focus-outline);
@@ -95,7 +96,7 @@
       }
     }
 
-    & + span {
+    &+span {
       color: var(--color-neutral-content-subtler);
     }
   }
@@ -105,7 +106,7 @@
     font-weight: 500;
   }
 
-  & > main {
+  &>main {
     @include custom-scrollbar;
 
     flex: 1;
@@ -153,14 +154,14 @@
     width: 100%;
     height: 100%;
     z-index: 1;
-    background:  rgb(255 255 255 / 50%);
+    background: rgb(255 255 255 / 50%);
   }
 
   &__code-wrapper {
     padding: 0 var(--spacing-base) var(--spacing-base);
     height: calc(100% - var(--spacing-tight));
 
-    & > div {
+    &>div {
       @include custom-scrollbar;
 
       height: 100%;
@@ -210,7 +211,8 @@
     &_highlighted {
       position: relative;
       z-index: 12;
-      background: var(--color-neutral-background);
+      border: 1px solid var(--color-neutral-border);
+      background: var(--color-neutral-surface);
       padding: 4px 8px;
       border-radius: 8px;
     }
@@ -222,7 +224,7 @@
   }
 
   &__csv-splash {
-    background: var(--color-neutral-surface);
+    background: rgb(var(--color-neutral-background-raw) / 90%);
     position: absolute;
     inset: 0;
     z-index: 10;
@@ -249,7 +251,7 @@
   }
 
   &::before {
-    content:"";
+    content: "";
     transition: all 300ms ease-out;
     position: absolute;
     inset: 16px 48px 48px;
@@ -301,7 +303,7 @@
     border-radius: var(--corner-radius-small);
     transition: all 150ms ease-out;
 
-    & > *:not(:first-child) {
+    &>*:not(:first-child) {
       margin-top: 32px;
     }
 
@@ -322,7 +324,7 @@
       dt {
         color: var(--color-neutral-content);
       }
-      
+
       dd {
         font-weight: normal;
       }
