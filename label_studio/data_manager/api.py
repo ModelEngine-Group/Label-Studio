@@ -7,7 +7,7 @@ from core.feature_flags import flag_set
 from core.permissions import ViewClassPermission, all_permissions
 from core.utils.common import int_from_request, load_func
 from core.utils.params import bool_from_request
-from data_manager.actions import get_all_actions, perform_action
+from data_manager.actions import get_action_form, get_all_actions, perform_action
 from data_manager.functions import evaluate_predictions, get_prepare_params, get_prepared_queryset
 from data_manager.managers import get_fields_for_evaluation
 from data_manager.models import View
@@ -530,13 +530,13 @@ class ProjectActionsAPI(APIView):
     )
 
     def get(self, request):
-        pk = int_from_request(request.GET, 'project', 1)  # replace 1 to None, it's for debug only
+        pk = int_from_request(request.GET, 'project', 0)
         project = generics.get_object_or_404(Project, pk=pk)
         self.check_object_permissions(request, project)
         return Response(get_all_actions(request.user, project))
 
     def post(self, request):
-        pk = int_from_request(request.GET, 'project', None)
+        pk = int_from_request(request.GET, 'project', 0)
         project = generics.get_object_or_404(Project, pk=pk)
         self.check_object_permissions(request, project)
 
@@ -554,3 +554,40 @@ class ProjectActionsAPI(APIView):
         code = result.pop('response_code', 200)
 
         return Response(result, status=code)
+
+
+@method_decorator(
+    name='get',
+    decorator=swagger_auto_schema(
+        tags=['Data Manager'],
+        operation_summary='Get action form',
+        operation_description='Get the form configuration for a specific action.',
+        manual_parameters=[
+            openapi.Parameter(
+                name='project',
+                type=openapi.TYPE_INTEGER,
+                in_=openapi.IN_QUERY,
+                description='Project ID',
+                required=True,
+            )
+        ],
+        responses={
+            200: openapi.Response(
+                description='Action form configuration returned successfully',
+                schema=openapi.Schema(type=openapi.TYPE_OBJECT, description='Form configuration object'),
+            )
+        },
+    ),
+)
+class ProjectActionsFormAPI(APIView):
+    permission_required = ViewClassPermission(
+        GET=all_permissions.projects_view,
+    )
+
+    def get(self, request, action_id):
+        pk = int_from_request(request.GET, 'project', 0)
+        project = generics.get_object_or_404(Project, pk=pk)
+        self.check_object_permissions(request, project)
+
+        form = get_action_form(action_id, project, request.user)
+        return Response(form)

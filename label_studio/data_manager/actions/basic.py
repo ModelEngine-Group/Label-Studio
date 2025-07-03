@@ -127,7 +127,6 @@ def delete_tasks_annotations_form(user, project):
                 {
                     'type': 'select',
                     'name': 'annotator',
-                    'required': False,
                     'label': 'Annotator',
                     'options': [
                         {'value': str(user.id), 'label': user.get_full_name() or user.username or user.email}

@@ -348,6 +348,12 @@
         "decorators": ""
     },
     {
+        "url": "/api/dm/actions/<str:action_id>/form/",
+        "module": "data_manager.api.ProjectActionsFormAPI",
+        "name": "data_manager:dm-actions-form",
+        "decorators": ""
+    },
+    {
         "url": "/projects/<int:pk>/",
         "module": "data_manager.views.task_page",
         "name": "data_manager:project-data",

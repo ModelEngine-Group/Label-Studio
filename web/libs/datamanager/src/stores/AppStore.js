@@ -546,6 +546,11 @@ export const AppStore = types
       self.SDK.updateActions(actions);
     }),
 
+    fetchActionForm: flow(function* (actionId) {
+      const form = yield self.apiCall("actionForm", { actionId });
+      return form;
+    }),
+
     fetchUsers: flow(function* () {
       const list = yield self.apiCall("users", {
         __useQueryCache: {
@@ -567,6 +572,11 @@ export const AppStore = types
       const requests = [self.fetchProject(), self.fetchUsers()];
 
       if (!isLabelStream || (self.project?.show_annotation_history && task)) {
+        if (self.SDK.type === "dm") {
+          // Fetch actions in background to avoid blocking the main thread
+          setTimeout(() => self.fetchActions(), 0);
+        }
+
         if (self.SDK.settings?.onlyVirtualTabs && self.project?.show_annotation_history && !task) {
           requests.push(
             self.viewsStore.addView(
