@@ -260,8 +260,8 @@ class TaskAPI(generics.RetrieveUpdateDestroyAPIView):
     )
 
     def initial(self, request, *args, **kwargs):
+        super().initial(request, *args, **kwargs)
         self.task = self.get_object()
-        return super().initial(request, *args, **kwargs)
 
     @staticmethod
     def prefetch(queryset):
