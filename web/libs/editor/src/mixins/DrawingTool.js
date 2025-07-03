@@ -3,7 +3,7 @@ import { types } from "mobx-state-tree";
 import Utils from "../utils";
 import throttle from "lodash.throttle";
 import { MIN_SIZE } from "../tools/Base";
-import { FF_DEV_3793, isFF } from "../utils/feature-flags";
+import { FF_DEV_3391, FF_DEV_3793, isFF } from "../utils/feature-flags";
 import { RELATIVE_STAGE_HEIGHT, RELATIVE_STAGE_WIDTH } from "../components/ImageView/Image";
 
 const DrawingTool = types
@@ -75,6 +75,9 @@ const DrawingTool = types
        * @return {boolean} Returns true if the interaction is allowed, otherwise false.
        */
       isAllowedInteraction(ev) {
+        if (isFF(FF_DEV_3391) && !self.annotation.editable) {
+          return false;
+        }
         if (self.group !== "segmentation") return true;
         if (ev.offsetX > self.obj.canvasSize.width) return false;
         if (ev.offsetY > self.obj.canvasSize.height) return false;
