@@ -57,7 +57,7 @@ jobs:
 
       - name: "Commit and Push"
         env:
-          COMMIT_MESSAGE: "docs: Update tag docs and autocomplete dictionary""
+          COMMIT_MESSAGE: "docs: Update tag docs and autocomplete dictionary"
           WORKFLOW_LINK: "Workflow run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         run: |
           git add "${{ env.FRONTEND_MONOREPO_DIR }}" || true
