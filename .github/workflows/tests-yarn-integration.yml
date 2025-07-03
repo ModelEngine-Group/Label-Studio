@@ -77,6 +77,15 @@ jobs:
           name: cypress coverage
           path: web/libs/editor/coverage
 
+      - name: Upload test results and screenshots
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress test output
+          path: |
+            dist/cypress/libs/frontend-test/src/screenshots
+            dist/cypress/libs/frontend-test/src/videos
+
       - name: Kill server
         if: always()
         continue-on-error: true
