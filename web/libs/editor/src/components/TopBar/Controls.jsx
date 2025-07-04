@@ -116,7 +116,7 @@ export const Controls = controlsInjector(
               store.acceptAnnotation();
             }}
           >
-            {history.canUndo ? "Fix + Accept" : "Accept"}
+            {history.canUndo || annotation.versions.draft ? "Fix + Accept" : "Accept"}
           </Button>
         </ButtonTooltip>,
       );
