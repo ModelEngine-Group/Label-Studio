@@ -287,19 +287,21 @@ module.exports = composePlugins(
               publicPath: `${FRONTEND_HOSTNAME}/react-app/`,
             },
             allowedHosts: "all", // Allow access from Django's server
-            proxy: {
-              "/api": {
+            proxy: [
+              {
+                context: ["/api"],
                 target: `${DJANGO_HOSTNAME}/api`,
                 changeOrigin: true,
                 pathRewrite: { "^/api": "" },
                 secure: false,
               },
-              "/": {
+              {
+                context: ["/"],
                 target: `${DJANGO_HOSTNAME}`,
                 changeOrigin: true,
                 secure: false,
               },
-            },
+            ],
           },
     });
   },

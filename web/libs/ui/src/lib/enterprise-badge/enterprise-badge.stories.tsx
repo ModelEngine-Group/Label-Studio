@@ -4,7 +4,6 @@ import { EnterpriseBadge } from "./enterprise-badge";
 const meta: Meta<typeof EnterpriseBadge> = {
   component: EnterpriseBadge,
   title: "UI/EnterpriseBadge",
-  tags: ["autodocs"],
   argTypes: {
     filled: { control: "boolean" },
   },

@@ -359,6 +359,7 @@ const IconCatalogByCategory = () => {
 
 const meta: Meta = {
   title: "UI/Icons",
+  tags: ["!autodocs"],
   parameters: {
     layout: "fullscreen",
     docs: {

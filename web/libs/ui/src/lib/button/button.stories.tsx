@@ -5,7 +5,6 @@ import { IconAnnotationGroundTruth, IconCrossAlt } from "@humansignal/icons";
 const meta: Meta<typeof Button> = {
   component: Button,
   title: "UI/Button",
-  tags: ["autodocs"],
   argTypes: {
     disabled: { control: "boolean" },
     waiting: { control: "boolean" },

@@ -1,17 +1,9 @@
 import type { StorybookConfig } from "@storybook/react-webpack5";
 
 const config: StorybookConfig = {
-  core: { builder: "@storybook/builder-webpack5" },
-
   stories: ["../../../libs/**/*.@(mdx|stories.@(js|jsx|ts|tsx))", "../../../apps/**/*.@(mdx|stories.@(js|jsx|ts|tsx))"],
 
-  addons: [
-    "@storybook/addon-essentials",
-    "@storybook/addon-interactions",
-    "@nx/react/plugins/storybook",
-    "@chromatic-com/storybook",
-    "../addons/theme-toggle/register",
-  ],
+  addons: ["@nx/react/plugins/storybook", "@storybook/addon-docs", "../addons/theme-toggle/register"],
 
   webpackFinal(config) {
     const rules = config.module?.rules ?? [];
@@ -52,15 +44,10 @@ const config: StorybookConfig = {
     };
   },
 
-  framework: {
-    name: "@storybook/react-webpack5",
-    options: {},
-  },
-
-  docs: {},
+  framework: "@storybook/react-webpack5",
 
   typescript: {
-    reactDocgen: "react-docgen-typescript",
+    reactDocgen: "react-docgen",
   },
 };
 

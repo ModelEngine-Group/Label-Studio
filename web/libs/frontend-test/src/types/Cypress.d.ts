@@ -1,6 +1,6 @@
 declare namespace Cypress {
-  interface Tresholdable {
-    treshold?: number;
+  interface Thresholdable {
+    threshold?: number;
   }
   interface CompareScreenshotOptions extends ScreenshotOptions {
     withHidden: string[];
@@ -17,7 +17,7 @@ declare namespace Cypress {
     compareScreenshot(
       name: string,
       assert: "shouldChange" | "shouldNotChange" | "diff",
-      screenshotCompareOptions?: Partial<Loggable & Timeoutable & CompareScreenshotOptions & Tresholdable>,
+      screenshotCompareOptions?: Partial<Loggable & Timeoutable & CompareScreenshotOptions & Thresholdable>,
     ): Chainable<JQuery<Element>>;
     matchImageSnapshot(options?: { name?: string; threshold?: number }): Chainable<JQuery<Element>>;
   }

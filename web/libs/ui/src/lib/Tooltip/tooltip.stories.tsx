@@ -5,7 +5,6 @@ import { Button } from "../button/button";
 const meta: Meta<typeof Tooltip> = {
   component: Tooltip,
   title: "UI/Tooltip",
-  tags: ["autodocs"],
   argTypes: {
     disabled: { control: "boolean" },
   },

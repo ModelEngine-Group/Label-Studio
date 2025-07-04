@@ -1,6 +1,12 @@
 import "@humansignal/ui/tailwind.css";
 import "./preview.scss";
 import "../addons/theme-toggle/preview";
+import type { Preview } from "@storybook/react";
 
-export const parameters = {};
-export const tags = ["autodocs", "autodocs"];
+const preview: Preview = {
+  // ...rest of preview
+  //👇 Enables auto-generated documentation for all stories
+  tags: ["autodocs"],
+};
+
+export default preview;

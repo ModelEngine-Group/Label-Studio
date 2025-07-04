@@ -26,13 +26,14 @@ export default function (
     downloadsFolder: localPath("./output/downloads"),
     fixturesFolder: localPath("./fixtures"),
     trashAssetsBeforeRuns: false, // Kills ability to run in parallel, must be off
-    videoUploadOnPasses: false,
     numTestsKeptInMemory: 1,
     env: {
       coverage: COLLECT_COVERAGE,
     },
     e2e: {
       ...nxE2EPreset(__filename, { cypressDir: "tests/integration" }),
+      baseUrl: "http://localhost:3000",
+      injectDocumentDomain: true,
       viewportWidth: 1600,
       viewportHeight: 900,
       // output config

@@ -5,7 +5,6 @@ import { IconAIAssistant } from "@humansignal/icons";
 const meta: Meta<typeof Sparkles> = {
   title: "UI/Sparkles",
   component: Sparkles,
-  tags: ["autodocs"],
   parameters: {
     layout: "centered",
     docs: {

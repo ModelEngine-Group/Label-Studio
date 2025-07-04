@@ -1,7 +1,7 @@
 import React from "react";
 
-import { useStorybookApi } from "@storybook/manager-api";
-import { IconButton } from "@storybook/components";
+import { useStorybookApi } from "storybook/manager-api";
+import { IconButton } from "storybook/internal/components";
 import { MoonIcon, SunIcon } from "@storybook/icons";
 
 import { ADDON_ID, TOOL_ID, THEMES, DEFAULT_THEME } from "./constants";

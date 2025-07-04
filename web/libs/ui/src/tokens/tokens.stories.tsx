@@ -763,6 +763,7 @@ const TokenCategorized = () => {
 
 const meta: Meta = {
   title: "Design/Tokens",
+  tags: ["!autodocs"],
   parameters: {
     layout: "fullscreen",
     docs: {
