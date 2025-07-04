@@ -3149,7 +3149,7 @@
     },
     "fflag_feat_utc_135_duplicate_project_explicit": {
       "key": "fflag_feat_utc_135_duplicate_project_explicit",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -3171,7 +3171,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 2,
+      "version": 3,
       "deleted": false
     },
     "fflag_feat_utc_46_session_timeout_policy": {
