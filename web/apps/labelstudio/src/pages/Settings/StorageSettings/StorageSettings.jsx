@@ -1,37 +1,33 @@
-import { Columns } from "../../../components/Columns/Columns";
-import { Description } from "../../../components/Description/Description";
-import { Block, cn } from "../../../utils/bem";
-import { Elem } from "../../../utils/bem";
+import { cn } from "../../../utils/bem";
 import { StorageSet } from "./StorageSet";
-import "./StorageSettings.scss";
 import { isInLicense, LF_CLOUD_STORAGE_FOR_MANAGERS } from "../../../utils/license-flags";
+import { Typography } from "@humansignal/ui";
 
 const isAllowCloudStorage = !isInLicense(LF_CLOUD_STORAGE_FOR_MANAGERS);
 
 export const StorageSettings = () => {
-  const rootClass = cn("storage-settings");
+  const rootClass = cn("storage-settings"); // TODO: Remove in the next BEM cleanup
 
   return isAllowCloudStorage ? (
-    <Block name="storage-settings">
-      <Elem name={"wrapper"}>
-        <h1>Cloud Storage</h1>
-        <Description style={{ marginTop: 0 }}>
-          Use cloud or database storage as the source for your labeling tasks or the target of your completed
-          annotations.
-        </Description>
+    <section className="max-w-[680px]">
+      <Typography variant="headline" size="medium" className="mb-base">
+        Cloud Storage
+      </Typography>
+      <Typography size="small" className="text-neutral-content-subtler mb-wider">
+        Use cloud or database storage as the source for your labeling tasks or the target of your completed annotations.
+      </Typography>
 
-        <Columns count={2} gap="40px" size="320px" className={rootClass}>
-          <StorageSet title="Source Cloud Storage" buttonLabel="Add Source Storage" rootClass={rootClass} />
+      <div className="grid grid-cols-2 gap-8">
+        <StorageSet title="Source Cloud Storage" buttonLabel="Add Source Storage" rootClass={rootClass} />
 
-          <StorageSet
-            title="Target Cloud Storage"
-            target="export"
-            buttonLabel="Add Target Storage"
-            rootClass={rootClass}
-          />
-        </Columns>
-      </Elem>
-    </Block>
+        <StorageSet
+          title="Target Cloud Storage"
+          target="export"
+          buttonLabel="Add Target Storage"
+          rootClass={rootClass}
+        />
+      </div>
+    </section>
   ) : null;
 };
 

@@ -1,7 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Button, Spinner } from "../../../components";
-import { Description } from "../../../components/Description/Description";
 import { Form, Label, Toggle } from "../../../components/Form";
 import { modal } from "../../../components/Modal/Modal";
 import { EmptyState } from "../../../components/EmptyState/EmptyState";
@@ -12,8 +11,8 @@ import { MachineLearningList } from "./MachineLearningList";
 import { CustomBackendForm } from "./Forms";
 import { TestRequest } from "./TestRequest";
 import { StartModelTraining } from "./StartModelTraining";
-import { Block, Elem } from "../../../utils/bem";
 import "./MachineLearningSettings.scss";
+import { Typography } from "@humansignal/ui";
 
 export const MachineLearningSettings = () => {
   const api = useAPI();
@@ -96,8 +95,11 @@ export const MachineLearningSettings = () => {
   }, [project.id]);
 
   return (
-    <Block name="ml-settings">
-      <Elem name={"wrapper"}>
+    <section>
+      <div className="w-[40rem]">
+        <Typography variant="headline" size="medium" className="mb-base">
+          Model
+        </Typography>
         {loading && <Spinner size={32} />}
         {loaded && backends.length === 0 && (
           <EmptyState
@@ -129,22 +131,28 @@ export const MachineLearningSettings = () => {
         />
 
         {backends.length > 0 && (
-          <>
-            <Description>
+          <div className="my-wide">
+            <Typography size="small" className="text-neutral-content-subtler">
               A connected model has been detected! If you wish to fetch predictions from this model, please follow these
               steps:
-              <br />
-              <br />
-              1. Navigate to the <i>Data Manager</i>.<br />
+            </Typography>
+            <Typography size="small" className="text-neutral-content-subtler mt-base">
+              1. Navigate to the <i>Data Manager</i>.
+            </Typography>
+            <Typography size="small" className="text-neutral-content-subtler mt-tighter">
               2. Select the desired tasks.
-              <br />
-              3. Click on <i>Retrieve predictions</i> from the <i>Actions</i> menu.
-            </Description>
-            <Description>
+            </Typography>
+            <Typography size="small" className="text-neutral-content-subtler mt-tighter">
+              3. Click on <i>Batch predictions</i> from the <i>Actions</i> menu.
+            </Typography>
+            <Typography size="small" className="text-neutral-content-subtler mt-base">
               If you want to use the model predictions for prelabeling, please configure this in the{" "}
-              <NavLink to="annotation">Annotation settings</NavLink>.
-            </Description>
-          </>
+              <NavLink to="annotation" className="hover:underline">
+                Annotation settings
+              </NavLink>
+              .
+            </Typography>
+          </div>
         )}
 
         <Form
@@ -154,17 +162,19 @@ export const MachineLearningSettings = () => {
           onSubmit={() => fetchProject()}
         >
           {backends.length > 0 && (
-            <Form.Row columnCount={1}>
-              <Label text="Configuration" large />
+            <div className="p-wide border border-neutral-border rounded-md">
+              <Form.Row columnCount={1}>
+                <Label text="Configuration" large />
 
-              <div>
-                <Toggle
-                  label="Start model training on annotation submission"
-                  description="This option will send a request to /train with information about annotations. You can use this to enable an Active Learning loop. You can also manually start training through model menu in its card."
-                  name="start_training_on_annotation_update"
-                />
-              </div>
-            </Form.Row>
+                <div>
+                  <Toggle
+                    label="Start model training on annotation submission"
+                    description="This option will send a request to /train with information about annotations. You can use this to enable an Active Learning loop. You can also manually start training through model menu in its card."
+                    name="start_training_on_annotation_update"
+                  />
+                </div>
+              </Form.Row>
+            </div>
           )}
 
           {backends.length > 0 && (
@@ -178,8 +188,8 @@ export const MachineLearningSettings = () => {
             </Form.Actions>
           )}
         </Form>
-      </Elem>
-    </Block>
+      </div>
+    </section>
   );
 };
 
