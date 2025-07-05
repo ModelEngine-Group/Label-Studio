@@ -489,6 +489,12 @@ const _Annotation = types
       self.regionStore.clearSelection();
     },
 
+    lockSelectedRegions() {
+      self.selectedRegions.forEach((region) => {
+        region.setLocked(!region.locked);
+      });
+    },
+
     hideSelectedRegions() {
       self.selectedRegions.forEach((region) => {
         region.toggleHidden();

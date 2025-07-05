@@ -61,10 +61,10 @@ const Model = types
       hotkeys.addNamed("ts:shrink-left", () => self.shrinkLeft(one));
       hotkeys.addNamed("ts:shrink-right", () => self.shrinkRight(one));
 
-      hotkeys.addNamed("ts:grow-left-largre", () => self.growLeft(lots));
-      hotkeys.addNamed("ts:grow-right-largre", () => self.growRight(lots));
-      hotkeys.addNamed("ts:shrink-left-largre", () => self.shrinkLeft(lots));
-      hotkeys.addNamed("ts:shrink-right-largre", () => self.shrinkRight(lots));
+      hotkeys.addNamed("ts:grow-left-large", () => self.growLeft(lots));
+      hotkeys.addNamed("ts:grow-right-large", () => self.growRight(lots));
+      hotkeys.addNamed("ts:shrink-left-large", () => self.shrinkLeft(lots));
+      hotkeys.addNamed("ts:shrink-right-large", () => self.shrinkRight(lots));
 
       self.parent.scrollToRegion(self);
     },
@@ -79,7 +79,16 @@ const Model = types
     },
 
     afterUnselectRegion() {
-      hotkeys.unbindAll();
+      [
+        "ts:grow-left",
+        "ts:grow-right",
+        "ts:shrink-left",
+        "ts:shrink-right",
+        "ts:grow-left-large",
+        "ts:grow-right-large",
+        "ts:shrink-left-large",
+        "ts:shrink-right-large",
+      ].forEach((sc) => hotkeys.removeNamed(sc));
 
       self.parent.updateView();
     },

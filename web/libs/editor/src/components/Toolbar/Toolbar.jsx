@@ -88,7 +88,7 @@ const SmartTools = observer(({ tools }) => {
           label="Auto-Detect"
           active={hasSelected}
           icon={selected.iconClass}
-          shortcut="M"
+          shortcut="tool:auto-detect"
           extra={
             tools.length > 1 ? (
               <Elem name="smart">

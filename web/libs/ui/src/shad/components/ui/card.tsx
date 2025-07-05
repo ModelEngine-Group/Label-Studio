@@ -5,10 +5,7 @@ import { cnm as cn } from "@humansignal/shad/utils";
 const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn(
-      "rounded-lg border border-neutral-border bg-neutral-surface text-neutral-content shadow-sm",
-      className,
-    )}
+    className={cn("rounded-lg border border-neutral-border text-neutral-content shadow-sm", className)}
     {...props}
   />
 ));

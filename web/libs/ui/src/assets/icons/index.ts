@@ -132,6 +132,7 @@ export { ReactComponent as IconHandTool } from "./hand-tool.svg";
 export { ReactComponent as IconHelp } from "./help.svg";
 export { ReactComponent as IconHistoryRewind } from "./history-rewind.svg";
 export { ReactComponent as IconHome } from "./home.svg";
+export { ReactComponent as IconHotkeys } from "./hotkeys.svg";
 export { ReactComponent as IconHumanSignal } from "./humansignal.svg";
 export { ReactComponent as IconInfo } from "./info.svg";
 export { ReactComponent as IconInfoConfig } from "./info-config.svg";

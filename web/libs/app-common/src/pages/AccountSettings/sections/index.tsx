@@ -2,6 +2,7 @@ import { PersonalInfo } from "./PersonalInfo";
 import { EmailPreferences } from "./EmailPreferences";
 import { PersonalAccessToken, PersonalAccessTokenDescription } from "./PersonalAccessToken";
 import { MembershipInfo } from "./MembershipInfo";
+import { HotkeysManager } from "./Hotkeys";
 import type React from "react";
 import { PersonalJWTToken } from "./PersonalJWTToken";
 import type { AuthTokenSettings } from "../types";
@@ -20,6 +21,13 @@ export const accountSettingsSections = (settings: AuthTokenSettings): SectionTyp
       title: "Personal Info",
       id: "personal-info",
       component: PersonalInfo,
+    },
+    {
+      title: "Hotkeys",
+      id: "hotkeys",
+      component: HotkeysManager,
+      description: () =>
+        "Customize your keyboard shortcuts to speed up your workflow. Click on any hotkey below to assign a new key combination that works best for you.",
     },
     {
       title: "Email Preferences",

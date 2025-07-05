@@ -41,6 +41,23 @@
     }
   }
 
+  &__hotkeys {
+      display: flex;
+      padding: 0 0 0 1.125rem;
+      align-items: center;
+  }
+
+  &__hotkeys-button {
+      padding: 0.5rem;
+      border-radius: 4px;
+      transition: background-color 0.2s ease;
+      
+      &:hover {
+          background-color: var(--color-primary-emphasis-subtle);
+      }
+  }
+
+  
   &__trigger {
     display: flex;
     padding: 0 20px;

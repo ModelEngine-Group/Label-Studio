@@ -1,6 +1,6 @@
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@humansignal/ui/lib/card-new/card";
-import { useMemo } from "react";
-import { Redirect } from "react-router-dom";
+import { useMemo, isValidElement } from "react";
+import { Redirect, Route, Switch, useHistory, useParams, useRouteMatch } from "react-router-dom";
 import styles from "./AccountSettings.module.scss";
 import { accountSettingsSections } from "./sections";
 import clsx from "clsx";
@@ -13,11 +13,59 @@ import { settingsAtom } from "./atoms";
  */
 import { SidebarMenu } from "apps/labelstudio/src/components/SidebarMenu/SidebarMenu";
 
-const AccountSettingsPage = () => {
+const AccountSettingsSection = () => {
+  const { sectionId } = useParams();
   const settings = useAtomValue(settingsAtom);
   const contentClassName = clsx(styles.accountSettings__content, {
     [styles.accountSettingsPadding]: window.APP_SETTINGS.billing !== undefined,
   });
+
+  const resolvedSections = useMemo(() => {
+    return settings.data ? accountSettingsSections(settings.data) : [];
+  }, [settings.data]);
+
+  const currentSection = useMemo(
+    () => resolvedSections.find((section) => section.id === sectionId),
+    [resolvedSections, sectionId],
+  );
+
+  if (!currentSection && resolvedSections.length > 0) {
+    return <Redirect to={`${AccountSettingsPage.path}/${resolvedSections[0].id}`} />;
+  }
+
+  return currentSection ? (
+    currentSection.raw ? (
+      <currentSection.component />
+    ) : (
+      <div className={contentClassName}>
+        <Card key={currentSection.id}>
+          <CardHeader>
+            <CardTitle>{currentSection.title}</CardTitle>
+            {currentSection.description && (
+              <CardDescription>
+                {isValidElement(currentSection.description) ? (
+                  currentSection.description
+                ) : (
+                  <currentSection.description />
+                )}
+              </CardDescription>
+            )}
+          </CardHeader>
+          <CardContent>
+            <currentSection.component />
+          </CardContent>
+        </Card>
+      </div>
+    )
+  ) : null;
+};
+
+const AccountSettingsPage = () => {
+  const settings = useAtomValue(settingsAtom);
+  const history = useHistory();
+  const match = useRouteMatch();
+  const { sectionId } = useParams();
+
   const resolvedSections = useMemo(() => {
     return settings.data ? accountSettingsSections(settings.data) : [];
   }, [settings.data]);
@@ -27,33 +75,22 @@ const AccountSettingsPage = () => {
       resolvedSections.map(({ title, id }) => ({
         title,
         path: () => {
-          if (!window?.location) return;
-          window.location.hash = `#${id}`;
+          history.push(`${AccountSettingsPage.path}/${id}`);
         },
+        active: sectionId === id,
       })),
-    [accountSettingsSections, settings.data],
+    [resolvedSections, sectionId, history],
   );
 
   return (
     <div className={styles.accountSettings}>
       <SidebarMenu menuItems={menuItems} path={AccountSettingsPage.path}>
-        <div className={contentClassName}>
-          {resolvedSections?.map(({ title, component: Section, description: Description, id }) => (
-            <Card key={id}>
-              <CardHeader>
-                <CardTitle>{title}</CardTitle>
-                {Description && (
-                  <CardDescription>
-                    <Description />
-                  </CardDescription>
-                )}
-              </CardHeader>
-              <CardContent>
-                <Section />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <Switch>
+          <Route path={`${match.path}/:sectionId`} component={AccountSettingsSection} />
+          <Route exact path={match.path}>
+            {resolvedSections.length > 0 && <Redirect to={`${match.path}/${resolvedSections[0].id}`} />}
+          </Route>
+        </Switch>
       </SidebarMenu>
     </div>
   );
@@ -61,18 +98,16 @@ const AccountSettingsPage = () => {
 
 AccountSettingsPage.title = "My Account";
 AccountSettingsPage.path = "/user/account";
-AccountSettingsPage.exact = true;
+AccountSettingsPage.exact = false;
 AccountSettingsPage.routes = () => [
   {
     title: () => "My Account",
-    exact: true,
-    component: () => {
-      return <Redirect to={AccountSettingsPage.path} />;
-    },
-    // pages: {
-    //   DataManagerPage,
-    //   SettingsPage,
-    // },
+    path: "/account",
+    component: () => <Redirect to={AccountSettingsPage.path} />,
+  },
+  {
+    path: `${AccountSettingsPage.path}/:sectionId?`,
+    component: AccountSettingsPage,
   },
 ];
 

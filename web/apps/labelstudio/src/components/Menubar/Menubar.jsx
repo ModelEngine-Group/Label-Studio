@@ -4,6 +4,7 @@ import {
   IconBook,
   IconFolder,
   IconHome,
+  IconHotkeys,
   IconPersonInCircle,
   IconPin,
   IconTerminal,
@@ -20,6 +21,7 @@ import { useCurrentUser } from "../../providers/CurrentUser";
 import { cn } from "../../utils/bem";
 import { absoluteURL, isDefined } from "../../utils/helpers";
 import { Breadcrumbs } from "../Breadcrumbs/Breadcrumbs";
+import { Button } from "../Button/Button";
 import { Dropdown } from "../Dropdown/Dropdown";
 import { Hamburger } from "../Hamburger/Hamburger";
 import { Menu } from "../Menu/Menu";
@@ -31,6 +33,7 @@ import { FF_HOMEPAGE } from "../../utils/feature-flags";
 import { pages } from "@humansignal/app-common";
 import { isFF } from "../../utils/feature-flags";
 import { ff } from "@humansignal/core";
+import { openHotkeyHelp } from "@humansignal/app-common/pages/AccountSettings/sections/Hotkeys/Help";
 
 export const MenubarContext = createContext();
 
@@ -144,13 +147,34 @@ export const Menubar = ({ enabled, defaultOpened, defaultPinned, children, onSid
 
           <div className={menubarContext}>
             <LeftContextMenu className={contextItem.mod({ left: true })} />
-
             <RightContextMenu className={contextItem.mod({ right: true })} />
           </div>
 
           <div className={menubarClass.elem("spacer").toString()} />
 
           {ff.isActive(ff.FF_THEME_TOGGLE) && <ThemeToggle />}
+
+          <div className={menubarClass.elem("hotkeys")}>
+            <div className={menubarClass.elem("hotkeys-button")}>
+              <Button
+                type="text"
+                onClick={() => {
+                  openHotkeyHelp([
+                    "annotation",
+                    "data_manager",
+                    "regions",
+                    "tools",
+                    "audio",
+                    "video",
+                    "timeseries",
+                    "image_gallery",
+                  ]);
+                }}
+              >
+                <IconHotkeys />
+              </Button>
+            </div>
+          </div>
 
           <Dropdown.Trigger
             ref={useMenuRef}

@@ -90,6 +90,13 @@ class User(UserMixin, AbstractBaseUser, PermissionsMixin, UserLastActivityMixin)
     last_name = models.CharField(_('last name'), max_length=256, blank=True)
     phone = models.CharField(_('phone'), max_length=256, blank=True)
     avatar = models.ImageField(upload_to=hash_upload, blank=True)
+    custom_hotkeys = models.JSONField(
+        _('custom hotkeys'),
+        default=dict,
+        blank=True,
+        null=True,
+        help_text=_('Custom keyboard shortcuts configuration for the user interface'),
+    )
 
     is_staff = models.BooleanField(
         _('staff status'), default=False, help_text=_('Designates whether the user can log into this admin site.')

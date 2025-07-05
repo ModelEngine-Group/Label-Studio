@@ -16,7 +16,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from users.functions import check_avatar
 from users.models import User
-from users.serializers import UserSerializer, UserSerializerUpdate
+from users.serializers import HotkeysSerializer, UserSerializer, UserSerializerUpdate
 
 logger = logging.getLogger(__name__)
 
@@ -294,3 +294,78 @@ class UserWhoAmIAPI(generics.RetrieveAPIView):
 
     def get(self, request, *args, **kwargs):
         return super(UserWhoAmIAPI, self).get(request, *args, **kwargs)
+
+
+@method_decorator(
+    name='patch',
+    decorator=swagger_auto_schema(
+        tags=['Users'],
+        x_fern_sdk_group_name='users',
+        x_fern_sdk_method_name='update_hotkeys',
+        x_fern_audiences=['public'],
+        operation_summary='Update user hotkeys',
+        operation_description='Update the custom hotkeys configuration for the current user.',
+        request_body=HotkeysSerializer,
+        responses={200: HotkeysSerializer},
+    ),
+)
+@method_decorator(
+    name='get',
+    decorator=swagger_auto_schema(
+        tags=['Users'],
+        x_fern_sdk_group_name='users',
+        x_fern_sdk_method_name='get_hotkeys',
+        x_fern_audiences=['public'],
+        operation_summary='Get user hotkeys',
+        operation_description='Retrieve the custom hotkeys configuration for the current user.',
+        request_body=no_body,
+        responses={200: HotkeysSerializer},
+    ),
+)
+class UserHotkeysAPI(APIView):
+    permission_classes = [IsAuthenticated]
+    parser_classes = (JSONParser, FormParser, MultiPartParser)
+
+    def get(self, request, *args, **kwargs):
+        """Retrieve the current user's hotkeys configuration"""
+        try:
+            user = request.user
+            custom_hotkeys = user.custom_hotkeys or {}
+
+            serializer = HotkeysSerializer(data={'custom_hotkeys': custom_hotkeys})
+            if serializer.is_valid():
+                return Response(serializer.validated_data, status=200)
+            else:
+                # If stored data is invalid, return empty config
+                logger.warning(f'Invalid hotkeys data for user {user.pk}: {serializer.errors}')
+                return Response({'custom_hotkeys': {}}, status=200)
+
+        except Exception as e:
+            logger.error(f'Error retrieving hotkeys for user {request.user.pk}: {str(e)}')
+            return Response({'error': 'Failed to retrieve hotkeys configuration'}, status=500)
+
+    def patch(self, request, *args, **kwargs):
+        """Update the current user's hotkeys configuration"""
+        try:
+            serializer = HotkeysSerializer(data=request.data)
+
+            if not serializer.is_valid():
+                return Response({'error': 'Invalid hotkeys configuration', 'details': serializer.errors}, status=400)
+
+            user = request.user
+
+            # Security check: Ensure user can only update their own hotkeys
+            if not user.is_authenticated:
+                return Response({'error': 'Authentication required'}, status=401)
+
+            # Update user's hotkeys
+            user.custom_hotkeys = serializer.validated_data['custom_hotkeys']
+            user.save(update_fields=['custom_hotkeys'])
+
+            logger.info(f'Updated hotkeys for user {user.pk}')
+
+            return Response(serializer.validated_data, status=200)
+
+        except Exception as e:
+            logger.error(f'Error updating hotkeys for user {request.user.pk}: {str(e)}')
+            return Response({'error': 'Failed to update hotkeys configuration'}, status=500)

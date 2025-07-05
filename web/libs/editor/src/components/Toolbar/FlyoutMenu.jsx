@@ -1,4 +1,5 @@
 import { Block, Elem } from "../../utils/bem";
+import { isDefined } from "../../utils/utilities";
 import { Fragment, useEffect, useState } from "react";
 import { Hotkey } from "../../core/Hotkey";
 
@@ -10,9 +11,11 @@ const keysDictionary = {
 };
 
 const shortcutView = (shortcut) => {
-  if (!shortcut) return null;
+  const sc = hotkeys.lookupKey(shortcut);
 
-  const combos = shortcut.split(",").map((s) => s.trim());
+  if (!isDefined(sc)) return null;
+
+  const combos = sc.split(",").map((s) => s.trim());
 
   return (
     <Elem name="shortcut">
@@ -43,8 +46,8 @@ export const FlyoutMenu = ({ items, icon }) => {
       items.forEach((menuItem) => {
         const currentShortcut = menuItem.shortcut;
 
-        if (currentShortcut && hotkeys.hasKey(currentShortcut)) {
-          hotkeys.removeKey(currentShortcut);
+        if (currentShortcut && hotkeys.hasKeyByName(currentShortcut)) {
+          hotkeys.removeNamed(currentShortcut);
         }
       });
     };
@@ -52,15 +55,12 @@ export const FlyoutMenu = ({ items, icon }) => {
       items.forEach((menuItem) => {
         const currentShortcut = menuItem.shortcut;
 
-        if (currentShortcut && !hotkeys.hasKey(currentShortcut)) {
-          hotkeys.addKey(
-            currentShortcut,
-            () => {
-              menuItem?.onClick?.();
-              setClicked(false);
-            },
-            menuItem.label,
-          );
+        if (currentShortcut && !hotkeys.hasKeyByName(currentShortcut)) {
+          hotkeys.addNamed(currentShortcut, () => {
+            console.log("clicked");
+            menuItem?.onClick?.();
+            setClicked(false);
+          });
         }
       });
     };

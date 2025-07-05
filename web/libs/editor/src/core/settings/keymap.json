@@ -33,16 +33,16 @@
     "key": "alt+right",
     "description": "Decrease region on the right"
   },
-  "ts:grow-left-largre": {
+  "ts:grow-left-large": {
     "key": "shift+left"
   },
-  "ts:grow-right-largre": {
+  "ts:grow-right-large": {
     "key": "shift+right"
   },
-  "ts:shrink-left-largre": {
+  "ts:shrink-left-large": {
     "key": "shift+alt+left"
   },
-  "ts:shrink-right-largre": {
+  "ts:shrink-right-large": {
     "key": "shift+alt+right"
   },
   "annotation:submit": {
@@ -94,7 +94,7 @@
   },
   "region:visibility-all": {
     "key": "ctrl+h",
-    "mac": "ctrl+h",
+    "mac": "command+h",
     "description": "Toggle all regions visibility"
   },
   "region:lock": {
@@ -132,7 +132,7 @@
   },
   "media:playpause": {
     "key": "ctrl+alt+space",
-    "mac": "control+space",
+    "mac": "command+alt+space",
     "description": "Play/pause"
   },
   "media:step-backward": {
@@ -145,10 +145,12 @@
   },
   "video:keyframe-backward": {
     "key": "ctrl+alt+left",
+    "mac": "command+alt+left",
     "description": "Go to previous keyframe"
   },
   "video:keyframe-forward": {
     "key": "ctrl+alt+right",
+    "mac": "command+alt+right",
     "description": "Go to next keyframe"
   },
   "video:backward": {
@@ -157,6 +159,7 @@
   },
   "video:rewind": {
     "key": "shift+ctrl+alt+left",
+    "mac": "shift+command+alt+left",
     "description": "Go to first frame"
   },
   "video:forward": {
@@ -165,6 +168,7 @@
   },
   "video:fastforward": {
     "key": "shift+ctrl+alt+right",
+    "mac": "shift+command+alt+right",
     "description": "Go to last frame"
   },
   "video:hop-backward": {
@@ -192,5 +196,102 @@
     "key": "ctrl+right",
     "mac": "command+right",
     "description": "Next Image"
+  },
+
+  "tool:zoom-in": {
+    "key": "ctrl+plus",
+    "mac": "command+plus",
+    "description": "Zoom in on the image"
+  },
+
+  "tool:pan-image": {
+    "key": "H",
+    "description": "Pan around the image"
+  },
+
+  "tool:zoom-to-fit": {
+    "key": "shift+1",
+    "description": "Zoom to fit the full image in view"
+  },
+
+  "tool:zoom-to-actual": {
+    "key": "shift+2",
+    "description": "Zoom to actual image size (100%)"
+  },
+
+  "tool:zoom-out": {
+    "key": "ctrl+minus",
+    "mac": "command+minus",
+    "description": "Zoom out of the image"
+  },
+
+  "tool:ellipse": {
+    "key": "O",
+    "description": "Select the ellipse tool"
+  },
+
+  "tool:eraser": {
+    "key": "E",
+    "description": "Select the eraser tool"
+  },
+
+  "tool:auto-detect": {
+    "key": "M",
+    "description": "Use the auto-detect tool to automatically suggest regions"
+  },
+
+  "tool:rect-3point": {
+    "key": "shift+R",
+    "description": "Draw a rotated rectangle using 3-point selection"
+  },
+
+  "tool:key-point": {
+    "key": "K",
+    "description": "Select the key point annotation tool"
+  },
+
+  "tool:magic-wand": {
+    "key": "W",
+    "description": "Select the magic wand tool for smart region selection"
+  },
+
+  "tool:polygon": {
+    "key": "P",
+    "description": "Select the polygon annotation tool"
+  },
+
+  "tool:rect": {
+    "key": "R",
+    "description": "Select the rectangle annotation tool"
+  },
+
+  "tool:rotate-left": {
+    "key": "alt+left",
+    "description": "Rotate the image 90° to the left"
+  },
+
+  "tool:rotate-right": {
+    "key": "alt+right",
+    "description": "Rotate the image 90° to the right"
+  },
+
+  "tool:move": {
+    "key": "V",
+    "description": "Select the move tool to reposition annotations"
+  },
+
+  "tool:brush": {
+    "key": "B",
+    "description": "Select the brush tool"
+  },
+
+  "tool:decrease-tool": {
+    "key": "[",
+    "description": "Decrease tool size"
+  },
+
+  "tool:increase-tool": {
+    "key": "]",
+    "description": "Increase tool size"
   }
 }

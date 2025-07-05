@@ -70,7 +70,7 @@ const ToolView = observer(({ item }) => {
     <Tool
       label="Magic Wand"
       ariaLabel="magicwand"
-      shortcut="W"
+      shortcut="tool:magic-wand"
       active={item.selected}
       icon={item.iconClass}
       tool={item}
@@ -86,7 +86,7 @@ const ToolView = observer(({ item }) => {
 const _Tool = types
   .model("MagicWandTool", {
     group: "segmentation",
-    shortcut: "W",
+    shortcut: "tool:magic-wand",
     smart: true,
     unselectRegionOnToolChange: false,
   })

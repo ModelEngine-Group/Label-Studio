@@ -94,6 +94,7 @@ class BaseUserSerializer(FlexFieldsModelSerializer):
             'username',
             'email',
             'last_activity',
+            'custom_hotkeys',
             'avatar',
             'initials',
             'phone',
@@ -113,6 +114,123 @@ class UserSimpleSerializer(BaseUserSerializer):
     class Meta:
         model = User
         fields = ('id', 'first_name', 'last_name', 'email', 'avatar')
+
+
+class HotkeysSerializer(serializers.Serializer):
+    custom_hotkeys = serializers.DictField(required=True)
+
+    # Security: Define dangerous key combinations that should be blocked
+    DANGEROUS_KEY_COMBINATIONS = [
+        'ctrl+alt+delete',
+        'cmd+alt+escape',
+        'alt+f4',
+        'ctrl+alt+esc',
+        'cmd+option+esc',
+        'ctrl+shift+esc',
+        'cmd+shift+q',
+        'alt+tab',
+        'cmd+tab',
+        'ctrl+alt+t',
+        'cmd+space',  # Common system shortcuts
+    ]
+
+    # Limit maximum number of custom hotkeys to prevent abuse
+    MAX_HOTKEYS = 200
+
+    def validate_custom_hotkeys(self, custom_hotkeys):
+        """
+        Validates the hotkey format and enforces security constraints.
+        Expected format: {"section:action": {"key": "key_combination", "active": boolean}}
+        The "active" field is optional and defaults to true.
+        """
+        if not isinstance(custom_hotkeys, dict):
+            raise serializers.ValidationError('custom_hotkeys must be a dictionary')
+
+        # Security: Limit the number of hotkeys
+        if len(custom_hotkeys) > self.MAX_HOTKEYS:
+            raise serializers.ValidationError(f'Cannot define more than {self.MAX_HOTKEYS} custom hotkeys')
+
+        for action_key, hotkey_data in custom_hotkeys.items():
+            # Validate action key format (section:action)
+            if not isinstance(action_key, str) or not action_key:
+                raise serializers.ValidationError(f"Action key '{action_key}' must be a non-empty string")
+
+            # Security: Limit action key length
+            if len(action_key) > 100:
+                raise serializers.ValidationError(f"Action key '{action_key}' is too long (max 100 characters)")
+
+            # Check if the action key follows the section:action format
+            if ':' not in action_key:
+                raise serializers.ValidationError(f"Action key '{action_key}' must be in 'section:action' format")
+
+            section, action = action_key.split(':', 1)
+
+            # Validate section and action parts
+            if not section.strip() or not action.strip():
+                raise serializers.ValidationError(
+                    f"Action key '{action_key}' must have non-empty section and action parts"
+                )
+
+            # Validate hotkey data format
+            if not isinstance(hotkey_data, dict):
+                raise serializers.ValidationError(f"Hotkey data for '{action_key}' must be a dictionary")
+
+            # Check for key in hotkey data
+            if 'key' not in hotkey_data:
+                raise serializers.ValidationError(f"Missing 'key' in hotkey data for '{action_key}'")
+
+            key_combo = hotkey_data['key']
+
+            # Get active status, default to True if not specified
+            active = hotkey_data.get('active', True)
+
+            # Validate key combination
+            if not isinstance(key_combo, str) or not key_combo:
+                raise serializers.ValidationError(f"Key combination for '{action_key}' must be a non-empty string")
+
+            # Security: Limit key combination length
+            if len(key_combo) > 50:
+                raise serializers.ValidationError(
+                    f"Key combination for '{action_key}' is too long (max 50 characters)"
+                )
+
+            # Security: Check for dangerous key combinations
+            normalized_key = key_combo.lower().strip()
+            if normalized_key in self.DANGEROUS_KEY_COMBINATIONS:
+                raise serializers.ValidationError(f"Key combination '{key_combo}' is not allowed for security reasons")
+
+            # Validate active flag if provided
+            if 'active' in hotkey_data and not isinstance(active, bool):
+                raise serializers.ValidationError(f"Active flag for '{action_key}' must be a boolean")
+
+            # Security: Validate key combination format (basic check)
+            self._validate_key_format(key_combo, action_key)
+
+        return custom_hotkeys
+
+    def _validate_key_format(self, key_combo, action_key):
+        """
+        Basic validation of key combination format for security.
+        Prevents injection of malicious characters.
+        """
+        # Allow only alphanumeric, common modifier keys, and basic symbols
+        import re
+
+        # Allow letters, numbers, common modifiers, and basic symbols
+        allowed_pattern = re.compile(r'^[a-zA-Z0-9\+\-\s\[\]\\;\'\".,/`~!@#$%^&*()_={}|:<>?]+$')
+
+        if not allowed_pattern.match(key_combo):
+            raise serializers.ValidationError(
+                f"Key combination '{key_combo}' for '{action_key}' contains invalid characters"
+            )
+
+        # Validate modifier key format (basic check)
+        parts = [part.strip() for part in key_combo.split('+')]
+        valid_modifiers = ['ctrl', 'cmd', 'command', 'alt', 'option', 'shift', 'meta']
+
+        for part in parts[:-1]:  # All parts except the last should be modifiers or valid keys
+            if part.lower() not in valid_modifiers and len(part) > 20:
+                raise serializers.ValidationError(f"Invalid modifier or key '{part}' in key combination '{key_combo}'")
 
 
 UserSerializer = load_func(settings.USER_SERIALIZER)

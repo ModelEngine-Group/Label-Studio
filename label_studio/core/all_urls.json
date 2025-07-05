@@ -492,6 +492,12 @@
         "decorators": ""
     },
     {
+        "url": "/user/account/<sub_path>",
+        "module": "users.views.user_account",
+        "name": "user-account-anything",
+        "decorators": ""
+    },
+    {
         "url": "/logout/",
         "module": "users.views.logout",
         "name": "logout",
@@ -519,6 +525,12 @@
         "url": "/api/current-user/product-tour",
         "module": "users.product_tours.api.ProductTourAPI",
         "name": "product-tour",
+        "decorators": ""
+    },
+    {
+        "url": "/api/current-user/hotkeys/",
+        "module": "users.api.UserHotkeysAPI",
+        "name": "current-user-hotkeys",
         "decorators": ""
     },
     {

@@ -26,7 +26,7 @@ const ToolView = observer(({ item }) => {
 
 const _Tool = types
   .model("SelectionTool", {
-    shortcut: "V",
+    shortcut: "tool:move",
     group: "control",
   })
   .views((self) => {

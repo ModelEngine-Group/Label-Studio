@@ -9,7 +9,7 @@ import { observe } from "mobx";
 const _Tool = types
   .model("PolygonTool", {
     group: "segmentation",
-    shortcut: "P",
+    shortcut: "tool:polygon",
   })
   .views((self) => {
     const Super = {

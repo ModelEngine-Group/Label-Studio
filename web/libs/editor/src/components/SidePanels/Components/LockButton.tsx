@@ -14,7 +14,7 @@ export const LockButton: FC<{
   look?: ButtonProps["look"];
   style?: ButtonProps["style"];
   onClick: () => void;
-}> = observer(({ item, annotation, hovered, locked, hotkey, look, style, onClick }) => {
+}> = observer(({ item, annotation, hovered, locked, hotkey, displayedHotkey, look, style, onClick }) => {
   if (!item) return null;
   const isLocked = locked || item.isReadOnly() || annotation.isReadOnly();
   const isRegionReadonly = item.isReadOnly() && !locked;
@@ -26,7 +26,14 @@ export const LockButton: FC<{
     };
 
     return (
-      <RegionControlButton disabled={isRegionReadonly} onClick={onClick} hotkey={hotkey} look={look} style={styles}>
+      <RegionControlButton
+        disabled={isRegionReadonly}
+        onClick={onClick}
+        displayedHotkey={displayedHotkey}
+        hotkey={hotkey}
+        look={look}
+        style={styles}
+      >
         {isLocked ? <IconLockLocked /> : <IconLockUnlocked />}
       </RegionControlButton>
     );

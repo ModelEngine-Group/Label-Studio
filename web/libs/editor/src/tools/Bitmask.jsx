@@ -50,7 +50,7 @@ const _Tool = types
   .model("BitmaskTool", {
     strokeWidth: types.optional(types.number, 15),
     group: "segmentation",
-    shortcut: "B",
+    shortcut: "tool:brush",
     smart: true,
     unselectRegionOnToolChange: false,
   })
@@ -89,13 +89,13 @@ const _Tool = types
     },
     get extraShortcuts() {
       return {
-        "[": [
+        "tool:decrease-tool": [
           "Decrease size",
           () => {
             self.setStroke(clamp(self.strokeWidth - 5, MIN_SIZE, MAX_SIZE));
           },
         ],
-        "]": [
+        "tool:increase-tool": [
           "Increase size",
           () => {
             self.setStroke(clamp(self.strokeWidth + 5, MIN_SIZE, MAX_SIZE));

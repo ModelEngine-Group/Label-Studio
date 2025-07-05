@@ -137,7 +137,7 @@ const RegionAction: FC<any> = observer(({ region, annotation, editMode, onEditMo
           hovered={true}
           locked={region?.locked}
           onClick={() => region.setLocked(!region.locked)}
-          hotkey="region:lock"
+          displayedHotkey="region:lock"
           look="alt"
           style={{ width: 36, height: 32 }}
         />

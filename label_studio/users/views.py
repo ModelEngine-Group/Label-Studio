@@ -142,7 +142,29 @@ def user_login(request):
 
 
 @login_required
-def user_account(request):
+def user_account(request, sub_path=None):
+    """
+    Handle user account view and profile updates.
+
+    This view displays the user's profile information and allows them to update
+    it. It requires the user to be authenticated and have an active organization
+    or an organization_pk in the session.
+
+    Args:
+        request (HttpRequest): The request object.
+        sub_path (str, optional): A sub-path parameter for potential URL routing.
+            Defaults to None.
+
+    Returns:
+        HttpResponse: Renders the user account template with user profile form,
+            or redirects to 'main' if no active organization is found,
+            or redirects back to user-account after successful profile update.
+
+    Notes:
+        - Authentication is required (enforced by @login_required decorator)
+        - Retrieves the user's API token for display in the template
+        - Form validation happens on POST requests
+    """
     user = request.user
 
     if user.active_organization is None and 'organization_pk' not in request.session:

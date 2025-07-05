@@ -11,7 +11,7 @@ const _BaseNPointTool = types
   .model("BaseNTool", {
     group: "segmentation",
     smart: true,
-    shortcut: "R",
+    shortcut: "tool:rect",
   })
   .views((self) => {
     const Super = {
@@ -74,7 +74,7 @@ const _BaseNPointTool = types
 
 const _Tool = types
   .model("RectangleTool", {
-    shortcut: "R",
+    shortcut: "tool:rect",
   })
   .views((self) => ({
     get viewTooltip() {
@@ -87,7 +87,7 @@ const _Tool = types
 
 const _Tool3Point = types
   .model("Rectangle3PointTool", {
-    shortcut: "shift+R",
+    shortcut: "tool:rect-3point",
   })
   .views((self) => ({
     get viewTooltip() {

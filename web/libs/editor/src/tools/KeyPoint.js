@@ -10,7 +10,7 @@ const _Tool = types
   .model("KeyPointTool", {
     default: types.optional(types.boolean, true),
     group: "segmentation",
-    shortcut: "K",
+    shortcut: "tool:key-point",
     smart: true,
   })
   .views(() => ({
