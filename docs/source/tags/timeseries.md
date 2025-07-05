@@ -62,26 +62,26 @@ Labeling configuration for time series data with multiple channels grouped toget
 
 ```html
 <View>
-  <TimeSeries name="ts" value="$timeseries" valuetype="json"
+  <TimeSeries name="ts" value="$timeseries" 
+			  valuetype="url"
               timeColumn="time"
               timeFormat="%Y-%m-%d %H:%M:%S.%f"
-              timeDisplayFormat="%Y-%m-%d"
-              overviewChannels="velocity">
-    <MultiChannel>
-      <Channel column="velocity"
-               units="miles/h"
-               displayFormat=",.1f"
-               legend="Velocity"/>
-
-      <Channel column="acceleration"
-               units="miles/h^2"
-               displayFormat=",.1f"
-               legend="Acceleration"/>
+              >
+    
+	<MultiChannel>
+      <Channel column="velocity" />
+      <Channel column="acceleration" />
     </MultiChannel>
+
   </TimeSeries>
+
   <TimeSeriesLabels name="label" toName="ts">
     <Label value="Run" background="red"/>
     <Label value="Walk" background="green"/>
   </TimeSeriesLabels>
 </View>
+
+<!-- {
+  "timeseries": "https://app.heartex.ai/samples/time-series.csv?time=time&values=velocity%2Cacceleration&tf=%25Y-%25m-%25d+%25H%3A%25M%3A%25S.%25f&type=csv"
+} -->
 ```
