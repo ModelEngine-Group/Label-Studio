@@ -18,13 +18,10 @@ import { defaultStyle } from "../../../core/Constants";
 import { useFullscreen } from "../../../hooks/useFullscreen";
 import { useToggle } from "../../../hooks/useToggle";
 import { Block, Elem } from "../../../utils/bem";
-import { FF_DEV_2715, isFF } from "../../../utils/feature-flags";
 import ResizeObserver from "../../../utils/resize-observer";
 import { clamp, isDefined } from "../../../utils/utilities";
 import "./Video.scss";
 import { VideoRegions } from "./VideoRegions";
-
-const isFFDev2715 = isFF(FF_DEV_2715);
 
 function useZoom(videoDimensions, canvasDimentions, shouldClampPan) {
   const [zoomState, setZoomState] = useState({ zoom: 1, pan: { x: 0, y: 0 } });
@@ -353,44 +350,22 @@ const HtxVideoView = ({ item, store }) => {
   // TIMELINE EVENT HANDLERS
   const handlePlay = useCallback(() => {
     setPlaying((_playing) => {
-      // Audio v3 & Syncable
-      if (isFFDev2715) {
-        if (!item.ref.current.playing) {
-          // @todo item.ref.current.playing? could be buffering and other states
-          item.ref.current.play();
-          item.triggerSyncPlay();
-        }
-        return true;
-      }
-      // Audio v1,v2
-
-      if (_playing === false) {
+      if (!item.ref.current.playing) {
+        // @todo item.ref.current.playing? could be buffering and other states
         item.ref.current.play();
         item.triggerSyncPlay();
-        return true;
       }
-      return _playing;
+      return true;
     });
   }, []);
 
   const handlePause = useCallback(() => {
     setPlaying((_playing) => {
-      // Audio v3 & Syncable
-      if (isFFDev2715) {
-        if (item.ref.current.playing) {
-          item.ref.current.pause();
-          item.triggerSyncPause();
-        }
-        return false;
-      }
-      // Audio v1,v2
-
-      if (_playing === true) {
+      if (item.ref.current.playing) {
         item.ref.current.pause();
         item.triggerSyncPause();
-        return false;
       }
-      return _playing;
+      return false;
     });
   }, []);
 

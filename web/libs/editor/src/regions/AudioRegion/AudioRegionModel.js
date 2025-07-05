@@ -1,7 +1,8 @@
-import { getRoot, types } from "mobx-state-tree";
-import { AudioModel } from "../../tags/object/AudioNext";
+import { types } from "mobx-state-tree";
+import { AudioModel } from "../../tags/object/Audio/model";
 import Utils from "../../utils";
 import Constants from "../../core/Constants";
+import { clamp } from "../../utils/utilities";
 
 export const AudioRegionModel = types
   .model("AudioRegionModel", {
@@ -16,204 +17,163 @@ export const AudioRegionModel = types
   })
   .volatile(() => ({
     hideable: true,
+    _ws_region: null,
   }))
   .views((self) => ({
-    getRegionElement() {
-      return self.wsRegionElement(self._ws_region);
+    get bboxTriggers() {
+      return [self.start, self.end, self._ws_region, self.object?._ws, self.object?._wfFrame];
+    },
+    get bboxCoordsCanvas() {
+      if (!self.bboxTriggers) {
+        return null;
+      }
+
+      const { _ws_region } = self;
+      if (!_ws_region) return null;
+      if (!_ws_region.inViewport) return null;
+
+      const { xStart, xEnd, yStart, yEnd, visualizer } = _ws_region;
+      return {
+        left: clamp(xStart, 0, visualizer.width),
+        top: yStart,
+        right: clamp(xEnd, 0, visualizer.width),
+        bottom: yEnd,
+      };
     },
 
-    wsRegionElement(wsRegion) {
-      if (!wsRegion) return null;
-
-      const elID = wsRegion.id;
-      const el = document.querySelector(`[data-id="${elID}"]`);
-
-      return el;
-    },
-
-    get wsRegionOptions() {
+    wsRegionOptions() {
       const reg = {
         id: self.id,
         start: self.start,
         end: self.end,
-        channel: self.channel,
-        color: "orange",
+        color: self.getColor(),
+        visible: !self.hidden,
+        updateable: !self.isReadOnly(),
+        deletable: !self.isReadOnly(),
+        channel: self.channel ?? 0,
       };
 
-      if (self.readonly) {
-        reg.drag = false;
-        reg.resize = false;
-      }
       return reg;
     },
   }))
-  .actions((self) => ({
+  .actions((self) => {
     /**
      * @returns {AudioRegionResult}
      */
-    serialize() {
-      const res = {
-        original_length: self.object._ws?.getDuration(),
-        value: {
-          start: self.start,
-          end: self.end,
-          channel: self.channel,
-        },
-      };
+    const Super = {
+      setProperty: self.setProperty,
+      setLocked: self.setLocked,
+    };
 
-      return res;
-    },
+    return {
+      serialize() {
+        const res = {
+          original_length: self.object._ws?.duration,
+          value: {
+            start: self.start,
+            end: self.end,
+            channel: self.channel,
+          },
+        };
 
-    updateColor(alpha = 1) {
-      const color = Utils.Colors.convertToRGBA(self.getOneColor(), alpha);
-      // eslint-disable-next-line no-unused-expressions
+        return res;
+      },
 
-      try {
-        self._ws_region?.update({ color });
-      } catch {
-        /**
-         * Sometimes this method is called too soon in the new UI so it fails.
-         * Will be good on the next execution
-         * */
-      }
-    },
+      getColor(alpha = 1) {
+        return Utils.Colors.convertToRGBA(self.getOneColor(), alpha);
+      },
 
-    updateAppearenceFromState() {
-      if (self._ws_region?.update) {
-        self._ws_region.start = self.start;
-        self._ws_region.end = self.end;
-        self.applyCSSClass(self._ws_region);
-      }
-    },
+      updateColor(alpha = 1) {
+        const color = self.getColor(alpha);
 
-    applyCSSClass(wsRegion) {
-      self.updateColor(0.3);
+        self._ws_region?.updateColor(color);
+      },
 
-      const settings = getRoot(self).settings;
-      const el = self.wsRegionElement(wsRegion);
+      updatePosition(start, end) {
+        self._ws_region?.updatePosition(start ?? self.start, end ?? self.end);
+      },
 
-      if (!el) return;
+      /**
+       * Select audio region
+       */
+      selectRegion() {
+        if (!self._ws_region) return;
+        self._ws_region.handleSelected(true);
+        self._ws_region.bringToFront();
+        self._ws_region.scrollToRegion();
+      },
 
-      const lastClassList = el.className.split(" ");
+      deleteRegion() {
+        self.annotation.deleteRegion(self);
+      },
 
-      for (const obj in lastClassList) {
-        if (lastClassList[obj].indexOf("htx-label") >= 0) {
-          lastClassList.splice(obj, 1);
+      /**
+       * Unselect audio region
+       */
+      afterUnselectRegion() {
+        if (!self._ws_region) return;
+        self._ws_region.handleSelected(false);
+      },
+
+      setHighlight(val) {
+        self._highlighted = val;
+
+        if (!self._ws_region) return;
+        self._ws_region.handleHighlighted(val);
+      },
+
+      beforeDestroy() {
+        if (self._ws_region) self._ws_region.remove();
+      },
+
+      setLocked(locked) {
+        Super.setLocked(locked);
+
+        if (self._ws_region) self._ws_region.setLocked(self.locked);
+      },
+
+      onMouseOver() {
+        if (self.annotation.isLinkingMode) {
+          self.setHighlight(true);
+          self._ws_region.switchCursor(Constants.LINKING_MODE_CURSOR);
         }
-      }
+      },
 
-      const classes = [...new Set([...lastClassList, "htx-highlight", "htx-highlight-last"])];
+      onMouseLeave() {
+        if (self.annotation.isLinkingMode) {
+          self.setHighlight(false);
+          self._ws_region.switchCursor(Constants.MOVE_CURSOR);
+        }
+      },
 
-      if (!self.parent.showlabels && !settings.showLabels) {
-        classes.push("htx-no-label");
-      } else {
-        const cssCls = Utils.HTML.labelWithCSS(el, {
-          labels: self.labeling?.mainValue,
-          score: self.score,
-        });
+      onUpdateEnd() {
+        self.start = self._ws_region.start;
+        self.end = self._ws_region.end;
+        self.notifyDrawingFinished();
+      },
 
-        classes.push(cssCls);
-      }
+      toggleHidden(e) {
+        e?.stopPropagation();
+        self.hidden = !self.hidden;
 
-      el.className = classes.filter(Boolean).join(" ");
-    },
+        if (!self._ws_region) return;
+        self._ws_region.setVisibility(!self.hidden);
+      },
 
-    /**
-     * Select audio region
-     */
-    selectRegion() {
-      self.updateColor(0.8);
+      setProperty(propName, value) {
+        Super.setProperty(propName, value);
+        if (["start", "end"].includes(propName)) {
+          self.updatePosition();
+        }
+      },
 
-      const el = self.wsRegionElement(self._ws_region);
+      setWSRegion(wsRegion) {
+        self._ws_region = wsRegion;
 
-      if (el) {
-        // scroll object tag but don't scroll the document
-        const container = window.document.scrollingElement;
-        const top = container.scrollTop;
-        const left = container.scrollLeft;
-
-        el.scrollIntoViewIfNeeded ? el.scrollIntoViewIfNeeded() : el.scrollIntoView();
-        window.document.scrollingElement.scrollTo(left, top);
-      }
-    },
-
-    /**
-     * Unselect audio region
-     */
-    afterUnselectRegion() {
-      self.updateColor(0.3);
-    },
-
-    setHighlight(val) {
-      self._highlighted = val;
-
-      if (!self._ws_region) return;
-
-      if (val) {
-        self.updateColor(0.8);
-        self._ws_region.element.style.border = Constants.HIGHLIGHTED_CSS_BORDER;
-      } else {
-        self.updateColor(0.3);
-        self._ws_region.element.style.border = "none";
-      }
-    },
-
-    beforeDestroy() {
-      if (self._ws_region) self._ws_region.remove();
-    },
-
-    setLocked(locked) {
-      if (locked instanceof Function) {
-        self.locked = locked(self.locked);
-      } else {
-        self.locked = locked;
-      }
-
-      if (self._ws_region) {
-        self._ws_region.drag = !self.locked;
-        self._ws_region.resize = !self.locked;
-      }
-    },
-
-    onClick(wavesurfer, ev) {
-      // if (! self.editable) return;
-
-      if (!self.annotation.isLinkingMode) {
-        // Object.values(wavesurfer.regions.list).forEach(r => {
-        //   // r.update({ color: self.selectedregionbg });
-        // });
-
-        self._ws_region.update({ color: Utils.Colors.rgbaChangeAlpha(self.selectedregionbg, 0.8) });
-      }
-
-      self.onClickRegion(ev);
-    },
-
-    onMouseOver() {
-      if (self.annotation.isLinkingMode) {
-        self.setHighlight(true);
-        self._ws_region.element.style.cursor = Constants.LINKING_MODE_CURSOR;
-      }
-    },
-
-    onMouseLeave() {
-      if (self.annotation.isLinkingMode) {
-        self.setHighlight(false);
-        self._ws_region.element.style.cursor = Constants.MOVE_CURSOR;
-      }
-    },
-
-    onUpdateEnd() {
-      self.start = self._ws_region.start;
-      self.end = self._ws_region.end;
-      self.channel = self._ws_region.channelIdx ?? 0;
-      self.updateColor(self.selected ? 0.8 : 0.3);
-      self.notifyDrawingFinished();
-    },
-
-    toggleHidden(e) {
-      self.hidden = !self.hidden;
-      self._ws_region.element.style.display = self.hidden ? "none" : "block";
-      e?.stopPropagation();
-    },
-  }));
+        if (wsRegion) {
+          wsRegion.on("mouseOver", self.onMouseOver);
+          wsRegion.on("mouseLeave", self.onMouseLeave);
+        }
+      },
+    };
+  });

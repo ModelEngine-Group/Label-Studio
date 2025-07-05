@@ -126,24 +126,6 @@ module.exports = {
   },
 
   async moveRegion(regionId, offset = 30) {
-    const regionPosition = await I.executeScript((regionId) => {
-      const region = Htx.annotationStore.selected.regions.find((r) => r.cleanId === regionId);
-      const element = region.getRegionElement();
-      const rect = element.getBoundingClientRect();
-
-      return {
-        x: rect.x + rect.width / 2,
-        y: rect.y + rect.height / 2,
-      };
-    }, regionId);
-
-    return I.dragAndDropMouse(regionPosition, {
-      x: regionPosition.x + offset,
-      y: regionPosition.y,
-    });
-  },
-
-  async moveRegionV3(regionId, offset = 30) {
     const regionPosition = await I.executeScript(
       ({ regionId, stageBbox }) => {
         const region = Htx.annotationStore.selected.regions.find((r) => r.cleanId === regionId);

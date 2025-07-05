@@ -39,7 +39,6 @@
     "react-window": "^1.8.9",
     "sanitize-html": "^2.12.1",
     "strman": "^2.0.1",
-    "wavesurfer.js": "^6.0.1",
     "webfft": "^1.0.3",
     "xpath-range": "^1.1.1"
   },

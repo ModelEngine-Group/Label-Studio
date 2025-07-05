@@ -1,4 +1,4 @@
-import { AudioModel } from "./AudioNext";
+import { AudioModel } from "./Audio";
 import { ImageModel } from "./Image";
 import { ParagraphsModel } from "./Paragraphs";
 import { PdfModel } from "./Pdf";

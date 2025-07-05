@@ -31,7 +31,6 @@ import type {
   TimelineProps,
   TimelineStepFunction,
 } from "./Types";
-import { FF_DEV_2715, isFF } from "../../utils/feature-flags";
 import { AudioControl } from "./Controls/AudioControl";
 import { ConfigControl } from "./Controls/ConfigControl";
 import { TimeDurationControl } from "../TimeDurationControl/TimeDurationControl";
@@ -175,7 +174,7 @@ export const Controls: FC<TimelineControlsProps> = memo(
 
     return (
       <Block name="timeline-controls" tag={Space} spread style={{ gridAutoColumns: "auto" }}>
-        {isFF(FF_DEV_2715) && mediaType === "audio" ? (
+        {mediaType === "audio" ? (
           renderControls()
         ) : (
           <Elem name="group" tag={Space} size="small" style={{ gridAutoColumns: "auto" }}>
@@ -311,7 +310,7 @@ export const Controls: FC<TimelineControlsProps> = memo(
         </Elem>
 
         <Elem name="group" tag={Space} size="small">
-          {isFF(FF_DEV_2715) && mediaType === "audio" ? (
+          {mediaType === "audio" ? (
             <>
               {customControls?.right}
               <TimeDurationControl

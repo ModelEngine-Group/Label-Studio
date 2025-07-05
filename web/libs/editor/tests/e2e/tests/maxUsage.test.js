@@ -206,9 +206,6 @@ Data(maxUsageDataTable).Scenario(
   async ({ I, LabelStudio, AtOutliner, AtAudioView, current }) => {
     const { maxUsage } = current;
 
-    LabelStudio.setFeatureFlags({
-      ff_front_dev_2715_audio_3_280722_short: true,
-    });
     I.amOnPage("/");
     LabelStudio.init({
       config: `

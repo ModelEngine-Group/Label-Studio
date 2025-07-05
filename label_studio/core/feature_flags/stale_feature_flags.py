@@ -16,7 +16,6 @@ STALE_FEATURE_FLAGS = {
     'fflag_fix_front_leap_32_zoom_perf_190923_short': True,
     'fflag_feat_front_lsdv_5452_taxonomy_labeling_110823_short': True,
     'fflag_fix_front_dev_3793_relative_coords_short': True,
-    'ff_front_dev_2715_audio_3_280722_short': True,
     # Feb 5
     'fflag_feature_all_optic_1421_cold_start_v2': False,
     'fflag_fix_back_optic_1407_optimize_tasks_api_pagination_counts': True,

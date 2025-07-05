@@ -9,12 +9,6 @@ export const FF_DEV_2186 = "ff_front_dev_2186_comments_for_update";
 
 export const FF_DEV_2536 = "fflag_feat_front_dev-2536_comment_notifications_short";
 
-/**
- * Support for loading media files only a single time. Part of the Audio v3 epic.
- * @link https://app.launchdarkly.com/default/production/features/ff_front_dev_2715_audio_3_280722_short
- */
-export const FF_DEV_2715 = "ff_front_dev_2715_audio_3_280722_short";
-
 // Comments for annotation editor
 export const FF_DEV_2887 = "fflag-feat-dev-2887-comments-ui-editor-short";
 
