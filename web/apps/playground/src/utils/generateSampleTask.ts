@@ -207,7 +207,7 @@ export async function generateSampleTaskFromConfig(config: string): Promise<{
     } else if (tag === "timeseries") {
       const isJson = valueType?.includes("json");
       onlyUrls = onlyUrls || !isJson;
-      const columns = Array.from(node.children).filter((child) => child.tagName === "Channel");
+      const columns = Array.from(node.querySelectorAll("Channel"));
       const timeColumn = node.getAttribute("timeColumn");
       let csvSeparator = node.getAttribute("sep");
       const timeFormat = node.getAttribute("timeFormat");
