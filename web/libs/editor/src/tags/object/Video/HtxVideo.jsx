@@ -531,6 +531,7 @@ const HtxVideoView = ({ item, store }) => {
             disableView={!supportsTimelineRegions && !supportsRegions}
             framerate={item.framerate}
             controls={{ FramesControl: true }}
+            readonly={item.annotation?.isReadOnly()}
             customControls={[
               {
                 position: "left",

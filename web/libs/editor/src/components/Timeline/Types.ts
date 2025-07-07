@@ -32,6 +32,7 @@ export interface TimelineProps<D extends ViewTypes = "frames"> {
   controlsOnTop?: boolean;
   controls?: TimelineControls;
   customControls?: TimelineCustomControls[];
+  readonly?: boolean;
   onReady?: (data: Record<string, any>) => void;
   onPlay?: () => void;
   onPause?: () => void;
@@ -121,6 +122,7 @@ export interface TimelineContextValue {
   settings?: TimelineSettings;
   changeSetting?: (key: string, value: any) => void;
   data?: any;
+  readonly?: boolean;
 }
 
 export interface TimelineMinimapProps {

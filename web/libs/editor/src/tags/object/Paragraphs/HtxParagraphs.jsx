@@ -303,6 +303,10 @@ class HtxParagraphsView extends Component {
     if (!states || states.length === 0 || ev.ctrlKey || ev.metaKey)
       return this._selectRegions(ev.ctrlKey || ev.metaKey);
 
+    if (item.annotation.isReadOnly()) {
+      return;
+    }
+
     const selectedRanges = this.captureDocumentSelection();
 
     if (selectedRanges.length === 0) {

@@ -199,7 +199,7 @@ class ChannelD3 extends React.Component {
     } = this.props;
 
     const activeStates = parent?.activeStates();
-    const statesSelected = activeStates && activeStates.length;
+    const statesSelected = activeStates?.length;
     const readonly = parent?.annotation?.isReadOnly();
 
     // skip if event fired by .move() - prevent recursion and bugs
@@ -210,10 +210,13 @@ class ChannelD3 extends React.Component {
       const x = d3.mouse(d3.event.sourceEvent.target)[0];
       const newRegion = this.newRegion;
 
+      // double click handler to create instant region
       // when 2nd click happens during 300ms after 1st click and in the same place
       if (newRegion && Math.abs(newRegion.x - x) < 4) {
         clearTimeout(this.newRegionTimer);
-        parent?.regionChanged(newRegion.range, ranges.length, newRegion.states);
+        if (!readonly) {
+          parent?.regionChanged(newRegion.range, ranges.length, newRegion.states);
+        }
         this.newRegion = null;
         this.newRegionTimer = null;
       } else if (statesSelected) {
@@ -364,7 +367,7 @@ class ChannelD3 extends React.Component {
     const block = this.gCreator;
     const getRegion = this.getRegion;
     const x = this.x;
-    const brush = (this.brushCreator = d3
+    const brush = d3
       .brushX()
       .extent([
         [0, 0],
@@ -381,7 +384,9 @@ class ChannelD3 extends React.Component {
       // replacing default filter to allow ctrl-click action
       .filter(() => {
         return !d3.event.button;
-      }));
+      });
+
+    this.brushCreator = brush;
 
     this.gCreator.call(this.brushCreator);
   }
