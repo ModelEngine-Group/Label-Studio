@@ -1,6 +1,5 @@
 import { FF_DEV_3391 } from "@humansignal/frontend-test/feature-flags";
 import { LabelStudio } from "@humansignal/frontend-test/helpers/LSF";
-import { beforeEach } from "mocha";
 import { FF_LSDV_4583 } from "../../../../src/utils/feature-flags";
 import { allTagsSampleData, configAllTags } from "../../data/view_all/smoke";
 

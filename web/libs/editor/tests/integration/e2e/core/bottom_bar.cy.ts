@@ -1,5 +1,4 @@
 import { ToolBar, LabelStudio } from "@humansignal/frontend-test/helpers/LSF";
-import { beforeEach } from "mocha";
 import type { CustomButtonType } from "../../../../src/stores/CustomButton";
 import { FF_BULK_ANNOTATION, FF_DEV_3873 } from "../../../../src/utils/feature-flags";
 
