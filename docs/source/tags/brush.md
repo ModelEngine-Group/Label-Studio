@@ -1,7 +1,7 @@
 ---
 title: Brush
 type: tags
-order: 401
+order: 400
 meta_title: Brush Tag for Image Segmentation Labeling
 meta_description: Customize Label Studio with brush tags for image segmentation labeling for machine learning and data science projects.
 ---
