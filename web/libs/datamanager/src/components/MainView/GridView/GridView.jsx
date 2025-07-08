@@ -129,7 +129,7 @@ export const GridCell = observer(({ view, selected, row, fields, onClick, column
 export const GridView = observer(({ data, view, loadMore, fields, onChange, hiddenFields }) => {
   const columnCount = view.gridWidth ?? 4;
 
-  const getCellIndex = (row, column) => columnCount * row + column;
+  const getCellIndex = useCallback((row, column) => columnCount * row + column, [columnCount]);
 
   const fieldsData = useMemo(() => {
     return prepareColumns(fields, hiddenFields);
@@ -148,11 +148,15 @@ export const GridView = observer(({ data, view, loadMore, fields, onChange, hidd
   const finalRowHeight =
     CELL_HEADER_HEIGHT + rowHeight * (hasImage ? Math.max(1, (IMAGE_SIZE_COEFFICIENT - columnCount) * 0.5) : 1);
 
+  // Calculate the total number of rows needed to display all items
+  const itemCount = view.dataStore.total || data.length;
+  const totalRows = Math.ceil(itemCount / columnCount);
+
   const renderItem = useCallback(
     ({ style, rowIndex, columnIndex }) => {
       const index = getCellIndex(rowIndex, columnIndex);
-      if (!data || !(index in data)) return null;
       const row = data[index];
+      if (!row) return null;
 
       const props = {
         style: {
@@ -173,30 +177,42 @@ export const GridView = observer(({ data, view, loadMore, fields, onChange, hidd
         />
       );
     },
-    [data, columnCount, fieldsData, view.selected, view, view.selected.list, view.selected.all, getCellIndex],
+    [data, columnCount, fieldsData, view, onChange, getCellIndex],
   );
 
-  const onItemsRenderedWrap =
+  const onItemsRenderedWrap = useCallback(
     (cb) =>
-    ({ visibleRowStartIndex, visibleRowStopIndex, overscanRowStopIndex, overscanRowStartIndex }) => {
-      cb({
-        overscanStartIndex: overscanRowStartIndex,
-        overscanStopIndex: overscanRowStopIndex,
-        visibleStartIndex: visibleRowStartIndex,
-        visibleStopIndex: visibleRowStopIndex,
-      });
-    };
+      ({ visibleRowStartIndex, visibleRowStopIndex, overscanRowStopIndex, overscanRowStartIndex }) => {
+        // Check if we're near the end and need to load more
+        const visibleItemStopIndex = getCellIndex(visibleRowStopIndex, columnCount - 1);
 
-  const itemCount = Math.ceil(data.length / columnCount);
+        // If we're showing items near the end of our loaded data, trigger loading
+        if (
+          visibleItemStopIndex >= data.length - columnCount * 2 &&
+          view.dataStore.hasNextPage &&
+          !view.dataStore.loading
+        ) {
+          loadMore?.();
+        }
 
+        cb({
+          overscanStartIndex: overscanRowStartIndex,
+          overscanStopIndex: overscanRowStopIndex,
+          visibleStartIndex: visibleRowStartIndex,
+          visibleStopIndex: visibleRowStopIndex,
+        });
+      },
+    [data.length, columnCount, view.dataStore.hasNextPage, view.dataStore.loading, loadMore, getCellIndex],
+  );
+
+  // Check if a specific item index is loaded
   const isItemLoaded = useCallback(
     (index) => {
-      const rowIndex = index * columnCount;
-      const rowFullfilled = data.slice(rowIndex, columnCount).length === columnCount;
-
-      return !view.dataStore.hasNextPage || rowFullfilled;
+      const rowExists = index < data.length && !!data[index];
+      const hasNextPage = view.dataStore.hasNextPage;
+      return !hasNextPage || rowExists;
     },
-    [columnCount, data, view.dataStore.hasNextPage],
+    [data.length, view.dataStore.hasNextPage],
   );
 
   return (
@@ -208,8 +224,8 @@ export const GridView = observer(({ data, view, loadMore, fields, onChange, hidd
               itemCount={itemCount}
               isItemLoaded={isItemLoaded}
               loadMoreItems={loadMore}
-              threshold={Math.floor(view.dataStore.pageSize / 2)}
-              minimumBatchSize={view.dataStore.pageSize}
+              threshold={Math.max(1, Math.floor(view.dataStore.pageSize / 4))}
+              minimumBatchSize={Math.max(1, Math.floor(view.dataStore.pageSize / 2))}
             >
               {({ onItemsRendered, ref }) => (
                 <Elem
@@ -219,10 +235,10 @@ export const GridView = observer(({ data, view, loadMore, fields, onChange, hidd
                   height={height}
                   name="list"
                   rowHeight={finalRowHeight}
-                  overscanRowCount={view.dataStore.pageSize}
+                  overscanRowCount={Math.max(2, Math.floor(view.dataStore.pageSize / 2))}
                   columnCount={columnCount}
+                  rowCount={totalRows}
                   columnWidth={width / columnCount - 9.5}
-                  rowCount={itemCount}
                   onItemsRendered={onItemsRenderedWrap(onItemsRendered)}
                   style={{ overflowX: "hidden" }}
                 >

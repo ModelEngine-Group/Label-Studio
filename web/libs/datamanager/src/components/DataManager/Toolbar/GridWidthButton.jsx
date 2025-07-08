@@ -4,6 +4,7 @@ import { Button } from "../../Common/Button/Button";
 import { Dropdown } from "../../Common/Dropdown/DropdownComponent";
 import { Toggle } from "../../Common/Form";
 import { IconSettings, IconMinus, IconPlus } from "@humansignal/icons";
+import debounce from "lodash.debounce";
 
 const injector = inject(({ store }) => {
   const view = store?.currentView;
@@ -23,12 +24,16 @@ const injector = inject(({ store }) => {
 export const GridWidthButton = injector(({ view, isGrid, gridWidth, fitImagesToWidth, hasImage, size }) => {
   const [width, setWidth] = useState(gridWidth);
 
+  const setGridWidthStore = debounce((value) => {
+    view.setGridWidth(value);
+  }, 200);
+
   const setGridWidth = useCallback(
     (width) => {
       const newWidth = Math.max(1, Math.min(width, 10));
 
       setWidth(newWidth);
-      view.setGridWidth(newWidth);
+      setGridWidthStore(newWidth);
     },
     [view],
   );
