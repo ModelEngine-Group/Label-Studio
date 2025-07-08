@@ -221,7 +221,7 @@ class InactivitySessionTimeoutMiddleWare(CommonMiddleware):
                 minutes=active_org.session_timeout_policy.max_time_between_activity
             ).total_seconds()
 
-            if (current_time - last_login) > org_max_session_age:
+            if last_login and (current_time - last_login) > org_max_session_age:
                 logger.info(
                     f'Request is too far from last login {current_time - last_login:.0f} > {settings.MAX_SESSION_AGE}; logout'
                 )
@@ -230,7 +230,7 @@ class InactivitySessionTimeoutMiddleWare(CommonMiddleware):
         else:
             max_time_between_activity = settings.MAX_TIME_BETWEEN_ACTIVITY
             # Check if this request is too far from when the login happened
-            if (current_time - last_login) > settings.MAX_SESSION_AGE:
+            if last_login and (current_time - last_login) > settings.MAX_SESSION_AGE:
                 logger.info(
                     f'Request is too far from last login {current_time - last_login:.0f} > {settings.MAX_SESSION_AGE}; logout'
                 )
