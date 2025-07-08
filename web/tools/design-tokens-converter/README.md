@@ -48,17 +48,19 @@ const designTokens = require('./libs/ui/src/tokens/tokens.js');
 module.exports = {
   // ...
   theme: {
+    // fully override
+    fontSize: designTokens.typography.fontSize,
+    lineHeight: designTokens.typography.lineHeight,
+    letterSpacing: designTokens.typography.letterSpacing,
+    fontFamily: designTokens.typography.fontFamily,
+    fontWeight: designTokens.typography.fontWeight,
     extend: {
+      // or extend
       colors: {
         // ...your existing colors
         ...designTokens.colors,
       },
       spacing: designTokens.spacing,
-      fontSize: designTokens.typography.fontSize,
-      lineHeight: designTokens.typography.lineHeight,
-      letterSpacing: designTokens.typography.letterSpacing,
-      fontFamily: designTokens.typography.fontFamily,
-      fontWeight: designTokens.typography.fontWeight,
       borderRadius: designTokens.cornerRadius,
     },
   },
@@ -110,7 +112,7 @@ module.exports = {
 </div>
 
 <!-- Typography -->
-<h1 class="font-sans text-24 leading-32 font-bold">
+<h1 class="font-body text-24 leading-headline-small font-bold">
   Styled with typography tokens
 </h1>
 
@@ -136,7 +138,7 @@ When you get updated design tokens from Figma:
 
 1. Replace the `design-tokens.json` file in the workspace root
 2. Run the NX command again: `nx design-tokens ui`
-3. The CSS and JavaScript files will be regenerated with the updated tokens 
+3. The CSS and JavaScript files will be regenerated with the updated tokens
 
 ## Known Issues
 

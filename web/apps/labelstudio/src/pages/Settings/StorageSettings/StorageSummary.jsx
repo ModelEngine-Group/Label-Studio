@@ -43,7 +43,7 @@ export const StorageSummary = ({ target, storage, className, storageTypes = [] }
       title: "Storage error logs",
       body: (
         <>
-          <pre className="bg-neutral-surface-inset text-neutral-content-subtler p-base mb-base rounded-md text-xs overflow-scroll">
+          <pre className="bg-neutral-surface-inset text-neutral-content-subtler p-base mb-base rounded-md text-body-smaller overflow-scroll">
             {msg}
           </pre>
           <Space spread>

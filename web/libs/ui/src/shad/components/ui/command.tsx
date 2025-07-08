@@ -49,7 +49,7 @@ function CommandList({ className, ...props }: React.ComponentProps<typeof Comman
 }
 
 function CommandEmpty({ ...props }: React.ComponentProps<typeof CommandPrimitive.Empty>) {
-  return <CommandPrimitive.Empty data-slot="command-empty" className="py-6 text-center text-sm" {...props} />;
+  return <CommandPrimitive.Empty data-slot="command-empty" className="py-6 text-center text-body-small" {...props} />;
 }
 
 function CommandGroup({ className, ...props }: React.ComponentProps<typeof CommandPrimitive.Group>) {
@@ -74,7 +74,7 @@ function CommandShortcut({ className, ...props }: React.ComponentProps<"span">) 
   return (
     <span
       data-slot="command-shortcut"
-      className={cn("text-neutral-content-subtle ml-auto text-xs tracking-widest", className)}
+      className={cn("text-neutral-content-subtle ml-auto text-body-smaller tracking-widest", className)}
       {...props}
     />
   );

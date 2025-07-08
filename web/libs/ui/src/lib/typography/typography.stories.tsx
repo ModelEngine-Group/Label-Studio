@@ -70,7 +70,7 @@ export const AllVariants: TypographyStory = {
   render: () => (
     <div className="space-y-8">
       <div>
-        <h3 className="text-lg font-semibold mb-4 !text-neutral-content-subtle">Display Variants</h3>
+        <h3 className="text-title-medium font-semibold mb-4 !text-neutral-content-subtle">Display Variants</h3>
         <div className="space-y-2">
           <Typography variant="display" size="large">
             Display Large
@@ -85,7 +85,7 @@ export const AllVariants: TypographyStory = {
       </div>
 
       <div>
-        <h3 className="text-lg font-semibold mb-4 !text-neutral-content-subtle">Headline Variants</h3>
+        <h3 className="text-title-medium font-semibold mb-4 !text-neutral-content-subtle">Headline Variants</h3>
         <div className="space-y-2">
           <Typography variant="headline" size="large">
             Headline Large
@@ -100,7 +100,7 @@ export const AllVariants: TypographyStory = {
       </div>
 
       <div>
-        <h3 className="text-lg font-semibold mb-4 !text-neutral-content-subtle">Title Variants</h3>
+        <h3 className="text-title-medium font-semibold mb-4 !text-neutral-content-subtle">Title Variants</h3>
         <div className="space-y-2">
           <Typography variant="title" size="large">
             Title Large
@@ -115,7 +115,7 @@ export const AllVariants: TypographyStory = {
       </div>
 
       <div>
-        <h3 className="text-lg font-semibold mb-4 !text-neutral-content-subtle">Label Variants</h3>
+        <h3 className="text-title-medium font-semibold mb-4 !text-neutral-content-subtle">Label Variants</h3>
         <div className="space-y-2">
           <Typography variant="label" size="medium">
             Label Medium
@@ -133,7 +133,7 @@ export const AllVariants: TypographyStory = {
       </div>
 
       <div>
-        <h3 className="text-lg font-semibold mb-4 !text-neutral-content-subtle">Body Variants</h3>
+        <h3 className="text-title-medium font-semibold mb-4 !text-neutral-content-subtle">Body Variants</h3>
         <div className="space-y-2">
           <Typography variant="body" size="medium">
             Body Medium

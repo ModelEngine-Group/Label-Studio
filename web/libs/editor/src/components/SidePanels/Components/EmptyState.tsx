@@ -24,7 +24,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({ icon, header, descriptio
       </div>
       <div className="flex flex-col items-center w-full gap-1">
         <div
-          className="font-medium text-body-medium leading-tight text-center text-neutral-content"
+          className="font-medium text-body-medium leading-title-small text-center text-neutral-content"
           data-testid="empty-state-header"
         >
           {header}
