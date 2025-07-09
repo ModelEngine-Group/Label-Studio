@@ -63,13 +63,13 @@ export const StorageCard = ({ rootClass, target, storage, onEditStorage, onDelet
         storageTypes={storageTypes}
       />
       <div className={rootClass.elem("sync")}>
-        <div>
+        <div className="mt-base">
           <Button
             look="outlined"
             waiting={syncing}
             onClick={startSync}
             disabled={notSyncedYet}
-            aria-label="Sync storage"
+            aria-label="Sync Storage"
           >
             Sync Storage
           </Button>

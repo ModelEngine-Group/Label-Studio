@@ -1,9 +1,21 @@
-import { Button, Space, Tooltip } from "@humansignal/ui";
 import { format } from "date-fns/esm";
+import { Button, CodeBlock, IconFileCopy, Space, Tooltip } from "@humansignal/ui";
 import { DescriptionList } from "../../../components/DescriptionList/DescriptionList";
 import { modal } from "../../../components/Modal/Modal";
 import { Oneof } from "../../../components/Oneof/Oneof";
 import { getLastTraceback } from "../../../utils/helpers";
+import { useCopyText } from "@humansignal/core/lib/hooks/useCopyText";
+
+// Component to handle copy functionality within the modal
+const CopyButton = ({ msg }) => {
+  const [copyText, copied] = useCopyText(msg);
+
+  return (
+    <Button variant="neutral" icon={<IconFileCopy />} onClick={copyText} disabled={copied} className="w-[7rem]">
+      {copied ? "Copied!" : "Copy"}
+    </Button>
+  );
+};
 
 export const StorageSummary = ({ target, storage, className, storageTypes = [] }) => {
   const storageStatus = storage.status.replace(/_/g, " ").replace(/(^\w)/, (match) => match.toUpperCase());
@@ -36,34 +48,34 @@ export const StorageSummary = ({ target, storage, className, storageTypes = [] }
       `storage ${storage.id} in project ${storage.project} and job ${storage.last_sync_job}:\n\n` +
       `${getLastTraceback(storage.traceback)}\n\n` +
       `meta = ${JSON.stringify(storage.meta)}\n`;
-    const targetType = target === "export" ? "Target" : "Source";
 
-    modal({
-      title: "Storage error logs",
-      body: (
-        <>
-          <pre className="bg-neutral-surface-inset text-neutral-content-subtler p-base mb-base rounded-md text-body-smaller overflow-scroll">
-            {msg}
-          </pre>
-          <Space spread>
-            <Button
-              size="small"
-              look="outlined"
-              onClick={() => {
-                navigator.clipboard.writeText(msg);
-              }}
-            >
-              Copy
+    const currentModal = modal({
+      title: "Storage Sync Error Log",
+      body: <CodeBlock code={msg} variant="negative" className="max-h-[50vh] overflow-y-auto" />,
+      footer: (
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          {!window.APP_SETTINGS?.whitelabel_is_active && (
+            <div>
+              <>
+                <a
+                  href="https://labelstud.io/guide/storage.html#Troubleshooting"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  aria-label="Learn more about cloud storage troubleshooting"
+                >
+                  See docs
+                </a>{" "}
+                for troubleshooting tips on cloud storage connections.
+              </>
+            </div>
+          )}
+          <Space>
+            <CopyButton msg={msg} />
+            <Button variant="primary" className="w-[7rem]" onClick={() => currentModal.close()}>
+              Close
             </Button>
-            <a
-              target="_blank"
-              rel="noreferrer"
-              href={`https://labelstud.io/guide/storage.html#${targetType}-storage-permissions`}
-            >
-              Check {targetType} Storage documentation
-            </a>
           </Space>
-        </>
+        </div>
       ),
       style: { width: "700px" },
       optimize: false,
@@ -97,8 +109,11 @@ export const StorageSummary = ({ target, storage, className, storageTypes = [] }
           ].join("\n")}
         >
           {storageStatus === "Failed" ? (
-            <span style={{ cursor: "pointer", borderBottom: "1px dashed gray" }} onClick={handleButtonClick}>
-              Failed
+            <span
+              className="cursor-pointer border-b border-dashed border-negative-border-subtle text-negative-content"
+              onClick={handleButtonClick}
+            >
+              Failed (View Logs)
             </span>
           ) : (
             storageStatus
