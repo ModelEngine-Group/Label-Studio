@@ -2,7 +2,7 @@ import React, { type FormEvent, useCallback, useContext, useEffect, useMemo, use
 import { Dropdown, Menu } from "antd";
 
 import { IconChevron } from "@humansignal/icons";
-import { Tooltip } from "@humansignal/ui";
+import { Button, Tooltip } from "@humansignal/ui";
 import { useToggle } from "../../hooks/useToggle";
 import type { CNTagName } from "../../utils/bem";
 import { isArraysEqual } from "../../utils/utilities";
@@ -435,9 +435,16 @@ const TaxonomyDropdown = ({ show, flatten, items, dropdownRef, isEditable }: Tax
             <UserLabelForm path={[]} onAddLabel={onAddLabel} onFinish={closeForm} />
           ) : isEditable ? (
             <div className={styles.taxonomy__add}>
-              <button type="button" onClick={addInside}>
+              <Button
+                size="small"
+                variant="neutral"
+                look="string"
+                type="button"
+                onClick={addInside}
+                aria-label="Add new label"
+              >
                 Add
-              </button>
+              </Button>
             </div>
           ) : null}
         </div>

@@ -9,7 +9,7 @@ import {
   IconEyeClosed,
   IconEyeOpened,
 } from "@humansignal/icons";
-import { Button } from "../../../common/Button/Button";
+import { Button } from "@humansignal/ui";
 import { Block, Elem } from "../../../utils/bem";
 import { wrapArray } from "../../../utils/utilities";
 import { RegionItem } from "./RegionItem";

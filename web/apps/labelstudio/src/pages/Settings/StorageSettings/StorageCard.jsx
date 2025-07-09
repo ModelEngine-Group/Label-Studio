@@ -1,5 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from "react";
-import { Button, Card, Dropdown, Menu } from "../../../components";
+import { Card, Dropdown, Menu } from "../../../components";
+import { Button } from "@humansignal/ui";
 import { ApiContext } from "../../../providers/ApiProvider";
 import { StorageSummary } from "./StorageSummary";
 import { IconEllipsisVertical } from "@humansignal/icons";
@@ -49,7 +50,9 @@ export const StorageCard = ({ rootClass, target, storage, onEditStorage, onDelet
             </Menu>
           }
         >
-          <Button type="link" style={{ marginRight: -10 }} icon={<IconEllipsisVertical />} />
+          <Button look="string" className="-ml-3" aria-label="Storage options">
+            <IconEllipsisVertical />
+          </Button>
         </Dropdown.Trigger>
       }
     >
@@ -61,7 +64,13 @@ export const StorageCard = ({ rootClass, target, storage, onEditStorage, onDelet
       />
       <div className={rootClass.elem("sync")}>
         <div>
-          <Button waiting={syncing} onClick={startSync} disabled={notSyncedYet}>
+          <Button
+            look="outlined"
+            waiting={syncing}
+            onClick={startSync}
+            disabled={notSyncedYet}
+            aria-label="Sync storage"
+          >
             Sync Storage
           </Button>
           {notSyncedYet && (

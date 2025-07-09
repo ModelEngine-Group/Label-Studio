@@ -59,7 +59,7 @@ describe("Classification - MIG perTag - Taxonomy", () => {
 
     ImageView.waitForImage();
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasWarning(TAXONOMY_REQUIRED_WARNING);
   });
 
@@ -72,7 +72,7 @@ describe("Classification - MIG perTag - Taxonomy", () => {
     Taxonomy.findItem("Choice 1").click();
     Taxonomy.close();
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasNoWarnings();
   });
 });

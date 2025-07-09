@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Button, Spinner } from "../../../components";
+import { Button, Typography, Spinner } from "@humansignal/ui";
 import { Form, Label, Toggle } from "../../../components/Form";
 import { modal } from "../../../components/Modal/Modal";
 import { EmptyState } from "../../../components/EmptyState/EmptyState";
@@ -12,7 +12,6 @@ import { CustomBackendForm } from "./Forms";
 import { TestRequest } from "./TestRequest";
 import { StartModelTraining } from "./StartModelTraining";
 import "./MachineLearningSettings.scss";
-import { Typography } from "@humansignal/ui";
 
 export const MachineLearningSettings = () => {
   const api = useAPI();
@@ -107,7 +106,7 @@ export const MachineLearningSettings = () => {
             title="Let’s connect your first model"
             description="Connect a machine learning model to generate predictions. These predictions can be compared side by side, used for efficient pre‒labeling and, to aid in active learning, directing users to the most impactful labeling tasks."
             action={
-              <Button primary onClick={() => showMLFormModal()}>
+              <Button primary onClick={() => showMLFormModal()} aria-label="Add machine learning model">
                 Connect Model
               </Button>
             }
@@ -182,7 +181,7 @@ export const MachineLearningSettings = () => {
               <Form.Indicator>
                 <span case="success">Saved!</span>
               </Form.Indicator>
-              <Button type="submit" look="primary" style={{ width: 120 }}>
+              <Button type="submit" look="primary" className="w-[120px]" aria-label="Save machine learning settings">
                 Save
               </Button>
             </Form.Actions>

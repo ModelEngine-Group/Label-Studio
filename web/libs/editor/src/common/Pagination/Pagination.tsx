@@ -1,8 +1,7 @@
 import { type ChangeEvent, type FC, forwardRef, type KeyboardEvent, useCallback, useMemo, useState } from "react";
-import { Hotkey } from "../../core/Hotkey";
-import { useHotkey } from "../../hooks/useHotkey";
 import { Block, Elem } from "../../utils/bem";
 import { Select } from "@humansignal/ui";
+import { WithHotkey } from "../Hotkey/WithHotkey";
 import "./Pagination.scss";
 
 interface PaginationProps {
@@ -173,13 +172,9 @@ const NavigationButton: FC<NavigationButtonProps> = ({ mod, disabled, hotkey, on
 
   buttonMod.disabled = disabled === true;
 
-  useHotkey(hotkey, actionHandler);
-
-  return hotkey ? (
-    <Hotkey.Tooltip name={hotkey}>
+  return (
+    <WithHotkey binging={hotkey as HotkeyList}>
       <Elem name="btn" mod={buttonMod} onClick={actionHandler} />
-    </Hotkey.Tooltip>
-  ) : (
-    <Elem name="btn" mod={buttonMod} onClick={actionHandler} />
+    </WithHotkey>
   );
 };

@@ -14,14 +14,13 @@ import {
   IconSlack,
 } from "@humansignal/icons";
 import { LSLogo } from "../../assets/images";
-import { Userpic, ThemeToggle } from "@humansignal/ui";
+import { Button, Userpic, ThemeToggle } from "@humansignal/ui";
 import { useConfig } from "../../providers/ConfigProvider";
 import { useContextComponent, useFixedLocation } from "../../providers/RoutesProvider";
 import { useCurrentUser } from "../../providers/CurrentUser";
 import { cn } from "../../utils/bem";
 import { absoluteURL, isDefined } from "../../utils/helpers";
 import { Breadcrumbs } from "../Breadcrumbs/Breadcrumbs";
-import { Button } from "../Button/Button";
 import { Dropdown } from "../Dropdown/Dropdown";
 import { Hamburger } from "../Hamburger/Hamburger";
 import { Menu } from "../Menu/Menu";
@@ -157,7 +156,8 @@ export const Menubar = ({ enabled, defaultOpened, defaultPinned, children, onSid
           <div className={menubarClass.elem("hotkeys")}>
             <div className={menubarClass.elem("hotkeys-button")}>
               <Button
-                type="text"
+                look="string"
+                size="smaller"
                 onClick={() => {
                   openHotkeyHelp([
                     "annotation",

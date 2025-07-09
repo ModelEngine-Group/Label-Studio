@@ -516,6 +516,8 @@ Hotkey.Hint = inject("store")(
   }),
 );
 
+export type HotkeyList = keyof typeof Hotkey.keymap;
+
 export default {
   DEFAULT_SCOPE,
   INPUT_SCOPE,

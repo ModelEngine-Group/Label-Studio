@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { observer } from "mobx-react";
-import { Button } from "../../common/Button/Button";
+import { Button, IconChevronLeft, IconChevronRight } from "@humansignal/ui";
 import { Block, Elem } from "../../utils/bem";
 import { guidGenerator } from "../../utils/unique";
 import { isDefined } from "../../utils/utilities";
@@ -40,29 +40,22 @@ export const CurrentTask = observer(({ store }) => {
         </Elem>
         {historyEnabled && (
           <Elem name="history-controls">
-            <Elem
-              tag={Button}
-              name="prevnext"
-              mod={{ prev: true, disabled: !store.canGoPrevTask }}
-              type="link"
+            <Button
+              variant="neutral"
+              data-testid="prev-task"
               disabled={!historyEnabled || !store.canGoPrevTask}
               onClick={store.prevTask}
-              style={{ background: "none", backgroundColor: "none" }}
-            />
-            <Elem
-              tag={Button}
-              name="prevnext"
+            >
+              <IconChevronLeft />
+            </Button>
+            <Button
               data-testid="next-task"
-              mod={{
-                next: true,
-                disabled: !store.canGoNextTask && !canPostpone,
-                postpone: !store.canGoNextTask && canPostpone,
-              }}
-              type="link"
               disabled={!store.canGoNextTask && !canPostpone}
               onClick={store.canGoNextTask ? store.nextTask : store.postponeTask}
-              style={{ background: "none", backgroundColor: "none" }}
-            />
+              variant={!store.canGoNextTask && canPostpone ? "primary" : "neutral"}
+            >
+              <IconChevronRight />
+            </Button>
           </Elem>
         )}
       </Block>

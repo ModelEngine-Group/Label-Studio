@@ -14,7 +14,7 @@ export const ToolBar = {
         return cy.get(".lsf-bottombar");
       }
 
-      return cy.get(".lsf-topbar").find(".lsf-topbar__group").eq(1);
+      return cy.get(".lsf-topbar");
     });
   },
 
@@ -31,7 +31,11 @@ export const ToolBar = {
   },
 
   get submitBtn() {
-    return this.sectionTwo.find('[aria-label="submit"]');
+    return this.sectionTwo.find('[aria-label="Submit current annotation"]');
+  },
+
+  get updateBtn() {
+    return this.sectionTwo.find('[aria-label="Update current annotation"]');
   },
 
   get annotationDropdownTrigger() {

@@ -1,7 +1,7 @@
 import { Component, Fragment } from "react";
-import { Button, Dropdown, Menu, Slider } from "antd";
+import { Dropdown, Menu, Slider } from "antd";
+import { Button, IconRefresh } from "@humansignal/ui";
 import { observer } from "mobx-react";
-import { ReloadOutlined } from "@ant-design/icons";
 
 import styles from "./Styles.module.scss";
 
@@ -22,12 +22,11 @@ export default observer(
               onChange={this.props.onChange}
             />
             <Button
-              shape="circle"
-              type={this.props.selected ? "primary" : "default"}
+              variant={this.props.selected ? "primary" : "neutral"}
               className={styles.button}
               onClick={this.props.onResetClick}
             >
-              <ReloadOutlined />
+              <IconRefresh />
             </Button>
           </Menu.Item>
         </Menu>
@@ -36,7 +35,7 @@ export default observer(
       return (
         <Fragment>
           <Dropdown overlay={menu}>
-            <Button shape="circle" className={styles.button}>
+            <Button className={styles.button} aria-label="Slider options">
               {this.props.icon}
             </Button>
           </Dropdown>

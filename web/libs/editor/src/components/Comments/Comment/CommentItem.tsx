@@ -3,7 +3,7 @@ import type React from "react";
 import { type FC, useCallback, useContext, useMemo, useState } from "react";
 import { Tooltip, Userpic } from "@humansignal/ui";
 import { IconCheck, IconEllipsis } from "@humansignal/icons";
-import { Button } from "../../../common/Button/Button";
+import { Button } from "@humansignal/ui";
 import { Dropdown } from "../../../common/Dropdown/Dropdown";
 import { Menu } from "../../../common/Menu/Menu";
 import { Space } from "../../../common/Space/Space";
@@ -203,10 +203,16 @@ export const CommentItem: FC<CommentItemProps> = observer(
               <Elem name="confirmForm">
                 <Elem name="question">Are you sure?</Elem>
                 <Elem name="controls">
-                  <Button onClick={() => deleteComment()} size="compact" look="danger" autoFocus>
+                  <Button
+                    onClick={() => deleteComment()}
+                    size="small"
+                    look="danger"
+                    autoFocus
+                    aria-label="Delete comment"
+                  >
                     Yes
                   </Button>
-                  <Button onClick={() => setConfirmMode(false)} size="compact">
+                  <Button onClick={() => setConfirmMode(false)} size="small" aria-label="Cancel delete">
                     No
                   </Button>
                 </Elem>
@@ -271,7 +277,7 @@ export const CommentItem: FC<CommentItemProps> = observer(
                   </Menu>
                 }
               >
-                <Button size="small" type="text" icon={<IconEllipsis width={20} height={20} />} />
+                <Button size="small" look="string" icon={<IconEllipsis />} aria-label="Comment options" />
               </Dropdown.Trigger>
             )}
           </Elem>

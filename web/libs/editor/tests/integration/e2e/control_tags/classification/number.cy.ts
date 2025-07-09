@@ -90,7 +90,7 @@ describe("Classification - MIG perTag - Number", () => {
 
     ImageView.waitForImage();
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasWarning(NUMBER_REQUIRED_WARNING);
   });
 
@@ -101,7 +101,7 @@ describe("Classification - MIG perTag - Number", () => {
 
     Number.type("123");
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasNoWarnings();
   });
 });
@@ -153,7 +153,7 @@ describe("Control Tags - MIG perRegion - Number", () => {
 
     ImageView.waitForImage();
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasWarning(NUMBER_REQUIRED_WARNING);
   });
 
@@ -169,7 +169,7 @@ describe("Control Tags - MIG perRegion - Number", () => {
     Sidebar.findRegionByIndex(0).click();
     Number.type("123");
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasWarning(NUMBER_REQUIRED_WARNING);
   });
 
@@ -189,7 +189,7 @@ describe("Control Tags - MIG perRegion - Number", () => {
     ImageView.waitForImage();
     Number.type("456");
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasNoWarnings();
   });
 });
@@ -275,7 +275,7 @@ describe("Control Tags - MIG perItem - Number", () => {
 
     ImageView.waitForImage();
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasWarning(NUMBER_REQUIRED_WARNING);
   });
 
@@ -290,7 +290,7 @@ describe("Control Tags - MIG perItem - Number", () => {
 
     Number.type("123");
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasWarning(NUMBER_REQUIRED_WARNING);
   });
 
@@ -317,7 +317,7 @@ describe("Control Tags - MIG perItem - Number", () => {
 
     Number.type("0");
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasNoWarnings();
   });
 });

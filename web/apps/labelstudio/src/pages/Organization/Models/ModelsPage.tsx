@@ -1,7 +1,7 @@
-import { Button } from "apps/labelstudio/src/components";
-import type { Page } from "../../types/Page";
-import { Space } from "apps/labelstudio/src/components/Space/Space";
+import { buttonVariant, Space } from "@humansignal/ui";
 import { Block } from "apps/labelstudio/src/utils/bem";
+import { Link } from "react-router-dom";
+import type { Page } from "../../types/Page";
 import { EmptyList } from "./@components/EmptyList";
 
 export const ModelsPage: Page = () => {
@@ -19,9 +19,9 @@ ModelsPage.path = "/models";
 ModelsPage.context = () => {
   return (
     <Space size="small">
-      <Button to="/prompt/settings" size="compact" look="primary">
+      <Link to="/prompt/settings" className={buttonVariant({ size: "small" })}>
         Create Model
-      </Button>
+      </Link>
     </Space>
   );
 };

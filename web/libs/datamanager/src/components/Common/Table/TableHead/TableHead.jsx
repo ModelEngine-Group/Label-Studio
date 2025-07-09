@@ -2,7 +2,7 @@ import { observer, useLocalStore } from "mobx-react";
 import { toJS } from "mobx";
 import React, { forwardRef, useCallback, useEffect, useRef } from "react";
 import { ViewColumnType, ViewColumnTypeName, ViewColumnTypeShort } from "../../../../stores/Tabs/tab_column";
-import { Button } from "../../Button/Button";
+import { Button } from "@humansignal/ui";
 import { Dropdown } from "../../Dropdown/Dropdown";
 import { Menu } from "../../Menu/Menu";
 import { Resizer } from "../../Resizer/Resizer";
@@ -57,18 +57,7 @@ const DropdownWrapper = observer(({ column, cellViews, children, onChange }) => 
         </Menu>
       }
     >
-      <Button
-        type="text"
-        size="small"
-        style={{
-          flex: 1,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          background: "none",
-          fontSize: 14,
-        }}
-      >
+      <Button look="string" variant="neutral" size="small">
         {children}
       </Button>
     </Dropdown.Trigger>

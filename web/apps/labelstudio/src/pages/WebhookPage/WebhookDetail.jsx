@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button } from "../../components";
+import { Button } from "@humansignal/ui";
 import { Form, Input, Label, Toggle } from "../../components/Form";
 import { Block, cn, Elem } from "../../utils/bem";
 import { cloneDeep } from "lodash";
@@ -145,9 +145,12 @@ const WebhookDetail = ({ webhook, webhooksInfo, fetchWebhooks, onBack, onSelectA
                     <Button
                       type="button"
                       onClick={onAddHeaderClick}
+                      look="string"
                       className={rootClass.elem("headers-add")}
-                      icon={<IconPlus />}
-                    />
+                      size="small"
+                    >
+                      <IconPlus className="!h-3" />
+                    </Button>
                   </Space>
                   {headers.map(([headKey, headValue], index) => {
                     return (
@@ -170,6 +173,7 @@ const WebhookDetail = ({ webhook, webhooksInfo, fetchWebhooks, onBack, onSelectA
                           <Button
                             className={rootClass.elem("headers-remove")}
                             type="button"
+                            look="string"
                             icon={<IconCross />}
                             onClick={() => onHeaderRemove(index)}
                           />
@@ -253,15 +257,26 @@ const WebhookDetail = ({ webhook, webhooksInfo, fetchWebhooks, onBack, onSelectA
                   Delete Webhook
                 </Button>
               )}
-              <div className={rootClass.elem("status")}>
-                <Form.Indicator />
-              </div>
-              <Button type="button" className={rootClass.elem("cancel-button")} onClick={onBack}>
-                Cancel
-              </Button>
-              <Button primary className={rootClass.elem("save-button")}>
-                {webhook === null ? "Add Webhook" : "Save"}
-              </Button>
+              <Space>
+                <div className={rootClass.elem("status")}>
+                  <Form.Indicator />
+                </div>
+                <Button
+                  type="button"
+                  look="outlined"
+                  className={rootClass.elem("cancel-button")}
+                  onClick={onBack}
+                  aria-label="Cancel webhook edit"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className={rootClass.elem("save-button")}
+                  aria-label={webhook === null ? "Add webhook" : "Save webhook"}
+                >
+                  {webhook === null ? "Add Webhook" : "Save"}
+                </Button>
+              </Space>
             </Elem>
           </Form>
         </Block>

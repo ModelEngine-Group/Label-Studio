@@ -1,10 +1,9 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
-import { IconEllipsisVertical } from "@humansignal/icons";
+import { IconEllipsisVertical, IconPlus } from "@humansignal/icons";
 import { cn } from "../../../utils/bem";
-import { Button } from "../Button/Button";
+import { Button } from "@humansignal/ui";
 import { Dropdown } from "../Dropdown/DropdownComponent";
-import { Icon } from "../Icon/Icon";
 import Input from "../Input/Input";
 import "./Tabs.scss";
 import { TabsMenu } from "./TabsMenu";
@@ -61,7 +60,9 @@ export const Tabs = ({
             </Droppable>
           </DragDropContext>
           {allowedActions.add !== false && (
-            <Button className={tabsCN.elem("add").toString()} type="text" onClick={onAdd} icon={addIcon} data-leave />
+            <Button size="small" look="string" variant="neutral" onClick={onAdd} data-leave>
+              <IconPlus className="!h-3 !w-3" />
+            </Button>
           )}
         </span>
         <span className={tabsCN.elem("extra").toString()}>{tabBarExtraContent}</span>
@@ -193,12 +194,9 @@ export const TabsItem = ({
             }
           >
             <div className={tabsCN.elem("item-right-button").toString()}>
-              <Button
-                type="link"
-                size="small"
-                style={{ padding: "6px", margin: "auto", color: "#999" }}
-                icon={<Icon icon={IconEllipsisVertical} />}
-              />
+              <Button look="string" size="small" variant="neutral">
+                <IconEllipsisVertical className="w-4 h-4" />
+              </Button>
             </div>
           </Dropdown.Trigger>
         )}

@@ -130,20 +130,19 @@ export const Table = observer(
         };
 
         return (
-          <Tooltip title="Show task source">
-            <Button
-              look="string"
-              className="w-6 h-6 p-0 text-primary-content hover:text-primary-content-hover"
-              onClick={() => {
-                modal({
-                  title: `Source for task ${out?.id}`,
-                  style: { width: 800 },
-                  body: <TaskSourceView content={out} onTaskLoad={onTaskLoad} sdkType={type} />,
-                });
-              }}
-              leading={<Icon icon={IconCode} />}
-            />
-          </Tooltip>
+          <Button
+            look="string"
+            className="w-6 h-6 p-0 text-primary-content hover:text-primary-content-hover"
+            onClick={() => {
+              modal({
+                title: `Source for task ${out?.id}`,
+                style: { width: 800 },
+                body: <TaskSourceView content={out} onTaskLoad={onTaskLoad} sdkType={type} />,
+              });
+            }}
+            leading={<Icon icon={IconCode} />}
+            tooltip="Show task source"
+          />
         );
       },
     });

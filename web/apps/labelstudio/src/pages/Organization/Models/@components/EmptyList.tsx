@@ -1,4 +1,4 @@
-import { Button } from "apps/labelstudio/src/components";
+import { Button } from "@humansignal/ui";
 import { Block, Elem } from "apps/labelstudio/src/utils/bem";
 import type { FC } from "react";
 import "./EmptyList.scss";
@@ -13,7 +13,7 @@ export const EmptyList: FC = () => {
         </Elem>
         <Elem name="title">Create a Model</Elem>
         <Elem name="caption">Build a high quality model to auto-label your data using LLMs</Elem>
-        <Button look="primary">Create a Model</Button>
+        <Button aria-label="Create new model">Create a Model</Button>
       </Elem>
     </Block>
   );

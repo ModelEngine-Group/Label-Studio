@@ -30,7 +30,14 @@
       "@humansignal/ui": ["libs/ui/src/index.ts"],
       "@humansignal/ui/*": ["libs/ui/src/*"]
     },
-    "types": ["vite-plugin-svgr/client"]
+    "types": ["vite-plugin-svgr/client"],
+    "plugins": [{
+        "name": "typescript-plugin-css-modules",
+        "options": {
+          "customMatcher": "\\.module\\.scss$",
+          "classnameTransform": "asIs"
+        }
+      }]
   },
   "exclude": ["node_modules", "tmp"]
 }

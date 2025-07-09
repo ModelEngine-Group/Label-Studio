@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useRef, useState } from "react";
-import { Button } from "../../../components";
+import { Button } from "@humansignal/ui";
 import { HeidiTips } from "../../../components/HeidiTips/HeidiTips";
 import { modal } from "../../../components/Modal/Modal";
 import { Space } from "../../../components/Space/Space";
@@ -61,8 +61,16 @@ export const PeoplePage = () => {
           <Space />
 
           <Space>
-            {isFF(FF_AUTH_TOKENS) && <Button onClick={showApiTokenSettingsModal}>API Tokens Settings</Button>}
-            <Button icon={<IconPlus />} primary onClick={() => setInvitationOpen(true)}>
+            {isFF(FF_AUTH_TOKENS) && (
+              <Button look="outlined" onClick={showApiTokenSettingsModal} aria-label="Show API token settings">
+                API Tokens Settings
+              </Button>
+            )}
+            <Button
+              leading={<IconPlus className="!h-4" />}
+              onClick={() => setInvitationOpen(true)}
+              aria-label="Invite new member"
+            >
               Add People
             </Button>
           </Space>

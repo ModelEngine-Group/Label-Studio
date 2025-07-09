@@ -3,7 +3,6 @@ import { SampleDatasetSelect } from "@humansignal/app-common/blocks/SampleDatase
 import { IconErrorAlt, IconFileUpload, IconInfoOutline, IconTrash, IconUpload, IconCode } from "@humansignal/icons";
 import { Badge } from "@humansignal/shad/components/ui/badge";
 import { cn as scn } from "@humansignal/shad/utils";
-import { Button } from "apps/labelstudio/src/components";
 import { useAtomValue } from "jotai";
 import Input from "libs/datamanager/src/components/Common/Input/Input";
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
@@ -14,7 +13,7 @@ import { sampleDatasetAtom } from "../utils/atoms";
 import "./Import.scss";
 import samples from "./samples.json";
 import { importFiles } from "./utils";
-import { CodeBlock, SimpleCard, Spinner, Tooltip } from "@humansignal/ui";
+import { Button, CodeBlock, SimpleCard, Spinner, Tooltip } from "@humansignal/ui";
 
 const importClass = cn("upload_page");
 const dropzoneClass = cn("dropzone");
@@ -323,9 +322,13 @@ export const ImportPage = ({
       <input id="file-input" type="file" name="file" multiple onChange={onUpload} style={{ display: "none" }} />
 
       <header className="flex gap-4">
-        <form className={`${importClass.elem("url-form")} inline-flex`} method="POST" onSubmit={onLoadURL}>
-          <Input placeholder="Dataset URL" name="url" ref={urlRef} style={{ height: 40 }} />
-          <Button type="submit" look="primary">
+        <form
+          className={`${importClass.elem("url-form")} inline-flex items-stretch`}
+          method="POST"
+          onSubmit={onLoadURL}
+        >
+          <Input placeholder="Dataset URL" name="url" ref={urlRef} rawClassName="h-[40px]" />
+          <Button type="submit" aria-label="Add URL">
             Add URL
           </Button>
         </form>
@@ -333,9 +336,9 @@ export const ImportPage = ({
         <Button
           type="button"
           onClick={() => document.getElementById("file-input").click()}
-          className={importClass.elem("upload-button")}
+          leading={<IconUpload />}
+          aria-label="Upload file"
         >
-          <IconUpload width="16" height="16" className={importClass.elem("upload-icon")} />
           Upload {files.uploaded.length ? "More " : ""}Files
         </Button>
         {ff.isActive(ff.FF_SAMPLE_DATASETS) && (
@@ -471,13 +474,8 @@ export const ImportPage = ({
                           </td>
                           <td>{sample.description}</td>
                           <td>
-                            <Button
-                              size="icon"
-                              look="destructive"
-                              rawClassName="h-6 w-6 p-0"
-                              onClick={() => onSampleDatasetSelect(undefined)}
-                            >
-                              <IconTrash className="w-3 h-3" />
+                            <Button size="smaller" variant="negative" onClick={() => onSampleDatasetSelect(undefined)}>
+                              <IconTrash className="w-4 h-4" />
                             </Button>
                           </td>
                         </tr>
@@ -542,13 +540,14 @@ export const ImportPage = ({
                         <div className="text-label-small text-neutral-content font-medium">View JSON input format</div>
                         <div className="text-body-small text-neutral-content-subtler text-center">
                           Setup your{" "}
-                          <button
+                          <Button
                             type="button"
+                            look="string"
                             onClick={openConfig}
-                            className="border-none bg-none p-0 m-0 text-primary-content underline hover:text-primary-content-hover transition-colors"
+                            className="border-none bg-none p-0 m-0 text-primary-content underline"
                           >
                             labeling configuration
-                          </button>{" "}
+                          </Button>{" "}
                           first to preview the expected JSON data format
                         </div>
                       </div>

@@ -1,4 +1,4 @@
-import { Button } from "../../common/Button/Button";
+import { Button } from "@humansignal/ui";
 import { IconCopy, IconInfo, IconViewAll, IconTrash, IconSettings } from "@humansignal/icons";
 import { Tooltip } from "@humansignal/ui";
 import { Elem } from "../../utils/bem";
@@ -27,10 +27,10 @@ export const Actions = ({ store }) => {
         <Tooltip title="Compare all annotations">
           <Button
             icon={<IconViewAll />}
-            type="text"
             aria-label="Compare all annotations"
             onClick={() => onToggleVisibility()}
-            primary={isViewAll}
+            variant={isViewAll ? "primary" : "neutral"}
+            look={isViewAll ? "filled" : "string"}
             style={{
               height: 36,
               width: 36,
@@ -48,7 +48,8 @@ export const Actions = ({ store }) => {
         <Tooltip title="Delete annotation">
           <Button
             icon={<IconTrash />}
-            look="danger"
+            variant="negative"
+            look="string"
             type="text"
             aria-label="Delete"
             onClick={() => {
@@ -73,8 +74,8 @@ export const Actions = ({ store }) => {
         <Tooltip title={`Create copy of current ${entity.type}`}>
           <Button
             icon={<IconCopy style={{ width: 36, height: 36 }} />}
-            size="small"
-            look="ghost"
+            variant="neutral"
+            look="string"
             type="text"
             aria-label="Copy Annotation"
             onClick={(ev) => {
@@ -99,7 +100,8 @@ export const Actions = ({ store }) => {
 
       <Button
         icon={<IconSettings />}
-        type="text"
+        variant="neutral"
+        look="string"
         aria-label="Settings"
         onClick={() => store.toggleSettings()}
         style={{
@@ -112,8 +114,8 @@ export const Actions = ({ store }) => {
       {store.description && store.hasInterface("instruction") && !isBulkMode && (
         <Button
           icon={<IconInfo style={{ width: 16, height: 16 }} />}
-          primary={store.showingDescription}
-          type="text"
+          variant={store.showingDescription ? "primary" : "neutral"}
+          look={store.showingDescription ? "filled" : "string"}
           aria-label="Instructions"
           onClick={() => store.toggleDescription()}
           style={{

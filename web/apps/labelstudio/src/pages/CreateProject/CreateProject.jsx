@@ -1,7 +1,8 @@
 import { EnterpriseBadge, Select, Typography } from "@humansignal/ui";
 import React from "react";
 import { useHistory } from "react-router";
-import { Button, ToggleItems } from "../../components";
+import { ToggleItems } from "../../components";
+import { Button } from "@humansignal/ui";
 import { Modal } from "../../components/Modal/Modal";
 import { Space } from "../../components/Space/Space";
 import { HeidiTips } from "../../components/HeidiTips/HeidiTips";
@@ -201,12 +202,19 @@ export const CreateProject = ({ onClose }) => {
           <ToggleItems items={steps} active={step} onSelect={setStep} />
 
           <Space>
-            <Button look="danger" size="compact" onClick={onDelete} waiting={waiting}>
-              Delete
+            <Button
+              variant="negative"
+              look="outlined"
+              size="small"
+              onClick={onDelete}
+              waiting={waiting}
+              aria-label="Cancel project creation"
+            >
+              Cancel
             </Button>
             <Button
               look="primary"
-              size="compact"
+              size="small"
               onClick={onCreate}
               waiting={waiting || uploading}
               disabled={!project || uploadDisabled || error}

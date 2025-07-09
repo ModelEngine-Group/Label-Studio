@@ -3,7 +3,7 @@ import sanitizeHtml from "sanitize-html";
 import { IconSlack } from "@humansignal/icons";
 import { Block, Elem } from "../../utils/bem";
 import { absoluteURL, copyText } from "../../utils/helpers";
-import { Button } from "../Button/Button";
+import { Button } from "@humansignal/ui";
 import { Space } from "../Space/Space";
 import "./Error.scss";
 
@@ -93,12 +93,25 @@ export const ErrorWrapper = ({
 
           <Space size="small">
             {preparedStackTrace && (
-              <Button disabled={copied} onClick={copyStacktrace} style={{ width: 180 }}>
+              <Button
+                disabled={copied}
+                onClick={copyStacktrace}
+                className="w-[100px]"
+                aria-label="Copy error stacktrace"
+              >
                 {copied ? "Copied" : "Copy Stacktrace"}
               </Button>
             )}
-            {onGoBack && <Button onClick={onGoBack}>Go Back</Button>}
-            {onReload && <Button onClick={onReload}>Reload</Button>}
+            {onGoBack && (
+              <Button onClick={onGoBack} aria-label="Go back">
+                Go Back
+              </Button>
+            )}
+            {onReload && (
+              <Button onClick={onReload} aria-label="Reload page">
+                Reload
+              </Button>
+            )}
           </Space>
         </Space>
       </Elem>

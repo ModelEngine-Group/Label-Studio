@@ -1,13 +1,13 @@
 import { observer } from "mobx-react";
 import { Fragment } from "react";
-import { IconClose } from "@humansignal/icons";
 import { BemWithSpecifiContext } from "../../../utils/bem";
-import { Button } from "../../Common/Button/Button";
-import { Icon } from "../../Common/Icon/Icon";
+import { Button } from "@humansignal/ui";
+import { IconClose } from "@humansignal/icons";
 import { Tag } from "../../Common/Tag/Tag";
 import { FilterDropdown } from "../FilterDropdown";
 import "./FilterLine.scss";
 import { FilterOperation } from "./FilterOperation";
+import { Icon } from "../../Common/Icon/Icon";
 
 const { Block, Elem } = BemWithSpecifiContext();
 
@@ -82,9 +82,8 @@ export const FilterLine = observer(({ filter, availableFilters, index, view, sid
       </GroupWrapper>
       <Elem name="remove">
         <Button
-          look="danger"
-          size="small"
-          style={{ border: "none" }}
+          look="string"
+          size="smaller"
           onClick={(e) => {
             e.stopPropagation();
             filter.delete();

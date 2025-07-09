@@ -9,23 +9,6 @@
   border-radius: 4px;
   min-height: 100%;
 
-  &__close {
-    top: 20px;
-    right: 24px;
-    width: 32px;
-    height: 32px;
-    position: absolute;
-
-    --button-color: var(--color-primary-content);
-
-    border: none;
-
-    &:hover {
-      color: var(--color-primary-content);
-      background-color: var(--color-primary-emphasis-subtle);
-    }
-  }
-
   &__header {
     display: grid;
     grid-template: auto / 64px auto;

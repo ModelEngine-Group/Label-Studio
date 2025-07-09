@@ -1,12 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Button, IconChevronLeft, IconChevronRight } from "@humansignal/ui";
 import { observer } from "mobx-react";
-
-import { IconChevron } from "@humansignal/ui";
-import { Button } from "../../common/Button/Button";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Block, Elem } from "../../utils/bem";
 import { clamp, sortAnnotations } from "../../utils/utilities";
 import { AnnotationButton } from "./AnnotationButton";
-
 import "./AnnotationsCarousel.scss";
 
 interface AnnotationsCarouselInterface {
@@ -29,7 +26,7 @@ export const AnnotationsCarousel = observer(({ store, annotationStore }: Annotat
   const [isRightDisabled, setIsRightDisabled] = useState(false);
 
   const updatePosition = useCallback(
-    (e: MouseEvent, goLeft = true) => {
+    (e: React.MouseEvent, goLeft = true) => {
       if (containerRef.current && carouselRef.current) {
         const step = containerRef.current.clientWidth;
         const carouselWidth = carouselRef.current.clientWidth;
@@ -86,26 +83,24 @@ export const AnnotationsCarousel = observer(({ store, annotationStore }: Annotat
       </Elem>
       {(!isLeftDisabled || !isRightDisabled) && (
         <Elem name="carousel-controls">
-          <Elem
-            tag={Button}
-            name="nav"
+          <Button
             disabled={isLeftDisabled}
-            mod={{ left: true, disabled: isLeftDisabled }}
             aria-label="Carousel left"
-            onClick={(e: MouseEvent) => !isLeftDisabled && updatePosition(e, true)}
+            size="small"
+            variant="neutral"
+            onClick={(e) => !isLeftDisabled && updatePosition(e, true)}
           >
-            <Elem name="arrow" mod={{ left: true }} tag={IconChevron} />
-          </Elem>
-          <Elem
-            tag={Button}
-            name="nav"
+            <IconChevronLeft />
+          </Button>
+          <Button
             disabled={isRightDisabled}
-            mod={{ right: true, disabled: isRightDisabled }}
             aria-label="Carousel right"
-            onClick={(e: MouseEvent) => !isRightDisabled && updatePosition(e, false)}
+            size="small"
+            variant="neutral"
+            onClick={(e) => !isRightDisabled && updatePosition(e, false)}
           >
-            <Elem name="arrow" mod={{ right: true }} tag={IconChevron} />
-          </Elem>
+            <IconChevronRight />
+          </Button>
         </Elem>
       )}
     </Block>

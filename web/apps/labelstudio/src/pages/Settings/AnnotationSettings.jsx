@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { Button } from "../../components";
+import { Button } from "@humansignal/ui";
 import { Form, TextArea, Toggle } from "../../components/Form";
 import { MenubarContext } from "../../components/Menubar/Menubar";
 import { Block, Elem } from "../../utils/bem";
@@ -71,7 +71,7 @@ export const AnnotationSettings = () => {
               <Form.Indicator>
                 <span case="success">Saved!</span>
               </Form.Indicator>
-              <Button type="submit" look="primary" style={{ width: 120 }}>
+              <Button type="submit" look="primary" className="w-[150px]" aria-label="Save annotation settings">
                 Save
               </Button>
             </Form.Actions>

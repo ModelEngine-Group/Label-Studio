@@ -106,7 +106,7 @@ describe("Control Tags - MIG perItem - Taxonomy", () => {
 
     ImageView.waitForImage();
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasWarning(TAXONOMY_REQUIRED_WARNING);
   });
 
@@ -122,7 +122,7 @@ describe("Control Tags - MIG perItem - Taxonomy", () => {
     Taxonomy.open();
     Taxonomy.findItem("Choice 1").click();
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasWarning(TAXONOMY_REQUIRED_WARNING);
   });
 
@@ -153,7 +153,7 @@ describe("Control Tags - MIG perItem - Taxonomy", () => {
     Taxonomy.open();
     Taxonomy.findItem("Choice 2").click();
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasNoWarnings();
   });
 });

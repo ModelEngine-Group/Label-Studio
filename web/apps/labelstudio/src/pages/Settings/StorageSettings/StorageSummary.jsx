@@ -1,6 +1,5 @@
+import { Button, Space, Tooltip } from "@humansignal/ui";
 import { format } from "date-fns/esm";
-import { Space, Tooltip } from "@humansignal/ui";
-import { Button } from "../../../components";
 import { DescriptionList } from "../../../components/DescriptionList/DescriptionList";
 import { modal } from "../../../components/Modal/Modal";
 import { Oneof } from "../../../components/Oneof/Oneof";
@@ -48,7 +47,8 @@ export const StorageSummary = ({ target, storage, className, storageTypes = [] }
           </pre>
           <Space spread>
             <Button
-              size="compact"
+              size="small"
+              look="outlined"
               onClick={() => {
                 navigator.clipboard.writeText(msg);
               }}

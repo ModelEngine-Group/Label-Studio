@@ -1,6 +1,6 @@
 import { Component, Fragment } from "react";
-import { Button, Slider } from "antd";
-import { Tooltip } from "@humansignal/ui";
+import { Slider } from "antd";
+import { Button, cn, Tooltip } from "@humansignal/ui";
 import { observer } from "mobx-react";
 
 import styles from "./Styles.module.scss";
@@ -22,9 +22,8 @@ export default observer(
           />
           <Tooltip title={this.props.title} alignment="top-left">
             <Button
-              shape="circle"
-              type={this.props.selected ? "primary" : "default"}
-              className={styles.button}
+              look={this.props.selected ? "filled" : "outlined"}
+              className={cn(styles.button, "rounded-full")}
               onClick={this.props.onClick}
             >
               {this.props.icon}

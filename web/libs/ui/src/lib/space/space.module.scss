@@ -1,10 +1,9 @@
 .space {
   display: grid;
-  grid-gap: 16px;
-  grid-auto-flow: column;
   align-items: center;
+  grid-auto-flow: column;
   grid-auto-columns: max-content;
-
+  grid-gap: var(--spacing-tight);
 }
 
 .directionHorizontal {
@@ -38,9 +37,9 @@
 }
 
 .sizeLarge {
-  grid-gap: 32px;
+  grid-gap: var(--spacing-wider);
 }
 
 .sizeSmall {
-  grid-gap: 12px;
+  grid-gap: var(--spacing-tight);
 }

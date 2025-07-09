@@ -79,7 +79,7 @@ export const AudioControl: FC<AudioControlProps> = ({ volume, onVolumeChange, on
 
   return (
     <Block name="audio-control" onClick={(e: MouseEvent<HTMLButtonElement>) => e.stopPropagation()}>
-      <ControlButton look={audioModal ? "active" : undefined} onClick={onSetModal}>
+      <ControlButton look={audioModal ? "filled" : undefined} onClick={onSetModal}>
         {isMuted ? <IconSoundMutedConfig /> : <IconSoundConfig />}
       </ControlButton>
       {audioModal && renderModal()}

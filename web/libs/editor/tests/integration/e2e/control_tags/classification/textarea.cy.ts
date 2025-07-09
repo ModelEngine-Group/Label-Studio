@@ -94,7 +94,7 @@ describe("Classification - MIG perTag - Textarea", () => {
 
     ImageView.waitForImage();
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasWarning(TEXTAREA_REQUIRED_WARNING);
   });
 
@@ -105,7 +105,7 @@ describe("Classification - MIG perTag - Textarea", () => {
 
     Textarea.type("123");
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasNoWarnings();
   });
 });
@@ -165,7 +165,7 @@ describe("Control Tags - MIG perRegion - Textarea", () => {
 
     ImageView.waitForImage();
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasWarning(TEXTAREA_REQUIRED_WARNING);
   });
 
@@ -181,7 +181,7 @@ describe("Control Tags - MIG perRegion - Textarea", () => {
     Sidebar.findRegionByIndex(0).click();
     Textarea.type("Text 1{enter}");
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasWarning(TEXTAREA_REQUIRED_WARNING);
   });
 
@@ -200,7 +200,7 @@ describe("Control Tags - MIG perRegion - Textarea", () => {
     ImageView.waitForImage();
     Textarea.type("Text 2{enter}");
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasNoWarnings();
   });
 });
@@ -288,7 +288,7 @@ describe("Control Tags - MIG perItem - Textarea", () => {
 
     ImageView.waitForImage();
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasWarning(TEXTAREA_REQUIRED_WARNING);
   });
 
@@ -303,7 +303,7 @@ describe("Control Tags - MIG perItem - Textarea", () => {
 
     Textarea.type("Text 1{enter}");
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasWarning(TEXTAREA_REQUIRED_WARNING);
   });
 
@@ -330,7 +330,7 @@ describe("Control Tags - MIG perItem - Textarea", () => {
 
     Textarea.type("Text 4{enter}");
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasNoWarnings();
   });
 });

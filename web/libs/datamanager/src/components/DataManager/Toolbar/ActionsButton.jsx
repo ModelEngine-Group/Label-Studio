@@ -3,13 +3,12 @@ import { useCallback, useRef, useEffect, useState, useMemo } from "react";
 import { IconChevronRight, IconChevronDown, IconTrash } from "@humansignal/icons";
 import { Block, Elem } from "../../../utils/bem";
 import { FF_LOPS_E_3, isFF } from "../../../utils/feature-flags";
-import { Button } from "../../Common/Button/Button";
+import { Button, Spinner, Tooltip } from "@humansignal/ui";
 import { Dropdown } from "../../Common/Dropdown/DropdownComponent";
 import Form from "../../Common/Form/Form";
 import { Menu } from "../../Common/Menu/Menu";
 import { Modal } from "../../Common/Modal/ModalPopup";
 import "./ActionsButton.scss";
-import { Spinner, Tooltip } from "@humansignal/ui";
 
 const isFFLOPSE3 = isFF(FF_LOPS_E_3);
 const injector = inject(({ store }) => ({
@@ -86,6 +85,7 @@ const ActionButton = ({ action, parentRef, store, formRef }) => {
         disabled: action.disabled,
       }}
       name="actionButton"
+      aria-label={action.title}
     >
       <Elem name="titleContainer" {...(action.disabled ? { title: action.disabledReason } : {})}>
         <Elem name="title">{action.title}</Elem>
@@ -133,6 +133,7 @@ const ActionButton = ({ action, parentRef, store, formRef }) => {
           }`}
           icon={isDeleteAction && <IconTrash />}
           title={action.disabled ? action.disabledReason : null}
+          aria-label={action.title}
         >
           {action.title}
         </Menu.Item>
@@ -197,9 +198,16 @@ export const ActionsButton = injector(
         disabled={!hasSelected}
         onToggle={setIsOpen}
       >
-        <Button size={size} disabled={!hasSelected} {...rest}>
+        <Button
+          size={size}
+          variant="neutral"
+          look="outlined"
+          disabled={!hasSelected}
+          trailing={<IconChevronDown />}
+          aria-label="Tasks Actions"
+          {...rest}
+        >
           {selectedCount > 0 ? `${selectedCount} ${recordTypeLabel}${selectedCount > 1 ? "s" : ""}` : "Actions"}
-          <IconChevronDown style={{ marginLeft: 4, marginRight: -7 }} />
         </Button>
       </Dropdown.Trigger>
     );

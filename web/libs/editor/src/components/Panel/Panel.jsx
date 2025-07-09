@@ -1,5 +1,5 @@
 import { observer } from "mobx-react";
-import { Button } from "antd";
+import { Button } from "@humansignal/ui";
 import {
   FullscreenExitOutlined,
   FullscreenOutlined,
@@ -32,8 +32,8 @@ export default observer(({ store }) => {
     <div className={`${styles.container} ${panelClassName}`}>
       <div className={classname}>
         <Button
-          type="ghost"
-          icon={<UndoOutlined />}
+          look="string"
+          leading={<UndoOutlined />}
           disabled={!history?.canUndo}
           onClick={(ev) => {
             annotation?.undo();
@@ -44,9 +44,9 @@ export default observer(({ store }) => {
           {store.settings.enableHotkeys && store.settings.enableTooltips && <Hint>[ Ctrl+z ]</Hint>}
         </Button>
         <Button
-          type="ghost"
+          look="string"
           disabled={!history?.canRedo}
-          icon={<RedoOutlined />}
+          leading={<RedoOutlined />}
           onClick={(ev) => {
             annotation?.redo();
             ev.preventDefault();
@@ -66,12 +66,12 @@ export default observer(({ store }) => {
         </Button>
         {store.setPrelabeling && (
           <Button
+            variant="neutral"
             style={{ display: "none" }}
             onClick={() => {
               store.resetPrelabeling();
             }}
           >
-            {" "}
             Reset Prelabeling
           </Button>
         )}
@@ -86,6 +86,7 @@ export default observer(({ store }) => {
       <div className={[styles.block, styles.common].join(" ")}>
         {store.description && store.showingDescription && (
           <Button
+            variant="neutral"
             onClick={() => {
               store.toggleDescription();
             }}
@@ -95,6 +96,7 @@ export default observer(({ store }) => {
         )}
         {store.description && !store.showingDescription && (
           <Button
+            variant="neutral"
             onClick={() => {
               store.toggleDescription();
             }}
@@ -104,7 +106,8 @@ export default observer(({ store }) => {
         )}
 
         <Button
-          icon={<SettingOutlined />}
+          variant="neutral"
+          leading={<SettingOutlined />}
           onClick={(ev) => {
             store.toggleSettings();
             ev.preventDefault();
@@ -113,7 +116,8 @@ export default observer(({ store }) => {
         />
         <Button
           className="lsf-fs"
-          icon={store.settings.fullscreen ? <FullscreenExitOutlined /> : <FullscreenOutlined />}
+          variant="neutral"
+          leading={store.settings.fullscreen ? <FullscreenExitOutlined /> : <FullscreenOutlined />}
           onClick={(ev) => {
             store.settings.toggleFullscreen();
             ev.preventDefault();

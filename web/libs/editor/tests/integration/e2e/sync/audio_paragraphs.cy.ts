@@ -80,6 +80,24 @@ const data = {
       start: 8,
       end: 10,
     },
+    {
+      text: "Thats when you know you found somebody really special. When you can just shut the door closed a minute, and comfortably share silence.",
+      author: "Mia Wallace:",
+      start: 10,
+      end: 12,
+    },
+    {
+      text: "Thats when you know you found somebody really special. When you can just shut the door closed a minute, and comfortably share silence.",
+      author: "Mia Wallace:",
+      start: 12,
+      end: 16,
+    },
+    {
+      text: "Thats when you know you found somebody really special. When you can just shut the door closed a minute, and comfortably share silence.",
+      author: "Mia Wallace:",
+      start: 16,
+      end: 20,
+    },
   ],
 };
 

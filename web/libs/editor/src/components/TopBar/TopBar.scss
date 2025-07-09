@@ -21,6 +21,7 @@
   &__group {
     display: flex;
     align-items: stretch;
+    gap: var(--spacing-tight);
   }
 
   &__section {

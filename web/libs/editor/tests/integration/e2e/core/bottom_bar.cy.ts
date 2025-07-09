@@ -22,12 +22,12 @@ describe("Bottom bar", () => {
         {
           name: "custom_btn_1",
           title: "Custom button 1",
-          look: "primary",
+          look: "filled",
         },
         {
           name: "custom_btn_2",
           title: "Custom button 2",
-          look: "alt",
+          look: "string",
         },
       ])
       .withEventListener("customButton", (_store, buttonName: string) => {

@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from "react";
 import { useHistory } from "react-router";
-import { Button } from "../../../components";
+import { Button } from "@humansignal/ui";
 import { Modal } from "../../../components/Modal/Modal";
 import { Space } from "../../../components/Space/Space";
 import { useAPI } from "../../../providers/ApiProvider";
@@ -77,10 +77,23 @@ export const Inner = () => {
         </Elem>
 
         <Space>
-          <Button waiting={waiting} onClick={onCancel}>
+          <Button
+            size="small"
+            variant="negative"
+            look="outlined"
+            waiting={waiting}
+            onClick={onCancel}
+            aria-label="Cancel import"
+          >
             Cancel
           </Button>
-          <Button look="primary" onClick={onFinish} waiting={waiting || uploading} disabled={uploadDisabled}>
+          <Button
+            size="small"
+            onClick={onFinish}
+            waiting={waiting || uploading}
+            disabled={uploadDisabled}
+            aria-label="Finish import"
+          >
             Import
           </Button>
         </Space>

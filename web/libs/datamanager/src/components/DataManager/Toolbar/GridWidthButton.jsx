@@ -1,6 +1,6 @@
 import { inject } from "mobx-react";
 import { useCallback, useState } from "react";
-import { Button } from "../../Common/Button/Button";
+import { Button, ButtonGroup } from "@humansignal/ui";
 import { Dropdown } from "../../Common/Dropdown/DropdownComponent";
 import { Toggle } from "../../Common/Form";
 import { IconSettings, IconMinus, IconPlus } from "@humansignal/icons";
@@ -51,22 +51,24 @@ export const GridWidthButton = injector(({ view, isGrid, gridWidth, fitImagesToW
         <div className="p-tight min-w-wide space-y-base">
           <div className="grid grid-cols-[1fr_min-content] gap-base items-center">
             <span>Columns: {width}</span>
-            <Button.Group>
+            <ButtonGroup collapsed={false}>
               <Button
                 onClick={() => setGridWidth(width - 1)}
                 disabled={width === 1}
-                rawClassName="aspect-square h-6 !p-0"
-              >
-                <IconMinus />
-              </Button>
+                variant="neutral"
+                look="outlined"
+                leading={<IconMinus />}
+                size="small"
+              />
               <Button
                 onClick={() => setGridWidth(width + 1)}
                 disabled={width === 10}
-                rawClassName="aspect-square h-6 !p-0"
-              >
-                <IconPlus />
-              </Button>
-            </Button.Group>
+                variant="neutral"
+                look="outlined"
+                leading={<IconPlus />}
+                size="small"
+              />
+            </ButtonGroup>
           </div>
           {hasImage && (
             <div className="grid grid-cols-[1fr_min-content] gap-base items-center">
@@ -77,7 +79,7 @@ export const GridWidthButton = injector(({ view, isGrid, gridWidth, fitImagesToW
         </div>
       }
     >
-      <Button size={size}>
+      <Button size={size} variant="neutral" look="outlined">
         <IconSettings />
       </Button>
     </Dropdown.Trigger>

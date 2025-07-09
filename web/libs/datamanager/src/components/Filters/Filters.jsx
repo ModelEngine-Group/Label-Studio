@@ -1,9 +1,7 @@
 import { inject } from "mobx-react";
 import React from "react";
 import { Block, cn, Elem } from "../../utils/bem";
-import { Button } from "../Common/Button/Button";
-import { Icon } from "../Common/Icon/Icon";
-import { Tooltip } from "@humansignal/ui";
+import { Button } from "@humansignal/ui";
 import { FilterLine } from "./FilterLine/FilterLine";
 import { IconChevronRight, IconPlus } from "@humansignal/icons";
 import "./Filters.scss";
@@ -70,21 +68,26 @@ export const Filters = injector(({ views, currentView, filters }) => {
         )}
       </Elem>
       <Elem name="actions">
-        <Button type="primary" size="small" onClick={() => currentView.createFilter()} icon={<IconPlus />}>
+        <Button
+          size="small"
+          look="string"
+          onClick={() => currentView.createFilter()}
+          leading={<IconPlus className="!h-3 !w-3" />}
+        >
           Add {filters.length ? "Another Filter" : "Filter"}
         </Button>
 
         {!sidebarEnabled ? (
-          <Tooltip title="Pin to sidebar">
-            <Button
-              type="link"
-              size="small"
-              about="Pin to sidebar"
-              onClick={() => views.expandFilters()}
-              style={{ display: "inline-flex", alignItems: "center", padding: 0, width: "var(--button-height)" }}
-              icon={<Icon icon={IconChevronRight} size={18} />}
-            />
-          </Tooltip>
+          <Button
+            look="string"
+            type="link"
+            size="small"
+            tooltip="Pin to sidebar"
+            onClick={() => views.expandFilters()}
+            aria-label="Pin filters to sidebar"
+          >
+            <IconChevronRight className="!w-4 !h-4" />
+          </Button>
         ) : null}
       </Elem>
     </Block>

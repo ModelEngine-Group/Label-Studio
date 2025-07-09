@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import CM from "codemirror";
-
-import { Button, ToggleItems } from "../../../components";
+import { Button, cnm } from "@humansignal/ui";
+import { IconTrash } from "@humansignal/icons";
+import { ToggleItems } from "../../../components";
 import { Form, Input } from "../../../components/Form";
 import { useAPI } from "../../../providers/ApiProvider";
 import { Block, cn, Elem } from "../../../utils/bem";
@@ -39,37 +40,36 @@ const Label = ({ label, template, color }) => {
   const value = label.getAttribute("value");
 
   return (
-    <li className={configClass.elem("label").mod({ choice: label.tagName === "Choice" })}>
-      <label style={{ background: color }}>
-        <Input
-          type="color"
-          className={configClass.elem("label-color")}
-          value={colorNames[color] || color}
-          onChange={(e) => template.changeLabel(label, { background: e.target.value })}
-        />
-      </label>
-      <span>{value}</span>
-      <button
+    <li
+      className={cnm(
+        configClass
+          .elem("label")
+          .mod({ choice: label.tagName === "Choice" })
+          .toClassName(),
+        "group",
+      )}
+    >
+      <span className={cnm(configClass.elem("label-text").toClassName(), "flex")}>
+        <label style={{ background: color }}>
+          <Input
+            type="color"
+            className={configClass.elem("label-color")}
+            value={colorNames[color] || color}
+            onChange={(e) => template.changeLabel(label, { background: e.target.value })}
+          />
+        </label>
+        <span>{value}</span>
+      </span>
+      <Button
         type="button"
-        className={configClass.elem("delete-label")}
+        look="string"
+        size="smaller"
+        variant="negative"
         onClick={() => template.removeLabel(label)}
         aria-label="delete label"
-      >
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 14 14"
-          fill="none"
-          stroke="red"
-          strokeWidth="2"
-          strokeLinecap="square"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <title>Delete label</title>
-          <path d="M2 12L12 2" />
-          <path d="M12 12L2 2" />
-        </svg>
-      </button>
+        className="hidden !p-0 z-10 absolute right-0 [&_span]:!p-0 group-hover:inline-flex"
+        leading={<IconTrash className="w-4 h-4 fill-[currentColor]" />}
+      />
     </li>
   );
 };
@@ -107,7 +107,7 @@ const ConfigureControl = ({ control, template }) => {
           onKeyPress={onKeyPress}
           className="lsf-textarea-ls p-2 px-3"
         />
-        <Button type="button" size="compact" onClick={onAddLabels}>
+        <Button type="button" size="small" look="outlined" onClick={onAddLabels} aria-label="Add labels">
           Add
         </Button>
       </form>
@@ -489,12 +489,12 @@ const Configurator = ({
         <h1>Labeling Interface{hasChanges ? " *" : ""}</h1>
         <header>
           <Button
-            look="secondary"
             type="button"
             data-leave={true}
             onClick={onBrowse}
-            size="compact"
-            style={{ width: 160 }}
+            size="small"
+            look="outlined"
+            aria-label="Browse templates"
           >
             Browse Templates
           </Button>
@@ -556,7 +556,13 @@ const Configurator = ({
                 </Elem>
               </Block>
             )}
-            <Button look="primary" size="compact" style={{ width: 120 }} onClick={onSave} waiting={waiting}>
+            <Button
+              size="small"
+              className="w-[120px]"
+              onClick={onSave}
+              waiting={waiting}
+              aria-label="Save configuration"
+            >
               {waiting ? "Saving..." : "Save"}
             </Button>
             {isFF(FF_UNSAVED_CHANGES) && <UnsavedChanges hasChanges={hasChanges} onSave={onSave} />}

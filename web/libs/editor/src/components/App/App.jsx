@@ -24,7 +24,7 @@ import "../../tags/visual";
  * Utils and common components
  */
 import { Space } from "../../common/Space/Space";
-import { Button } from "../../common/Button/Button";
+import { Button } from "@humansignal/ui";
 import { Block, Elem } from "../../utils/bem";
 import { isSelfServe } from "../../utils/billing";
 import {
@@ -104,7 +104,12 @@ class App extends Component {
         <Result status="success" title={getEnv(this.props.store).messages.NO_NEXT_TASK} />
         <Block name="sub__result">All tasks in the queue have been completed</Block>
         {store.taskHistory.length > 0 && (
-          <Button onClick={(e) => store.prevTask(e, true)} look="outlined" style={{ margin: "16px 0" }}>
+          <Button
+            onClick={(e) => store.prevTask(e, true)}
+            variant="neutral"
+            className="mx-0 my-4"
+            aria-label="Previous task"
+          >
             Go to Previous Task
           </Button>
         )}

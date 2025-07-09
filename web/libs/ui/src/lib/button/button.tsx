@@ -11,6 +11,7 @@ const variants = {
   positive: styles["variant-positive"],
   warning: styles["variant-warning"],
   inverted: styles["variant-neutral-interted"],
+  gradient: styles["variant-gradient"],
 };
 
 const looks = {

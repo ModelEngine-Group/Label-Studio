@@ -1,4 +1,4 @@
-import { Button } from "../../components";
+import { Button } from "@humansignal/ui";
 import { modal } from "../../components/Modal/Modal";
 import { useModalControls } from "../../components/Modal/ModalPopup";
 import { Space } from "../../components/Space/Space";
@@ -24,20 +24,23 @@ export const WebhookDeleteModal = ({ onDelete }) => {
       return (
         <Space align="end">
           <Button
-            className={rootClass.elem("width-button")}
+            className="w-44"
+            look="outlined"
             onClick={() => {
               ctrl.hide();
             }}
+            aria-label="Cancel webhook deletion"
           >
             Cancel
           </Button>
           <Button
-            look="destructive"
-            className={rootClass.elem("width-button")}
+            variant="negative"
+            className="w-44"
             onClick={async () => {
               await onDelete();
               ctrl.hide();
             }}
+            aria-label="Confirm webhook deletion"
           >
             Delete
           </Button>

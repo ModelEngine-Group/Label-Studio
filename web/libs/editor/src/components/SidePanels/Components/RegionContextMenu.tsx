@@ -2,9 +2,8 @@ import { observer } from "mobx-react";
 import { useCallback, useMemo, useState, type FC } from "react";
 import { useCopyText } from "@humansignal/core/lib/hooks/useCopyText";
 import { IconLink, IconEllipsis } from "@humansignal/icons";
-import { ToastType, useToast } from "@humansignal/ui";
+import { Button, ToastType, useToast } from "@humansignal/ui";
 import { ContextMenu, type ContextMenuAction, ContextMenuTrigger, type MenuActionOnClick } from "../../ContextMenu";
-import { Button } from "../../../common/Button/Button";
 import { cn } from "../../../utils/bem";
 
 export const RegionContextMenu: FC<{ item: any }> = observer(({ item }: { item: any }) => {
@@ -52,8 +51,10 @@ export const RegionContextMenu: FC<{ item: any }> = observer(({ item }: { item: 
       onToggle={(isOpen) => setOpen(isOpen)}
     >
       <Button
-        type="text"
-        style={{ padding: 0, width: 24, height: 24, ...(open ? { display: "flex !important" } : null) }}
+        look="string"
+        size="smaller"
+        style={{ ...(open ? { display: "flex !important" } : null) }}
+        aria-label="Region options"
       >
         <IconEllipsis />
       </Button>

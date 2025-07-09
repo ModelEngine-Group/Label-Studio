@@ -6,6 +6,7 @@ import { CollapsedContext } from "./Ranker";
 import { StrictModeDroppable } from "./StrictModeDroppable";
 
 import styles from "./Ranker.module.scss";
+import { Button } from "@humansignal/ui";
 
 interface ColumnProps {
   column: NewColumnData;
@@ -28,9 +29,9 @@ const CollapsibleColumnTitle = ({ items, title }: { items: InputItem[]; title: s
   return (
     <h1 className={[styles.columnTitle, collapsed ? styles.collapsed : styles.expanded].join(" ")}>
       {title}
-      <button type="button" onClick={toggle}>
+      <Button type="button" onClick={toggle} aria-label="Toggle column">
         <span />
-      </button>
+      </Button>
     </h1>
   );
 };

@@ -7,8 +7,8 @@
 import { inject, observer } from "mobx-react";
 import type React from "react";
 import { memo, type ReactElement } from "react";
-import { Button } from "../../common/Button/Button";
-import { Tooltip } from "@humansignal/ui";
+import { Tooltip, Button } from "@humansignal/ui";
+import type { MSTStore } from "../../stores/types";
 
 type MixedInParams = {
   store: MSTStore;
@@ -54,20 +54,19 @@ export const AcceptButton = memo(
     const hasChanges = history.canUndo || annotation.versions.draft;
 
     return (
-      <ButtonTooltip key="accept" title="Accept annotation: [ Ctrl+Enter ]">
-        <Button
-          aria-label="accept-annotation"
-          disabled={disabled}
-          look="primary"
-          onClick={async () => {
-            annotation.submissionInProgress();
-            await store.commentStore.commentFormSubmit();
-            store.acceptAnnotation();
-          }}
-        >
-          {hasChanges ? "Fix + Accept" : "Accept"}
-        </Button>
-      </ButtonTooltip>
+      <Button
+        key="accept"
+        tooltip="Accept annotation: [ Ctrl+Enter ]"
+        aria-label="accept-annotation"
+        disabled={disabled}
+        onClick={async () => {
+          annotation.submissionInProgress();
+          await store.commentStore.commentFormSubmit();
+          store.acceptAnnotation();
+        }}
+      >
+        {hasChanges ? "Fix + Accept" : "Accept"}
+      </Button>
     );
   }),
 );
@@ -76,7 +75,8 @@ export const RejectButtonDefinition = {
   id: "reject",
   name: "reject",
   title: "Reject",
-  look: undefined,
+  variant: "negative",
+  look: "outlined",
   ariaLabel: "reject-annotation",
   tooltip: "Reject annotation: [ Ctrl+Space ]",
   // @todo we need this for types compatibility, but better to fix CustomButtonType
@@ -96,26 +96,27 @@ type SkipButtonProps = {
 export const SkipButton = memo(
   observer(({ disabled, store, onSkipWithComment }: SkipButtonProps) => {
     return (
-      <ButtonTooltip key="skip" title="Cancel (skip) task: [ Ctrl+Space ]">
-        <Button
-          aria-label="skip-task"
-          disabled={disabled}
-          onClick={async (e) => {
-            const action = () => store.skipTask({});
-            const selected = store.annotationStore?.selected;
+      <Button
+        key="skip"
+        aria-label="skip-task"
+        disabled={disabled}
+        look="outlined"
+        tooltip="Cancel (skip) tapk [ Ctrl+Space ]"
+        onClick={async (e) => {
+          const action = () => store.skipTask({});
+          const selected = store.annotationStore?.selected;
 
-            if (store.hasInterface("comments:skip") ?? true) {
-              onSkipWithComment(e, action);
-            } else {
-              selected?.submissionInProgress();
-              await store.commentStore.commentFormSubmit();
-              store.skipTask({});
-            }
-          }}
-        >
-          Skip
-        </Button>
-      </ButtonTooltip>
+          if (store.hasInterface("comments:skip") ?? true) {
+            onSkipWithComment(e, action);
+          } else {
+            selected?.submissionInProgress();
+            await store.commentStore.commentFormSubmit();
+            store.skipTask({});
+          }
+        }}
+      >
+        Skip
+      </Button>
     );
   }),
 );
@@ -123,22 +124,22 @@ export const SkipButton = memo(
 export const UnskipButton = memo(
   observer(({ disabled, store }: { disabled: boolean; store: MSTStore }) => {
     return (
-      <ButtonTooltip key="cancel-skip" title="Cancel skip: []">
-        <Button
-          aria-label="cancel-skip"
-          disabled={disabled}
-          look="primary"
-          onClick={async () => {
-            const selected = store.annotationStore?.selected;
+      <Button
+        key="cancel-skip"
+        tooltip="Cancel skip: []"
+        aria-label="cancel-skip"
+        look="outlined"
+        disabled={disabled}
+        onClick={async () => {
+          const selected = store.annotationStore?.selected;
 
-            selected?.submissionInProgress();
-            await store.commentStore.commentFormSubmit();
-            store.unskipTask();
-          }}
-        >
-          Cancel skip
-        </Button>
-      </ButtonTooltip>
+          selected?.submissionInProgress();
+          await store.commentStore.commentFormSubmit();
+          store.unskipTask();
+        }}
+      >
+        Cancel skip
+      </Button>
     );
   }),
 );

@@ -20,9 +20,9 @@
   &__section {
     display: flex;
     padding: 0 var(--spacing-tight);
-    gap: var(--spacing-tight);
     align-items: center;
     box-sizing: border-box;
+    gap: var(--spacing-small);
 
     &_flat {
       padding: 0;

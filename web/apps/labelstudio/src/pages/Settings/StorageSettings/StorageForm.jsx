@@ -1,5 +1,5 @@
 import { forwardRef, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { Button } from "../../../components";
+import { Button } from "@humansignal/ui";
 import { InlineError } from "../../../components/Error/InlineError";
 import { Form, Input } from "../../../components/Form";
 import { Oneof } from "../../../components/Oneof/Oneof";
@@ -111,14 +111,20 @@ export const StorageForm = forwardRef(({ onSubmit, target, project, rootClass, s
         }
       >
         <Input type="hidden" name="project" value={project} />
-        <Button.Group className={rootClass.elem("buttons")}>
-          <Button type="button" waiting={checking} onClick={validateStorageConnection}>
+        <div className="flex gap-tight">
+          <Button
+            type="button"
+            look="outlined"
+            waiting={checking}
+            onClick={validateStorageConnection}
+            aria-label="Test storage connection"
+          >
             Check Connection
           </Button>
-          <Button type="submit" look="primary">
+          <Button type="submit" aria-label={storage ? "Save storage settings" : "Add storage"}>
             {storage ? "Save" : "Add Storage"}
           </Button>
-        </Button.Group>
+        </div>
       </Form.Actions>
 
       <InlineError />

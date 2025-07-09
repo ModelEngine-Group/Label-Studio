@@ -1,8 +1,8 @@
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { generatePath, useHistory } from "react-router";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { Spinner } from "../../components";
-import { Button } from "../../components/Button/Button";
+import { Button, buttonVariant } from "@humansignal/ui";
 import { modal } from "../../components/Modal/Modal";
 import { Space } from "../../components/Space/Space";
 import { useAPI } from "../../providers/ApiProvider";
@@ -208,7 +208,9 @@ export const DataManagerPage = ({ ...props }) => {
     <Block name="crash">
       <Elem name="info">Project was deleted or not yet created</Elem>
 
-      <Button to="/projects">Back to projects</Button>
+      <Button to="/projects" aria-label="Back to projects">
+        Back to projects
+      </Button>
     </Block>
   ) : (
     <>
@@ -282,7 +284,8 @@ DataManagerPage.context = ({ dmRef }) => {
     <Space size="small">
       {project.expert_instruction && mode !== "explorer" && (
         <Button
-          size="compact"
+          size="small"
+          look="outlined"
           onClick={() => {
             modal({
               title: "Instructions",
@@ -295,9 +298,15 @@ DataManagerPage.context = ({ dmRef }) => {
       )}
 
       {Object.entries(links).map(([path, label]) => (
-        <Button key={path} tag={NavLink} size="compact" to={`/projects/${project.id}${path}`} data-external>
+        <Link
+          key={path}
+          tag={NavLink}
+          className={buttonVariant({ size: "small", look: "outlined" })}
+          to={`/projects/${project.id}${path}`}
+          data-external
+        >
           {label}
-        </Button>
+        </Link>
       ))}
     </Space>
   ) : null;

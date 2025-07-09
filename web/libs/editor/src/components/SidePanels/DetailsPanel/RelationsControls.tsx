@@ -1,7 +1,7 @@
 import { type FC, useCallback } from "react";
 import { observer } from "mobx-react";
 import { Block, Elem } from "../../../utils/bem";
-import { Button } from "../../../common/Button/Button";
+import { Button } from "@humansignal/ui";
 import "./RelationsControls.scss";
 import { IconOutlinerEyeClosed, IconOutlinerEyeOpened, IconSortUp, IconSortDown } from "@humansignal/icons";
 
@@ -34,7 +34,8 @@ const ToggleRelationsVisibilityButton = observer<FC<ToggleRelationsVisibilityBut
   return (
     <Elem
       tag={Button}
-      type="text"
+      look="string"
+      size="small"
       disabled={isDisabled}
       onClick={toggleRelationsVisibility}
       mod={{ hidden: isAllHidden }}
@@ -72,7 +73,8 @@ const ToggleRelationsOrderButton = observer<FC<ToggleRelationsOrderButtonProps>>
   return (
     <Elem
       tag={Button}
-      type="text"
+      look="string"
+      size="small"
       onClick={toggleRelationsOrder}
       disabled={isDisabled}
       mod={{ order: relationStore.order }}

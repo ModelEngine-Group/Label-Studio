@@ -1,7 +1,6 @@
 import { inject, observer } from "mobx-react";
 import { useCallback } from "react";
 import { Draggable } from "react-beautiful-dnd";
-import { IconPlus } from "@humansignal/icons";
 import { cn } from "../../utils/bem";
 import { Interface } from "../Common/Interface";
 import { Space } from "../Common/Space/Space";
@@ -85,7 +84,6 @@ const TabsSwitch = switchInjector(
         onChange={(key) => views.setSelected(key)}
         onDragEnd={onDragEnd}
         tabBarExtraContent={<ProjectSummary />}
-        addIcon={<IconPlus />}
         allowedActions={editable}
       >
         {tabs.map((tab, index) => (

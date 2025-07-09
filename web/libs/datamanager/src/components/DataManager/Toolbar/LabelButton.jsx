@@ -1,8 +1,10 @@
 import { inject } from "mobx-react";
-import { Button } from "../../Common/Button/Button";
+import { Button, ButtonGroup } from "@humansignal/ui";
 import { Interface } from "../../Common/Interface";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { IconChevron, IconChevronDown } from "@humansignal/icons";
+import { IconChevronDown } from "@humansignal/icons";
+import { Dropdown } from "../../Common/Dropdown/DropdownComponent";
+import { Menu } from "../../Common/Menu/Menu";
 
 const injector = inject(({ store }) => {
   const { dataStore, currentView } = store;
@@ -19,12 +21,9 @@ const injector = inject(({ store }) => {
 });
 
 export const LabelButton = injector(({ store, canLabel, size, target, selectedCount }) => {
-  // const all = selectedCount === 0 || allSelected;
   const disabled = target === "annotations";
   const triggerRef = useRef();
   const [isOpen, setIsOpen] = useState(false);
-
-  const toggleOpen = useCallback(() => setIsOpen((isOpen) => !isOpen), []);
 
   const handleClickOutside = useCallback((e) => {
     const el = triggerRef.current;
@@ -84,30 +83,30 @@ export const LabelButton = injector(({ store, canLabel, size, target, selectedCo
   return canLabel ? (
     <Interface name="labelButton">
       <div>
-        <div style={{ display: "flex" }}>
+        <ButtonGroup>
           <Button
-            size={size}
+            size={size ?? "small"}
+            variant="primary"
+            look="outlined"
             disabled={disabled}
-            mod={{ size: size ?? "medium", look: "primary", disabled }}
             style={primaryStyle}
             onClick={onLabelAll}
           >
             Label {selectedCount ? selectedCount : "All"} Task{!selectedCount || selectedCount > 1 ? "s" : ""}
           </Button>
-          <Button
-            ref={triggerRef}
-            size={size}
-            mod={{ size: size ?? "medium", look: "primary", disabled }}
-            style={triggerStyle}
-            onClick={toggleOpen}
-            aria-label={"Toggle open"}
+          <Dropdown.Trigger
+            align="right"
+            content={
+              <Menu size="compact">
+                <Menu.Item onClick={onLabelVisible}>Label Tasks As Displayed</Menu.Item>
+              </Menu>
+            }
           >
-            {isOpen ? <IconChevron /> : <IconChevronDown />}
-          </Button>
-        </div>
-        <Button size={size} style={secondStyle} mod={{ size: size ?? "medium", disabled }} onClick={onLabelVisible}>
-          Label Tasks As Displayed
-        </Button>
+            <Button size={size} look="outlined" variant="primary" aria-label={"Toggle open"}>
+              <IconChevronDown />
+            </Button>
+          </Dropdown.Trigger>
+        </ButtonGroup>
       </div>
     </Interface>
   ) : null;

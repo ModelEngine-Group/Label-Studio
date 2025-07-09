@@ -1,5 +1,5 @@
 import { createRef, useCallback } from "react";
-import Button from "antd/lib/button/index";
+import { Button } from "@humansignal/ui";
 import Form from "antd/lib/form/index";
 import Input from "antd/lib/input/index";
 import { observer } from "mobx-react";
@@ -420,7 +420,7 @@ const HtxTextArea = observer(({ item }) => {
             )}
             {showAddButton && (
               <Form.Item>
-                <Button style={{ marginTop: "10px" }} type="primary" htmlType="submit">
+                <Button size="small" className="mt-[10px]" type="primary" htmlType="submit">
                   Add
                 </Button>
               </Form.Item>

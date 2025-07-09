@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
   height: 100%;
 }
 
@@ -85,9 +86,9 @@ html, body {
   background: var(--color-neutral-surface);
   box-shadow: 0 2px 6px 0 rgb(var(--color-neutral-shadow) / 20%);
   padding: 16px;
-  margin:18vh 60px 0 60px;
+  margin: 18vh 60px 0 60px;
   position: relative;
-  z-index:3;
+  z-index: 3;
 }
 
 .login_page_new_ui .tips:after {
@@ -105,7 +106,7 @@ html, body {
   font-size: 16px;
   font-style: normal;
   font-weight: bold;
-  line-height: 24px; 
+  line-height: 24px;
   letter-spacing: 0.15px;
   margin-bottom: 8px;
 }
@@ -148,7 +149,7 @@ html, body {
   justify-content: stretch;
 }
 
-.login_page_new_ui .toggle > * {
+.login_page_new_ui .toggle>* {
   flex-grow: 1;
   text-align: center;
   padding: .75rem 0;
@@ -157,15 +158,18 @@ html, body {
   border-top: 2px solid transparent;
   transition: all 150ms ease-out;
 }
-.login_page_new_ui .toggle > *.active {
-  border-color: var(--color-primary-surface); 
+
+.login_page_new_ui .toggle>*.active {
+  border-color: var(--color-primary-surface);
   color: var(--color-primary-content);
 }
-.login_page_new_ui .toggle > *:hover {
+
+.login_page_new_ui .toggle>*:hover {
   color: var(--color-primary-surface-hover);
   border-color: var(--color-primary-surface-hover);
 }
-.form-wrapper{
+
+.form-wrapper {
   position: relative;
   background: var(--color-neutral-surface);
   margin-top: 1.5rem;
@@ -176,7 +180,7 @@ html, body {
   width: 22rem;
 }
 
-.form-wrapper h2{
+.form-wrapper h2 {
   font-size: 2rem;
   font-weight: 500;
   margin: 0 0 1rem 0;
@@ -190,16 +194,20 @@ html, body {
   grid-auto-flow: rows;
   grid-gap: 1rem;
 }
-.login_page_new_ui form > * {
+
+.login_page_new_ui form>* {
   position: relative;
 }
+
 .login_page_new_ui form p {
   margin: 0;
 }
+
 .login_page_new_ui form .error {
   color: var(--color-negative-content);
   font-size: .875rem;
 }
+
 .login_page_new_ui form input,
 .login_page_new_ui form button,
 .login_page_new_ui form select {
@@ -207,9 +215,18 @@ html, body {
   font-family: 'Hellix', sans-serif;
 }
 
-.login_page_new_ui form .lsf-button-ls.lsf-button-ls_look_primary {
-  --button-color: var(--color-neutral-inverted-content);
+.login_page_new_ui form input {
+  padding: 10px 15px;
+  border-radius: var(--corner-radius-smaller);
+  box-sizing: border-box;
+  border: 1px solid var(--color-neutral-border);
+}
+
+.login_page_new_ui form button {
   border-radius: 4rem;
+  color: var(--color-neutral-inverted-content);
+  padding: 10px 0;
+  border: none;
   background: var(--color-neutral-inverted-surface);
 }
 
@@ -222,6 +239,7 @@ html, body {
   line-height: 16px;
   color: var(--color-negative-content);
 }
+
 .login_page_new_ui .field_errors li {
   margin-top: .25rem;
 }
@@ -229,9 +247,11 @@ html, body {
 .auto-generated form {
   width: 100%;
 }
+
 .auto-generated form label {
   display: block;
 }
+
 .auto-generated form input {
   height: 40px;
   min-height: 40px;
@@ -248,26 +268,32 @@ html, body {
 .auto-generated p:empty {
   display: none;
 }
+
 .auto-generated form ul li:not(:last-child) {
   margin-bottom: 0.5em;
 }
+
 .auto-generated form ul {
   margin-bottom: 0;
 }
 
-.input-wrapper label{
+.input-wrapper label {
   font-size: .825rem !important;
   margin-bottom: .2rem;
   font-family: 'Hellix', sans-serif !important;
   font-weight: 500;
 }
 
-label{
+label {
   font-family: 'Hellix', sans-serif !important;
   font-weight: 500;
   font-size: .825rem !important;
   margin-bottom: .2rem;
   display: block;
+}
+
+.login-button {
+  font-size: var(--font-size-body-medium);
 }
 
 .form-group {
@@ -290,13 +316,13 @@ label{
   font-size: .875rem;
 }
 
-.form-group label a{
+.form-group label a {
   font-family: 'Hellix', sans-serif !important;
   font-weight: 500;
 }
 
 .form-group label:before {
-  content:'';
+  content: '';
   -webkit-appearance: none;
   background-color: transparent;
   border: 1px solid #CAC5B8;
@@ -310,12 +336,12 @@ label{
   top: -1px;
 }
 
-.form-group input:checked + label:before {
+.form-group input:checked+label:before {
   background: var(--primary_link);
   border: 1px solid var(--primary_link);
 }
 
-.form-group input:checked + label:after {
+.form-group input:checked+label:after {
   content: '';
   display: block;
   position: absolute;
@@ -328,19 +354,19 @@ label{
   transform: rotate(45deg);
 }
 
-.text-wrapper{
+.text-wrapper {
   display: flex;
   align-items: center;
   gap: 4px;
   font-size: .875rem;
 }
 
-.text-wrapper a{
+.text-wrapper a {
   color: var(--primary_link);
   text-decoration: underline;
   font-weight: 500;
 }
 
-.text-wrapper a:hover{
+.text-wrapper a:hover {
   text-decoration: none;
 }

@@ -8,8 +8,8 @@ import { observer } from "mobx-react";
 import type React from "react";
 import { useCallback, useState } from "react";
 
-import { IconBan, IconChevron } from "@humansignal/ui";
-import { Button } from "../../common/Button/Button";
+import { Button, ButtonGroup, type ButtonProps } from "@humansignal/ui";
+import { IconBan, IconChevronDown } from "@humansignal/icons";
 import { Dropdown } from "../../common/Dropdown/Dropdown";
 import type { CustomButtonType } from "../../stores/CustomButton";
 import { Block, cn, Elem } from "../../utils/bem";
@@ -38,6 +38,8 @@ type CustomButtonsField = Map<
 type ControlButtonProps = {
   button: CustomButtonType;
   disabled: boolean;
+  variant?: ButtonProps["variant"];
+  look?: ButtonProps["look"];
   onClick: (e: React.MouseEvent) => void;
 };
 
@@ -46,27 +48,20 @@ export const EMPTY_SUBMIT_TOOLTIP = "Empty annotations denied in this project";
 /**
  * Custom action button component, rendering buttons from store.customButtons
  */
-const ControlButton = observer(({ button, disabled, onClick }: ControlButtonProps) => {
-  const look = button.disabled || disabled ? "disabled" : button.look;
-
-  const result = (
+const ControlButton = observer(({ button, disabled, onClick, variant, look }: ControlButtonProps) => {
+  return (
     <Button
       {...button.props}
+      variant={button.variant ?? variant}
+      look={button.look ?? look}
+      tooltip={button.tooltip}
+      className="w-[150px]"
       aria-label={button.ariaLabel}
       disabled={button.disabled || disabled}
-      look={look}
       onClick={onClick}
     >
       {button.title}
     </Button>
-  );
-  if (!button.tooltip) {
-    return result;
-  }
-  return (
-    <ButtonTooltip title={button.tooltip}>
-      <Elem name="tooltip-wrapper">{result}</Elem>
-    </ButtonTooltip>
   );
 });
 
@@ -78,7 +73,7 @@ export const Controls = controlsInjector<{ annotation: MSTAnnotation }>(
     const { userGenerate, sentUserGenerate, versions, results, editable: annotationEditable } = annotation;
     const dropdownTrigger = cn("dropdown").elem("trigger").toClassName();
     const customButtons: CustomButtonsField = store.customButtons;
-    const buttons = [];
+    const buttons: React.ReactNode[] = [];
 
     const [isInProgress, setIsInProgress] = useState(false);
     const disabled = !annotationEditable || store.isSubmitting || historySelected || isInProgress;
@@ -120,7 +115,7 @@ export const Controls = controlsInjector<{ annotation: MSTAnnotation }>(
       ],
     );
 
-    if (annotation.isNonEditableDraft) return null;
+    if (annotation.isNonEditableDraft) return <></>;
 
     const buttonsBefore = customButtons.get("_before");
     const buttonsReplacement = customButtons.get("_replace");
@@ -152,11 +147,14 @@ export const Controls = controlsInjector<{ annotation: MSTAnnotation }>(
     }
 
     if (buttonsReplacement) {
-      // do nothing as all custom buttons are rendered already and we don't need internal buttons
-    } else if (isReview) {
+      return <Block name="controls">{buttons}</Block>;
+    }
+
+    if (isReview) {
       const customRejectButtons = toArray(customButtons.get("reject"));
       const hasCustomReject = customRejectButtons.length > 0;
       const originalRejectButton = RejectButtonDefinition;
+
       // @todo implement reuse of internal buttons later (they are set as strings)
       const rejectButtons: CustomButtonType[] = hasCustomReject
         ? customRejectButtons.filter((button) => typeof button !== "string")
@@ -183,7 +181,7 @@ export const Controls = controlsInjector<{ annotation: MSTAnnotation }>(
     } else if (annotation.skipped) {
       buttons.push(
         <Elem name="skipped-info" key="skipped">
-          <IconBan color="#d00" /> Was skipped
+          <IconBan /> Was skipped
         </Elem>,
       );
       buttons.push(<UnskipButton key="unskip" disabled={disabled} store={store} />);
@@ -197,37 +195,40 @@ export const Controls = controlsInjector<{ annotation: MSTAnnotation }>(
       }
 
       const isDisabled = disabled || submitDisabled;
-      const look = isDisabled ? "disabled" : "primary";
 
       const useExitOption = !isDisabled && isNotQuickView;
 
       const SubmitOption = ({ isUpdate, onClickMethod }: { isUpdate: boolean; onClickMethod: () => any }) => {
         return (
-          <Button
-            name="submit-option"
-            look="primary"
-            onClick={async (event) => {
-              event.preventDefault();
+          <div className="p-tighter rounded">
+            <Button
+              name="submit-option"
+              look="string"
+              size="small"
+              className="w-[150px]"
+              onClick={async (event) => {
+                event.preventDefault();
 
-              const selected = store.annotationStore?.selected;
+                const selected = store.annotationStore?.selected;
 
-              selected?.submissionInProgress();
+                selected?.submissionInProgress();
 
-              if ("URLSearchParams" in window) {
-                const searchParams = new URLSearchParams(window.location.search);
+                if ("URLSearchParams" in window) {
+                  const searchParams = new URLSearchParams(window.location.search);
 
-                searchParams.set("exitStream", "true");
-                const newRelativePathQuery = `${window.location.pathname}?${searchParams.toString()}`;
+                  searchParams.set("exitStream", "true");
+                  const newRelativePathQuery = `${window.location.pathname}?${searchParams.toString()}`;
 
-                window.history.pushState(null, "", newRelativePathQuery);
-              }
+                  window.history.pushState(null, "", newRelativePathQuery);
+                }
 
-              await store.commentStore.commentFormSubmit();
-              onClickMethod();
-            }}
-          >
-            {`${isUpdate ? "Update" : "Submit"} and exit`}
-          </Button>
+                await store.commentStore.commentFormSubmit();
+                onClickMethod();
+              }}
+            >
+              {`${isUpdate ? "Update" : "Submit"} and exit`}
+            </Button>
+          </div>
         );
       };
 
@@ -237,35 +238,38 @@ export const Controls = controlsInjector<{ annotation: MSTAnnotation }>(
         buttons.push(
           <ButtonTooltip key="submit" title={title}>
             <Elem name="tooltip-wrapper">
-              <Button
-                aria-label="submit"
-                name="submit"
-                disabled={isDisabled}
-                look={look}
-                mod={{ has_icon: useExitOption, disabled: isDisabled }}
-                onClick={async (event) => {
-                  if ((event.target as HTMLButtonElement).classList.contains(dropdownTrigger)) return;
-                  const selected = store.annotationStore?.selected;
+              <ButtonGroup>
+                <Button
+                  aria-label="Submit current annotation"
+                  name="submit"
+                  className="w-[150px]"
+                  disabled={isDisabled}
+                  onClick={async (event) => {
+                    if ((event.target as HTMLButtonElement).classList.contains(dropdownTrigger)) return;
+                    const selected = store.annotationStore?.selected;
 
-                  selected?.submissionInProgress();
-                  await store.commentStore.commentFormSubmit();
-                  store.submitAnnotation();
-                }}
-                icon={
-                  useExitOption ? (
-                    <Dropdown.Trigger
-                      alignment="top-right"
-                      content={<SubmitOption onClickMethod={store.submitAnnotation} isUpdate={false} />}
-                    >
-                      <div>
-                        <IconChevron />
+                    selected?.submissionInProgress();
+                    await store.commentStore.commentFormSubmit();
+                    store.submitAnnotation();
+                  }}
+                >
+                  Submit
+                </Button>
+                {useExitOption ? (
+                  <Dropdown.Trigger
+                    alignment="top-right"
+                    content={
+                      <div className="p-tight bg-neutral-surface">
+                        <SubmitOption onClickMethod={store.submitAnnotation} isUpdate={false} />
                       </div>
-                    </Dropdown.Trigger>
-                  ) : undefined
-                }
-              >
-                Submit
-              </Button>
+                    }
+                  >
+                    <Button disabled={isDisabled} aria-label="Submit annotation">
+                      <IconChevronDown />
+                    </Button>
+                  </Dropdown.Trigger>
+                ) : null}
+              </ButtonGroup>
             </Elem>
           </ButtonTooltip>,
         );
@@ -278,35 +282,34 @@ export const Controls = controlsInjector<{ annotation: MSTAnnotation }>(
         const isUpdateDisabled = isDisabled || noChanges;
         const button = (
           <ButtonTooltip key="update" title={noChanges ? "No changes were made" : "Update this task: [ Ctrl+Enter ]"}>
-            <Button
-              aria-label="submit"
-              name="submit"
-              disabled={isUpdateDisabled}
-              look={look}
-              mod={{ has_icon: useExitOption, disabled: isUpdateDisabled }}
-              onClick={async (event) => {
-                if ((event.target as HTMLButtonElement).classList.contains(dropdownTrigger)) return;
-                const selected = store.annotationStore?.selected;
+            <ButtonGroup>
+              <Button
+                aria-label="submit"
+                name="submit"
+                className="w-[150px]"
+                disabled={isUpdateDisabled}
+                onClick={async (event) => {
+                  if ((event.target as HTMLButtonElement).classList.contains(dropdownTrigger)) return;
+                  const selected = store.annotationStore?.selected;
 
-                selected?.submissionInProgress();
-                await store.commentStore.commentFormSubmit();
-                store.updateAnnotation();
-              }}
-              icon={
-                useExitOption ? (
-                  <Dropdown.Trigger
-                    alignment="top-right"
-                    content={<SubmitOption onClickMethod={store.updateAnnotation} isUpdate={isUpdate} />}
-                  >
-                    <div>
-                      <IconChevron />
-                    </div>
-                  </Dropdown.Trigger>
-                ) : undefined
-              }
-            >
-              {isUpdate ? "Update" : "Submit"}
-            </Button>
+                  selected?.submissionInProgress();
+                  await store.commentStore.commentFormSubmit();
+                  store.updateAnnotation();
+                }}
+              >
+                {isUpdate ? "Update" : "Submit"}
+              </Button>
+              {useExitOption ? (
+                <Dropdown.Trigger
+                  alignment="top-right"
+                  content={<SubmitOption onClickMethod={store.updateAnnotation} isUpdate={isUpdate} />}
+                >
+                  <Button disabled={isUpdateDisabled} aria-label="Update annotation">
+                    <IconChevronDown />
+                  </Button>
+                </Dropdown.Trigger>
+              ) : null}
+            </ButtonGroup>
           </ButtonTooltip>
         );
 

@@ -108,6 +108,7 @@
       font-size: 16px;
 
       svg {
+        color: var(--color-negative-icon);
         margin: 0 8px 0 4px;
       }
     }
@@ -170,9 +171,5 @@
     background: var(--color-primary-emphasis-subtle);
     pointer-events: none;
     transition: all 150ms ease-out;
-  }
-
-  &:hover::before {
-    opacity: 1;
   }
 }

@@ -5,7 +5,7 @@ import { MultiProvider } from "../../providers/MultiProvider";
 import { Block, cn, Elem } from "../../utils/bem";
 import { debounce } from "../../utils/debounce";
 import { isDefined, objectClean } from "../../utils/helpers";
-import { Button } from "../Button/Button";
+import { Button } from "@humansignal/ui";
 import { Oneof } from "../Oneof/Oneof";
 import { Space } from "../Space/Space";
 import { Counter, Input, Select, Toggle } from "./Elements";
@@ -524,7 +524,7 @@ Form.Builder = React.forwardRef(
         {children}
         {props.autosubmit !== true && withActions === true && (
           <Form.Actions>
-            <Button type="submit" look="primary" style={{ width: 120 }}>
+            <Button type="submit" className="w-[120px]" aria-label="Submit form">
               Save
             </Button>
           </Form.Actions>

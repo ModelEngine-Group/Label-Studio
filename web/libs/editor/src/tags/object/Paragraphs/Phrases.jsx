@@ -1,6 +1,6 @@
 import { observer } from "mobx-react";
 import { getRoot } from "mobx-state-tree";
-import { Button } from "antd";
+import { Button } from "@humansignal/ui";
 import { PauseCircleOutlined, PlayCircleOutlined } from "@ant-design/icons";
 import styles from "./Paragraphs.module.scss";
 import { FF_LSDV_E_278, isFF } from "../../../utils/feature-flags";
@@ -161,7 +161,7 @@ export const Phrases = observer(({ item, playingId, activeRef, setIsInViewport }
       >
         {isContentVisible && withAudio && !isNaN(v.start) && (
           <Button
-            type="text"
+            look="string"
             className={isFF(FF_LSDV_E_278) ? styles.playNewUi : styles.play}
             aria-label={isPlaying ? "pause" : "play"}
             icon={

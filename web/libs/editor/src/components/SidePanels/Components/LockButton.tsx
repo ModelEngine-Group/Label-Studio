@@ -1,9 +1,10 @@
 import { observer } from "mobx-react";
 import type { FC } from "react";
 import { IconLockLocked, IconLockUnlocked } from "@humansignal/icons";
-import type { ButtonProps } from "../../../common/Button/Button";
 import { RegionControlButton } from "./RegionControlButton";
 import { FF_DEV_3873, isFF } from "../../../utils/feature-flags";
+import type { ButtonProps } from "@humansignal/ui";
+import type { HotkeyList } from "libs/editor/src/core/Hotkey";
 
 export const LockButton: FC<{
   item: any;
@@ -13,6 +14,7 @@ export const LockButton: FC<{
   hotkey?: string;
   look?: ButtonProps["look"];
   style?: ButtonProps["style"];
+  displayedHotkey?: string;
   onClick: () => void;
 }> = observer(({ item, annotation, hovered, locked, hotkey, displayedHotkey, look, style, onClick }) => {
   if (!item) return null;
@@ -29,8 +31,7 @@ export const LockButton: FC<{
       <RegionControlButton
         disabled={isRegionReadonly}
         onClick={onClick}
-        displayedHotkey={displayedHotkey}
-        hotkey={hotkey}
+        hotkey={hotkey as HotkeyList}
         look={look}
         style={styles}
       >
@@ -40,11 +41,15 @@ export const LockButton: FC<{
   }
 
   return (
-    item &&
-    (hovered || item.isReadOnly() || locked) && (
-      <RegionControlButton disabled={isRegionReadonly} onClick={onClick} hotkey={hotkey} look={look} style={style}>
-        {isLocked ? <IconLockLocked /> : <IconLockUnlocked />}
-      </RegionControlButton>
-    )
+    <RegionControlButton
+      disabled={isRegionReadonly}
+      onClick={onClick}
+      displayedHotkey={displayedHotkey}
+      hotkey={hotkey}
+      look={look}
+      style={style}
+    >
+      {isLocked ? <IconLockLocked /> : <IconLockUnlocked />}
+    </RegionControlButton>
   );
 });

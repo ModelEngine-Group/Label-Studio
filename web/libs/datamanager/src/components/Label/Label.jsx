@@ -3,7 +3,7 @@ import { observer } from "mobx-react-lite";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { IconChevronDown, IconChevronLeft, IconGearNewUI } from "@humansignal/icons";
 import { Block, Elem } from "../../utils/bem";
-import { Button } from "../Common/Button/Button";
+import { Button } from "@humansignal/ui";
 import { FieldsButton } from "../Common/FieldsButton";
 import { Icon } from "../Common/Icon/Icon";
 import { Resizer } from "../Common/Resizer/Resizer";

@@ -234,7 +234,7 @@ export const ConfigControl: FC<ConfigControlProps> = ({
 
   return (
     <Block name="audio-config" ref={buttonRef} onClick={(e: MouseEvent<HTMLButtonElement>) => e.stopPropagation()}>
-      <ControlButton look={configModal ? "active" : undefined} onClick={onSetModal}>
+      <ControlButton look={configModal ? "filled" : undefined} onClick={onSetModal} aria-label="Audio settings">
         {<IconConfig />}
       </ControlButton>
       {configModal && renderModal()}

@@ -63,13 +63,13 @@
   }
 
   &_size {
-    &_medium {
+    &_small {
       --height: 32px;
-      --radius: 8px;
+      --radius: var(--corner-radius-smaller);
       --font-size: 14px;
     }
 
-    &_small {
+    &_smaller {
       --height: 24px;
       --radius: 4px;
       --padding: 2px;
