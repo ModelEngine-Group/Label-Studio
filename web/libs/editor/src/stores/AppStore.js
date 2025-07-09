@@ -682,7 +682,8 @@ export default types
           if (allowedToSave && allowedToSave.some((x) => x === false)) return;
         }
 
-        const isDirty = entity.history.canUndo;
+        // changes in current sessions or saved draft should send the result along with approval
+        const isDirty = entity.history.canUndo || entity.versions.draft;
 
         entity.dropDraft();
         await getEnv(self).events.invoke("acceptAnnotation", self, { isDirty, entity });
