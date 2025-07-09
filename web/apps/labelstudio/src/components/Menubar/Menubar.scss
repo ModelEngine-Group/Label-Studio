@@ -43,17 +43,23 @@
 
   &__hotkeys {
       display: flex;
-      padding: 0 0 0 1.125rem;
+      padding: 0 var(--spacing-base);
       align-items: center;
   }
 
   &__hotkeys-button {
-      padding: 0.5rem;
-      border-radius: 4px;
-      transition: background-color 0.2s ease;
-      
-      &:hover {
-          background-color: var(--color-primary-emphasis-subtle);
+      button {
+        svg {
+          width: 20px;
+          height: 20px;
+          color: var(--color-neutral-content-subtler);
+        }
+
+        &:hover {
+          svg {
+            color: var(--color-neutral-icon);
+          }
+        }
       }
   }
 
@@ -83,7 +89,7 @@
 
   &__user {
     display: flex;
-    margin: 0 20px;
+    margin: 0 var(--spacing-base);
     align-self: center;
     cursor: pointer;
     position: relative;

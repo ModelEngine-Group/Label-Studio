@@ -149,15 +149,14 @@ export const Menubar = ({ enabled, defaultOpened, defaultPinned, children, onSid
             <RightContextMenu className={contextItem.mod({ right: true })} />
           </div>
 
-          <div className={menubarClass.elem("spacer").toString()} />
-
-          {ff.isActive(ff.FF_THEME_TOGGLE) && <ThemeToggle />}
-
           <div className={menubarClass.elem("hotkeys")}>
             <div className={menubarClass.elem("hotkeys-button")}>
               <Button
-                look="string"
-                size="smaller"
+                variant="neutral"
+                look="outlined"
+                tooltip="Keyboard Shortcuts"
+                data-testid="hotkeys-button"
+                size="small"
                 onClick={() => {
                   openHotkeyHelp([
                     "annotation",
@@ -170,11 +169,12 @@ export const Menubar = ({ enabled, defaultOpened, defaultPinned, children, onSid
                     "image_gallery",
                   ]);
                 }}
-              >
-                <IconHotkeys />
-              </Button>
+                icon={<IconHotkeys />}
+              />
             </div>
           </div>
+
+          {ff.isActive(ff.FF_THEME_TOGGLE) && <ThemeToggle />}
 
           <Dropdown.Trigger
             ref={useMenuRef}

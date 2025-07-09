@@ -2,9 +2,10 @@ import { useEffect, useState, useRef } from "react";
 import clsx from "clsx";
 
 // UI components
-import { Button } from "@humansignal/ui";
+import { Button, Tooltip } from "@humansignal/ui";
 import { Toggle as UiToggle } from "@humansignal/ui";
 import { KeyboardKey } from "./Key";
+import { IconClose } from "@humansignal/ui";
 
 // Type definitions
 interface Hotkey {
@@ -137,8 +138,8 @@ export const HotkeyItem = ({ hotkey, onEdit, isEditing, onSave, onCancel, onTogg
             ref={keyRecordingRef}
             variant="neutral"
             className={clsx(
-              "flex-1 flex items-center justify-center min-h-[40px] px-4 py-2 border rounded-md cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
-              keyRecordingMode ? "border-primary" : "border-input bg-background",
+              "flex-1 flex items-center justify-center min-h-[40px] px-base py-tight border rounded-md cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-primary-border-subtle focus:border-primary-border-bold focus:ring-offset-2",
+              keyRecordingMode ? "border-neutral-border-bolder" : "border-input bg-neutral-surface",
               error ? "border-destructive" : "",
             )}
             onClick={startRecordingKeys}
@@ -146,22 +147,20 @@ export const HotkeyItem = ({ hotkey, onEdit, isEditing, onSave, onCancel, onTogg
             aria-label="Click to record keyboard shortcut"
           >
             {keyRecordingMode ? (
-              <span className="text-primary font-medium animate-pulse">Press keys now...</span>
+              <span className="text-primary-content font-medium animate-pulse">Press keys now...</span>
             ) : editedKey ? (
               <KeyboardKey>{editedKey}</KeyboardKey>
             ) : (
-              <span className="text-muted-foreground">Click to set shortcut</span>
+              <span className="text-neutral-content-subtler">Click to set shortcut</span>
             )}
           </Button>
 
           {/* Action buttons */}
-          <div className="flex flex-col gap-2">
-            <Button variant="primary" size="small" onClick={handleSave} disabled={!editedKey || !!error}>
+          <div className="flex flex-row gap-2">
+            <Button variant="primary" onClick={handleSave} disabled={!editedKey || !!error}>
               Apply
             </Button>
-            <Button variant="neutral" size="small" onClick={handleCancel}>
-              Cancel
-            </Button>
+            <Button variant="neutral" icon={<IconClose />} onClick={handleCancel} />
           </div>
         </div>
         {error && <div className="text-sm text-destructive mt-1">{error}</div>}
@@ -186,13 +185,18 @@ export const HotkeyItem = ({ hotkey, onEdit, isEditing, onSave, onCancel, onTogg
       {/* Label and description */}
       <div className="flex-1 mr-4">
         <div className="font-medium">{hotkey.label}</div>
-        <div className="text-sm text-muted-foreground">{hotkey.description}</div>
+        <div className="text-sm text-neutral-content-subtler">{hotkey.description}</div>
       </div>
 
       {/* Current hotkey display (clickable to edit) */}
-      <div className="flex items-center gap-2 cursor-pointer hover:opacity-80" onClick={handleEdit}>
-        <KeyboardKey>{hotkey.key}</KeyboardKey>
-      </div>
+      <Tooltip title="Click to edit hotkey">
+        <div
+          className="flex items-center gap-2 cursor-pointer hover:opacity-80 hover:bg-primary-emphasis-subtle px-base py-base rounded-small"
+          onClick={handleEdit}
+        >
+          <KeyboardKey>{hotkey.key}</KeyboardKey>
+        </div>
+      </Tooltip>
     </div>
   );
 };

@@ -1,10 +1,9 @@
 import { useEffect, useState, useCallback } from "react";
-import { ToastType, useToast } from "@humansignal/ui";
+import { IconWarning, ToastType, useToast } from "@humansignal/ui";
 
 // Shadcn UI components
 import { Button } from "@humansignal/ui";
 import { Card, CardContent, CardHeader } from "@humansignal/shad/components/ui/card";
-import { Badge } from "@humansignal/shad/components/ui/badge";
 import { Skeleton } from "@humansignal/shad/components/ui/skeleton";
 import {
   Dialog,
@@ -14,13 +13,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@humansignal/shad/components/ui/dialog";
-
-import { Dropdown } from "apps/labelstudio/src/components/Dropdown/Dropdown";
-import { Menu } from "apps/labelstudio/src/components/Menu/Menu";
 import { useAPI } from "apps/labelstudio/src/providers/ApiProvider";
 
 import { HotkeySection } from "./Hotkeys/Section";
 import { ImportDialog } from "./Hotkeys/Import";
+import { KeyboardKey } from "./Hotkeys/Key";
 import { DEFAULT_HOTKEYS, HOTKEY_SECTIONS } from "./Hotkeys/defaults";
 import styles from "../AccountSettings.module.scss";
 
@@ -579,54 +576,44 @@ export const HotkeysManager = () => {
   return (
     <div id="hotkeys-manager">
       <div className={styles.sectionContent}>
-        <div className={styles.flexRow} style={{ justifyContent: "flex-end", marginBottom: "var(--spacing-wide)" }}>
-          <Dropdown.Trigger
-            align="right"
-            content={
-              <Menu>
-                <Menu.Item label="Export Hotkeys" onClick={handleExportHotkeys} />
-                <Menu.Item label="Import Hotkeys" onClick={() => setImportDialogOpen(true)} />
-                <Menu.Divider />
-                <Menu.Item label="Reset to Defaults" onClick={handleResetToDefaults} />
-              </Menu>
-            }
-          >
-            <Button variant="primary">Actions</Button>
-          </Dropdown.Trigger>
+        <div className={`${styles.flexRow} justify-end mb-wide gap-tight`}>
+          <Button variant="neutral" look="outlined" onClick={() => setImportDialogOpen(true)}>
+            Import
+          </Button>
+          <Button variant="neutral" look="outlined" onClick={handleExportHotkeys}>
+            Export
+          </Button>
+          <Button variant="negative" look="outlined" onClick={handleResetToDefaults}>
+            Reset to Defaults
+          </Button>
         </div>
 
         {isLoading && hotkeys.length === 0 ? (
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-wide)" }}>
+          <div className="flex flex-col gap-wide">
             {/* Platform settings skeleton */}
             <Card>
-              <CardHeader style={{ paddingBottom: "var(--spacing-tight)" }}>
-                <Skeleton style={{ height: "1.5rem", width: "250px" }} />
-                <Skeleton style={{ height: "1rem", width: "300px" }} />
+              <CardHeader className="pb-tight">
+                <Skeleton className="h-wide w-[16rem]" />
+                <Skeleton className="h-base w-[18rem]" />
               </CardHeader>
               <CardContent>
-                <Skeleton style={{ height: "1.25rem", width: "180px", marginBottom: "var(--spacing-tight)" }} />
-                <Skeleton style={{ height: "1rem", width: "250px" }} />
+                <Skeleton className="h-5 w-44 mb-tight" />
+                <Skeleton className="h-base w-[16rem]" />
               </CardContent>
             </Card>
 
             {/* Hotkey sections skeleton */}
             {typedHotkeySections.map((section: Section) => (
               <Card key={section.id}>
-                <CardHeader style={{ paddingBottom: "var(--spacing-tight)" }}>
-                  <Skeleton style={{ height: "1.5rem", width: "250px" }} />
-                  <Skeleton style={{ height: "1rem", width: "300px" }} />
+                <CardHeader className="pb-tight">
+                  <Skeleton className="h-wide w-[16rem]" />
+                  <Skeleton className="h-base w-[18rem]" />
                 </CardHeader>
                 <CardContent>
                   {[1, 2, 3].map((i) => (
-                    <div
-                      key={i}
-                      style={{
-                        padding: "var(--spacing-wide) 0",
-                        borderBottom: i < 3 ? "1px solid var(--border-color)" : "none",
-                      }}
-                    >
-                      <Skeleton style={{ height: "1.25rem", width: "180px", marginBottom: "var(--spacing-tight)" }} />
-                      <Skeleton style={{ height: "1rem", width: "250px" }} />
+                    <div key={i} className={`py-wide ${i < 3 ? "border-b border-border" : ""}`}>
+                      <Skeleton className="h-5 w-44 mb-tight" />
+                      <Skeleton className="h-base w-[16rem]" />
                     </div>
                   ))}
                 </CardContent>
@@ -634,7 +621,7 @@ export const HotkeysManager = () => {
             ))}
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-wide)" }}>
+          <div className="flex flex-col gap-wide">
             {/* Hotkey Sections */}
             {typedHotkeySections.map((section: Section) => (
               <HotkeySection
@@ -661,60 +648,42 @@ export const HotkeysManager = () => {
       <Dialog open={duplicateConfirmDialog.open} onOpenChange={handleCancelDuplicate}>
         <DialogContent className="bg-neutral-surface">
           <DialogHeader>
-            <DialogTitle>Duplicate Hotkey Detected</DialogTitle>
+            <DialogTitle>Warning: Duplicate Hotkey Detected</DialogTitle>
             <DialogDescription>
               The hotkey combination "<strong>{duplicateConfirmDialog.newKey}</strong>" is already being used by:
             </DialogDescription>
           </DialogHeader>
 
-          <div
-            style={{
-              padding: "var(--spacing-wide) 0",
-              maxHeight: "15rem",
-              overflowY: "auto",
-            }}
-          >
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-wide)" }}>
+          <div className="max-h-60 overflow-y-auto">
+            <div className="flex flex-col gap-base">
               {duplicateConfirmDialog.conflictingHotkeys.map((conflictHotkey: Hotkey) => (
                 <div
                   key={conflictHotkey.id}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    padding: "var(--spacing-wide)",
-                    backgroundColor: "var(--bg-neutral-surface)",
-                    borderRadius: "var(--border-radius)",
-                  }}
+                  className="flex items-center justify-between p-base bg-neutral-surface rounded-small border border-warning-border-subtle"
                 >
-                  <div style={{ flex: "1", minWidth: "0" }}>
-                    <div
-                      style={{ fontWeight: "500", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
-                    >
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium overflow-hidden text-ellipsis whitespace-nowrap">
                       {conflictHotkey.label}
                     </div>
-                    <div style={{ fontSize: "var(--font-size-small)", color: "var(--text-muted)" }}>
+                    <div className="text-small text-neutral-content-subtler">
                       {getSectionTitle(conflictHotkey.section)}
                     </div>
                   </div>
-                  <Badge variant="secondary" style={{ marginLeft: "var(--spacing-tight)", flexShrink: "0" }}>
-                    {conflictHotkey.key}
-                  </Badge>
+                  <div className="ml-tight flex-shrink-0">
+                    <KeyboardKey>{conflictHotkey.key}</KeyboardKey>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
 
-          <DialogDescription
-            style={{
-              color: "var(--color-warning-text)",
-              backgroundColor: "var(--color-warning-background)",
-              padding: "var(--spacing-wide)",
-              borderRadius: "var(--border-radius)",
-              border: "1px solid var(--color-warning-border)",
-            }}
-          >
-            ⚠️ Having duplicate hotkeys may cause conflicts and unexpected behavior. Are you sure you want to proceed?
+          <DialogDescription className="text-warning-text bg-warning-background p-base rounded-small border border-warning-border-subtle flex items-start gap-tight">
+            <div>
+              <IconWarning className="text-warning-icon" />
+            </div>
+            <div>
+              Having duplicate hotkeys may cause conflicts and unexpected behavior. Are you sure you want to proceed?
+            </div>
           </DialogDescription>
 
           <DialogFooter>
