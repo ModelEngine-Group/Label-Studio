@@ -82,6 +82,7 @@ export const CurrentTask = observer(({ store }) => {
             <Elem
               tag={Button}
               name="prevnext"
+              data-testid="prev-task"
               mod={{ prev: true, disabled: !store.canGoPrevTask, newui: isFF(FF_DEV_3873) }}
               type="link"
               disabled={!historyEnabled || !store.canGoPrevTask}
