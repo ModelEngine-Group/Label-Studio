@@ -34,7 +34,7 @@ export const EmailPreferences = () => {
   const isEnterpriseEmailNotificationsEnabled =
     ff.isActive(ff.FF_ENTERPRISE_EMAIL_NOTIFICATIONS) && window.APP_SETTINGS?.billing?.enterprise;
   const config = useConfig();
-  const { user } = useCurrentUser();
+  const { user, setQueryData } = useCurrentUser();
   const api = useAPI();
   const [isAllowNewsLetter, setIsAllowNewsLetter] = useState(config.user.allow_newsletters);
   const [emailNotificationSettings, setEmailNotificationSettings] = useState(
@@ -60,10 +60,14 @@ export const EmailPreferences = () => {
         setEmailNotificationSettings(response.lse_fields.email_notification_settings);
         // @ts-ignore
         emailNotificationSettingsRef.current = response.lse_fields.email_notification_settings;
+        setQueryData?.({
+          // @ts-ignore
+          lse_fields: { email_notification_settings: response.lse_fields.email_notification_settings },
+        });
       }
       setIsLoading(false);
     },
-    [user?.id],
+    [user?.id, setQueryData],
   );
 
   const message = useMemo(() => {
