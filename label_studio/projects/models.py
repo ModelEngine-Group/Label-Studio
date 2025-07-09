@@ -89,12 +89,15 @@ class ProjectManager(models.Manager):
         return self.with_counts_annotate(self, fields=fields)
 
     @staticmethod
-    def with_counts_annotate(queryset, fields=None):
+    def with_counts_annotate(queryset, fields=None, exclude=None):
         available_fields = ProjectManager.ANNOTATED_FIELDS
         if fields is None:
             to_annotate = available_fields
         else:
             to_annotate = {field: available_fields[field] for field in fields if field in available_fields}
+
+        if exclude:
+            to_annotate = {field: func for field, func in to_annotate.items() if field not in exclude}
 
         for _, annotate_func in to_annotate.items():  # noqa: F402
             queryset = annotate_func(queryset)
