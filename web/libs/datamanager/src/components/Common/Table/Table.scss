@@ -105,6 +105,7 @@
   }
 
   &__cell {
+    overflow: hidden;
     flex: 150 0 auto;
     width: fit-content;
     min-width: min-content;
@@ -123,7 +124,7 @@
     display: flex;
     white-space: nowrap;
     align-items: center;
-    color:  var(--color-neutral-content);
+    color: var(--color-neutral-content);
 
     &_disabled {
       opacity: 0.6;
