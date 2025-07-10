@@ -8,8 +8,8 @@ from core.utils.common import load_func
 from django.conf import settings
 from django.urls import reverse
 from django.utils.decorators import method_decorator
-from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from organizations.models import Organization, OrganizationMember
 from organizations.serializers import (
     OrganizationIdSerializer,
@@ -42,14 +42,17 @@ HasObjectPermission = load_func(settings.MEMBER_PERM)
 
 @method_decorator(
     name='get',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Organizations'],
-        x_fern_sdk_group_name='organizations',
-        x_fern_sdk_method_name='list',
-        operation_summary='List your organizations',
-        operation_description="""
+        summary='List your organizations',
+        description="""
         Return a list of the organizations you've created or that you have access to.
         """,
+        extensions={
+            'x-fern-sdk-group-name': 'organizations',
+            'x-fern-sdk-method-name': 'list',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 class OrganizationListAPI(generics.ListCreateAPIView):
@@ -72,7 +75,7 @@ class OrganizationListAPI(generics.ListCreateAPIView):
     def get(self, request, *args, **kwargs):
         return super(OrganizationListAPI, self).get(request, *args, **kwargs)
 
-    @swagger_auto_schema(auto_schema=None)
+    @extend_schema(exclude=True)
     def post(self, request, *args, **kwargs):
         return super(OrganizationListAPI, self).post(request, *args, **kwargs)
 
@@ -93,16 +96,19 @@ class OrganizationMemberListPagination(PageNumberPagination):
 
 @method_decorator(
     name='get',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Organizations'],
-        x_fern_sdk_group_name=['organizations', 'members'],
-        x_fern_sdk_method_name='list',
-        x_fern_pagination={
-            'offset': '$request.page',
-            'results': '$response.results',
+        summary='Get organization members list',
+        description='Retrieve a list of the organization members and their IDs.',
+        extensions={
+            'x-fern-sdk-group-name': ['organizations', 'members'],
+            'x-fern-sdk-method-name': 'list',
+            'x-fern-audiences': ['public'],
+            'x-fern-pagination': {
+                'offset': '$request.page',
+                'results': '$response.results',
+            },
         },
-        operation_summary='Get organization members list',
-        operation_description='Retrieve a list of the organization members and their IDs.',
     ),
 )
 class OrganizationMemberListAPI(generics.ListAPIView):
@@ -190,36 +196,37 @@ class OrganizationMemberListAPI(generics.ListAPIView):
 
 @method_decorator(
     name='get',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Organizations'],
-        x_fern_sdk_group_name=['organizations', 'members'],
-        x_fern_sdk_method_name='get',
-        operation_summary='Get organization member details',
-        operation_description='Get organization member details by user ID.',
-        manual_parameters=[
-            openapi.Parameter(
+        summary='Get organization member details',
+        description='Get organization member details by user ID.',
+        parameters=[
+            OpenApiParameter(
                 name='user_pk',
-                type=openapi.TYPE_INTEGER,
-                in_=openapi.IN_PATH,
+                type=OpenApiTypes.INT,
+                location='path',
                 description='A unique integer value identifying the user to get organization details for.',
             ),
         ],
         responses={200: OrganizationMemberSerializer()},
+        extensions={
+            'x-fern-sdk-group-name': ['organizations', 'members'],
+            'x-fern-sdk-method-name': 'get',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 @method_decorator(
     name='delete',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Organizations'],
-        x_fern_sdk_group_name=['organizations', 'members'],
-        x_fern_sdk_method_name='delete',
-        operation_summary='Soft delete an organization member',
-        operation_description='Soft delete a member from the organization.',
-        manual_parameters=[
-            openapi.Parameter(
+        summary='Soft delete an organization member',
+        description='Soft delete a member from the organization.',
+        parameters=[
+            OpenApiParameter(
                 name='user_pk',
-                type=openapi.TYPE_INTEGER,
-                in_=openapi.IN_PATH,
+                type=OpenApiTypes.INT,
+                location='path',
                 description='A unique integer value identifying the user to be deleted from the organization.',
             ),
         ],
@@ -227,6 +234,11 @@ class OrganizationMemberListAPI(generics.ListAPIView):
             204: 'Member deleted successfully.',
             405: 'User cannot soft delete self.',
             404: 'Member not found',
+        },
+        extensions={
+            'x-fern-sdk-group-name': ['organizations', 'members'],
+            'x-fern-sdk-method-name': 'delete',
+            'x-fern-audiences': ['public'],
         },
     ),
 )
@@ -282,22 +294,28 @@ class OrganizationMemberDetailAPI(GetParentObjectMixin, generics.RetrieveDestroy
 
 @method_decorator(
     name='get',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Organizations'],
-        x_fern_sdk_group_name='organizations',
-        x_fern_sdk_method_name='get',
-        operation_summary=' Get organization settings',
-        operation_description='Retrieve the settings for a specific organization by ID.',
+        summary='Get organization settings',
+        description='Retrieve the settings for a specific organization by ID.',
+        extensions={
+            'x-fern-sdk-group-name': 'organizations',
+            'x-fern-sdk-method-name': 'get',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 @method_decorator(
     name='patch',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Organizations'],
-        x_fern_sdk_group_name='organizations',
-        x_fern_sdk_method_name='update',
-        operation_summary='Update organization settings',
-        operation_description='Update the settings for a specific organization by ID.',
+        summary='Update organization settings',
+        description='Update the settings for a specific organization by ID.',
+        extensions={
+            'x-fern-sdk-group-name': 'organizations',
+            'x-fern-sdk-method-name': 'update',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 class OrganizationAPI(generics.RetrieveUpdateAPIView):
@@ -316,20 +334,23 @@ class OrganizationAPI(generics.RetrieveUpdateAPIView):
     def patch(self, request, *args, **kwargs):
         return super(OrganizationAPI, self).patch(request, *args, **kwargs)
 
-    @swagger_auto_schema(auto_schema=None)
+    @extend_schema(exclude=True)
     def put(self, request, *args, **kwargs):
         return super(OrganizationAPI, self).put(request, *args, **kwargs)
 
 
 @method_decorator(
     name='get',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Invites'],
-        x_fern_sdk_group_name='organizations',
-        x_fern_sdk_method_name='get_invite',
-        operation_summary='Get organization invite link',
-        operation_description='Get a link to use to invite a new member to an organization in Label Studio Enterprise.',
+        summary='Get organization invite link',
+        description='Get a link to use to invite a new member to an organization in Label Studio Enterprise.',
         responses={200: OrganizationInviteSerializer()},
+        extensions={
+            'x-fern-sdk-group-name': 'organizations',
+            'x-fern-sdk-method-name': 'get_invite',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 class OrganizationInviteAPI(generics.RetrieveAPIView):
@@ -349,13 +370,16 @@ class OrganizationInviteAPI(generics.RetrieveAPIView):
 
 @method_decorator(
     name='post',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Invites'],
-        x_fern_sdk_group_name='organizations',
-        x_fern_sdk_method_name='reset_token',
-        operation_summary='Reset organization token',
-        operation_description='Reset the token used in the invitation link to invite someone to an organization.',
+        summary='Reset organization token',
+        description='Reset the token used in the invitation link to invite someone to an organization.',
         responses={200: OrganizationInviteSerializer()},
+        extensions={
+            'x-fern-sdk-group-name': 'organizations',
+            'x-fern-sdk-method-name': 'reset_token',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 class OrganizationResetTokenAPI(APIView):

@@ -2,10 +2,10 @@
 """
 import logging
 
-import drf_yasg.openapi as openapi
 from core.permissions import ViewClassPermission, all_permissions
 from django.utils.decorators import method_decorator
-from drf_yasg.utils import no_body, swagger_auto_schema
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework import generics, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
@@ -20,110 +20,151 @@ from users.serializers import HotkeysSerializer, UserSerializer, UserSerializerU
 
 logger = logging.getLogger(__name__)
 
-_user_schema = openapi.Schema(
-    type=openapi.TYPE_OBJECT,
-    properties={
-        'id': openapi.Schema(type=openapi.TYPE_INTEGER, description='User ID'),
-        'first_name': openapi.Schema(type=openapi.TYPE_STRING, description='First name of the user'),
-        'last_name': openapi.Schema(type=openapi.TYPE_STRING, description='Last name of the user'),
-        'username': openapi.Schema(type=openapi.TYPE_STRING, description='Username of the user'),
-        'email': openapi.Schema(type=openapi.TYPE_STRING, description='Email of the user'),
-        'avatar': openapi.Schema(type=openapi.TYPE_STRING, description='Avatar URL of the user'),
-        'initials': openapi.Schema(type=openapi.TYPE_STRING, description='Initials of the user'),
-        'phone': openapi.Schema(type=openapi.TYPE_STRING, description='Phone number of the user'),
-        'allow_newsletters': openapi.Schema(
-            type=openapi.TYPE_BOOLEAN, description='Whether the user allows newsletters'
-        ),
+_user_schema = {
+    'type': 'object',
+    'properties': {
+        'id': {
+            'type': 'integer',
+            'description': 'User ID',
+        },
+        'first_name': {
+            'type': 'string',
+            'description': 'First name of the user',
+        },
+        'last_name': {
+            'type': 'string',
+            'description': 'Last name of the user',
+        },
+        'username': {
+            'type': 'string',
+            'description': 'Username of the user',
+        },
+        'email': {
+            'type': 'string',
+            'description': 'Email of the user',
+        },
+        'avatar': {
+            'type': 'string',
+            'description': 'Avatar URL of the user',
+        },
+        'initials': {
+            'type': 'string',
+            'description': 'Initials of the user',
+        },
+        'phone': {
+            'type': 'string',
+            'description': 'Phone number of the user',
+        },
+        'allow_newsletters': {
+            'type': 'boolean',
+            'description': 'Whether the user allows newsletters',
+        },
     },
-)
+}
 
 
 @method_decorator(
     name='update',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Users'],
-        x_fern_audiences=['internal'],
-        operation_summary='Save user details',
-        operation_description="""
+        summary='Save user details',
+        description="""
     Save details for a specific user, such as their name or contact information, in Label Studio.
     """,
-        manual_parameters=[
-            openapi.Parameter(name='id', type=openapi.TYPE_INTEGER, in_=openapi.IN_PATH, description='User ID'),
+        parameters=[
+            OpenApiParameter(name='id', type=OpenApiTypes.INT, location='path', description='User ID'),
         ],
-        request_body=UserSerializer,
+        request=UserSerializer,
+        extensions={
+            'x-fern-audiences': ['internal'],
+        },
     ),
 )
 @method_decorator(
     name='list',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Users'],
-        x_fern_sdk_group_name='users',
-        x_fern_sdk_method_name='list',
-        x_fern_audiences=['public'],
-        operation_summary='List users',
-        operation_description='List the users that exist on the Label Studio server.',
+        summary='List users',
+        description='List the users that exist on the Label Studio server.',
+        extensions={
+            'x-fern-sdk-group-name': 'users',
+            'x-fern-sdk-method-name': 'list',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 @method_decorator(
     name='create',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Users'],
-        x_fern_sdk_group_name='users',
-        x_fern_sdk_method_name='create',
-        x_fern_audiences=['public'],
-        operation_summary='Create new user',
-        operation_description='Create a user in Label Studio.',
-        request_body=_user_schema,
+        summary='Create new user',
+        description='Create a user in Label Studio.',
+        request={
+            'application/json': _user_schema,
+        },
         responses={201: UserSerializer},
+        extensions={
+            'x-fern-sdk-group-name': 'users',
+            'x-fern-sdk-method-name': 'create',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 @method_decorator(
     name='retrieve',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Users'],
-        x_fern_sdk_group_name='users',
-        x_fern_sdk_method_name='get',
-        x_fern_audiences=['public'],
-        operation_summary='Get user info',
-        operation_description='Get info about a specific Label Studio user, based on the user ID.',
-        manual_parameters=[
-            openapi.Parameter(name='id', type=openapi.TYPE_INTEGER, in_=openapi.IN_PATH, description='User ID'),
+        summary='Get user info',
+        description='Get info about a specific Label Studio user, based on the user ID.',
+        parameters=[
+            OpenApiParameter(name='id', type=OpenApiTypes.INT, location='path', description='User ID'),
         ],
-        request_body=no_body,
+        request=None,
         responses={200: UserSerializer},
+        extensions={
+            'x-fern-sdk-group-name': 'users',
+            'x-fern-sdk-method-name': 'get',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 @method_decorator(
     name='partial_update',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Users'],
-        x_fern_sdk_group_name='users',
-        x_fern_sdk_method_name='update',
-        x_fern_audiences=['public'],
-        operation_summary='Update user details',
-        operation_description="""
+        summary='Update user details',
+        description="""
         Update details for a specific user, such as their name or contact information, in Label Studio.
         """,
-        manual_parameters=[
-            openapi.Parameter(name='id', type=openapi.TYPE_INTEGER, in_=openapi.IN_PATH, description='User ID'),
+        parameters=[
+            OpenApiParameter(name='id', type=OpenApiTypes.INT, location='path', description='User ID'),
         ],
-        request_body=_user_schema,
+        request={
+            'application/json': _user_schema,
+        },
         responses={200: UserSerializer},
+        extensions={
+            'x-fern-sdk-group-name': 'users',
+            'x-fern-sdk-method-name': 'update',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 @method_decorator(
     name='destroy',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Users'],
-        x_fern_sdk_group_name='users',
-        x_fern_sdk_method_name='delete',
-        x_fern_audiences=['public'],
-        operation_summary='Delete user',
-        operation_description='Delete a specific Label Studio user.',
-        manual_parameters=[
-            openapi.Parameter(name='id', type=openapi.TYPE_INTEGER, in_=openapi.IN_PATH, description='User ID'),
+        summary='Delete user',
+        description='Delete a specific Label Studio user.',
+        parameters=[
+            OpenApiParameter(name='id', type=OpenApiTypes.INT, location='path', description='User ID'),
         ],
-        request_body=no_body,
+        request=None,
+        extensions={
+            'x-fern-sdk-group-name': 'users',
+            'x-fern-sdk-method-name': 'delete',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 class UserAPI(viewsets.ModelViewSet):
@@ -140,7 +181,7 @@ class UserAPI(viewsets.ModelViewSet):
     def get_queryset(self):
         return User.objects.filter(organizations=self.request.user.active_organization)
 
-    @swagger_auto_schema(auto_schema=None, methods=['delete', 'post'])
+    @extend_schema(exclude=True)
     @action(detail=True, methods=['delete', 'post'], permission_required=all_permissions.avatar_any)
     def avatar(self, request, pk):
         if request.method == 'POST':
@@ -206,23 +247,24 @@ class UserAPI(viewsets.ModelViewSet):
 
 @method_decorator(
     name='post',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Users'],
-        x_fern_sdk_group_name='users',
-        x_fern_sdk_method_name='reset_token',
-        x_fern_audiences=['public'],
-        operation_summary='Reset user token',
-        operation_description='Reset the user token for the current user.',
-        request_body=no_body,
+        summary='Reset user token',
+        description='Reset the user token for the current user.',
+        request=None,
         responses={
-            201: openapi.Response(
+            201: OpenApiResponse(
                 description='User token response',
-                schema=openapi.Schema(
-                    description='User token',
-                    type=openapi.TYPE_OBJECT,
-                    properties={'token': openapi.Schema(description='Token', type=openapi.TYPE_STRING)},
-                ),
+                response={
+                    'type': 'object',
+                    'properties': {'token': {'type': 'string'}},
+                },
             )
+        },
+        extensions={
+            'x-fern-sdk-group-name': 'users',
+            'x-fern-sdk-method-name': 'reset_token',
+            'x-fern-audiences': ['public'],
         },
     ),
 )
@@ -240,23 +282,24 @@ class UserResetTokenAPI(APIView):
 
 @method_decorator(
     name='get',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Users'],
-        x_fern_sdk_group_name='users',
-        x_fern_sdk_method_name='get_token',
-        x_fern_audiences=['public'],
-        operation_summary='Get user token',
-        operation_description='Get a user token to authenticate to the API as the current user.',
-        request_body=no_body,
+        summary='Get user token',
+        description='Get a user token to authenticate to the API as the current user.',
+        request=None,
         responses={
-            200: openapi.Response(
+            200: OpenApiResponse(
                 description='User token response',
-                schema=openapi.Schema(
-                    description='User token',
-                    type=openapi.TYPE_OBJECT,
-                    properties={'detail': openapi.Schema(description='Token', type=openapi.TYPE_STRING)},
-                ),
+                response={
+                    'type': 'object',
+                    'properties': {'detail': {'type': 'string'}},
+                },
             )
+        },
+        extensions={
+            'x-fern-sdk-group-name': 'users',
+            'x-fern-sdk-method-name': 'get_token',
+            'x-fern-audiences': ['public'],
         },
     ),
 )
@@ -272,15 +315,17 @@ class UserGetTokenAPI(APIView):
 
 @method_decorator(
     name='get',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Users'],
-        x_fern_sdk_group_name='users',
-        x_fern_sdk_method_name='whoami',
-        x_fern_audiences=['public'],
-        operation_summary='Retrieve my user',
-        operation_description='Retrieve details of the account that you are using to access the API.',
-        request_body=no_body,
+        summary='Retrieve my user',
+        description='Retrieve details of the account that you are using to access the API.',
+        request=None,
         responses={200: UserSerializer},
+        extensions={
+            'x-fern-sdk-group-name': 'users',
+            'x-fern-sdk-method-name': 'whoami',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 class UserWhoAmIAPI(generics.RetrieveAPIView):
@@ -298,28 +343,32 @@ class UserWhoAmIAPI(generics.RetrieveAPIView):
 
 @method_decorator(
     name='patch',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Users'],
-        x_fern_sdk_group_name='users',
-        x_fern_sdk_method_name='update_hotkeys',
-        x_fern_audiences=['public'],
-        operation_summary='Update user hotkeys',
-        operation_description='Update the custom hotkeys configuration for the current user.',
-        request_body=HotkeysSerializer,
+        summary='Update user hotkeys',
+        description='Update the custom hotkeys configuration for the current user.',
+        request=HotkeysSerializer,
         responses={200: HotkeysSerializer},
+        extensions={
+            'x-fern-sdk-group-name': 'users',
+            'x-fern-sdk-method-name': 'update_hotkeys',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 @method_decorator(
     name='get',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Users'],
-        x_fern_sdk_group_name='users',
-        x_fern_sdk_method_name='get_hotkeys',
-        x_fern_audiences=['public'],
-        operation_summary='Get user hotkeys',
-        operation_description='Retrieve the custom hotkeys configuration for the current user.',
-        request_body=no_body,
+        summary='Get user hotkeys',
+        description='Retrieve the custom hotkeys configuration for the current user.',
+        request=None,
         responses={200: HotkeysSerializer},
+        extensions={
+            'x-fern-sdk-group-name': 'users',
+            'x-fern-sdk-method-name': 'get_hotkeys',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 class UserHotkeysAPI(APIView):

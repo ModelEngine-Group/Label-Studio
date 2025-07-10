@@ -1,5 +1,6 @@
 import logging
 
+from drf_spectacular.utils import extend_schema
 from rest_framework import generics
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
@@ -10,10 +11,10 @@ from .serializers import UserProductTourSerializer
 logger = logging.getLogger(__name__)
 
 
+@extend_schema(exclude=True)
 class ProductTourAPI(generics.RetrieveUpdateAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = UserProductTourSerializer
-    swagger_schema = None
 
     def get_tour_name(self):
         name = self.request.query_params.get('name')

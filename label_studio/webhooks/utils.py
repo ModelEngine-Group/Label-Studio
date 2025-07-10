@@ -190,7 +190,7 @@ def api_webhook_for_delete(action):
 
     Example:
         ```
-        @swagger_auto_schema(tags=['Annotations'])
+        @extend_schema(tags=['Annotations'])
         @api_webhook_for_delete(WebhookAction.ANNOTATIONS_DELETED)
         def delete(self, request, *args, **kwargs):
             return super(AnnotationAPI, self).delete(request, *args, **kwargs)

@@ -39,6 +39,6 @@ def test_docs():
     client = APIClient()
     client.force_authenticate(user)
 
-    response = client.get('/docs/api?format=openapi')
+    response = client.get('/docs/api?format=openapi', follow=True)
     assert response.status_code == 200
     verify_docs(response)

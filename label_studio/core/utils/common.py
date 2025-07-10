@@ -18,7 +18,6 @@ from copy import deepcopy
 from functools import wraps
 from typing import Any, Callable, Generator, Iterable, Mapping, Optional
 
-import drf_yasg.openapi as openapi
 import pytz
 import requests
 import ujson as json
@@ -44,8 +43,8 @@ from django.db.utils import OperationalError
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.module_loading import import_string
-from django_filters.rest_framework import DjangoFilterBackend
-from drf_yasg.inspectors import CoreAPICompatInspector, NotHandled
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse
 from label_studio_sdk._extensions.label_studio_tools.core.utils.exceptions import (
     LabelStudioXMLSyntaxErrorSentryIgnored,
 )
@@ -196,7 +195,7 @@ def paginator(objects, request, default_page=1, default_size=50):
 
 
 def paginator_help(objects_name, tag):
-    """API help for paginator, use it with swagger_auto_schema
+    """API help for paginator, use it with drf_spectacular
 
     :return: dict
     """
@@ -209,17 +208,17 @@ def paginator_help(objects_name, tag):
         )
     return dict(
         tags=[tag],
-        manual_parameters=[
-            openapi.Parameter(
-                name='page', type=openapi.TYPE_INTEGER, in_=openapi.IN_QUERY, description='[or "start"] current page'
+        parameters=[
+            OpenApiParameter(
+                name='page', type=OpenApiTypes.INT, location='query', description='[or "start"] current page'
             ),
-            openapi.Parameter(
-                name='page_size', type=openapi.TYPE_INTEGER, in_=openapi.IN_QUERY, description=page_size_description
+            OpenApiParameter(
+                name='page_size', type=OpenApiTypes.INT, location='query', description=page_size_description
             ),
         ],
         responses={
-            200: openapi.Response(title='OK', description='')
-            # 404: openapi.Response(title='', description=f'No more {objects_name} found')
+            200: OpenApiResponse(description='OK')
+            # 404: OpenApiResponse(description=f'No more {objects_name} found')
         },
     )
 
@@ -606,22 +605,6 @@ class temporary_disconnect_all_signals(object):
     def reconnect(self, signal):
         signal.receivers = self.stashed_signals.get(signal, [])
         del self.stashed_signals[signal]
-
-
-class DjangoFilterDescriptionInspector(CoreAPICompatInspector):
-    def get_filter_parameters(self, filter_backend):
-        if isinstance(filter_backend, DjangoFilterBackend):
-            result = super(DjangoFilterDescriptionInspector, self).get_filter_parameters(filter_backend)
-            if not isinstance(result, Iterable):
-                return result
-
-            for param in result:
-                if not param.get('description', ''):
-                    param.description = 'Filter the returned list by {field_name}'.format(field_name=param.name)
-
-            return result
-
-        return NotHandled
 
 
 def batch(iterable, n=1):

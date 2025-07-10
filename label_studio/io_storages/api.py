@@ -7,8 +7,7 @@ import os
 from core.permissions import all_permissions
 from core.utils.io import read_yaml
 from django.conf import settings
-from drf_yasg import openapi as openapi
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
 from io_storages.serializers import ExportStorageSerializer, ImportStorageSerializer
 from projects.models import Project
 from rest_framework import generics, status
@@ -51,7 +50,7 @@ class ImportStorageDetailAPI(generics.RetrieveUpdateDestroyAPIView):
     parser_classes = (JSONParser, FormParser, MultiPartParser)
     serializer_class = ImportStorageSerializer
 
-    @swagger_auto_schema(auto_schema=None)
+    @extend_schema(exclude=True)
     def put(self, request, *args, **kwargs):
         return super(ImportStorageDetailAPI, self).put(request, *args, **kwargs)
 
@@ -96,7 +95,7 @@ class ExportStorageDetailAPI(generics.RetrieveUpdateDestroyAPIView):
     parser_classes = (JSONParser, FormParser, MultiPartParser)
     serializer_class = ExportStorageSerializer
 
-    @swagger_auto_schema(auto_schema=None)
+    @extend_schema(exclude=True)
     def put(self, request, *args, **kwargs):
         return super(ExportStorageDetailAPI, self).put(request, *args, **kwargs)
 
@@ -176,14 +175,14 @@ class StorageValidateAPI(generics.CreateAPIView):
         return Response()
 
 
+@extend_schema(exclude=True)
 class StorageFormLayoutAPI(generics.RetrieveAPIView):
 
     permission_required = all_permissions.projects_change
     parser_classes = (JSONParser, FormParser, MultiPartParser)
-    swagger_schema = None
     storage_type = None
 
-    @swagger_auto_schema(auto_schema=None)
+    @extend_schema(exclude=True)
     def get(self, request, *args, **kwargs):
         form_layout_file = os.path.join(os.path.dirname(inspect.getfile(self.__class__)), 'form_layout.yml')
         if not os.path.exists(form_layout_file):

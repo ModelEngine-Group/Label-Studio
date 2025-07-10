@@ -1,8 +1,8 @@
 """This file and its contents are licensed under the Apache License 2.0. Please see the included NOTICE for copyright information and LICENSE for a copy of the license.
 """
 from django.utils.decorators import method_decorator
-from drf_yasg import openapi
-from drf_yasg.utils import no_body, swagger_auto_schema
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from io_storages.api import (
     ExportStorageDetailAPI,
     ExportStorageFormLayoutAPI,
@@ -28,34 +28,40 @@ from .openapi_schema import (
 
 @method_decorator(
     name='get',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Storage: GCS'],
-        x_fern_sdk_group_name=['import_storage', 'gcs'],
-        x_fern_sdk_method_name='list',
-        x_fern_audiences=['public'],
-        operation_summary='Get all import storage',
-        operation_description='Get a list of all GCS import storage connections.',
-        manual_parameters=[
-            openapi.Parameter(
+        summary='Get all import storage',
+        description='Get a list of all GCS import storage connections.',
+        parameters=[
+            OpenApiParameter(
                 name='project',
-                type=openapi.TYPE_INTEGER,
-                in_=openapi.IN_QUERY,
+                type=OpenApiTypes.INT,
+                location='query',
                 description='Project ID',
             ),
         ],
-        request_body=no_body,
+        request=None,
+        extensions={
+            'x-fern-sdk-group-name': ['import_storage', 'gcs'],
+            'x-fern-sdk-method-name': 'list',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 @method_decorator(
     name='post',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Storage: GCS'],
-        x_fern_sdk_group_name=['import_storage', 'gcs'],
-        x_fern_sdk_method_name='create',
-        x_fern_audiences=['public'],
-        operation_summary='Create import storage',
-        operation_description='Create a new GCS import storage connection.',
-        request_body=_gcs_import_storage_schema,
+        summary='Create import storage',
+        description='Create a new GCS import storage connection.',
+        request={
+            'application/json': _gcs_import_storage_schema,
+        },
+        extensions={
+            'x-fern-sdk-group-name': ['import_storage', 'gcs'],
+            'x-fern-sdk-method-name': 'create',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 class GCSImportStorageListAPI(ImportStorageListAPI):
@@ -65,38 +71,46 @@ class GCSImportStorageListAPI(ImportStorageListAPI):
 
 @method_decorator(
     name='get',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Storage: GCS'],
-        x_fern_sdk_group_name=['import_storage', 'gcs'],
-        x_fern_sdk_method_name='get',
-        x_fern_audiences=['public'],
-        operation_summary='Get import storage',
-        operation_description='Get a specific GCS import storage connection.',
-        request_body=no_body,
+        summary='Get import storage',
+        description='Get a specific GCS import storage connection.',
+        request=None,
+        extensions={
+            'x-fern-sdk-group-name': ['import_storage', 'gcs'],
+            'x-fern-sdk-method-name': 'get',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 @method_decorator(
     name='patch',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Storage: GCS'],
-        x_fern_sdk_group_name=['import_storage', 'gcs'],
-        x_fern_sdk_method_name='update',
-        x_fern_audiences=['public'],
-        operation_summary='Update import storage',
-        operation_description='Update a specific GCS import storage connection.',
-        request_body=_gcs_import_storage_schema,
+        summary='Update import storage',
+        description='Update a specific GCS import storage connection.',
+        request={
+            'application/json': _gcs_import_storage_schema,
+        },
+        extensions={
+            'x-fern-sdk-group-name': ['import_storage', 'gcs'],
+            'x-fern-sdk-method-name': 'update',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 @method_decorator(
     name='delete',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Storage: GCS'],
-        x_fern_sdk_group_name=['import_storage', 'gcs'],
-        x_fern_sdk_method_name='delete',
-        x_fern_audiences=['public'],
-        operation_summary='Delete import storage',
-        operation_description='Delete a specific GCS import storage connection.',
-        request_body=no_body,
+        summary='Delete import storage',
+        description='Delete a specific GCS import storage connection.',
+        request=None,
+        extensions={
+            'x-fern-sdk-group-name': ['import_storage', 'gcs'],
+            'x-fern-sdk-method-name': 'delete',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 class GCSImportStorageDetailAPI(ImportStorageDetailAPI):
@@ -106,22 +120,24 @@ class GCSImportStorageDetailAPI(ImportStorageDetailAPI):
 
 @method_decorator(
     name='post',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Storage: GCS'],
-        x_fern_sdk_group_name=['import_storage', 'gcs'],
-        x_fern_sdk_method_name='sync',
-        x_fern_audiences=['public'],
-        operation_summary='Sync import storage',
-        operation_description='Sync tasks from an GCS import storage connection.',
-        manual_parameters=[
-            openapi.Parameter(
+        summary='Sync import storage',
+        description='Sync tasks from a GCS import storage connection.',
+        parameters=[
+            OpenApiParameter(
                 name='id',
-                type=openapi.TYPE_INTEGER,
-                in_=openapi.IN_PATH,
+                type=OpenApiTypes.INT,
+                location='path',
                 description='Storage ID',
             ),
         ],
-        request_body=no_body,
+        request=None,
+        extensions={
+            'x-fern-sdk-group-name': ['import_storage', 'gcs'],
+            'x-fern-sdk-method-name': 'sync',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 class GCSImportStorageSyncAPI(ImportStorageSyncAPI):
@@ -130,14 +146,16 @@ class GCSImportStorageSyncAPI(ImportStorageSyncAPI):
 
 @method_decorator(
     name='post',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Storage: GCS'],
-        x_fern_sdk_group_name=['export_storage', 'gcs'],
-        x_fern_sdk_method_name='sync',
-        x_fern_audiences=['public'],
-        operation_summary='Sync export storage',
-        operation_description='Sync tasks from an GCS export storage connection.',
-        request_body=no_body,
+        summary='Sync export storage',
+        description='Sync tasks from an GCS export storage connection.',
+        request=None,
+        extensions={
+            'x-fern-sdk-group-name': ['export_storage', 'gcs'],
+            'x-fern-sdk-method-name': 'sync',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 class GCSExportStorageSyncAPI(ExportStorageSyncAPI):
@@ -146,16 +164,19 @@ class GCSExportStorageSyncAPI(ExportStorageSyncAPI):
 
 @method_decorator(
     name='post',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Storage: GCS'],
-        x_fern_sdk_group_name=['import_storage', 'gcs'],
-        x_fern_sdk_method_name='validate',
-        x_fern_audiences=['public'],
-        operation_summary='Validate import storage',
-        operation_description='Validate a specific GCS import storage connection.',
-        request_body=_gcs_import_storage_schema_with_id,
-        # expecting empty response
-        responses={200: openapi.Response(description='OK')},
+        summary='Validate import storage',
+        description='Validate a specific GCS import storage connection.',
+        request={
+            'application/json': _gcs_import_storage_schema_with_id,
+        },
+        responses={200: OpenApiResponse(description='Validation successful')},
+        extensions={
+            'x-fern-sdk-group-name': ['import_storage', 'gcs'],
+            'x-fern-sdk-method-name': 'validate',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 class GCSImportStorageValidateAPI(ImportStorageValidateAPI):
@@ -164,16 +185,19 @@ class GCSImportStorageValidateAPI(ImportStorageValidateAPI):
 
 @method_decorator(
     name='post',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Storage: GCS'],
-        x_fern_sdk_group_name=['export_storage', 'gcs'],
-        x_fern_sdk_method_name='validate',
-        x_fern_audiences=['public'],
-        operation_summary='Validate export storage',
-        operation_description='Validate a specific GCS export storage connection.',
-        request_body=_gcs_export_storage_schema_with_id,
-        # expecting empty response
-        responses={200: openapi.Response(description='OK')},
+        summary='Validate export storage',
+        description='Validate a specific GCS export storage connection.',
+        request={
+            'application/json': _gcs_export_storage_schema_with_id,
+        },
+        responses={200: OpenApiResponse(description='Validation successful')},
+        extensions={
+            'x-fern-sdk-group-name': ['export_storage', 'gcs'],
+            'x-fern-sdk-method-name': 'validate',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 class GCSExportStorageValidateAPI(ExportStorageValidateAPI):
@@ -182,34 +206,39 @@ class GCSExportStorageValidateAPI(ExportStorageValidateAPI):
 
 @method_decorator(
     name='get',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Storage: GCS'],
-        x_fern_sdk_group_name=['export_storage', 'gcs'],
-        x_fern_sdk_method_name='list',
-        x_fern_audiences=['public'],
-        operation_summary='Get all export storage',
-        operation_description='Get a list of all GCS export storage connections.',
-        manual_parameters=[
-            openapi.Parameter(
+        summary='Get all export storage',
+        description='Get a list of all GCS export storage connections.',
+        parameters=[
+            OpenApiParameter(
                 name='project',
-                type=openapi.TYPE_INTEGER,
-                in_=openapi.IN_QUERY,
+                type=OpenApiTypes.INT,
+                location='query',
                 description='Project ID',
             ),
         ],
-        request_body=no_body,
+        extensions={
+            'x-fern-sdk-group-name': ['export_storage', 'gcs'],
+            'x-fern-sdk-method-name': 'list',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 @method_decorator(
     name='post',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Storage: GCS'],
-        x_fern_sdk_group_name=['export_storage', 'gcs'],
-        x_fern_sdk_method_name='create',
-        x_fern_audiences=['public'],
-        operation_summary='Create export storage',
-        operation_description='Create a new GCS export storage connection to store annotations.',
-        request_body=_gcs_export_storage_schema,
+        summary='Create export storage',
+        description='Create a new GCS export storage connection to store annotations.',
+        request={
+            'application/json': _gcs_export_storage_schema,
+        },
+        extensions={
+            'x-fern-sdk-group-name': ['export_storage', 'gcs'],
+            'x-fern-sdk-method-name': 'create',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 class GCSExportStorageListAPI(ExportStorageListAPI):
@@ -219,38 +248,46 @@ class GCSExportStorageListAPI(ExportStorageListAPI):
 
 @method_decorator(
     name='get',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Storage: GCS'],
-        x_fern_sdk_group_name=['export_storage', 'gcs'],
-        x_fern_sdk_method_name='get',
-        x_fern_audiences=['public'],
-        operation_summary='Get export storage',
-        operation_description='Get a specific GCS export storage connection.',
-        request_body=no_body,
+        summary='Get export storage',
+        description='Get a specific GCS export storage connection.',
+        request=None,
+        extensions={
+            'x-fern-sdk-group-name': ['export_storage', 'gcs'],
+            'x-fern-sdk-method-name': 'get',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 @method_decorator(
     name='patch',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Storage: GCS'],
-        x_fern_sdk_group_name=['export_storage', 'gcs'],
-        x_fern_sdk_method_name='update',
-        x_fern_audiences=['public'],
-        operation_summary='Update export storage',
-        operation_description='Update a specific GCS export storage connection.',
-        request_body=_gcs_export_storage_schema,
+        summary='Update export storage',
+        description='Update a specific GCS export storage connection.',
+        request={
+            'application/json': _gcs_export_storage_schema,
+        },
+        extensions={
+            'x-fern-sdk-group-name': ['export_storage', 'gcs'],
+            'x-fern-sdk-method-name': 'update',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 @method_decorator(
     name='delete',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Storage: GCS'],
-        x_fern_sdk_group_name=['export_storage', 'gcs'],
-        x_fern_sdk_method_name='delete',
-        x_fern_audiences=['public'],
-        operation_summary='Delete export storage',
-        operation_description='Delete a specific GCS export storage connection.',
-        request_body=no_body,
+        summary='Delete export storage',
+        description='Delete a specific GCS export storage connection.',
+        request=None,
+        extensions={
+            'x-fern-sdk-group-name': ['export_storage', 'gcs'],
+            'x-fern-sdk-method-name': 'delete',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 class GCSExportStorageDetailAPI(ExportStorageDetailAPI):

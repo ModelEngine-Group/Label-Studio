@@ -5,7 +5,7 @@ from django.db.models import CharField, Count, Q
 from django.db.models.functions import Cast
 from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
 from labels_manager.serializers import (
     LabelBulkUpdateSerializer,
     LabelCreateSerializer,
@@ -25,62 +25,72 @@ logger = logging.getLogger(__name__)
 
 @method_decorator(
     name='create',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Labels'],
-        x_fern_sdk_group_name='labels',
-        x_fern_sdk_method_name='create',
-        x_fern_audiences=['internal'],
-        operation_summary='Create labels',
-        operation_description='Add labels to your project without updating the labeling configuration.',
+        summary='Create labels',
+        description='Add labels to your project without updating the labeling configuration.',
+        extensions={
+            'x-fern-sdk-group-name': 'labels',
+            'x-fern-sdk-method-name': 'create',
+            'x-fern-audiences': ['internal'],
+        },
     ),
 )
 @method_decorator(
     name='destroy',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Labels'],
-        x_fern_sdk_group_name='labels',
-        x_fern_sdk_method_name='delete',
-        x_fern_audiences=['internal'],
-        operation_summary='Remove labels',
-        operation_description='Remove labels from your project without updating the labeling configuration.',
+        summary='Remove labels',
+        description='Remove labels from your project without updating the labeling configuration.',
+        extensions={
+            'x-fern-sdk-group-name': 'labels',
+            'x-fern-sdk-method-name': 'delete',
+            'x-fern-audiences': ['internal'],
+        },
     ),
 )
 @method_decorator(
     name='partial_update',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Labels'],
-        x_fern_sdk_group_name='labels',
-        x_fern_sdk_method_name='update',
-        x_fern_audiences=['internal'],
-        operation_summary='Update labels',
-        operation_description='Update labels used for your project without updating the labeling configuration.',
+        summary='Update labels',
+        description='Update labels used for your project without updating the labeling configuration.',
+        extensions={
+            'x-fern-sdk-group-name': 'labels',
+            'x-fern-sdk-method-name': 'update',
+            'x-fern-audiences': ['internal'],
+        },
     ),
 )
 @method_decorator(
     name='retrieve',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Labels'],
-        x_fern_sdk_group_name='labels',
-        x_fern_sdk_method_name='get',
-        x_fern_audiences=['internal'],
-        operation_summary='Get label',
-        operation_description="""
+        summary='Get label',
+        description="""
         Retrieve a specific custom label used for your project by its ID.
         """,
+        extensions={
+            'x-fern-sdk-group-name': 'labels',
+            'x-fern-sdk-method-name': 'get',
+            'x-fern-audiences': ['internal'],
+        },
     ),
 )
 @method_decorator(
     name='list',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Labels'],
-        x_fern_sdk_group_name='labels',
-        x_fern_sdk_method_name='list',
-        x_fern_audiences=['internal'],
-        operation_summary='List labels',
-        operation_description='List all custom labels added to your project separately from the labeling configuration.',
+        summary='List labels',
+        description='List all custom labels added to your project separately from the labeling configuration.',
+        extensions={
+            'x-fern-sdk-group-name': 'labels',
+            'x-fern-sdk-method-name': 'list',
+            'x-fern-audiences': ['internal'],
+        },
     ),
 )
-@method_decorator(name='update', decorator=swagger_auto_schema(auto_schema=None))
+@method_decorator(name='update', decorator=extend_schema(exclude=True))
 class LabelAPI(viewsets.ModelViewSet):
     pagination_class = PageNumberPagination
     serializer_class = LabelSerializer
@@ -112,66 +122,76 @@ class LabelAPI(viewsets.ModelViewSet):
 
 @method_decorator(
     name='create',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Labels'],
-        x_fern_sdk_group_name=['projects', 'labels'],
-        x_fern_sdk_method_name='create',
-        x_fern_audiences=['internal'],
-        operation_summary='Create label links',
-        operation_description='Create label links to link new custom labels to your project labeling configuration.',
+        summary='Create label links',
+        description='Create label links to link new custom labels to your project labeling configuration.',
+        extensions={
+            'x-fern-sdk-group-name': ['projects', 'labels'],
+            'x-fern-sdk-method-name': 'create',
+            'x-fern-audiences': ['internal'],
+        },
     ),
 )
 @method_decorator(
     name='destroy',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Labels'],
-        x_fern_sdk_group_name=['projects', 'labels'],
-        x_fern_sdk_method_name='delete',
-        x_fern_audiences=['internal'],
-        operation_summary='Remove label link',
-        operation_description="""
+        summary='Remove label link',
+        description="""
         Remove a label link that links custom labels to your project labeling configuration. If you remove a label link,
         the label stops being available for the project it was linked to. You can add a new label link at any time. 
         """,
+        extensions={
+            'x-fern-sdk-group-name': ['projects', 'labels'],
+            'x-fern-sdk-method-name': 'delete',
+            'x-fern-audiences': ['internal'],
+        },
     ),
 )
 @method_decorator(
     name='partial_update',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Labels'],
-        x_fern_sdk_group_name=['projects', 'labels'],
-        x_fern_sdk_method_name='update',
-        x_fern_audiences=['internal'],
-        operation_summary='Update label link',
-        operation_description="""
+        summary='Update label link',
+        description="""
         Update a label link that links custom labels to a project labeling configuration, for example if the fromName,  
         toName, or name parameters for a tag in the labeling configuration change. 
         """,
+        extensions={
+            'x-fern-sdk-group-name': ['projects', 'labels'],
+            'x-fern-sdk-method-name': 'update',
+            'x-fern-audiences': ['internal'],
+        },
     ),
 )
 @method_decorator(
     name='retrieve',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Labels'],
-        x_fern_sdk_group_name=['projects', 'labels'],
-        x_fern_sdk_method_name='get',
-        x_fern_audiences=['internal'],
-        operation_summary='Get label link',
-        operation_description='Get label links for a specific project configuration. ',
+        summary='Get label link',
+        description='Get label links for a specific project configuration. ',
+        extensions={
+            'x-fern-sdk-group-name': ['projects', 'labels'],
+            'x-fern-sdk-method-name': 'get',
+            'x-fern-audiences': ['internal'],
+        },
     ),
 )
 @method_decorator(
     name='list',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Labels'],
-        x_fern_sdk_group_name=['projects', 'labels'],
-        x_fern_sdk_method_name='list',
-        x_fern_audiences=['internal'],
-        operation_summary='List label links',
-        operation_description='List label links for a specific label and project.',
+        summary='List label links',
+        description='List label links for a specific label and project.',
+        extensions={
+            'x-fern-sdk-group-name': ['projects', 'labels'],
+            'x-fern-sdk-method-name': 'list',
+            'x-fern-audiences': ['internal'],
+        },
     ),
 )
-@method_decorator(name='update', decorator=swagger_auto_schema(auto_schema=None))
+@method_decorator(name='update', decorator=extend_schema(exclude=True))
 class LabelLinkAPI(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = {
@@ -209,15 +229,17 @@ class LabelLinkAPI(viewsets.ModelViewSet):
 
 @method_decorator(
     name='post',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Labels'],
-        x_fern_sdk_group_name=['projects', 'labels'],
-        x_fern_sdk_method_name='update_many',
-        x_fern_audiences=['internal'],
-        operation_summary='Bulk update labels',
-        operation_description="""
+        summary='Bulk update labels',
+        description="""
         If you want to update the labels in saved annotations, use this endpoint.
         """,
+        extensions={
+            'x-fern-sdk-group-name': ['projects', 'labels'],
+            'x-fern-sdk-method-name': 'update_many',
+            'x-fern-audiences': ['internal'],
+        },
     ),
 )
 class LabelBulkUpdateAPI(views.APIView):

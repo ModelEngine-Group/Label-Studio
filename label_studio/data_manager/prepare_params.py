@@ -3,7 +3,6 @@
 from enum import Enum
 from typing import Any, List, Optional, Union
 
-from drf_yasg import openapi
 from pydantic import BaseModel, StrictBool, StrictFloat, StrictInt, StrictStr
 
 
@@ -185,28 +184,28 @@ example_request_2 = {
 }
 
 # Define the schemas for filters and selectedItems
-filters_schema = openapi.Schema(
-    type=openapi.TYPE_OBJECT,
-    properties={
-        'conjunction': openapi.Schema(
-            type=openapi.TYPE_STRING,
-            enum=['or', 'and'],
-            description=(
+filters_schema = {
+    'type': 'object',
+    'properties': {
+        'conjunction': {
+            'type': 'string',
+            'enum': ['or', 'and'],
+            'description': (
                 'Logical conjunction for the filters. This conjunction (either "or" or "and") '
                 'will be applied to all items in the filters list. It is not possible to combine '
                 '"or" and "and" within one list of filters. All filters will be either combined with "or" '
                 'or with "and", but not a mix of both.'
             ),
-        ),
-        'items': openapi.Schema(
-            type=openapi.TYPE_ARRAY,
-            items=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'filter': openapi.Schema(
-                        type=openapi.TYPE_STRING,
-                        enum=Column.enums_for_filters(),
-                        description=(
+        },
+        'items': {
+            'type': 'array',
+            'items': {
+                'type': 'object',
+                'properties': {
+                    'filter': {
+                        'type': 'string',
+                        'enum': Column.enums_for_filters(),
+                        'description': (
                             'Filter identifier, it should start with `filter:tasks:` prefix, '
                             'e.g. `filter:tasks:agreement`. '
                             'For `task.data` fields it may look like `filter:tasks:data.field_name`. '
@@ -220,118 +219,116 @@ filters_schema = openapi.Schema(
                                 ]
                             )
                         ),
-                    ),
-                    'operator': openapi.Schema(
-                        type=openapi.TYPE_STRING,
-                        enum=Operator.enums(),
-                        description=(
+                    },
+                    'operator': {
+                        'type': 'string',
+                        'enum': Operator.enums(),
+                        'description': (
                             'Filter operator. Possible values:<br>'
                             + '<br>'.join(
                                 [f'<li>`{key}`<br> {desc}</li>' for key, desc in Operator.descriptions().items()]
                             )
                         ),
-                    ),
-                    'type': openapi.Schema(
-                        type=openapi.TYPE_STRING,
-                        description='Type of the filter value. Possible values:<br>'
+                    },
+                    'type': {
+                        'type': 'string',
+                        'description': 'Type of the filter value. Possible values:<br>'
                         + '<br>'.join([f'<li>`{key}`<br> {desc}</li>' for key, desc in Type.descriptions().items()]),
-                    ),
-                    'value': openapi.Schema(
-                        type=openapi.TYPE_OBJECT,
-                        oneOf=[
-                            openapi.Schema(type=openapi.TYPE_STRING, title='String', description='String'),
-                            openapi.Schema(type=openapi.TYPE_INTEGER, title='Integer', description='Integer'),
-                            openapi.Schema(
-                                type=openapi.TYPE_NUMBER, title='Float', format='float', description='Float'
-                            ),
-                            openapi.Schema(type=openapi.TYPE_BOOLEAN, title='Boolean', description='Boolean'),
-                            openapi.Schema(
-                                type=openapi.TYPE_OBJECT,
-                                title='Dictionary',
-                                description='Dictionary is used for some operator types, e.g. `in` and `not_in`',
-                            ),
-                            openapi.Schema(
-                                type=openapi.TYPE_OBJECT,
-                                title='List',
-                                description='List of strings or integers',
-                            ),
+                    },
+                    'value': {
+                        'type': 'object',
+                        'oneOf': [
+                            {'type': 'string', 'title': 'String', 'description': 'String'},
+                            {'type': 'integer', 'title': 'Integer', 'description': 'Integer'},
+                            {'type': 'number', 'title': 'Float', 'format': 'float', 'description': 'Float'},
+                            {'type': 'boolean', 'title': 'Boolean', 'description': 'Boolean'},
+                            {
+                                'type': 'object',
+                                'title': 'Dictionary',
+                                'description': 'Dictionary is used for some operator types, e.g. `in` and `not_in`',
+                            },
+                            {
+                                'type': 'object',
+                                'title': 'List',
+                                'description': 'List of strings or integers',
+                            },
                         ],
-                        description='Value to filter by',
-                    ),
+                        'description': 'Value to filter by',
+                    },
                 },
-                required=['filter', 'operator', 'type', 'value'],
-                example=example_request_1['filters']['items'][0],
-            ),
-            description='List of filter items',
-        ),
+                'required': ['filter', 'operator', 'type', 'value'],
+                'example': example_request_1['filters']['items'][0],
+            },
+            'description': 'List of filter items',
+        },
     },
-    required=['conjunction', 'items'],
-    description=(
+    'required': ['conjunction', 'items'],
+    'description': (
         'Filters to apply on tasks. '
         'You can use [the helper class `Filters` from this page](https://labelstud.io/sdk/data_manager.html) '
         'to create Data Manager Filters.<br>'
         'Example: `{"conjunction": "or", "items": [{"filter": "filter:tasks:completed_at", "operator": "greater", '
         '"type": "Datetime", "value": "2021-01-01T00:00:00.000Z"}]}`'
     ),
-)
+}
 
-selected_items_schema = openapi.Schema(
-    type=openapi.TYPE_OBJECT,
-    required=['all'],
-    description='Task selection by IDs. If filters are applied, the selection will be applied to the filtered tasks.'
+selected_items_schema = {
+    'type': 'object',
+    'required': ['all'],
+    'description': 'Task selection by IDs. If filters are applied, the selection will be applied to the filtered tasks.'
     'If "all" is `false`, `"included"` must be used. If "all" is `true`, `"excluded"` must be used.<br>'
     'Examples: `{"all": false, "included": [1, 2, 3]}` or `{"all": true, "excluded": [4, 5]}`',
-    oneOf=[
-        openapi.Schema(
-            title='all: false',
-            type=openapi.TYPE_OBJECT,
-            properties={
-                'all': openapi.Schema(type=openapi.TYPE_BOOLEAN, enum=[False], description='No tasks are selected'),
-                'included': openapi.Schema(
-                    type=openapi.TYPE_ARRAY,
-                    items=openapi.Schema(type=openapi.TYPE_INTEGER),
-                    description='List of included task IDs',
-                ),
+    'oneOf': [
+        {
+            'title': 'all: false',
+            'type': 'object',
+            'properties': {
+                'all': {'type': 'boolean', 'enum': [False], 'description': 'No tasks are selected'},
+                'included': {
+                    'type': 'array',
+                    'items': {'type': 'integer'},
+                    'description': 'List of included task IDs',
+                },
             },
-            required=['all'],
-        ),
-        openapi.Schema(
-            title='all: true',
-            type=openapi.TYPE_OBJECT,
-            properties={
-                'all': openapi.Schema(type=openapi.TYPE_BOOLEAN, enum=[True], description='All tasks are selected'),
-                'excluded': openapi.Schema(
-                    type=openapi.TYPE_ARRAY,
-                    items=openapi.Schema(type=openapi.TYPE_INTEGER),
-                    description='List of excluded task IDs',
-                ),
+            'required': ['all'],
+        },
+        {
+            'title': 'all: true',
+            'type': 'object',
+            'properties': {
+                'all': {'type': 'boolean', 'enum': [True], 'description': 'All tasks are selected'},
+                'excluded': {
+                    'type': 'array',
+                    'items': {'type': 'integer'},
+                    'description': 'List of excluded task IDs',
+                },
             },
-            required=['all'],
-        ),
+            'required': ['all'],
+        },
     ],
-)
+}
 
 # Define ordering schema
-ordering_schema = openapi.Schema(
-    type=openapi.TYPE_ARRAY,
-    items=openapi.Schema(
-        type=openapi.TYPE_STRING,
-        enum=Column.enums_for_ordering(),
-    ),
-    description='List of fields to order by. Fields are similar to filters but without the `filter:` prefix. '
+ordering_schema = {
+    'type': 'array',
+    'items': {
+        'type': 'string',
+        'enum': Column.enums_for_ordering(),
+    },
+    'description': 'List of fields to order by. Fields are similar to filters but without the `filter:` prefix. '
     'To reverse the order, add a minus sign before the field name, e.g. `-tasks:created_at`.',
-)
+}
 
 # Define the main schema for the data payload
-data_schema = openapi.Schema(
-    type=openapi.TYPE_OBJECT,
-    properties={'filters': filters_schema, 'selectedItems': selected_items_schema, 'ordering': ordering_schema},
-    description='Additional query to filter and order tasks',
-)
+data_schema = {
+    'type': 'object',
+    'properties': {'filters': filters_schema, 'selectedItems': selected_items_schema, 'ordering': ordering_schema},
+    'description': 'Additional query to filter and order tasks',
+}
 
-prepare_params_schema = openapi.Schema(
-    type=openapi.TYPE_OBJECT,
-    properties={'filters': filters_schema, 'selectedItems': selected_items_schema, 'ordering': ordering_schema},
-    description='Data payload containing task filters, selected task items, and ordering',
-    example=example_request_1,
-)
+prepare_params_schema = {
+    'type': 'object',
+    'properties': {'filters': filters_schema, 'selectedItems': selected_items_schema, 'ordering': ordering_schema},
+    'description': 'Data payload containing task filters, selected task items, and ordering',
+    'example': example_request_1,
+}

@@ -1,5 +1,6 @@
 import logging
 
+from drf_spectacular.extensions import OpenApiAuthenticationExtension
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 
@@ -33,3 +34,20 @@ class TokenAuthenticationPhaseout(TokenAuthentication):
                 extra={'user_id': user.id, 'organization_id': org_id, 'endpoint': request.path},
             )
         return auth_result
+
+
+class JWTAuthScheme(OpenApiAuthenticationExtension):
+    target_class = 'jwt_auth.auth.TokenAuthenticationPhaseout'
+    name = 'Token'
+
+    def get_security_definition(self, auto_schema):
+        return {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+            'description': 'The token (or API key) must be passed as a request header. '
+            'You can find your user token on the User Account page in Label Studio. Example: '
+            '<br><pre><code class="language-bash">'
+            'curl https://label-studio-host/api/projects -H "Authorization: Token [your-token]"'
+            '</code></pre>',
+        }

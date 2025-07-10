@@ -2,10 +2,8 @@
 """
 import logging
 
-import drf_yasg.openapi as openapi
 from core.mixins import GetParentObjectMixin
 from core.permissions import ViewClassPermission, all_permissions
-from core.utils.common import DjangoFilterDescriptionInspector
 from core.utils.params import bool_from_request
 from data_manager.api import TaskListAPI as DMTaskListAPI
 from data_manager.functions import evaluate_predictions
@@ -16,7 +14,8 @@ from django.db.models import Q
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_yasg.utils import no_body, swagger_auto_schema
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiExample, OpenApiParameter, OpenApiResponse, extend_schema
 from projects.functions.stream_history import fill_history_annotation
 from projects.models import Project
 from rest_framework import generics, viewsets
@@ -53,71 +52,68 @@ logger = logging.getLogger(__name__)
 # TODO: fix after switch to api/tasks from api/dm/tasks
 @method_decorator(
     name='post',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Tasks'],
-        x_fern_sdk_group_name='tasks',
-        x_fern_sdk_method_name='create',
-        x_fern_audiences=['public'],
-        operation_summary='Create task',
-        operation_description='Create a new labeling task in Label Studio.',
-        request_body=task_request_schema,
+        summary='Create task',
+        description='Create a new labeling task in Label Studio.',
+        request={
+            'application/json': task_request_schema,
+        },
         responses={
-            '201': openapi.Response(
-                description='Created task', schema=TaskSerializer, examples={'application/json': task_response_example}
+            '201': OpenApiResponse(
+                description='Created task',
+                response=TaskSerializer,
+                examples=[OpenApiExample(name='response', value=task_response_example, media_type='application/json')],
             )
+        },
+        extensions={
+            'x-fern-sdk-group-name': 'tasks',
+            'x-fern-sdk-method-name': 'create',
+            'x-fern-audiences': ['public'],
         },
     ),
 )
 @method_decorator(
     name='get',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Tasks'],
-        x_fern_sdk_group_name='tasks',
-        x_fern_sdk_method_name='list',
-        x_fern_pagination={
-            'offset': '$request.page',
-            'results': '$response.tasks',
-        },
-        x_fern_audiences=['public'],
-        operation_summary='Get tasks list',
-        operation_description="""
+        summary='Get tasks list',
+        description="""
     Retrieve a list of tasks with pagination for a specific view or project, by using filters and ordering.
     """,
-        manual_parameters=[
-            openapi.Parameter(name='view', type=openapi.TYPE_INTEGER, in_=openapi.IN_QUERY, description='View ID'),
-            openapi.Parameter(
-                name='project', type=openapi.TYPE_INTEGER, in_=openapi.IN_QUERY, description='Project ID'
-            ),
-            openapi.Parameter(
+        parameters=[
+            OpenApiParameter(name='view', type=OpenApiTypes.INT, location='query', description='View ID'),
+            OpenApiParameter(name='project', type=OpenApiTypes.INT, location='query', description='Project ID'),
+            OpenApiParameter(
                 name='resolve_uri',
-                type=openapi.TYPE_BOOLEAN,
-                in_=openapi.IN_QUERY,
+                type=OpenApiTypes.BOOL,
+                location='query',
                 description='Resolve task data URIs using Cloud Storage',
             ),
-            openapi.Parameter(
+            OpenApiParameter(
                 name='fields',
-                type=openapi.TYPE_STRING,
+                type=OpenApiTypes.STR,
                 enum=['all', 'task_only'],
                 default='task_only',
-                in_=openapi.IN_QUERY,
+                location='query',
                 description='Set to "all" if you want to include annotations and predictions in the response',
             ),
-            openapi.Parameter(
+            OpenApiParameter(
                 name='review',
-                type=openapi.TYPE_BOOLEAN,
-                in_=openapi.IN_QUERY,
+                type=OpenApiTypes.BOOL,
+                location='query',
                 description='Get tasks for review',
             ),
-            openapi.Parameter(
+            OpenApiParameter(
                 name='include',
-                type=openapi.TYPE_STRING,
-                in_=openapi.IN_QUERY,
+                type=OpenApiTypes.STR,
+                location='query',
                 description='Specify which fields to include in the response',
             ),
-            openapi.Parameter(
+            OpenApiParameter(
                 name='query',
-                type=openapi.TYPE_STRING,
-                in_=openapi.IN_QUERY,
+                type=OpenApiTypes.STR,
+                location='query',
                 description='Additional query to filter tasks. It must be JSON encoded string of dict containing '
                 'one of the following parameters: `{"filters": ..., "selectedItems": ..., "ordering": ...}`. Check '
                 '[Data Manager > Create View > see `data` field](#tag/Data-Manager/operation/api_dm_views_create) '
@@ -133,32 +129,43 @@ logger = logging.getLogger(__name__)
             ),
         ],
         responses={
-            '200': openapi.Response(
+            '200': OpenApiResponse(
                 description='Tasks list',
-                schema=openapi.Schema(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        'tasks': openapi.Schema(
-                            description='List of tasks',
-                            type=openapi.TYPE_ARRAY,
-                            items=openapi.Schema(
-                                description='Task object',
-                                type=openapi.TYPE_OBJECT,
-                                # TODO: provide schema for DataManagerTaskSerializer
-                                # Right now the schema is defined in override.yml to ensure each item in paginated response is Task object derived from "#/components/schemas/Task"
-                                # We need to figure out more elegant way to define schema for DataManagerTaskSerializer to keep it in sync with Task object
-                            ),
-                        ),
-                        'total': openapi.Schema(description='Total number of tasks', type=openapi.TYPE_INTEGER),
-                        'total_annotations': openapi.Schema(
-                            description='Total number of annotations', type=openapi.TYPE_INTEGER
-                        ),
-                        'total_predictions': openapi.Schema(
-                            description='Total number of predictions', type=openapi.TYPE_INTEGER
-                        ),
+                response={
+                    'type': 'object',
+                    'properties': {
+                        'tasks': {
+                            'description': 'List of tasks',
+                            'type': 'array',
+                            'items': {
+                                'description': 'Task object',
+                                'type': 'object',
+                            },
+                        },
+                        'total': {
+                            'description': 'Total number of tasks',
+                            'type': 'integer',
+                        },
+                        'total_annotations': {
+                            'description': 'Total number of annotations',
+                            'type': 'integer',
+                        },
+                        'total_predictions': {
+                            'description': 'Total number of predictions',
+                            'type': 'integer',
+                        },
                     },
-                ),
+                },
             )
+        },
+        extensions={
+            'x-fern-sdk-group-name': 'tasks',
+            'x-fern-sdk-method-name': 'list',
+            'x-fern-pagination': {
+                'offset': '$request.page',
+                'results': '$response.results',
+            },
+            'x-fern-audiences': ['public'],
         },
     ),
 )
@@ -193,61 +200,73 @@ class TaskListAPI(DMTaskListAPI):
 
 @method_decorator(
     name='get',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Tasks'],
-        x_fern_sdk_group_name='tasks',
-        x_fern_sdk_method_name='get',
-        x_fern_audiences=['public'],
-        operation_summary='Get task',
-        operation_description="""
+        summary='Get task',
+        description="""
         Get task data, metadata, annotations and other attributes for a specific labeling task by task ID.
         """,
-        manual_parameters=[
-            openapi.Parameter(name='id', type=openapi.TYPE_STRING, in_=openapi.IN_PATH, description='Task ID'),
+        parameters=[
+            OpenApiParameter(name='id', type=OpenApiTypes.STR, location='path', description='Task ID'),
         ],
-        request_body=no_body,
+        request=None,
         responses={
-            '200': openapi.Response(
+            '200': OpenApiResponse(
                 description='Task',
-                schema=DataManagerTaskSerializer,
-                examples={'application/json': dm_task_response_example},
+                response=DataManagerTaskSerializer,
+                examples=[
+                    OpenApiExample(name='response', value=dm_task_response_example, media_type='application/json')
+                ],
             )
+        },
+        extensions={
+            'x-fern-sdk-group-name': 'tasks',
+            'x-fern-sdk-method-name': 'get',
+            'x-fern-audiences': ['public'],
         },
     ),
 )
 @method_decorator(
     name='patch',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Tasks'],
-        x_fern_sdk_group_name='tasks',
-        x_fern_sdk_method_name='update',
-        x_fern_audiences=['public'],
-        operation_summary='Update task',
-        operation_description='Update the attributes of an existing labeling task.',
-        manual_parameters=[
-            openapi.Parameter(name='id', type=openapi.TYPE_STRING, in_=openapi.IN_PATH, description='Task ID'),
+        summary='Update task',
+        description='Update the attributes of an existing labeling task.',
+        parameters=[
+            OpenApiParameter(name='id', type=OpenApiTypes.STR, location='path', description='Task ID'),
         ],
-        request_body=task_request_schema,
+        request={
+            'application/json': task_request_schema,
+        },
         responses={
-            '200': openapi.Response(
-                description='Updated task', schema=TaskSerializer, examples={'application/json': task_response_example}
+            '200': OpenApiResponse(
+                description='Updated task',
+                response=TaskSerializer,
+                examples=[OpenApiExample(name='response', value=task_response_example, media_type='application/json')],
             )
+        },
+        extensions={
+            'x-fern-sdk-group-name': 'tasks',
+            'x-fern-sdk-method-name': 'update',
+            'x-fern-audiences': ['public'],
         },
     ),
 )
 @method_decorator(
     name='delete',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Tasks'],
-        x_fern_sdk_group_name='tasks',
-        x_fern_sdk_method_name='delete',
-        x_fern_audiences=['public'],
-        operation_summary='Delete task',
-        operation_description='Delete a task in Label Studio. This action cannot be undone!',
-        manual_parameters=[
-            openapi.Parameter(name='id', type=openapi.TYPE_STRING, in_=openapi.IN_PATH, description='Task ID'),
+        summary='Delete task',
+        description='Delete a task in Label Studio. This action cannot be undone!',
+        parameters=[
+            OpenApiParameter(name='id', type=OpenApiTypes.STR, location='path', description='Task ID'),
         ],
-        request_body=no_body,
+        request=None,
+        extensions={
+            'x-fern-sdk-group-name': 'tasks',
+            'x-fern-sdk-method-name': 'delete',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 class TaskAPI(generics.RetrieveUpdateDestroyAPIView):
@@ -341,59 +360,71 @@ class TaskAPI(generics.RetrieveUpdateDestroyAPIView):
     def delete(self, request, *args, **kwargs):
         return super(TaskAPI, self).delete(request, *args, **kwargs)
 
-    @swagger_auto_schema(auto_schema=None)
+    @extend_schema(exclude=True)
     def put(self, request, *args, **kwargs):
         return super(TaskAPI, self).put(request, *args, **kwargs)
 
 
 @method_decorator(
     name='get',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Annotations'],
-        operation_summary='Get annotation by its ID',
-        operation_description='Retrieve a specific annotation for a task using the annotation result ID.',
-        x_fern_sdk_group_name='annotations',
-        x_fern_sdk_method_name='get',
-        x_fern_audiences=['public'],
-        request_body=no_body,
+        summary='Get annotation by its ID',
+        description='Retrieve a specific annotation for a task using the annotation result ID.',
+        request=None,
         responses={
-            '200': openapi.Response(
+            '200': OpenApiResponse(
                 description='Retrieved annotation',
-                schema=AnnotationSerializer,
-                examples={'application/json': annotation_response_example},
+                response=AnnotationSerializer,
+                examples=[
+                    OpenApiExample(name='response', value=annotation_response_example, media_type='application/json')
+                ],
             )
+        },
+        extensions={
+            'x-fern-sdk-group-name': 'annotations',
+            'x-fern-sdk-method-name': 'get',
+            'x-fern-audiences': ['public'],
         },
     ),
 )
 @method_decorator(
     name='patch',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Annotations'],
-        x_fern_sdk_group_name='annotations',
-        x_fern_sdk_method_name='update',
-        x_fern_audiences=['public'],
-        operation_summary='Update annotation',
-        operation_description='Update existing attributes on an annotation.',
-        request_body=annotation_request_schema,
+        summary='Update annotation',
+        description='Update existing attributes on an annotation.',
+        request={
+            'application/json': annotation_request_schema,
+        },
         responses={
-            '200': openapi.Response(
+            '200': OpenApiResponse(
                 description='Updated annotation',
-                schema=AnnotationSerializer,
-                examples={'application/json': annotation_response_example},
+                response=AnnotationSerializer,
+                examples=[
+                    OpenApiExample(name='response', value=annotation_response_example, media_type='application/json')
+                ],
             )
+        },
+        extensions={
+            'x-fern-sdk-group-name': 'annotations',
+            'x-fern-sdk-method-name': 'update',
+            'x-fern-audiences': ['public'],
         },
     ),
 )
 @method_decorator(
     name='delete',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Annotations'],
-        x_fern_sdk_group_name='annotations',
-        x_fern_sdk_method_name='delete',
-        x_fern_audiences=['public'],
-        operation_summary='Delete annotation',
-        operation_description="Delete an annotation. This action can't be undone!",
-        request_body=no_body,
+        summary='Delete annotation',
+        description="Delete an annotation. This action can't be undone!",
+        request=None,
+        extensions={
+            'x-fern-sdk-group-name': 'annotations',
+            'x-fern-sdk-method-name': 'delete',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 class AnnotationAPI(generics.RetrieveUpdateDestroyAPIView):
@@ -433,7 +464,7 @@ class AnnotationAPI(generics.RetrieveUpdateDestroyAPIView):
         return super(AnnotationAPI, self).get(request, *args, **kwargs)
 
     @api_webhook(WebhookAction.ANNOTATION_UPDATED)
-    @swagger_auto_schema(auto_schema=None)
+    @extend_schema(exclude=True)
     def put(self, request, *args, **kwargs):
         return super(AnnotationAPI, self).put(request, *args, **kwargs)
 
@@ -448,35 +479,36 @@ class AnnotationAPI(generics.RetrieveUpdateDestroyAPIView):
 
 @method_decorator(
     name='get',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Annotations'],
-        x_fern_sdk_group_name='annotations',
-        x_fern_sdk_method_name='list',
-        x_fern_audiences=['public'],
-        operation_summary='Get all task annotations',
-        operation_description='List all annotations for a task.',
-        manual_parameters=[
-            openapi.Parameter(name='id', type=openapi.TYPE_INTEGER, in_=openapi.IN_PATH, description='Task ID'),
+        summary='Get all task annotations',
+        description='List all annotations for a task.',
+        parameters=[
+            OpenApiParameter(name='id', type=OpenApiTypes.INT, location='path', description='Task ID'),
         ],
-        request_body=no_body,
+        request=None,
         responses={
-            '200': openapi.Response(
+            '200': OpenApiResponse(
                 description='Annotation',
-                schema=AnnotationSerializer(many=True),
-                examples={'application/json': [annotation_response_example]},
+                response=AnnotationSerializer(many=True),
+                examples=[
+                    OpenApiExample(name='response', value=[annotation_response_example], media_type='application/json')
+                ],
             )
+        },
+        extensions={
+            'x-fern-sdk-group-name': 'annotations',
+            'x-fern-sdk-method-name': 'list',
+            'x-fern-audiences': ['public'],
         },
     ),
 )
 @method_decorator(
     name='post',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Annotations'],
-        x_fern_sdk_group_name='annotations',
-        x_fern_sdk_method_name='create',
-        x_fern_audiences=['public'],
-        operation_summary='Create annotation',
-        operation_description="""
+        summary='Create annotation',
+        description="""
         Add annotations to a task like an annotator does. The content of the result field depends on your 
         labeling configuration. For example, send the following data as part of your POST 
         request to send an empty annotation with the ID of the user who completed the task:
@@ -492,16 +524,25 @@ class AnnotationAPI(generics.RetrieveUpdateDestroyAPIView):
         } 
         ```
         """,
-        manual_parameters=[
-            openapi.Parameter(name='id', type=openapi.TYPE_INTEGER, in_=openapi.IN_PATH, description='Task ID'),
+        parameters=[
+            OpenApiParameter(name='id', type=OpenApiTypes.INT, location='path', description='Task ID'),
         ],
-        request_body=annotation_request_schema,
+        request={
+            'application/json': annotation_request_schema,
+        },
         responses={
-            '201': openapi.Response(
+            '201': OpenApiResponse(
                 description='Created annotation',
-                schema=AnnotationSerializer,
-                examples={'application/json': annotation_response_example},
+                response=AnnotationSerializer,
+                examples=[
+                    OpenApiExample(name='response', value=annotation_response_example, media_type='application/json')
+                ],
             )
+        },
+        extensions={
+            'x-fern-sdk-group-name': 'annotations',
+            'x-fern-sdk-method-name': 'create',
+            'x-fern-audiences': ['public'],
         },
     ),
 )
@@ -601,6 +642,7 @@ class AnnotationsListAPI(GetParentObjectMixin, generics.ListCreateAPIView):
         return annotation
 
 
+@extend_schema(exclude=True)
 class AnnotationDraftListAPI(generics.ListCreateAPIView):
     parser_classes = (JSONParser, MultiPartParser, FormParser)
     serializer_class = AnnotationDraftSerializer
@@ -609,7 +651,6 @@ class AnnotationDraftListAPI(generics.ListCreateAPIView):
         POST=all_permissions.annotations_create,
     )
     queryset = AnnotationDraft.objects.all()
-    swagger_schema = None
 
     def filter_queryset(self, queryset):
         task_id = self.kwargs['pk']
@@ -623,6 +664,7 @@ class AnnotationDraftListAPI(generics.ListCreateAPIView):
         serializer.save(task_id=self.kwargs['pk'], annotation_id=annotation_id, user=self.request.user)
 
 
+@extend_schema(exclude=True)
 class AnnotationDraftAPI(generics.RetrieveUpdateDestroyAPIView):
     parser_classes = (JSONParser, MultiPartParser, FormParser)
     serializer_class = AnnotationDraftSerializer
@@ -633,139 +675,165 @@ class AnnotationDraftAPI(generics.RetrieveUpdateDestroyAPIView):
         PATCH=all_permissions.annotations_change,
         DELETE=all_permissions.annotations_delete,
     )
-    swagger_schema = None
 
 
 @method_decorator(
     name='list',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Predictions'],
-        x_fern_sdk_group_name='predictions',
-        x_fern_sdk_method_name='list',
-        x_fern_audiences=['public'],
-        operation_summary='List predictions',
-        filter_inspectors=[DjangoFilterDescriptionInspector],
-        operation_description='List all predictions and their IDs.',
-        manual_parameters=[
-            openapi.Parameter(
+        summary='List predictions',
+        description='List all predictions and their IDs.',
+        parameters=[
+            OpenApiParameter(
                 name='task',
-                type=openapi.TYPE_INTEGER,
-                in_=openapi.IN_QUERY,
+                type=OpenApiTypes.INT,
+                location='query',
                 description='Filter predictions by task ID',
             ),
-            openapi.Parameter(
+            OpenApiParameter(
                 name='project',
-                type=openapi.TYPE_INTEGER,
-                in_=openapi.IN_QUERY,
+                type=OpenApiTypes.INT,
+                location='query',
                 description='Filter predictions by project ID',
             ),
         ],
-        request_body=no_body,
+        request=None,
         responses={
-            '200': openapi.Response(
+            '200': OpenApiResponse(
                 description='Predictions list',
-                schema=PredictionSerializer(many=True),
-                examples={'application/json': [prediction_response_example]},
+                response=PredictionSerializer(many=True),
+                examples=[
+                    OpenApiExample(name='response', value=[prediction_response_example], media_type='application/json')
+                ],
             )
+        },
+        extensions={
+            'x-fern-sdk-group-name': 'predictions',
+            'x-fern-sdk-method-name': 'list',
+            'x-fern-audiences': ['public'],
         },
     ),
 )
 @method_decorator(
     name='create',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Predictions'],
-        x_fern_sdk_group_name='predictions',
-        x_fern_sdk_method_name='create',
-        x_fern_audiences=['public'],
-        operation_summary='Create prediction',
-        operation_description='Create a prediction for a specific task.',
-        request_body=prediction_request_schema,
+        summary='Create prediction',
+        description='Create a prediction for a specific task.',
+        request={
+            'application/json': prediction_request_schema,
+        },
         responses={
-            '201': openapi.Response(
+            '201': OpenApiResponse(
                 description='Created prediction',
-                schema=PredictionSerializer,
-                examples={'application/json': prediction_response_example},
+                response=PredictionSerializer,
+                examples=[
+                    OpenApiExample(name='response', value=prediction_response_example, media_type='application/json')
+                ],
             )
+        },
+        extensions={
+            'x-fern-sdk-group-name': 'predictions',
+            'x-fern-sdk-method-name': 'create',
+            'x-fern-audiences': ['public'],
         },
     ),
 )
 @method_decorator(
     name='retrieve',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Predictions'],
-        x_fern_sdk_group_name='predictions',
-        x_fern_sdk_method_name='get',
-        x_fern_audiences=['public'],
-        operation_summary='Get prediction details',
-        operation_description='Get details about a specific prediction by its ID.',
-        manual_parameters=[
-            openapi.Parameter(name='id', type=openapi.TYPE_INTEGER, in_=openapi.IN_PATH, description='Prediction ID'),
+        summary='Get prediction details',
+        description='Get details about a specific prediction by its ID.',
+        parameters=[
+            OpenApiParameter(name='id', type=OpenApiTypes.INT, location='path', description='Prediction ID'),
         ],
-        request_body=no_body,
+        request=None,
         responses={
-            '200': openapi.Response(
+            '200': OpenApiResponse(
                 description='Prediction details',
-                schema=PredictionSerializer,
-                examples={'application/json': prediction_response_example},
+                response=PredictionSerializer,
+                examples=[
+                    OpenApiExample(name='response', value=prediction_response_example, media_type='application/json')
+                ],
             )
+        },
+        extensions={
+            'x-fern-sdk-group-name': 'predictions',
+            'x-fern-sdk-method-name': 'get',
+            'x-fern-audiences': ['public'],
         },
     ),
 )
 @method_decorator(
     name='update',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Predictions'],
-        operation_summary='Put prediction',
-        x_fern_audiences=['internal'],
-        operation_description='Overwrite prediction data by prediction ID.',
-        manual_parameters=[
-            openapi.Parameter(name='id', type=openapi.TYPE_INTEGER, in_=openapi.IN_PATH, description='Prediction ID'),
+        summary='Put prediction',
+        description='Overwrite prediction data by prediction ID.',
+        parameters=[
+            OpenApiParameter(name='id', type=OpenApiTypes.INT, location='path', description='Prediction ID'),
         ],
-        request_body=prediction_request_schema,
+        request={
+            'application/json': prediction_request_schema,
+        },
         responses={
-            '200': openapi.Response(
+            '200': OpenApiResponse(
                 description='Updated prediction',
-                schema=PredictionSerializer,
-                examples={'application/json': prediction_response_example},
+                response=PredictionSerializer,
+                examples=[
+                    OpenApiExample(name='response', value=prediction_response_example, media_type='application/json')
+                ],
             )
+        },
+        extensions={
+            'x-fern-audiences': ['internal'],
         },
     ),
 )
 @method_decorator(
     name='partial_update',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Predictions'],
-        x_fern_sdk_group_name='predictions',
-        x_fern_sdk_method_name='update',
-        x_fern_audiences=['public'],
-        operation_summary='Update prediction',
-        operation_description='Update prediction data by prediction ID.',
-        manual_parameters=[
-            openapi.Parameter(name='id', type=openapi.TYPE_INTEGER, in_=openapi.IN_PATH, description='Prediction ID'),
+        summary='Update prediction',
+        description='Update prediction data by prediction ID.',
+        parameters=[
+            OpenApiParameter(name='id', type=OpenApiTypes.INT, location='path', description='Prediction ID'),
         ],
-        request_body=prediction_request_schema,
+        request={
+            'application/json': prediction_request_schema,
+        },
         responses={
-            '200': openapi.Response(
+            '200': OpenApiResponse(
                 description='Updated prediction',
-                schema=PredictionSerializer,
-                examples={'application/json': prediction_response_example},
+                response=PredictionSerializer,
+                examples=[
+                    OpenApiExample(name='response', value=prediction_response_example, media_type='application/json')
+                ],
             )
+        },
+        extensions={
+            'x-fern-sdk-group-name': 'predictions',
+            'x-fern-sdk-method-name': 'update',
+            'x-fern-audiences': ['public'],
         },
     ),
 )
 @method_decorator(
     name='destroy',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Predictions'],
-        x_fern_sdk_group_name='predictions',
-        x_fern_sdk_method_name='delete',
-        x_fern_audiences=['public'],
-        operation_summary='Delete prediction',
-        operation_description='Delete a prediction by prediction ID.',
-        manual_parameters=[
-            openapi.Parameter(name='id', type=openapi.TYPE_INTEGER, in_=openapi.IN_PATH, description='Prediction ID'),
+        summary='Delete prediction',
+        description='Delete a prediction by prediction ID.',
+        parameters=[
+            OpenApiParameter(name='id', type=OpenApiTypes.INT, location='path', description='Prediction ID'),
         ],
-        request_body=no_body,
+        request=None,
+        extensions={
+            'x-fern-sdk-group-name': 'predictions',
+            'x-fern-sdk-method-name': 'delete',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 class PredictionAPI(viewsets.ModelViewSet):
@@ -778,14 +846,16 @@ class PredictionAPI(viewsets.ModelViewSet):
         return Prediction.objects.filter(project__organization=self.request.user.active_organization)
 
 
-@method_decorator(name='get', decorator=swagger_auto_schema(auto_schema=None))
+@method_decorator(name='get', decorator=extend_schema(exclude=True))
 @method_decorator(
     name='post',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Annotations'],
-        x_fern_audiences=['internal'],
-        operation_summary='Convert annotation to draft',
-        operation_description='Convert annotation to draft',
+        summary='Convert annotation to draft',
+        description='Convert annotation to draft',
+        extensions={
+            'x-fern-audiences': ['internal'],
+        },
     ),
 )
 class AnnotationConvertAPI(generics.RetrieveAPIView):

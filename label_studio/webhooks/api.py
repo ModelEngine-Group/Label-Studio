@@ -2,8 +2,8 @@ import django_filters
 from core.permissions import ViewClassPermission, all_permissions
 from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from projects import models as project_models
 from rest_framework import generics
 from rest_framework.exceptions import NotFound
@@ -23,32 +23,36 @@ class WebhookFilterSet(django_filters.FilterSet):
 
 @method_decorator(
     name='get',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Webhooks'],
-        x_fern_sdk_group_name='webhooks',
-        x_fern_sdk_method_name='list',
-        x_fern_audiences=['public'],
-        operation_summary='List all webhooks',
-        operation_description='List all webhooks set up for your organization.',
-        manual_parameters=[
-            openapi.Parameter(
+        summary='List all webhooks',
+        description='List all webhooks set up for your organization.',
+        parameters=[
+            OpenApiParameter(
                 name='project',
-                type=openapi.TYPE_STRING,
-                in_=openapi.IN_QUERY,
+                type=OpenApiTypes.STR,
+                location='query',
                 description='Project ID',
             ),
         ],
+        extensions={
+            'x-fern-sdk-group-name': 'webhooks',
+            'x-fern-sdk-method-name': 'list',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 @method_decorator(
     name='post',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Webhooks'],
-        x_fern_sdk_group_name='webhooks',
-        x_fern_sdk_method_name='create',
-        x_fern_audiences=['public'],
-        operation_summary='Create a webhook',
-        operation_description='Create a webhook for your organization.',
+        summary='Create a webhook',
+        description='Create a webhook for your organization.',
+        extensions={
+            'x-fern-sdk-group-name': 'webhooks',
+            'x-fern-sdk-method-name': 'create',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 class WebhookListAPI(generics.ListCreateAPIView):
@@ -74,42 +78,50 @@ class WebhookListAPI(generics.ListCreateAPIView):
 
 @method_decorator(
     name='get',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Webhooks'],
-        x_fern_sdk_group_name='webhooks',
-        x_fern_sdk_method_name='get',
-        x_fern_audiences=['public'],
-        operation_summary='Get webhook info',
+        summary='Get webhook info',
+        extensions={
+            'x-fern-sdk-group-name': 'webhooks',
+            'x-fern-sdk-method-name': 'get',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 @method_decorator(
     name='put',
-    decorator=swagger_auto_schema(
-        x_fern_audiences=['internal'],
+    decorator=extend_schema(
         tags=['Webhooks'],
-        operation_summary='Save webhook info',
-        query_serializer=WebhookSerializerForUpdate,
+        summary='Save webhook info',
+        request=WebhookSerializerForUpdate,
+        extensions={
+            'x-fern-audiences': ['internal'],
+        },
     ),
 )
 @method_decorator(
     name='patch',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Webhooks'],
-        x_fern_sdk_group_name='webhooks',
-        x_fern_sdk_method_name='update',
-        x_fern_audiences=['public'],
-        operation_summary='Update webhook info',
-        query_serializer=WebhookSerializerForUpdate,
+        summary='Update webhook info',
+        request=WebhookSerializerForUpdate,
+        extensions={
+            'x-fern-sdk-group-name': 'webhooks',
+            'x-fern-sdk-method-name': 'update',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 @method_decorator(
     name='delete',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Webhooks'],
-        x_fern_sdk_group_name='webhooks',
-        x_fern_sdk_method_name='delete',
-        x_fern_audiences=['public'],
-        operation_summary='Delete webhook info',
+        summary='Delete webhook info',
+        extensions={
+            'x-fern-sdk-group-name': 'webhooks',
+            'x-fern-sdk-method-name': 'delete',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 class WebhookAPI(generics.RetrieveUpdateDestroyAPIView):
@@ -128,22 +140,24 @@ class WebhookAPI(generics.RetrieveUpdateDestroyAPIView):
 
 @method_decorator(
     name='get',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Webhooks'],
-        x_fern_sdk_group_name='webhooks',
-        x_fern_sdk_method_name='info',
-        x_fern_audiences=['public'],
-        operation_summary='Get all webhook actions',
-        operation_description='Get descriptions of all available webhook actions to set up webhooks.',
+        summary='Get all webhook actions',
+        description='Get descriptions of all available webhook actions to set up webhooks.',
         responses={'200': 'Object with description data.'},
-        manual_parameters=[
-            openapi.Parameter(
-                'organization-only',
-                openapi.IN_QUERY,
+        parameters=[
+            OpenApiParameter(
+                name='organization-only',
+                location='query',
                 description='organization-only or not',
-                type=openapi.TYPE_BOOLEAN,
+                type=OpenApiTypes.BOOL,
             )
         ],
+        extensions={
+            'x-fern-sdk-group-name': 'webhooks',
+            'x-fern-sdk-method-name': 'info',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 class WebhookInfoAPI(APIView):

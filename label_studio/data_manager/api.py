@@ -23,8 +23,8 @@ from django.db.models import Sum
 from django.db.models.functions import Coalesce
 from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiExample, OpenApiParameter, OpenApiResponse, extend_schema
 from projects.models import Project
 from projects.serializers import ProjectSerializer
 from rest_framework import generics, viewsets
@@ -36,103 +36,115 @@ from tasks.models import Annotation, Prediction, Task
 
 logger = logging.getLogger(__name__)
 
-_view_request_body = openapi.Schema(
-    type=openapi.TYPE_OBJECT,
-    properties={
-        'data': openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            description='Custom view data',
-            properties={'filters': filters_schema, 'ordering': ordering_schema},
-        ),
-        'project': openapi.Schema(type=openapi.TYPE_INTEGER, description='Project ID'),
+_view_request_body = {
+    'application/json': {
+        'type': 'object',
+        'properties': {
+            'data': {
+                'type': 'object',
+                'description': 'Custom view data',
+                'properties': {'filters': filters_schema, 'ordering': ordering_schema},
+            },
+            'project': {'type': 'integer', 'description': 'Project ID'},
+        },
     },
-)
+}
 
 
 @method_decorator(
     name='list',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Data Manager'],
-        x_fern_sdk_group_name='views',
-        x_fern_sdk_method_name='list',
-        x_fern_audiences=['public'],
-        operation_summary='List views',
-        operation_description='List all views for a specific project.',
-        manual_parameters=[
-            openapi.Parameter(
-                name='project', type=openapi.TYPE_INTEGER, in_=openapi.IN_QUERY, description='Project ID'
-            ),
+        summary='List views',
+        description='List all views for a specific project.',
+        parameters=[
+            OpenApiParameter(name='project', type=OpenApiTypes.INT, location='query', description='Project ID'),
         ],
+        extensions={
+            'x-fern-sdk-group-name': 'views',
+            'x-fern-sdk-method-name': 'list',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 @method_decorator(
     name='create',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Data Manager'],
-        x_fern_sdk_group_name='views',
-        x_fern_sdk_method_name='create',
-        x_fern_audiences=['public'],
-        operation_summary='Create view',
-        operation_description='Create a view for a specific project.',
-        request_body=_view_request_body,
+        summary='Create view',
+        description='Create a view for a specific project.',
+        request=_view_request_body,
         responses={201: ViewSerializer},
+        extensions={
+            'x-fern-sdk-group-name': 'views',
+            'x-fern-sdk-method-name': 'create',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 @method_decorator(
     name='retrieve',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Data Manager'],
-        x_fern_sdk_group_name='views',
-        x_fern_sdk_method_name='get',
-        x_fern_audiences=['public'],
-        operation_summary='Get view details',
-        operation_description='Get the details about a specific view in the data manager',
-        manual_parameters=[
-            openapi.Parameter(name='id', type=openapi.TYPE_STRING, in_=openapi.IN_PATH, description='View ID'),
+        summary='Get view details',
+        description='Get the details about a specific view in the data manager',
+        parameters=[
+            OpenApiParameter(name='id', type=OpenApiTypes.STR, location='path', description='View ID'),
         ],
+        extensions={
+            'x-fern-sdk-group-name': 'views',
+            'x-fern-sdk-method-name': 'get',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 @method_decorator(
     name='update',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Data Manager'],
-        x_fern_audiences=['internal'],
-        operation_summary='Put view',
-        operation_description='Overwrite view data with updated filters and other information for a specific project.',
-        request_body=_view_request_body,
-        manual_parameters=[
-            openapi.Parameter(name='id', type=openapi.TYPE_STRING, in_=openapi.IN_PATH, description='View ID'),
+        summary='Put view',
+        description='Overwrite view data with updated filters and other information for a specific project.',
+        request=_view_request_body,
+        parameters=[
+            OpenApiParameter(name='id', type=OpenApiTypes.STR, location='path', description='View ID'),
         ],
+        extensions={
+            'x-fern-audiences': ['internal'],
+        },
     ),
 )
 @method_decorator(
     name='partial_update',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Data Manager'],
-        x_fern_sdk_group_name='views',
-        x_fern_sdk_method_name='update',
-        x_fern_audiences=['public'],
-        operation_summary='Update view',
-        operation_description='Update view data with additional filters and other information for a specific project.',
-        manual_parameters=[
-            openapi.Parameter(name='id', type=openapi.TYPE_STRING, in_=openapi.IN_PATH, description='View ID'),
+        summary='Update view',
+        description='Update view data with additional filters and other information for a specific project.',
+        parameters=[
+            OpenApiParameter(name='id', type=OpenApiTypes.STR, location='path', description='View ID'),
         ],
-        request_body=_view_request_body,
+        request=_view_request_body,
         responses={200: ViewSerializer},
+        extensions={
+            'x-fern-sdk-group-name': 'views',
+            'x-fern-sdk-method-name': 'update',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 @method_decorator(
     name='destroy',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Data Manager'],
-        x_fern_sdk_group_name='views',
-        x_fern_sdk_method_name='delete',
-        x_fern_audiences=['public'],
-        operation_summary='Delete view',
-        operation_description='Delete a specific view by ID.',
-        manual_parameters=[
-            openapi.Parameter(name='id', type=openapi.TYPE_STRING, in_=openapi.IN_PATH, description='View ID'),
+        summary='Delete view',
+        description='Delete a specific view by ID.',
+        parameters=[
+            OpenApiParameter(name='id', type=OpenApiTypes.STR, location='path', description='View ID'),
         ],
+        extensions={
+            'x-fern-sdk-group-name': 'views',
+            'x-fern-sdk-method-name': 'delete',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 class ViewAPI(viewsets.ModelViewSet):
@@ -150,14 +162,17 @@ class ViewAPI(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-    @swagger_auto_schema(
+    @extend_schema(
         tags=['Data Manager'],
-        x_fern_sdk_group_name='views',
-        x_fern_sdk_method_name='delete_all',
-        x_fern_audiences=['public'],
-        operation_summary='Delete all project views',
-        operation_description='Delete all views for a specific project',
-        request_body=ViewResetSerializer,
+        summary='Delete all project views',
+        description='Delete all views for a specific project. Request body example: `{"project": 1}`.',
+        # Note: OpenAPI3 does not support request body for DELETE requests
+        # see https://github.com/tfranzel/drf-spectacular/issues/431#issuecomment-862738643
+        extensions={
+            'x-fern-sdk-group-name': 'views',
+            'x-fern-sdk-method-name': 'delete_all',
+            'x-fern-audiences': ['public'],
+        },
     )
     @action(detail=False, methods=['delete'])
     def reset(self, request):
@@ -170,12 +185,16 @@ class ViewAPI(viewsets.ModelViewSet):
         queryset.all().delete()
         return Response(status=204)
 
-    @swagger_auto_schema(
-        method='post',
+    @extend_schema(
         tags=['Data Manager'],
-        operation_summary='Update order of views',
-        operation_description='Update the order field of views based on the provided list of view IDs',
-        request_body=ViewOrderSerializer,
+        summary='Update order of views',
+        description='Update the order field of views based on the provided list of view IDs',
+        request=ViewOrderSerializer,
+        extensions={
+            'x-fern-sdk-group-name': 'views',
+            'x-fern-sdk-method-name': 'update_order',
+            'x-fern-audiences': ['public'],
+        },
     )
     @action(detail=False, methods=['post'], url_path='order')
     def update_order(self, request):
@@ -362,54 +381,60 @@ class TaskListAPI(generics.ListCreateAPIView):
 
 @method_decorator(
     name='get',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Data Manager'],
-        x_fern_audiences=['internal'],
-        operation_summary='Get data manager columns',
-        operation_description=(
+        summary='Get data manager columns',
+        description=(
             'Retrieve the data manager columns available for the tasks in a specific project. '
             'For more details, see [GET api/actions](#/Data%20Manager/get_api_actions).'
         ),
-        manual_parameters=[
-            openapi.Parameter(
+        parameters=[
+            OpenApiParameter(
                 name='project',
-                type=openapi.TYPE_INTEGER,
-                in_=openapi.IN_QUERY,
+                type=OpenApiTypes.INT,
+                location='query',
                 description='Project ID',
                 required=True,
             )
         ],
         responses={
-            200: openapi.Response(
+            200: OpenApiResponse(
                 description='Columns retrieved successfully',
-                examples={
-                    'application/json': {
-                        'columns': [
-                            {
-                                'id': 'id',
-                                'title': 'ID',
-                                'type': 'Number',
-                                'help': 'Task ID',
-                                'target': 'tasks',
-                                'visibility_defaults': {'explore': True, 'labeling': False},
-                                'project_defined': False,
-                            },
-                            {
-                                'id': 'completed_at',
-                                'title': 'Completed',
-                                'type': 'Datetime',
-                                'target': 'tasks',
-                                'help': 'Last annotation date',
-                                'visibility_defaults': {'explore': True, 'labeling': False},
-                                'project_defined': False,
-                            },
-                            # ... other columns ...
-                        ]
-                    }
-                },
+                examples=[
+                    OpenApiExample(
+                        name='response',
+                        value={
+                            'columns': [
+                                {
+                                    'id': 'id',
+                                    'title': 'ID',
+                                    'type': 'Number',
+                                    'help': 'Task ID',
+                                    'target': 'tasks',
+                                    'visibility_defaults': {'explore': True, 'labeling': False},
+                                    'project_defined': False,
+                                },
+                                {
+                                    'id': 'completed_at',
+                                    'title': 'Completed',
+                                    'type': 'Datetime',
+                                    'target': 'tasks',
+                                    'help': 'Last annotation date',
+                                    'visibility_defaults': {'explore': True, 'labeling': False},
+                                    'project_defined': False,
+                                },
+                                # ... other columns ...
+                            ]
+                        },
+                        media_type='application/json',
+                    )
+                ],
             ),
-            400: openapi.Response(description='Invalid project ID supplied'),
-            404: openapi.Response(description='Project not found'),
+            400: OpenApiResponse(description='Invalid project ID supplied'),
+            404: OpenApiResponse(description='Project not found'),
+        },
+        extensions={
+            'x-fern-audiences': ['internal'],
         },
     ),
 )
@@ -427,11 +452,13 @@ class ProjectColumnsAPI(APIView):
 
 @method_decorator(
     name='get',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Data Manager'],
-        x_fern_audiences=['internal'],
-        operation_summary='Get project state',
-        operation_description='Retrieve the project state for the data manager.',
+        summary='Get project state',
+        description='Retrieve the project state for the data manager.',
+        extensions={
+            'x-fern-audiences': ['internal'],
+        },
     ),
 )
 class ProjectStateAPI(APIView):
@@ -460,35 +487,36 @@ class ProjectStateAPI(APIView):
 
 @method_decorator(
     name='get',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Data Manager'],
-        x_fern_sdk_group_name='actions',
-        x_fern_sdk_method_name='list',
-        x_fern_audiences=['public'],
-        operation_summary='Get actions',
-        operation_description='Retrieve all the registered actions with descriptions that data manager can use.',
+        summary='Get actions',
+        description='Retrieve all the registered actions with descriptions that data manager can use.',
+        extensions={
+            'x-fern-sdk-group-name': 'actions',
+            'x-fern-sdk-method-name': 'list',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 @method_decorator(
     name='post',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Data Manager'],
-        x_fern_sdk_group_name='actions',
-        x_fern_sdk_method_name='create',
-        x_fern_audiences=['public'],
-        operation_summary='Post actions',
-        operation_description=(
+        summary='Post actions',
+        description=(
             'Perform a Data Manager action with the selected tasks and filters. '
             'Note: More complex actions require additional parameters in the request body. '
             'Call `GET api/actions?project=<id>` to explore them. <br>'
             'Example: `GET api/actions?id=delete_tasks&project=1`'
         ),
-        request_body=prepare_params_schema,
-        manual_parameters=[
-            openapi.Parameter(
+        request={
+            'application/json': prepare_params_schema,
+        },
+        parameters=[
+            OpenApiParameter(
                 name='id',
-                type=openapi.TYPE_STRING,
-                in_=openapi.IN_QUERY,
+                type=OpenApiTypes.STR,
+                location='query',
                 description='Action name ID, see the full list of actions in the `GET api/actions` request',
                 enum=[
                     'retrieve_tasks_predictions',
@@ -502,25 +530,29 @@ class ProjectStateAPI(APIView):
                     'delete_reviewers',
                     'delete_annotators',
                 ],
-                example='delete_tasks',
                 required=True,
             ),
-            openapi.Parameter(
+            OpenApiParameter(
                 name='project',
-                type=openapi.TYPE_INTEGER,
-                in_=openapi.IN_QUERY,
+                type=OpenApiTypes.INT,
+                location='query',
                 description='Project ID',
                 required=True,
             ),
-            openapi.Parameter(
+            OpenApiParameter(
                 name='view',
-                type=openapi.TYPE_INTEGER,
-                in_=openapi.IN_QUERY,
+                type=OpenApiTypes.INT,
+                location='query',
                 description='View ID (optional, it has higher priority than filters, '
                 'selectedItems and ordering from the request body payload)',
             ),
         ],
-        responses={200: openapi.Response(description='Action performed successfully')},
+        responses={200: OpenApiResponse(description='Action performed successfully')},
+        extensions={
+            'x-fern-sdk-group-name': 'actions',
+            'x-fern-sdk-method-name': 'create',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 class ProjectActionsAPI(APIView):
@@ -558,23 +590,26 @@ class ProjectActionsAPI(APIView):
 
 @method_decorator(
     name='get',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Data Manager'],
-        operation_summary='Get action form',
-        operation_description='Get the form configuration for a specific action.',
-        manual_parameters=[
-            openapi.Parameter(
+        summary='Get action form',
+        description='Get the form configuration for a specific action.',
+        parameters=[
+            OpenApiParameter(
                 name='project',
-                type=openapi.TYPE_INTEGER,
-                in_=openapi.IN_QUERY,
+                type=OpenApiTypes.INT,
+                location='query',
                 description='Project ID',
                 required=True,
             )
         ],
         responses={
-            200: openapi.Response(
+            200: OpenApiResponse(
                 description='Action form configuration returned successfully',
-                schema=openapi.Schema(type=openapi.TYPE_OBJECT, description='Form configuration object'),
+                response={
+                    'type': 'object',
+                    'description': 'Form configuration object',
+                },
             )
         },
     ),

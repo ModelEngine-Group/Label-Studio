@@ -1140,21 +1140,27 @@
         "decorators": ""
     },
     {
-        "url": "/swagger<format>",
-        "module": "drf_yasg.views.SchemaView",
+        "url": "/swagger\\.json",
+        "module": "core.urls.<lambda>",
         "name": "schema-json",
         "decorators": ""
     },
     {
+        "url": "/swagger\\.yaml",
+        "module": "core.urls.<lambda>",
+        "name": "schema-yaml",
+        "decorators": ""
+    },
+    {
         "url": "/swagger/",
-        "module": "drf_yasg.views.SchemaView",
+        "module": "core.urls.<lambda>",
         "name": "schema-swagger-ui",
         "decorators": ""
     },
     {
         "url": "/docs/api/",
-        "module": "drf_yasg.views.SchemaView",
-        "name": "schema-redoc",
+        "module": "core.urls.<lambda>",
+        "name": "docs-api",
         "decorators": ""
     },
     {
@@ -1995,6 +2001,36 @@
         "url": "/api/session-policy/",
         "module": "session_policy.api.SessionTimeoutPolicyView",
         "name": "session_policy:session-policy",
+        "decorators": ""
+    },
+    {
+        "url": "/docs/api/schema/",
+        "module": "drf_spectacular.views.SpectacularAPIView",
+        "name": "schema",
+        "decorators": ""
+    },
+    {
+        "url": "/docs/api/schema/swagger-ui/",
+        "module": "drf_spectacular.views.SpectacularSwaggerView",
+        "name": "swagger-ui",
+        "decorators": ""
+    },
+    {
+        "url": "/docs/api/schema/redoc/",
+        "module": "drf_spectacular.views.SpectacularRedocView",
+        "name": "redoc",
+        "decorators": ""
+    },
+    {
+        "url": "/docs/api/schema/json/",
+        "module": "drf_spectacular.views.SpectacularJSONAPIView",
+        "name": "schema-json",
+        "decorators": ""
+    },
+    {
+        "url": "/docs/api/schema/yaml/",
+        "module": "drf_spectacular.views.SpectacularYAMLAPIView",
+        "name": "schema-yaml",
         "decorators": ""
     }
 ]

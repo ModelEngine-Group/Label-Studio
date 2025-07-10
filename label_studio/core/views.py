@@ -29,7 +29,7 @@ from django.shortcuts import redirect, render, reverse
 from django.utils._os import safe_join
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
 from io_storages.localfiles.models import LocalFilesImportStorage
 from ranged_fileresponse import RangedFileResponse
 from rest_framework.decorators import api_view, permission_classes
@@ -104,7 +104,7 @@ class TriggerAPIError(APIView):
     authentication_classes = ()
     permission_classes = ()
 
-    @swagger_auto_schema(auto_schema=None)
+    @extend_schema(exclude=True)
     def get(self, request):
         raise Exception('test')
 
@@ -193,7 +193,7 @@ def heidi_tips(request):
     return HttpResponse(response.content, content_type='application/json')
 
 
-@swagger_auto_schema(methods=['GET'], auto_schema=None)
+@extend_schema(exclude=True)
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def localfiles_data(request):
