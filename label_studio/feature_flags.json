@@ -3822,6 +3822,33 @@
       "version": 3,
       "deleted": false
     },
+    "fflag_fix_back_plt_819_per_org_rate_limiter_09072025_short": {
+      "key": "fflag_fix_back_plt_819_per_org_rate_limiter_09072025_short",
+      "on": true,
+      "prerequisites": [],
+      "targets": [],
+      "contextTargets": [],
+      "rules": [],
+      "fallthrough": {
+        "variation": 0
+      },
+      "offVariation": 1,
+      "variations": [
+        true,
+        false
+      ],
+      "clientSideAvailability": {
+        "usingMobileKey": false,
+        "usingEnvironmentId": false
+      },
+      "clientSide": false,
+      "salt": "151d487f557a4b9982e815afd7cb3af4",
+      "trackEvents": false,
+      "trackEventsFallthrough": false,
+      "debugEventsUntilDate": null,
+      "version": 3,
+      "deleted": false
+    },
     "fflag_fix_bros_95_drafts_from_other_users": {
       "key": "fflag_fix_bros_95_drafts_from_other_users",
       "on": true,
