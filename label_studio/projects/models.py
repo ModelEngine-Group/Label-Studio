@@ -1088,7 +1088,7 @@ class Project(ProjectMixin, models.Model):
         recalculate_stats_counts: Optional[Mapping[str, int]] = None,
     ):
         """
-        Update tasks counters and update tasks states (rearrange and\or is_labeled)
+        Update tasks counters and update tasks states (rearrange and/or is_labeled)
         :param queryset: Tasks to update queryset
         :param from_scratch: Skip calculated tasks
         :return: Count of updated tasks

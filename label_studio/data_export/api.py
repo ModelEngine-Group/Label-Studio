@@ -142,7 +142,7 @@ class ExportFormatsListAPI(generics.RetrieveAPIView):
         ```
         To export specific tasks with IDs of 123 and 345, run the following from the command line:
         ```bash
-        curl -X GET {}/api/projects/{{id}}/export?ids[]=123\&ids[]=345 -H \'Authorization: Token abc123\' --output 'annotations.json'
+        curl -X GET '{}/api/projects/{{id}}/export?ids[]=123&ids[]=345' -H 'Authorization: Token abc123' --output 'annotations.json'
         ```
         """.format(
             settings.HOSTNAME or 'https://localhost:8080',
