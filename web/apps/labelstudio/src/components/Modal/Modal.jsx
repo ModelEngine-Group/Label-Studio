@@ -78,7 +78,6 @@ export const confirm = ({ okText, onOk, cancelText, onCancel, buttonLook, ...pro
             onCancel?.();
             modal.close();
           }}
-          size="small"
           look="outlined"
           autoFocus
           className="min-w-[120px]"
@@ -91,7 +90,6 @@ export const confirm = ({ okText, onOk, cancelText, onCancel, buttonLook, ...pro
             onOk?.();
             modal.close();
           }}
-          size="small"
           variant={buttonLook ?? "primary"}
           className="min-w-[120px]"
         >

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Button } from "@humansignal/ui";
-import { Label } from "@humansignal/ui";
 import {
   Dialog,
   DialogContent,
@@ -34,7 +33,7 @@ interface ImportData {
 interface ImportDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onImport: (data: ImportData | Hotkey[]) => void;
+  onImport: (data: ImportData | Hotkey[]) => void | Promise<void>;
 }
 
 /**
@@ -172,7 +171,12 @@ export const ImportDialog = ({ open, onOpenChange, onImport }: ImportDialogProps
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
-          <Label htmlFor="import-json">Hotkeys JSON</Label>
+          <label
+            htmlFor="import-json"
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+            Hotkeys JSON
+          </label>
           <textarea
             id="import-json"
             className="flex min-h-[150px] w-full rounded-md border border-neutral-border bg-transparent px-tight py-tighter typography-body-small placeholder:text-neutral-content-subtler focus-visible:ring-4 focus-visible:ring-primary-focus-outline focus-visible:border-neutral-border-bolder focus-visible:outline-0 transition-all resize-none"

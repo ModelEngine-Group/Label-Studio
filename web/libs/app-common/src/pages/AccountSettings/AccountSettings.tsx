@@ -3,6 +3,7 @@ import { useMemo, isValidElement } from "react";
 import { Redirect, Route, Switch, useHistory, useParams, useRouteMatch } from "react-router-dom";
 import styles from "./AccountSettings.module.scss";
 import { accountSettingsSections } from "./sections";
+import { HotkeysHeaderButtons } from "./sections/Hotkeys";
 import clsx from "clsx";
 import { useAtomValue } from "jotai";
 import { settingsAtom } from "./atoms";
@@ -40,16 +41,25 @@ const AccountSettingsSection = () => {
       <div className={contentClassName}>
         <Card key={currentSection.id}>
           <CardHeader>
-            <CardTitle>{currentSection.title}</CardTitle>
-            {currentSection.description && (
-              <CardDescription>
-                {isValidElement(currentSection.description) ? (
-                  currentSection.description
-                ) : (
-                  <currentSection.description />
+            <div className="flex flex-col gap-tight">
+              <div className="flex justify-between items-center">
+                <CardTitle>{currentSection.title}</CardTitle>
+                {currentSection.id === "hotkeys" && (
+                  <div className="flex-shrink-0">
+                    <HotkeysHeaderButtons />
+                  </div>
                 )}
-              </CardDescription>
-            )}
+              </div>
+              {currentSection.description && (
+                <CardDescription>
+                  {isValidElement(currentSection.description) ? (
+                    currentSection.description
+                  ) : (
+                    <currentSection.description />
+                  )}
+                </CardDescription>
+              )}
+            </div>
           </CardHeader>
           <CardContent>
             <currentSection.component />
