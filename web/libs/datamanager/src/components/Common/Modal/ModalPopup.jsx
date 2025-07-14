@@ -84,7 +84,7 @@ export class Modal extends React.Component {
               <Modal.Header>
                 <Elem name="title">{this.state.title}</Elem>
                 {this.props.allowClose !== false && (
-                  <Button name="close" look="outlined" onClick={() => this.hide()}>
+                  <Button name="close" look="string" onClick={() => this.hide()}>
                     <IconCross />
                   </Button>
                 )}
