@@ -85,6 +85,7 @@ class ExportFormatsListAPI(generics.RetrieveAPIView):
 @method_decorator(
     name='get',
     decorator=extend_schema(
+        deprecated=True,
         parameters=[
             OpenApiParameter(
                 name='export_type',
