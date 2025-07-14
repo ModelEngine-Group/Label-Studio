@@ -65,11 +65,13 @@ Please note that our documentation and company pages, served via https://app.hum
 
 Label Studio imposes rate limits on a per-Access Token basis. If a request exceeds the rate limit, a response with a 429 status code is returned. Clients are advised to pause and retry after a short delay in such instances.
 
-| Path                      | Rate limit                                             |
-|---------------------------|--------------------------------------------------------|
-| `/api/projects/*/import`  | `1 request / 1 second`                                 |
-| `/api/tasks/*/annotations`| `5 request / 1 second`                                 |
-| `/api`                    | `10 requests / 1 second`<br/>`500 requests / 1 minute` |
+| Path                      | Rate limit                                                 |
+|---------------------------|------------------------------------------------------------|
+| `/api/projects/*/import`  | `1 request / 1 second`                                     |
+| `/api/tasks/*/annotations`| `5 request / 1 second`                                     |
+| `/api`                    | Limits are set per user within an organization. The default limit is:<br/><br/>`15 requests / 1 second` per user |
+
+
 
 ## Other Operational Limits
 
