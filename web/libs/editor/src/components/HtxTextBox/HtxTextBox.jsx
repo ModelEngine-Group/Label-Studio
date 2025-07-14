@@ -1,12 +1,8 @@
 import React from "react";
-import { Typography } from "antd";
-import { EnterOutlined } from "@ant-design/icons";
-import { IconEdit, IconTrashAlt } from "@humansignal/icons";
-import { Button, Tooltip } from "@humansignal/ui";
-import styles from "./HtxTextBox.module.scss";
+import { IconEdit, IconTrashAlt, IconCheck } from "@humansignal/icons";
+import { Button, Tooltip, Typography } from "@humansignal/ui";
 import throttle from "lodash.throttle";
 
-const { Paragraph } = Typography;
 // used for correct auto-height calculation
 const BORDER_WIDTH = 1;
 
@@ -16,6 +12,9 @@ export class HtxTextBox extends React.Component {
     height: 0,
     value: this.props.text,
   };
+
+  inputClassName =
+    "text-color-neutral-content bg-neutral-surface border border-neutral-border px-base py-tight rounded-md w-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary-focus-outline leading-body-small";
 
   textRef = React.createRef();
   inputRef = React.createRef();
@@ -109,14 +108,12 @@ export class HtxTextBox extends React.Component {
       isEditable: __,
       isDeleteable: ___,
       ignoreShortcuts: ____,
-
-      ...props
     } = this.props;
     const { height, value } = this.state;
 
     const inputProps = {
       name,
-      className: `ant-input ${styles.input}`,
+      className: `flex ${this.inputClassName}`,
       style: height ? { height, borderWidth: BORDER_WIDTH } : null,
       autoFocus: true,
       ref: this.inputRef,
@@ -150,14 +147,24 @@ export class HtxTextBox extends React.Component {
     this.updateHeight();
 
     return (
-      <Paragraph {...props} className={`${className} ant-typography-edit-content ${styles.editing}`}>
+      <div className="grow p-0 relative">
         {rows > 1 ? <textarea {...inputProps} /> : <input {...inputProps} />}
         {!onlyEdit && (
           <Tooltip title="Save: [shift+enter]">
-            <EnterOutlined className={`ant-typography-edit-content-confirm ${styles.enter}`} onClick={this.save} />
+            <Button
+              type="text"
+              variant="neutral"
+              look="string"
+              size="small"
+              className="absolute right-0 mr-4"
+              style={{ bottom: "1px" }}
+              icon={<IconCheck />}
+              aria-label="Save"
+              onClick={this.save}
+            />
           </Tooltip>
         )}
-      </Paragraph>
+      </div>
     );
   }
 
@@ -172,15 +179,23 @@ export class HtxTextBox extends React.Component {
       // don't pass non-DOM props to Paragraph
       ignoreShortcuts: _,
       onlyEdit: __,
-
-      ...props
     } = this.props;
 
     return (
       <>
-        <Paragraph {...props}>
-          <span ref={this.textRef}>{text}</span>
-        </Paragraph>
+        <div className={this.inputClassName}>
+          <Typography ref={this.textRef} size="small">
+            {text.split("\n").map((line, index, array) => {
+              const isLastLine = index === array.length - 1;
+              return (
+                <React.Fragment key={index}>
+                  {line}
+                  {!isLastLine && <br />}
+                </React.Fragment>
+              );
+            })}
+          </Typography>
+        </div>
         <div className="flex gap-tight pr-tight">
           {isEditable && onChange && (
             <Button
@@ -188,7 +203,6 @@ export class HtxTextBox extends React.Component {
               variant="neutral"
               look="outlined"
               size="small"
-              className={styles.button}
               tooltip="Edit"
               tooltipTheme="Dark"
               leading={<IconEdit />}
@@ -202,7 +216,6 @@ export class HtxTextBox extends React.Component {
               variant="negative"
               look="outlined"
               size="small"
-              className={styles.button}
               tooltip="Delete"
               tooltipTheme="Dark"
               leading={<IconTrashAlt />}

@@ -34,7 +34,7 @@ class TextareaHelper {
   }
 
   rowInput(idx: number) {
-    return this.row(idx).find(".ant-input");
+    return this.row(idx).find(".ant-input, input, textarea");
   }
 
   rowType(idx: number, text: string) {

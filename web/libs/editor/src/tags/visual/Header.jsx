@@ -1,6 +1,5 @@
 import { types } from "mobx-state-tree";
 import { observer } from "mobx-react";
-import { Typography } from "antd";
 
 import ProcessAttrsMixin from "../../mixins/ProcessAttrs";
 import Registry from "../../core/Registry";
@@ -8,6 +7,7 @@ import Tree from "../../core/Tree";
 import { guidGenerator } from "../../utils/unique";
 import { clamp } from "../../utils/utilities";
 import "./Header.scss";
+import { Typography } from "@humansignal/ui";
 
 /**
  * The `Header` tag is used to show a header on the labeling interface.
@@ -44,15 +44,23 @@ const HeaderModel = types.compose("HeaderModel", Model, ProcessAttrsMixin);
 const HtxHeader = observer(({ item }) => {
   const size = clamp(Number.parseInt(item.size), 1, 5);
   const style = item.style ? Tree.cssConverter(item.style) : { margin: "10px 0" };
-
-  if (!style.fontSize && size > 4) {
-    style.fontSize = size === 5 ? "1.2em" : "1.1em";
-  }
+  const sizeMap = {
+    1: { variant: "display", size: "small" },
+    2: { variant: "headline", size: "large" },
+    3: { variant: "headline", size: "small" },
+    4: { variant: "title", size: "large" },
+    5: { variant: "title", size: "medium" },
+  };
 
   return (
-    <Typography.Title underline={item.underline} level={size} style={style}>
+    <Typography
+      variant={sizeMap[size]?.variant || "headline"}
+      size={sizeMap[size]?.size || "small"}
+      style={style}
+      className={item.underline ? "underline" : ""}
+    >
       {item._value}
-    </Typography.Title>
+    </Typography>
   );
 });
 

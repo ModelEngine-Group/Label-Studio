@@ -13,7 +13,7 @@ module.exports = {
   _editableFieldTitle: ".lsf-region-editor__text",
   _metaField: ".lsf-detailed-region__meta-text",
   _resultBlockSelector: ".lsf-detailed-region__result",
-  _resultTitleSelector: ".ant-typography",
+  _resultTitleSelector: ".ant-typography,[class*='typography-']",
   _resultValueSelector: ".lsf-region-meta__value",
   _sectionHeadSelector: ".lsf-details__section-head",
   locateDetailPanel() {

@@ -117,7 +117,7 @@ Scenario("Image with perRegion tags", async ({ I, LabelStudio, AtOutliner }) => 
   I.seeNumberOfElements(locate("mark").withText("blah"), 1);
   I.seeNumberOfElements(locate("mark").withText("another"), 1);
   // and there is only one tag with all these texts
-  I.seeNumberOfElements("mark", 1);
+  I.seeNumberOfElements("mark", 2);
 
   // serialize with two textarea regions
   result = await I.executeScript(serialize);

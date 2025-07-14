@@ -1,26 +1,35 @@
-import { Typography } from "antd";
 import { observer } from "mobx-react";
 import { type FC, useEffect, useMemo, useRef } from "react";
 import { Block, Elem, useBEM } from "../../../utils/bem";
 import { RegionEditor } from "./RegionEditor";
 import "./RegionDetails.scss";
-
-const { Text } = Typography;
+import { Typography } from "@humansignal/ui";
 
 const TextResult: FC<{ mainValue: string[] }> = observer(({ mainValue }) => {
   return (
-    <Text mark>
+    <div className="flex flex-col items-start gap-tighter">
       {mainValue.map((value: string, i: number) => (
-        <p key={`${value}-${i}`} data-counter={i + 1}>
-          {value}
-        </p>
+        <mark
+          key={`${value}-${i}`}
+          className="bg-primary-background px-tighter py-tightest rounded-sm text-neutral-content"
+        >
+          <Typography data-counter={i + 1} size="small" className="!m-0">
+            {value}
+          </Typography>
+        </mark>
       ))}
-    </Text>
+    </div>
   );
 });
 
 const ChoicesResult: FC<{ mainValue: string[] }> = observer(({ mainValue }) => {
-  return <Text mark>{mainValue.join(", ")}</Text>;
+  return (
+    <mark className="bg-primary-background px-tighter py-tightest rounded-sm">
+      <Typography as="span" size="small" className="text-neutral-content">
+        {mainValue.join(", ")}
+      </Typography>
+    </mark>
+  );
 });
 
 const RatingResult: FC<{ mainValue: string[] }> = observer(({ mainValue }) => {
@@ -40,7 +49,7 @@ export const ResultItem: FC<{ result: any }> = observer(({ result }) => {
     if (type === "rating") {
       return (
         <Elem name="result">
-          <Text>Rating: </Text>
+          <Typography size="small">Rating: </Typography>
           <Elem name="value">
             <RatingResult mainValue={mainValue} />
           </Elem>
@@ -50,7 +59,7 @@ export const ResultItem: FC<{ result: any }> = observer(({ result }) => {
     if (type === "textarea") {
       return (
         <Elem name="result">
-          <Text>Text: </Text>
+          <Typography size="small">Text: </Typography>
           <Elem name="value">
             <TextResult mainValue={mainValue} />
           </Elem>
@@ -60,7 +69,7 @@ export const ResultItem: FC<{ result: any }> = observer(({ result }) => {
     if (type === "choices") {
       return (
         <Elem name="result">
-          <Text>Choices: </Text>
+          <Typography size="small">Choices: </Typography>
           <Elem name="value">
             <ChoicesResult mainValue={mainValue} />
           </Elem>
@@ -70,7 +79,7 @@ export const ResultItem: FC<{ result: any }> = observer(({ result }) => {
     if (type === "taxonomy") {
       return (
         <Elem name="result">
-          <Text>Taxonomy: </Text>
+          <Typography size="small">Taxonomy: </Typography>
           <Elem name="value">
             <ChoicesResult mainValue={mainValue.map((v: string[]) => v.join("/"))} />
           </Elem>

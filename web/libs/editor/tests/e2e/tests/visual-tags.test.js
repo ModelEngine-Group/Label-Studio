@@ -72,9 +72,9 @@ Scenario("Check Collapse, Header and Style", async ({ I, LabelStudio }) => {
   I.dontSee("You can use Image");
 
   I.say("Check correct sizes of headers");
-  I.seeElement(locate("h5").withText("Small header"));
-  I.seeElement(locate("h3").withText("Usual header"));
-  I.seeElement(locate(".tall").withChild("h5"));
+  I.seeElement(locate("h4").withText("Small header"));
+  I.seeElement(locate("h2").withText("Usual header"));
+  I.seeElement(locate(".tall").withChild("h4"));
 
   I.say("Styles should be applied by classname");
   const height = await I.grabElementBoundingRect(".tall", "height");
