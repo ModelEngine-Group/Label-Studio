@@ -83,6 +83,10 @@ def emit_webhooks_for_instance_sync(organization, project, action, instance=None
     # if instances and there is a webhook that sends payload
     # get serialized payload
     action_meta = WebhookAction.ACTIONS[action]
+
+    if instance and isinstance(instance, list) and isinstance(instance[0], int):
+        instance = action_meta['model'].objects.filter(id__in=instance)
+
     if instance and webhooks.filter(send_payload=True).exists():
         serializer_class = action_meta.get('serializer')
         if serializer_class:

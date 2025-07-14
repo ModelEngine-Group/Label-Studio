@@ -238,7 +238,7 @@ def redis_client_mock():
     from fakeredis import FakeRedis
     from io_storages.redis.models import RedisStorageMixin
 
-    redis = FakeRedis()
+    redis = FakeRedis(decode_responses=True)
     # TODO: add mocked redis data
 
     with mock.patch.object(RedisStorageMixin, 'get_redis_connection', return_value=redis):
