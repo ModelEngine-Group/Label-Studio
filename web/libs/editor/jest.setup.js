@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 require("jest-fetch-mock").enableMocks();
 require("@testing-library/jest-dom");
 
