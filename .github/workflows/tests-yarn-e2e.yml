@@ -79,6 +79,7 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           name: lsf-e2e
+          flags: lsf-e2e
           directory: web/libs/editor/tests/coverage
           token: ${{ secrets.CODECOV_TOKEN }}
           verbose: true
