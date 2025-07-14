@@ -1,17 +1,3 @@
-/** @typedef {import("../stores/Tasks").TaskModel} Task */
-/** @typedef {import("label-studio").LabelStudio} LabelStudio */
-/** @typedef {import("./dm-sdk").DataManager} DataManager */
-
-/** @typedef {{
- * user: Dict
- * config: string,
- * interfaces: string[],
- * task: Task
- * labelStream: boolean,
- * interfacesModifier: function,
- * messages: Dict<string|Function>
- * }} LSFOptions */
-
 import {
   FF_DEV_1752,
   FF_DEV_2186,
@@ -52,6 +38,12 @@ const resolveLabelStudio = () => {
     return (LabelStudioDM = window.LabelStudio);
   }
 };
+
+// Support portal URL constants used to construct error reporting links
+// These are used in showOperationToast() to create support links with request IDs
+// for better error tracking and customer support
+export const SUPPORT_URL = "https://support.humansignal.com/hc/en-us/requests/new";
+export const SUPPORT_URL_REQUEST_ID_PARAM = "tf_37934448633869"; // request_id field ID in ZD
 
 export class LSFWrapper {
   /** @type {HTMLElement} */
@@ -595,6 +587,35 @@ export class LSFWrapper {
   };
 
   /** @private */
+  showOperationToast(status, successMessage, errorAction, result) {
+    if (status === 200 || status === 201) {
+      this.datamanager.invoke("toast", { message: successMessage, type: "info" });
+    } else if (status !== undefined) {
+      const requestId = result?.$meta?.headers?.get("x-ls-request-id");
+      const supportUrl = requestId ? `${SUPPORT_URL}?${SUPPORT_URL_REQUEST_ID_PARAM}=${requestId}` : SUPPORT_URL;
+
+      this.datamanager.invoke("toast", {
+        message: (
+          <span>
+            {errorAction}, please try again or{" "}
+            <a
+              href={supportUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "inherit", textDecoration: "underline" }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              contact our team
+            </a>{" "}
+            if it doesn't help.
+          </span>
+        ),
+        type: "error",
+      });
+    }
+  }
+
+  /** @private */
   onSubmitAnnotation = async () => {
     const exitStream = this.shouldExitStream();
     const loadNext = exitStream ? false : this.shouldLoadNext();
@@ -605,8 +626,8 @@ export class LSFWrapper {
           "submitAnnotation",
           { taskID },
           { body },
-          // don't react on duplicated annotations error
-          { errorHandler: (result) => result.status === 409 },
+          // errors are displayed by "toast" event - we don't want to show blocking modal
+          { errorHandler: () => true },
         );
       },
       false,
@@ -614,10 +635,7 @@ export class LSFWrapper {
     );
     const status = result?.$meta?.status;
 
-    if (status === 200 || status === 201)
-      this.datamanager.invoke("toast", { message: "Annotation saved successfully", type: "info" });
-    else if (status !== undefined)
-      this.datamanager.invoke("toast", { message: "There was an error saving your Annotation", type: "error" });
+    this.showOperationToast(status, "Annotation saved successfully", "Annotation is not saved", result);
 
     if (exitStream) return this.exitStream();
   };
@@ -642,18 +660,21 @@ export class LSFWrapper {
         {
           body: serializedAnnotation,
         },
+        // errors are displayed by "toast" event - we don't want to show blocking modal
+        { errorHandler: () => true },
       );
     });
     const status = result?.$meta?.status;
 
-    if (status === 200 || status === 201)
-      this.datamanager.invoke("toast", { message: "Annotation updated successfully", type: "info" });
-    else if (status !== undefined)
-      this.datamanager.invoke("toast", { message: "There was an error updating your Annotation", type: "error" });
+    this.showOperationToast(status, "Annotation updated successfully", "Annotation is not updated", result);
 
     this.datamanager.invoke("updateAnnotation", ls, annotation, result);
 
     if (exitStream) return this.exitStream();
+
+    if (status >= 400) {
+      return;
+    }
 
     const isRejectedQueue = isDefined(task.default_selected_annotation);
 
@@ -707,11 +728,8 @@ export class LSFWrapper {
     }
   };
 
-  draftToast = (status) => {
-    if (status === 200 || status === 201)
-      this.datamanager.invoke("toast", { message: "Draft saved successfully", type: "info" });
-    else if (status !== undefined)
-      this.datamanager.invoke("toast", { message: "There was an error saving your draft", type: "error" });
+  draftToast = (status, result = null) => {
+    this.showOperationToast(status, "Draft saved successfully", "Draft is not saved", result);
   };
 
   needsDraftSave = (annotation) => {
@@ -733,9 +751,8 @@ export class LSFWrapper {
       this.draftToast(200);
     } else if (hasChanges && selected) {
       const res = await selected?.saveDraftImmediatelyWithResults();
-      const status = res?.$meta?.status;
 
-      this.draftToast(status);
+      this.draftToast(res.$meta?.status, res);
     }
   };
 
@@ -758,7 +775,7 @@ export class LSFWrapper {
       // draft has been already created
       const res = await this.datamanager.apiCall("updateDraft", { draftID: annotation.draftId }, data);
 
-      showToast && this.draftToast(res?.$meta?.status);
+      showToast && this.draftToast(res.$meta?.status, res);
       return res;
     }
     let response;
@@ -773,31 +790,36 @@ export class LSFWrapper {
       );
     }
     response?.id && annotation.setDraftId(response?.id);
-    showToast && this.draftToast(response?.$meta?.status);
+    showToast && this.draftToast(response.$meta?.status, response);
 
     return response;
   };
 
   onSkipTask = async (_, { comment } = {}) => {
-    await this.submitCurrentAnnotation(
+    const result = await this.submitCurrentAnnotation(
       "skipTask",
-      (taskID, body) => {
+      async (taskID, body) => {
         const { id, ...annotation } = body;
         const params = { taskID };
-        const options = { body: annotation };
+        const options = { body: { ...annotation, was_cancelled: true } };
 
-        options.body.was_cancelled = true;
         if (comment) options.body.comment = comment;
 
-        if (id === undefined) {
-          return this.datamanager.apiCall("submitAnnotation", params, options);
-        }
-        params.annotationID = id;
-        return this.datamanager.apiCall("updateAnnotation", params, options);
+        if (id !== undefined) params.annotationID = id;
+
+        return await this.datamanager.apiCall(
+          id === undefined ? "submitAnnotation" : "updateAnnotation",
+          params,
+          options,
+          { errorHandler: () => true },
+        );
       },
       true,
       this.shouldLoadNext(),
     );
+    const status = result?.$meta?.status;
+
+    this.showOperationToast(status, "Task skipped successfully", "Task is not skipped", result);
   };
 
   onUnskipTask = async () => {
@@ -938,12 +960,17 @@ export class LSFWrapper {
     }
 
     this.setLoading(false);
+    if (result?.$meta?.status >= 400) {
+      // don't reload the task on error to avoid losing the user's changes
+      return result;
+    }
 
     if (!loadNext || this.datamanager.isExplorer) {
       await this.loadTask(taskID, currentAnnotation.pk, true);
     } else {
       await this.loadTask();
     }
+
     return result;
   }
 

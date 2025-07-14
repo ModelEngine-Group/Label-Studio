@@ -161,12 +161,14 @@ const Button = forwardRef(
     const contentClassName = "inline-flex flex-1 whitespace-pre items-center px-tight";
     const clickHandler = waiting && waitingClickable ? (secondaryOnClick ?? onClick) : onClick;
 
+    const isDisabled = buttonProps.disabled ?? (!waitingClickable && waiting);
+
     const buttonBody = (
       <button
         {...buttonProps}
         onClick={clickHandler}
         ref={(el) => setRef(ref, el)}
-        disabled={buttonProps.disabled ?? (!waitingClickable && waiting)}
+        disabled={isDisabled}
         data-waiting={waiting}
         data-variant={variant}
         data-look={look}
@@ -180,6 +182,14 @@ const Button = forwardRef(
     );
 
     if (tooltip) {
+      // For disabled buttons, wrap in a container that can receive hover events
+      if (isDisabled) {
+        return (
+          <Tooltip title={tooltip}>
+            <span style={{ display: "inline-flex" }}>{buttonBody}</span>
+          </Tooltip>
+        );
+      }
       return <Tooltip title={tooltip}>{buttonBody}</Tooltip>;
     }
 
