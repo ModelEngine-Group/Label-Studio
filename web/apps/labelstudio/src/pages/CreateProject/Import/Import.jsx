@@ -8,7 +8,6 @@ import { IconError, IconInfo, IconUpload } from "../../../assets/icons";
 import { useAPI } from "../../../providers/ApiProvider";
 import Input from "libs/datamanager/src/components/Common/Input/Input";
 import { Button } from "apps/labelstudio/src/components";
-import { useTranslation } from "react-i18next";
 
 const importClass = cn("upload_page");
 const dropzoneClass = cn("dropzone");
@@ -159,7 +158,6 @@ export const ImportPage = ({
   setCsvHandling,
   addColumns,
 }) => {
-  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
   const api = useAPI();
@@ -340,59 +338,34 @@ export const ImportPage = ({
       <input id="file-input" type="file" name="file" multiple onChange={onUpload} style={{ display: "none" }} />
 
       <header>
-        <form
-          className={`${importClass.elem("url-form")} inline-flex`}
-          method="POST"
-          onSubmit={onLoadURL}
-        >
-          <Input
-            placeholder={t('common_placeholder_dataset_url')}
-            name="url"
-            ref={urlRef}
-            style={{ height: 40 }}
-          />
+        <form className={`${importClass.elem("url-form")} inline-flex`} method="POST" onSubmit={onLoadURL}>
+          <Input placeholder="Dataset URL" name="url" ref={urlRef} style={{ height: 40 }} />
           <Button type="submit" look="primary">
-            {t("common_button_add_url")}
+            Add URL
           </Button>
         </form>
-        <span>{t('common_label_or')}</span>
+        <span>or</span>
         <Button
           type="button"
           onClick={() => document.getElementById("file-input").click()}
           className={importClass.elem("upload-button")}
         >
-          <IconUpload
-            width="16"
-            height="16"
-            className={importClass.elem("upload-icon")}
-          />
-          {t("common_button_upload_more_file", {
-            more: files.uploaded.length ? t("common_button_more") : ""
-          })}
+          <IconUpload width="16" height="16" className={importClass.elem("upload-icon")} />
+          Upload {files.uploaded.length ? "More " : ""}Files
         </Button>
         <div
-          className={importClass
-            .elem("csv-handling")
-            .mod({ highlighted: highlightCsvHandling, hidden: !csvHandling })}
+          className={importClass.elem("csv-handling").mod({ highlighted: highlightCsvHandling, hidden: !csvHandling })}
         >
-          <span>{t('common_label_treat_csv/tsv_as')}</span>
+          <span>Treat CSV/TSV as</span>
           <label>
-            <input
-              {...csvProps}
-              value="tasks"
-              checked={csvHandling === "tasks"}
-            />
-            {t('common_label_list_of_task')}
+            <input {...csvProps} value="tasks" checked={csvHandling === "tasks"} /> List of tasks
           </label>
           <label>
-            <input {...csvProps} value="ts" checked={csvHandling === "ts"} />{" "}
-            {t('common_label_time_series_or_while_text_file')}
+            <input {...csvProps} value="ts" checked={csvHandling === "ts"} /> Time Series or Whole Text File
           </label>
         </div>
         <div className={importClass.elem("status")}>
-          {files.uploaded.length
-            ? `${files.uploaded.length} ${t('common_label_files_uploaded')}`
-            : ""}
+          {files.uploaded.length ? `${files.uploaded.length} files uploaded` : ""}
         </div>
       </header>
 
@@ -404,48 +377,36 @@ export const ImportPage = ({
             <label htmlFor="file-input">
               <div className={dropzoneClass.elem("content")}>
                 <header>
-                  {t('common_label_drag&drop_files_here')}
+                  Drag & drop files here
                   <br />
-                  {t('common_label_click_to_browse')}
+                  or click to browse
                 </header>
-                <IconUpload
-                  height="64"
-                  className={dropzoneClass.elem("icon")}
-                />
+                <IconUpload height="64" className={dropzoneClass.elem("icon")} />
                 <dl>
-                  <dt>{t('common_label_text')}</dt>
+                  <dt>Text</dt>
                   <dd>{supportedExtensions.text.join(", ")}</dd>
-                  <dt>{t('common_label_audio')}</dt>
+                  <dt>Audio</dt>
                   <dd>{supportedExtensions.audio.join(", ")}</dd>
-                  <dt>{t('common_label_video')}</dt>
-                  <dd>
-                  {t('common_label_video_support_format')}
-                    {/* Keep in sync with supportedExtensions.video */}
-                  </dd>
-                  <dt>{t('common_label_images')}</dt>
+                  <dt>Video</dt>
+                  <dd>mpeg4/H.264 webp, webm* {/* Keep in sync with supportedExtensions.video */}</dd>
+                  <dt>Images</dt>
                   <dd>{supportedExtensions.image.join(", ")}</dd>
-                  <dt>{t('common_label_html')}</dt>
+                  <dt>HTML</dt>
                   <dd>{supportedExtensions.html.join(", ")}</dd>
-                  <dt>{t('common_label_time_series')}</dt>
+                  <dt>Time Series</dt>
                   <dd>{supportedExtensions.timeSeries.join(", ")}</dd>
-                  <dt>{t('common_label_common_formats')}</dt>
+                  <dt>Common Formats</dt>
                   <dd>{supportedExtensions.common.join(", ")}</dd>
                 </dl>
                 <b>
-                {t('common_label_support_depends_on_the_browser')}
-                  <br />{t('common_label_direct_media_uploads')}
-                  <a href="https://labelstud.io/guide/tasks.html#Import-data-from-the-Label-Studio-UI">
-                  {t('common_button_limitations')}
-                  </a>
-                  {t('common_label_strongly_recommend_using')}
-                  <a
-                    href="https://labelstud.io/guide/storage.html"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {t('common_button_cloud_storage')}
-                  </a>
-                  {t('common_label_instead')}
+                  * – Support depends on the browser
+                  <br />* – Direct media uploads have{" "}
+                  <a href="https://labelstud.io/guide/tasks.html#Import-data-from-the-Label-Studio-UI">limitations</a>{" "}
+                  and we strongly recommend using{" "}
+                  <a href="https://labelstud.io/guide/storage.html" target="_blank" rel="noreferrer">
+                    Cloud Storage
+                  </a>{" "}
+                  instead
                 </b>
               </div>
             </label>

@@ -8,7 +8,6 @@ import { MachineLearningSettings } from "./MachineLearningSettings/MachineLearni
 import { PredictionsSettings } from "./PredictionsSettings/PredictionsSettings";
 import { StorageSettings } from "./StorageSettings/StorageSettings";
 import { isInLicense, LF_CLOUD_STORAGE_FOR_MANAGERS } from "../../utils/license-flags";
-import i18n from 'i18next';
 
 const isAllowCloudStorage = !isInLicense(LF_CLOUD_STORAGE_FOR_MANAGERS);
 
@@ -43,7 +42,7 @@ const pages = {
 isAllowCloudStorage && (pages.StorageSettings = StorageSettings);
 
 export const SettingsPage = {
-  title: i18n.t('common_title_settings'),
+  title: "Settings",
   path: "/settings",
   exact: true,
   layout: MenuLayout,

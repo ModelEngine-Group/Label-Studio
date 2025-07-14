@@ -1,6 +1,5 @@
 import { IconUpload } from "../../assets/icons";
 import clsx from "clsx";
-import {useTranslation} from 'react-i18next';
 type InputFileProps = HTMLAttributes<HTMLInputElement> & {
   name?: string;
   className?: string;
@@ -14,8 +13,6 @@ import styles from "./InputFile.module.scss";
 import type React from "react";
 import { forwardRef, type HTMLAttributes, useCallback, useRef } from "react";
 export const InputFile = forwardRef(({ name, className, text, onChange, ...props }: InputFileProps, ref: any) => {
-  const {t} = useTranslation();
-  
   if (!ref) {
     ref = useRef();
   }
@@ -32,7 +29,7 @@ export const InputFile = forwardRef(({ name, className, text, onChange, ...props
   return (
     <label className={clsx(styles.inputWrapper, className)} onKeyDown={wrapperKeyDownHandler}>
       <span className={styles.labelContent}>
-        <IconUpload className={styles.icon} /> {text ?? <>{t('common_button_upload_image')}</>}
+        <IconUpload className={styles.icon} /> {text ?? <>Upload Image</>}
       </span>
       <input
         ref={ref}

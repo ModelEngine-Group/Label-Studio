@@ -5,14 +5,12 @@ import { API } from "apps/labelstudio/src/providers/ApiProvider";
 import { useMemo } from "react";
 import type { WrappedResponse } from "@humansignal/core/lib/api-proxy/types";
 import { useCurrentUserAtom } from "@humansignal/core/lib/hooks/useCurrentUser";
-import { useTranslation } from "react-i18next";
 
 function formatDate(date?: string) {
   return format(new Date(date ?? ""), "dd MMM yyyy, KK:mm a");
 }
 
 export const MembershipInfo = () => {
-  const { t } = useTranslation();
   const { user } = useCurrentUserAtom();
   const dateJoined = useMemo(() => {
     if (!user?.date_joined) return null;
@@ -98,22 +96,22 @@ export const MembershipInfo = () => {
   return (
     <div className={styles.membershipInfo} id="membership-info">
       <div className="flex gap-2 w-full justify-between">
-        <div>{t('common_label_user_id')}</div>
+        <div>User ID</div>
         <div>{user?.id}</div>
       </div>
 
       <div className="flex gap-2 w-full justify-between">
-        <div>{t('common_label_registration_date')}</div>
+        <div>Registration date</div>
         <div>{dateJoined}</div>
       </div>
 
       <div className="flex gap-2 w-full justify-between">
-        <div>{t('common_label_annotations_submitted')}</div>
+        <div>Annotations Submitted</div>
         <div>{membership.data?.annotationCount}</div>
       </div>
 
       <div className="flex gap-2 w-full justify-between">
-        <div>{t('common_label_projects_contributed_to')}</div>
+        <div>Projects contributed to</div>
         <div>{membership.data?.contributions}</div>
       </div>
 
@@ -121,33 +119,33 @@ export const MembershipInfo = () => {
 
       {user?.active_organization_meta && (
         <div className="flex gap-2 w-full justify-between">
-          <div>{t('common_label_organization')}</div>
+          <div>Organization</div>
           <div>{user.active_organization_meta.title}</div>
         </div>
       )}
 
       {membership.data?.role && (
         <div className="flex gap-2 w-full justify-between">
-          <div>{t('common_label_my_role')}</div>
+          <div>My role</div>
           <div>{membership.data.role}</div>
         </div>
       )}
 
       <div className="flex gap-2 w-full justify-between">
-        <div>{t('common_label_organization_id')}</div>
+        <div>Organization ID</div>
         <div>{user?.active_organization}</div>
       </div>
 
       {user?.active_organization_meta && (
         <div className="flex gap-2 w-full justify-between">
-          <div>{t('common_label_owner')}</div>
+          <div>Owner</div>
           <div>{user.active_organization_meta.email}</div>
         </div>
       )}
 
       {organization.data?.createdAt && (
         <div className="flex gap-2 w-full justify-between">
-          <div>{t('common_label_created')}</div>
+          <div>Created</div>
           <div>{organization.data?.createdAt}</div>
         </div>
       )}

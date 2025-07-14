@@ -11,7 +11,6 @@ import { Relations as RelationsComponent } from "./Relations";
 // eslint-disable-next-line
 // @ts-ignore
 import { RelationsControls } from "./RelationsControls";
-import { useTranslation } from "react-i18next";
 
 interface DetailsPanelProps extends PanelProps {
   regions: any;
@@ -67,13 +66,13 @@ const CommentsTab: FC<any> = inject("store")(
 const RelationsTab: FC<any> = inject("store")(
   observer(({ currentEntity }) => {
     const { relationStore } = currentEntity;
-    const { t } = useTranslation();
+
     return (
       <>
         <Block name="relations">
           <Elem name="section-tab">
             <Elem name="view-control">
-              <Elem name="section-head">{t('common_label_relations')} ({relationStore.size})</Elem>
+              <Elem name="section-head">Relations ({relationStore.size})</Elem>
               <RelationsControls relationStore={relationStore} />
             </Elem>
             <Elem name="section-content">
@@ -89,14 +88,13 @@ const RelationsTab: FC<any> = inject("store")(
 const HistoryTab: FC<any> = inject("store")(
   observer(({ store, currentEntity }) => {
     const showAnnotationHistory = store.hasInterface("annotations:history");
-    const { t } = useTranslation();
 
     return (
       <>
         <Block name="history">
           <Elem name="section-tab">
             <Elem name="section-head">
-              {t('common_label_annotation_history')}
+              Annotation History
               <span>#{currentEntity.pk ?? currentEntity.id}</span>
             </Elem>
             <Elem name="section-content">
@@ -111,12 +109,11 @@ const HistoryTab: FC<any> = inject("store")(
 
 const InfoTab: FC<any> = inject("store")(
   observer(({ selection }) => {
-    const { t } = useTranslation();
     return (
       <>
         <Block name="info">
           <Elem name="section-tab">
-            <Elem name="section-head">{t('common_label_selection_details')}</Elem>
+            <Elem name="section-head">Selection Details</Elem>
             <RegionsPanel regions={selection} />
           </Elem>
         </Block>
@@ -129,12 +126,11 @@ const GeneralPanel: FC<any> = inject("store")(
   observer(({ store, currentEntity }) => {
     const { relationStore } = currentEntity;
     const showAnnotationHistory = store.hasInterface("annotations:history");
-    const { t } = useTranslation();
     return (
       <>
         <Elem name="section">
           <Elem name="section-head">
-            {t('common_label_annotation_history')}
+            Annotation History
             <span>#{currentEntity.pk ?? currentEntity.id}</span>
           </Elem>
           <Elem name="section-content">
@@ -143,7 +139,7 @@ const GeneralPanel: FC<any> = inject("store")(
         </Elem>
         <Elem name="section">
           <Elem name="view-control">
-            <Elem name="section-head">{t('common_label_relations')} ({relationStore.size})</Elem>
+            <Elem name="section-head">Relations ({relationStore.size})</Elem>
             <RelationsControls relationStore={relationStore} />
           </Elem>
           <Elem name="section-content">
@@ -152,7 +148,7 @@ const GeneralPanel: FC<any> = inject("store")(
         </Elem>
         {store.hasInterface("annotations:comments") && store.commentStore.isCommentable && (
           <Elem name="section">
-            <Elem name="section-head">{t('common_label_comments')}</Elem>
+            <Elem name="section-head">Comments</Elem>
             <Elem name="section-content">
               <CommentsComponent
                 annotationStore={store.annotationStore}

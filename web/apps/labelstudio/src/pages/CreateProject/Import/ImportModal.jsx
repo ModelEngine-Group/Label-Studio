@@ -10,10 +10,8 @@ import { Elem } from "../../../utils/bem";
 import { useRefresh } from "../../../utils/hooks";
 import { ImportPage } from "./Import";
 import { useImportPage } from "./useImportPage";
-import { useTranslation } from "react-i18next";
 
 export const Inner = () => {
-  const { t } = useTranslation();
   const history = useHistory();
   const location = useFixedLocation();
   const modal = useRef();
@@ -56,7 +54,7 @@ export const Inner = () => {
 
   return (
     <Modal
-      title={t('common_title_import_data')}
+      title="Import data"
       ref={modal}
       onHide={() => backToDM()}
       closeOnClickOutside={false}
@@ -66,15 +64,15 @@ export const Inner = () => {
     >
       <Modal.Header divided>
         <Elem block="modal" name="title">
-          {t('common_title_import_data')}
+          Import Data
         </Elem>
 
         <Space>
           <Button waiting={waiting} onClick={onCancel}>
-            {t('common_button_cancel')}
+            Cancel
           </Button>
           <Button look="primary" onClick={onFinish} waiting={waiting || uploading} disabled={uploadDisabled}>
-          {t('common_button_import')}
+            Import
           </Button>
         </Space>
       </Modal.Header>

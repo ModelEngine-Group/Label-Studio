@@ -17,7 +17,6 @@ import "./Table.scss";
 import { Button } from "../../Common/Button/Button";
 import { useState } from "react";
 import { useEffect } from "react";
-import {useTranslation} from "react-i18next";
 
 const injector = inject(({ store }) => {
   const { dataStore, currentView } = store;
@@ -60,7 +59,6 @@ export const DataView = injector(
     isLocked,
     ...props
   }) => {
-    const { t } = useTranslation();
     const [datasetStatusID, setDatasetStatusID] = useState(store.SDK.dataset?.status?.id);
     const focusedItem = useMemo(() => {
       return props.focusedItem;
@@ -142,7 +140,7 @@ export const DataView = injector(
           return (
             <Block name="syncInProgress">
               <Elem name="title" tag="h3">
-                {t('common_label_failed_to_sync_data')}
+                Failed to sync data
               </Elem>
               {isFF(FF_LOPS_86) ? (
                 <>
@@ -152,7 +150,7 @@ export const DataView = injector(
                       window.open("./settings/storage");
                     }}
                   >
-                    {t('common_button_manage_storage')}
+                    Manage Storage
                   </Button>
                 </>
               ) : (
@@ -169,7 +167,7 @@ export const DataView = injector(
           return (
             <Block name="syncInProgress">
               <Elem name="title" tag="h3">
-              {t('common_button_nothing_found')}
+                Nothing found
               </Elem>
               <Elem name="text">Try adjusting the filter or similarity search parameters</Elem>
             </Block>
@@ -188,7 +186,7 @@ export const DataView = injector(
                   await store.currentView?.reload();
                 }}
               >
-                {t('common_button_refresh')}
+                Refresh
               </Button>
             </Block>
           );
@@ -199,17 +197,17 @@ export const DataView = injector(
               <Elem name="description">
                 {hasData ? (
                   <>
-                    <h3>{t('common_button_nothing_found')}</h3>
+                    <h3>Nothing found</h3>
                     Try adjusting the filter
                   </>
                 ) : (
-                  t("common_tip_for_no_import")
+                  "Looks like you have not imported any data yet"
                 )}
               </Elem>
               {!hasData && !!store.interfaces.get("import") && (
                 <Elem name="navigation">
                   <ImportButton look="primary" href="./import">
-                    {t('common_button_go_to_import')}
+                    Go to import
                   </ImportButton>
                 </Elem>
               )}

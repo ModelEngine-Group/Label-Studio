@@ -4,7 +4,6 @@ import { cn } from "../../../utils/bem";
 import { Button } from "../Button/Button";
 import { Space } from "../Space/Space";
 import { Modal } from "./ModalPopup";
-import i18n from "i18next";
 
 const standaloneModal = (props) => {
   const modalRef = createRef();
@@ -55,7 +54,7 @@ export const confirm = ({ okText, onOk, cancelText, onCancel, buttonLook, ...pro
           size="compact"
           autoFocus
         >
-          {cancelText ?? i18n.t("common_button_cancel")}
+          {cancelText ?? "Cancel"}
         </Button>
 
         <Button
@@ -66,10 +65,10 @@ export const confirm = ({ okText, onOk, cancelText, onCancel, buttonLook, ...pro
           size="compact"
           look={buttonLook ?? "primary"}
         >
-          {okText ?? i18n.t("common_button_ok")}
+          {okText ?? "OK"}
         </Button>
       </Space>
-    )
+    ),
   });
 
   return modal;

@@ -1,7 +1,6 @@
 import { EnterpriseBadge } from "@humansignal/ui";
 import React from "react";
 import { useHistory } from "react-router";
-import { useTranslation } from "react-i18next";
 import { Button, ToggleItems } from "../../components";
 import { Modal } from "../../components/Modal/Modal";
 import { Space } from "../../components/Space/Space";
@@ -18,7 +17,7 @@ import { Caption } from "../../components/Caption/Caption";
 import { FF_LSDV_E_297, isFF } from "../../utils/feature-flags";
 import { createURL } from "../../components/HeidiTips/utils";
 
-const ProjectName = ({ t, name, setName, onSaveName, onSubmit, error, description, setDescription, show = true }) =>
+const ProjectName = ({ name, setName, onSaveName, onSubmit, error, description, setDescription, show = true }) =>
   !show ? null : (
     <form
       className={cn("project-name")}
@@ -28,7 +27,7 @@ const ProjectName = ({ t, name, setName, onSaveName, onSubmit, error, descriptio
       }}
     >
       <div className="field field--wide">
-        <label htmlFor="project_name">{t("common_button_project_name")}</label>
+        <label htmlFor="project_name">Project Name</label>
         <Input
           name="name"
           id="project_name"
@@ -39,13 +38,11 @@ const ProjectName = ({ t, name, setName, onSaveName, onSubmit, error, descriptio
         {error && <span className="error">{error}</span>}
       </div>
       <div className="field field--wide">
-        <label htmlFor="project_description">
-          {t("common_title_description")}
-        </label>
+        <label htmlFor="project_description">Description</label>
         <TextArea
           name="description"
           id="project_description"
-          placeholder={t("common_placeholder_project_description")}
+          placeholder="Optional description of your project"
           rows="4"
           style={{ minHeight: 100 }}
           value={description}
@@ -55,14 +52,12 @@ const ProjectName = ({ t, name, setName, onSaveName, onSubmit, error, descriptio
       {isFF(FF_LSDV_E_297) && (
         <div className="field field--wide">
           <label>
-            {t("common_title_workspace")}
+            Workspace
             <EnterpriseBadge className="ml-2" />
           </label>
-          <Select 
-          placeholder={t("common_placeholder_select_a_option")}
-          disabled options={[]} />
+          <Select placeholder="Select an option" disabled options={[]} />
           <Caption>
-            {t('common_tip_project_management')}
+            Simplify project management by organizing projects into workspaces.
             <a
               href={createURL(
                 "https://docs.humansignal.com/guide/manage_projects#Create-workspaces-to-organize-projects",
@@ -74,7 +69,7 @@ const ProjectName = ({ t, name, setName, onSaveName, onSubmit, error, descriptio
               target="_blank"
               rel="noreferrer"
             >
-              {t('common_button_learn_more')}
+              Learn more
             </a>
           </Caption>
           <HeidiTips collection="projectCreation" />
@@ -84,7 +79,6 @@ const ProjectName = ({ t, name, setName, onSaveName, onSubmit, error, descriptio
   );
 
 export const CreateProject = ({ onClose, redirect = true }) => {
-  const { t } = useTranslation();
   const [step, _setStep] = React.useState("name"); // name | import | config
   const [waiting, setWaitingStatus] = React.useState(false);
 
@@ -115,11 +109,9 @@ export const CreateProject = ({ onClose, redirect = true }) => {
   const rootClass = cn("create-project");
   const tabClass = rootClass.elem("tab");
   const steps = {
-    name: <span className={tabClass.mod({ disabled: !!error })}>{t('common_button_project_name')}</span>,
-    import: <span className={tabClass.mod({ disabled: uploadDisabled })}>
-        {t('common_button_data_import')}
-      </span>,
-    config: t('common_button_labeling_setup')
+    name: <span className={tabClass.mod({ disabled: !!error })}>Project Name</span>,
+    import: <span className={tabClass.mod({ disabled: uploadDisabled })}>Data Import</span>,
+    config: "Labeling Setup",
   };
 
   // name intentionally skipped from deps:
@@ -189,12 +181,12 @@ export const CreateProject = ({ onClose, redirect = true }) => {
     <Modal onHide={onDelete} closeOnClickOutside={false} allowToInterceptEscape fullscreen visible bare>
       <div className={rootClass}>
         <Modal.Header>
-          <h1>{t("common_title_create_project")}</h1>
+          <h1>Create Project</h1>
           <ToggleItems items={steps} active={step} onSelect={setStep} />
 
           <Space>
             <Button look="danger" size="compact" onClick={onDelete} waiting={waiting}>
-              {t('common_button_delete')}
+              Delete
             </Button>
             <Button
               look="primary"
@@ -203,12 +195,11 @@ export const CreateProject = ({ onClose, redirect = true }) => {
               waiting={waiting || uploading}
               disabled={!project || uploadDisabled || error}
             >
-              {t('common_button_save')}
+              Save
             </Button>
           </Space>
         </Modal.Header>
         <ProjectName
-          t={t}
           name={name}
           setName={setName}
           error={error}
