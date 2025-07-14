@@ -23,7 +23,7 @@ from core.utils.common import (
     string_is_url,
     temporary_disconnect_list_signal,
 )
-from core.utils.db import fast_first
+from core.utils.db import batch_delete, fast_first
 from core.utils.params import get_env
 from data_import.models import FileUpload
 from data_manager.managers import PreparedTaskManager, TaskManager
@@ -535,7 +535,7 @@ class Task(TaskMixin, models.Model):
     @staticmethod
     def delete_tasks_without_signals(queryset):
         """
-        Delete Tasks queryset with switched off signals
+        Delete Tasks queryset with switched off signals in batches to minimize memory usage
         :param queryset: Tasks queryset
         """
         signals = [
@@ -543,7 +543,7 @@ class Task(TaskMixin, models.Model):
             (pre_delete, remove_data_columns, Task),
         ]
         with temporary_disconnect_list_signal(signals):
-            queryset.delete()
+            return batch_delete(queryset, batch_size=500)
 
     @staticmethod
     def delete_tasks_without_signals_from_task_ids(task_ids):

@@ -1,3 +1,4 @@
+import itertools
 import logging
 import time
 from typing import Optional, TypeVar
@@ -71,3 +72,49 @@ def batch_update_with_retry(queryset, batch_size=500, max_retries=3, **update_fi
         else:
             logger.error(f'Failed to update batch after {max_retries} retries. ' f'Batch: {i}-{i+len(batch_ids)}')
             raise last_error
+
+
+def batch_delete(queryset, batch_size=500):
+    """
+    Delete objects in batches to minimize memory usage and transaction size.
+
+    Args:
+        queryset: The queryset to delete
+        batch_size: Number of objects to delete in each batch
+
+    Returns:
+        int: Total number of deleted objects
+    """
+    total_deleted = 0
+
+    # Create a database cursor that yields primary keys without loading all into memory
+    # The iterator position is maintained between calls to islice
+    # Example: if queryset has 1500 records and batch_size=500:
+    # - First iteration will get records 1-500
+    # - Second iteration will get records 501-1000
+    # - Third iteration will get records 1001-1500
+    # - Fourth iteration will get empty list (no more records)
+    pks_to_delete = queryset.values_list('pk', flat=True).iterator(chunk_size=batch_size)
+
+    # Delete in batches
+    while True:
+        # Get the next batch of primary keys from where the iterator left off
+        # islice advances the iterator's position after taking batch_size items
+        batch_iterator = itertools.islice(pks_to_delete, batch_size)
+
+        # Convert the slice iterator to a list we can use
+        # This only loads batch_size items into memory at a time
+        batch = list(batch_iterator)
+
+        # If no more items to process, we're done
+        # This happens when the iterator is exhausted
+        if not batch:
+            break
+
+        # Delete the batch in a transaction
+        with transaction.atomic():
+            # Delete all objects whose primary keys are in this batch
+            deleted = queryset.model.objects.filter(pk__in=batch).delete()[0]
+            total_deleted += deleted
+
+    return total_deleted
