@@ -179,11 +179,13 @@ export class HtxTextBox extends React.Component {
       // don't pass non-DOM props to Paragraph
       ignoreShortcuts: _,
       onlyEdit: __,
+
+      ...props
     } = this.props;
 
     return (
       <>
-        <div className={this.inputClassName}>
+        <div className={this.inputClassName} id={props.id} name={props.name}>
           <Typography ref={this.textRef} size="small">
             {text.split("\n").map((line, index, array) => {
               const isLastLine = index === array.length - 1;

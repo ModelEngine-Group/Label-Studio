@@ -21,6 +21,7 @@ import { FF_LEAD_TIME, FF_LSDV_4583, isFF } from "../../../utils/feature-flags";
 import ControlBase from "../Base";
 import ClassificationBase from "../ClassificationBase";
 import "./TextAreaRegionView";
+import VisibilityMixin from "../../../mixins/Visibility";
 
 import "./TextArea.scss";
 import { cn } from "../../../utils/bem";
@@ -337,6 +338,7 @@ const TextAreaModel = types.compose(
   AnnotationMixin,
   ReadOnlyControlMixin,
   Model,
+  VisibilityMixin,
 );
 
 const HtxTextArea = observer(({ item }) => {
