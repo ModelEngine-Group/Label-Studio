@@ -229,9 +229,6 @@ export class Visualizer extends Events<VisualizerEvents> {
       this.maxZoom = Math.max(1, Math.ceil(this.audio.dataLength / this.width));
     }
 
-    // Set initial zoom to show 10 seconds of data
-    this.setInitialZoom();
-
     // Compose all layers together so that we cache the composition of the layers.
     this.createComposer();
 
@@ -260,20 +257,6 @@ export class Visualizer extends Events<VisualizerEvents> {
 
     this.invoke("initialized", [this]);
     setTimeout(() => this.draw(), 10);
-  }
-
-  private setInitialZoom() {
-    if (!this.audio || !this.width) return;
-
-    if (isFF(FF_AUDIO_SPECTROGRAMS)) {
-      const duration = this.audio.duration;
-      const targetSeconds = 10; // Show 10 seconds of data
-      // Calculate zoom level needed to show targetSeconds
-      // zoom = (total duration) / (target seconds)
-      const targetZoom = duration / targetSeconds;
-      // Set the zoom level
-      this.setZoom(targetZoom);
-    }
   }
 
   private createComposer() {
