@@ -53,53 +53,6 @@ function convertToRem(value) {
 }
 
 /**
- * Format font family value for CSS - quote all font names, leave fallbacks unquoted
- * @param {string} value - The font family value
- * @returns {string} - The formatted font family value
- */
-function formatFontFamily(value) {
-  if (typeof value !== "string") {
-    return value;
-  }
-
-  // Split by comma to handle multiple fonts
-  const fonts = value.split(",").map((font) => font.trim());
-
-  const formattedFonts = fonts.map((font) => {
-    // Check if this is a generic font family (fallback) that shouldn't be quoted
-    const genericFonts = [
-      "serif",
-      "sans-serif",
-      "monospace",
-      "cursive",
-      "fantasy",
-      "system-ui",
-      "ui-serif",
-      "ui-sans-serif",
-      "ui-monospace",
-      "ui-rounded",
-      "emoji",
-      "math",
-      "fangsong",
-    ];
-
-    // If it's a generic font family, don't quote it
-    if (genericFonts.includes(font.toLowerCase())) {
-      return font;
-    }
-
-    // If the font name is not already quoted, quote it
-    if (!font.startsWith('"') && !font.startsWith("'")) {
-      return `"${font}"`;
-    }
-
-    return font;
-  });
-
-  return formattedFonts.join(", ");
-}
-
-/**
  * Process design variables and extract tokens
  * @param {Object} variables - The design variables object
  * @returns {Object} - Object containing tokens for CSS and JavaScript
@@ -129,17 +82,17 @@ function processDesignVariables(variables) {
 
   // Process primitive spacing
   if (variables["@primitives"] && variables["@primitives"].$spacing) {
-    processPrimitiveSpacing(variables["@primitives"].$spacing, result, { exportPrimitives: true });
+    processPrimitiveSpacing(variables["@primitives"].$spacing, result);
   }
 
   // Process primitive typography
   if (variables["@primitives"] && variables["@primitives"].$typography) {
-    processPrimitiveTypography(variables["@primitives"].$typography, result, { exportPrimitives: false });
+    processPrimitiveTypography(variables["@primitives"].$typography, result);
   }
 
   // Process primitive corner-radius
   if (variables["@primitives"] && variables["@primitives"]["$corner-radius"]) {
-    processPrimitiveCornerRadius(variables["@primitives"]["$corner-radius"], result, { exportPrimitives: true });
+    processPrimitiveCornerRadius(variables["@primitives"]["$corner-radius"], result);
   }
 
   // Process sizing tokens
@@ -162,11 +115,8 @@ function processDesignVariables(variables) {
  * Process primitive spacing tokens
  * @param {Object} spacingObj - The spacing object from primitives
  * @param {Object} result - The result object to populate
- * @param {Object} options - Options for processing tokens
  */
-function processPrimitiveSpacing(spacingObj, result, options = {}) {
-  const { exportPrimitives = true } = options;
-
+function processPrimitiveSpacing(spacingObj, result) {
   for (const key in spacingObj) {
     if (spacingObj[key].$type === "number" && spacingObj[key].$value !== undefined) {
       const name = key.replace("$", "");
@@ -176,14 +126,12 @@ function processPrimitiveSpacing(spacingObj, result, options = {}) {
       // Add to CSS variables
       result.cssVariables.light.push(`${cssVarName}: ${convertToRem(value)};`);
 
-      // Add to JavaScript tokens only if numeric values are allowed
-      if (exportPrimitives) {
-        if (!result.jsTokens.spacing.primitive) {
-          result.jsTokens.spacing.primitive = {};
-        }
-
-        result.jsTokens.spacing.primitive[name] = `var(${cssVarName})`;
+      // Add to JavaScript tokens
+      if (!result.jsTokens.spacing.primitive) {
+        result.jsTokens.spacing.primitive = {};
       }
+
+      result.jsTokens.spacing.primitive[name] = `var(${cssVarName})`;
     }
   }
 }
@@ -192,11 +140,8 @@ function processPrimitiveSpacing(spacingObj, result, options = {}) {
  * Process primitive typography tokens
  * @param {Object} typographyObj - The typography object from primitives
  * @param {Object} result - The result object to populate
- * @param {Object} options - Options for processing tokens
  */
-function processPrimitiveTypography(typographyObj, result, options = {}) {
-  const { exportPrimitives = true } = options;
-
+function processPrimitiveTypography(typographyObj, result) {
   // Process font sizes
   if (typographyObj["$font-size"]) {
     for (const key in typographyObj["$font-size"]) {
@@ -211,16 +156,14 @@ function processPrimitiveTypography(typographyObj, result, options = {}) {
         // Add to CSS variables
         result.cssVariables.light.push(`${cssVarName}: ${convertToRem(value)};`);
 
-        // Add to JavaScript tokens only if numeric values are allowed
-        if (exportPrimitives) {
-          if (!result.jsTokens.typography.fontSize) {
-            result.jsTokens.typography.fontSize = {};
-          }
-          if (!result.jsTokens.typography.fontSize.primitive) {
-            result.jsTokens.typography.fontSize.primitive = {};
-          }
-          result.jsTokens.typography.fontSize.primitive[name] = `var(${cssVarName})`;
+        // Add to JavaScript tokens
+        if (!result.jsTokens.typography.fontSize) {
+          result.jsTokens.typography.fontSize = {};
         }
+        if (!result.jsTokens.typography.fontSize.primitive) {
+          result.jsTokens.typography.fontSize.primitive = {};
+        }
+        result.jsTokens.typography.fontSize.primitive[name] = `var(${cssVarName})`;
       }
     }
   }
@@ -236,22 +179,17 @@ function processPrimitiveTypography(typographyObj, result, options = {}) {
         const value = typographyObj["$font-weight"][key].$value;
         const cssVarName = `--font-weight-${name}`;
 
-        // Convert font weight value to lowercase for CSS variables
-        const cssValue = typeof value === "string" ? value.toLowerCase() : value;
-
         // Add to CSS variables
-        result.cssVariables.light.push(`${cssVarName}: ${cssValue};`);
+        result.cssVariables.light.push(`${cssVarName}: ${value};`);
 
-        // Add to JavaScript tokens only if numeric values are allowed
-        if (exportPrimitives) {
-          if (!result.jsTokens.typography.fontWeight) {
-            result.jsTokens.typography.fontWeight = {};
-          }
-          if (!result.jsTokens.typography.fontWeight.primitive) {
-            result.jsTokens.typography.fontWeight.primitive = {};
-          }
-          result.jsTokens.typography.fontWeight.primitive[name] = `var(${cssVarName})`;
+        // Add to JavaScript tokens
+        if (!result.jsTokens.typography.fontWeight) {
+          result.jsTokens.typography.fontWeight = {};
         }
+        if (!result.jsTokens.typography.fontWeight.primitive) {
+          result.jsTokens.typography.fontWeight.primitive = {};
+        }
+        result.jsTokens.typography.fontWeight.primitive[name] = `var(${cssVarName})`;
       }
     }
   }
@@ -270,16 +208,14 @@ function processPrimitiveTypography(typographyObj, result, options = {}) {
         // Add to CSS variables
         result.cssVariables.light.push(`${cssVarName}: ${convertToRem(value)};`);
 
-        // Add to JavaScript tokens only if numeric values are allowed
-        if (exportPrimitives) {
-          if (!result.jsTokens.typography.lineHeight) {
-            result.jsTokens.typography.lineHeight = {};
-          }
-          if (!result.jsTokens.typography.lineHeight.primitive) {
-            result.jsTokens.typography.lineHeight.primitive = {};
-          }
-          result.jsTokens.typography.lineHeight.primitive[name] = `var(${cssVarName})`;
+        // Add to JavaScript tokens
+        if (!result.jsTokens.typography.lineHeight) {
+          result.jsTokens.typography.lineHeight = {};
         }
+        if (!result.jsTokens.typography.lineHeight.primitive) {
+          result.jsTokens.typography.lineHeight.primitive = {};
+        }
+        result.jsTokens.typography.lineHeight.primitive[name] = `var(${cssVarName})`;
       }
     }
   }
@@ -298,16 +234,14 @@ function processPrimitiveTypography(typographyObj, result, options = {}) {
         // Add to CSS variables
         result.cssVariables.light.push(`${cssVarName}: ${convertToRem(value)};`);
 
-        // Add to JavaScript tokens only if numeric values are allowed
-        if (exportPrimitives) {
-          if (!result.jsTokens.typography.letterSpacing) {
-            result.jsTokens.typography.letterSpacing = {};
-          }
-          if (!result.jsTokens.typography.letterSpacing.primitive) {
-            result.jsTokens.typography.letterSpacing.primitive = {};
-          }
-          result.jsTokens.typography.letterSpacing.primitive[name] = `var(${cssVarName})`;
+        // Add to JavaScript tokens
+        if (!result.jsTokens.typography.letterSpacing) {
+          result.jsTokens.typography.letterSpacing = {};
         }
+        if (!result.jsTokens.typography.letterSpacing.primitive) {
+          result.jsTokens.typography.letterSpacing.primitive = {};
+        }
+        result.jsTokens.typography.letterSpacing.primitive[name] = `var(${cssVarName})`;
       }
     }
   }
@@ -320,11 +254,10 @@ function processPrimitiveTypography(typographyObj, result, options = {}) {
         const value = typographyObj["$font-family"][key].$value;
         const cssVarName = `--font-family-${name}`;
 
-        // Add to CSS variables with proper font family formatting
-        const formattedValue = formatFontFamily(value);
-        result.cssVariables.light.push(`${cssVarName}: ${formattedValue};`);
+        // Add to CSS variables
+        result.cssVariables.light.push(`${cssVarName}: "${value}";`);
 
-        // Add to JavaScript tokens (font families are not numeric, so always include)
+        // Add to JavaScript tokens
         if (!result.jsTokens.typography.fontFamily) {
           result.jsTokens.typography.fontFamily = {};
         }
@@ -341,11 +274,8 @@ function processPrimitiveTypography(typographyObj, result, options = {}) {
  * Process primitive corner radius tokens
  * @param {Object} cornerRadiusObj - The corner radius object from primitives
  * @param {Object} result - The result object to populate
- * @param {Object} options - Options for processing tokens
  */
-function processPrimitiveCornerRadius(cornerRadiusObj, result, options = {}) {
-  const { exportPrimitives = true } = options;
-
+function processPrimitiveCornerRadius(cornerRadiusObj, result) {
   for (const key in cornerRadiusObj) {
     if (cornerRadiusObj[key].$type === "number" && cornerRadiusObj[key].$value !== undefined) {
       const name = key.replace("$", "");
@@ -374,13 +304,11 @@ function processPrimitiveCornerRadius(cornerRadiusObj, result, options = {}) {
         result.cssVariables.light.push(`${cssVarName}: ${convertToRem(resolvedValue)};`);
       }
 
-      // Add to JavaScript tokens only if numeric values are allowed
-      if (exportPrimitives) {
-        if (!result.jsTokens.cornerRadius.primitive) {
-          result.jsTokens.cornerRadius.primitive = {};
-        }
-        result.jsTokens.cornerRadius.primitive[name] = `var(${cssVarName})`;
+      // Add to JavaScript tokens
+      if (!result.jsTokens.cornerRadius.primitive) {
+        result.jsTokens.cornerRadius.primitive = {};
       }
+      result.jsTokens.cornerRadius.primitive[name] = `var(${cssVarName})`;
     }
   }
 }
@@ -445,8 +373,7 @@ function processSizingTokens(sizingObj, result, variables, parentKey = "") {
   }
 }
 
-function processTokenCollection(collectionKey, subCollectionKey, options = {}) {
-  const { exportPrimitives = true } = options;
+function processTokenCollection(collectionKey, subCollectionKey) {
   const collectionJsKey = camelCase(collectionKey);
   const subCollectionJsKey = camelCase(subCollectionKey);
   const subCollectionKeyRegex = new RegExp(`${subCollectionKey}\\-?`, "g");
@@ -483,32 +410,19 @@ function processTokenCollection(collectionKey, subCollectionKey, options = {}) {
         } else {
           // Not a reference, use directly
           resolvedValue = value;
-
-          // Convert font weight values to lowercase for CSS variables
-          let cssValue = resolvedValue;
-
-          if (subCollectionKey === "font-weight" && typeof resolvedValue === "string") {
-            cssValue = resolvedValue.toLowerCase();
-          } else if (subCollectionKey === "font-family" && typeof resolvedValue === "string") {
-            cssValue = formatFontFamily(resolvedValue);
-          }
-
-          result.cssVariables.light.push(`${cssVarName}: ${cssValue};`);
+          result.cssVariables.light.push(`${cssVarName}: ${resolvedValue};`);
         }
 
-        // Add to JavaScript tokens only if numeric values are allowed, if it's not a numeric value, or if it's a reference (semantic token)
-        const isReference = typeof value === "string" && value.startsWith("{") && value.endsWith("}");
-        if (exportPrimitives || !isNumber || isReference) {
-          if (!result.jsTokens[collectionJsKey]) {
-            result.jsTokens[collectionJsKey] = {};
-          }
-          if (!result.jsTokens[collectionJsKey][subCollectionJsKey]) {
-            result.jsTokens[collectionJsKey][subCollectionJsKey] = {};
-          }
-          const jsKey = `${parentKey ? `${parentKey}-` : ""}${name}`;
-          result.jsTokens[collectionJsKey][subCollectionJsKey][jsKey.replace(subCollectionKeyRegex, "")] =
-            `var(${cssVarName})`;
+        // Add to JavaScript tokens
+        if (!result.jsTokens[collectionJsKey]) {
+          result.jsTokens[collectionJsKey] = {};
         }
+        if (!result.jsTokens[collectionJsKey][subCollectionJsKey]) {
+          result.jsTokens[collectionJsKey][subCollectionJsKey] = {};
+        }
+        const jsKey = `${parentKey ? `${parentKey}-` : ""}${name}`;
+        result.jsTokens[collectionJsKey][subCollectionJsKey][jsKey.replace(subCollectionKeyRegex, "")] =
+          `var(${cssVarName})`;
       }
     }
   };
@@ -521,7 +435,7 @@ function processTokenCollection(collectionKey, subCollectionKey, options = {}) {
  * @param {Object} variables - The variables object for reference resolution
  * @param {String} parentKey - The parent key for nested tokens
  */
-const processFontSizeTokens = processTokenCollection("typography", "font-size", { exportPrimitives: false });
+const processFontSizeTokens = processTokenCollection("typography", "font-size");
 
 /**
  * Process font weight tokens
@@ -529,7 +443,7 @@ const processFontSizeTokens = processTokenCollection("typography", "font-size", 
  * @param {Object} result - The result object to populate
  * @param {Object} variables - The variables object for reference resolution
  */
-const processFontWeightTokens = processTokenCollection("typography", "font-weight", { exportPrimitives: false });
+const processFontWeightTokens = processTokenCollection("typography", "font-weight");
 
 /**
  * Process line height tokens
@@ -537,7 +451,7 @@ const processFontWeightTokens = processTokenCollection("typography", "font-weigh
  * @param {Object} result - The result object to populate
  * @param {Object} variables - The variables object for reference resolution
  */
-const processLineHeightTokens = processTokenCollection("typography", "line-height", { exportPrimitives: false });
+const processLineHeightTokens = processTokenCollection("typography", "line-height");
 
 /**
  * Process letter spacing tokens
@@ -545,16 +459,14 @@ const processLineHeightTokens = processTokenCollection("typography", "line-heigh
  * @param {Object} result - The result object to populate
  * @param {Object} variables - The variables object for reference resolution
  */
-const processLetterSpacingTokens = processTokenCollection("typography", "letter-spacing", {
-  exportPrimitives: false,
-});
+const processLetterSpacingTokens = processTokenCollection("typography", "letter-spacing");
 
 /**
  * Process font family tokens
  * @param {Object} fontObj - The font family object from typography
  * @param {Object} result - The result object to populate
  */
-const processFontFamilyTokens = processTokenCollection("typography", "font-family", { exportPrimitives: true });
+const processFontFamilyTokens = processTokenCollection("typography", "font-family");
 
 /**
  * Process typography tokens from design variables

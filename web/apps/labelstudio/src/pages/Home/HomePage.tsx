@@ -109,7 +109,7 @@ export const HomePage: Page = () => {
               data && data?.count > 0 ? (
                 <>
                   Recent Projects{" "}
-                  <a href="/projects" className="text-title-medium font-regular hover:underline">
+                  <a href="/projects" className="text-lg font-normal hover:underline">
                     View All
                   </a>
                 </>
@@ -210,7 +210,7 @@ function ProjectSimpleCard({
       >
         <div className="flex flex-col gap-1">
           <span className="text-neutral-content">{project.title}</span>
-          <div className="text-neutral-content-subtler text-body-small">
+          <div className="text-neutral-content-subtler text-sm">
             {finished} of {total} Tasks ({total > 0 ? Math.round((finished / total) * 100) : 0}%)
           </div>
         </div>

@@ -229,12 +229,8 @@ const IconItem = ({ name, Icon }: { name: string; Icon: React.ComponentType<Reac
           height: 24,
         })}
       </div>
-      <div className="icon-name text-body-smaller font-bold text-center text-neutral-content-subtle break-word mb-1">
-        {name}
-      </div>
-      <div className="icon-file-name text-body-smallest text-neutral-content-subtle break-word text-center">
-        {fileName}
-      </div>
+      <div className="icon-name text-xs font-bold text-center text-neutral-content-subtle break-word mb-1">{name}</div>
+      <div className="icon-file-name text-10 text-neutral-content-subtle break-word text-center">{fileName}</div>
     </div>
   );
 };
@@ -262,7 +258,7 @@ const IconCatalog = () => {
           placeholder="Search icons by name or file name..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="p-2 rounded border border-neutral-border bg-neutral-background text-neutral-content focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-focus-outline w-full text-body-small mb-4"
+          className="p-2 rounded border border-neutral-border bg-neutral-background text-neutral-content focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-focus-outline w-full text-sm mb-4"
         />
       </div>
 
@@ -333,16 +329,16 @@ const IconCatalogByCategory = () => {
           placeholder="Search icons by name, file name, or category..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="p-2 rounded border border-neutral-border bg-neutral-background text-neutral-content focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-focus-outline w-full text-body-small mb-4"
+          className="p-2 rounded border border-neutral-border bg-neutral-background text-neutral-content focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-focus-outline w-full text-sm mb-4"
         />
       </div>
 
       {filteredCategories.map(({ category, icons }) => (
         <div key={category} className="category-section mb-10">
-          <h2 className="text-title-medium font-bold mb-2 pb-2 border-b border-neutral-border">
+          <h2 className="text-lg font-bold mb-2 pb-2 border-b border-neutral-border">
             {category} ({icons.length})
           </h2>
-          <p className="text-body-small mb-4 text-neutral-content-subtle">
+          <p className="text-sm mb-4 text-neutral-content-subtle">
             {categoryDescriptions[category] || "Icons in this category"}
           </p>
 

@@ -73,8 +73,8 @@ export const WithComplexOptions: Story = {
         label: (
           <>
             <span>Banana</span>
-            <span className="text-body-small"> - 10</span>
-            <span className="text-title-medium"> other element</span>
+            <span className="text-sm"> - 10</span>
+            <span className="text-lg"> other element</span>
           </>
         ),
       },
@@ -83,7 +83,7 @@ export const WithComplexOptions: Story = {
         label: (
           <>
             <span>Blueberry</span>
-            <span className="text-body-small"> - 15</span>
+            <span className="text-sm"> - 15</span>
           </>
         ),
         disabled: true,

@@ -27,7 +27,7 @@ export const TextDataGroup = ({ value, hasImage }) => {
       style={style}
       title={output}
       className={clsx("p-tight", {
-        "text-wrap leading-body-medium": !hasImage,
+        "text-wrap leading-normal": !hasImage,
         "text-nowrap": hasImage,
       })}
     >

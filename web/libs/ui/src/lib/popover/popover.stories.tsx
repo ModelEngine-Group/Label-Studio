@@ -28,11 +28,11 @@ export const WithForm: Story = {
         <h4 className="mb-4 font-medium">Settings</h4>
         <div className="space-y-4">
           <div>
-            <label className="text-body-small font-medium">Name</label>
+            <label className="text-sm font-medium">Name</label>
             <input type="text" className="w-full mt-1 px-3 py-2 border rounded-md" placeholder="Enter your name" />
           </div>
           <div>
-            <label className="text-body-small font-medium">Email</label>
+            <label className="text-sm font-medium">Email</label>
             <input type="email" className="w-full mt-1 px-3 py-2 border rounded-md" placeholder="Enter your email" />
           </div>
           <Button className="w-full">Save</Button>
