@@ -171,7 +171,8 @@ class StorageValidateAPI(generics.CreateAPIView):
         try:
             instance.validate_connection()
         except Exception as exc:
-            raise ValidationError(exc)
+            logger.error(f'Error validating storage connection: {exc}')
+            raise ValidationError('Error validating storage connection')
         return Response()
 
 
