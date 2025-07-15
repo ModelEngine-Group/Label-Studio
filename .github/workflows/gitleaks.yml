@@ -33,7 +33,7 @@ jobs:
           platform=$(echo $arch | tr '[:upper:]' '[:lower:]' )
           echo "PLATFORM=$platform" >> $GITHUB_ENV
           if [[ "${{ inputs.version }}" == "latest" ]]; then
-            echo "GITLEAKS_VERSION=$(curl -s https://api.github.com/repos/gitleaks/gitleaks/releases/latest | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')" >> $GITHUB_ENV
+            echo "GITLEAKS_VERSION=$(curl -s https://api.github.com/repos/gitleaks/gitleaks/releases/latest | jq -r .tag_name | sed 's/^v//')" >> $GITHUB_ENV
           else
             echo "GITLEAKS_VERSION=${{ inputs.version }}" >> $GITHUB_ENV
           fi
