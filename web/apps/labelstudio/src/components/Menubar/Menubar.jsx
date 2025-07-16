@@ -135,7 +135,10 @@ export const Menubar = ({ enabled, defaultOpened, defaultPinned, children, onSid
         <div className={menubarClass}>
           <Dropdown.Trigger dropdown={menuDropdownRef} closeOnClickOutside={!sidebarPinned}>
             <div className={`${menubarClass.elem("trigger")} main-menu-trigger`}>
-              <img src={absoluteURL("/static/icons/logo.svg")} alt="Label Studio Logo" style={{ height: 22 }} />
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <img src={absoluteURL("/static/icons/huawei.png")} alt="ModelEngine Logo" style={{ height: 22 }} />
+                <h1 style={{ fontSize: "20px", marginLeft: "8px" }}>ModelEngine</h1>
+              </div>
               <Hamburger opened={sidebarOpened} />
             </div>
           </Dropdown.Trigger>
