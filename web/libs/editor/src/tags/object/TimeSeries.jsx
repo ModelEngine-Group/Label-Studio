@@ -209,6 +209,54 @@ const Model = types
       return dt;
     },
 
+    /**
+     * Calculate initial brush boundaries ensuring minimum points are visible
+     */
+    calculateInitialBrushRange(times) {
+      const MIN_POINTS_ON_SCREEN = 10;
+
+      // If dataset is smaller than minimum, show everything
+      if (times.length < MIN_POINTS_ON_SCREEN) {
+        return [times[0], times[times.length - 1]];
+      }
+
+      const startIndex = Math.round((times.length - 1) * self.defaultOverviewWidth[0]);
+      const endIndex = Math.round((times.length - 1) * self.defaultOverviewWidth[1]);
+      const pointsInRange = endIndex - startIndex + 1;
+
+      // If we have enough points, use original range
+      if (pointsInRange >= MIN_POINTS_ON_SCREEN) {
+        return [times[startIndex], times[endIndex]];
+      }
+
+      // Otherwise, expand the range to show at least MIN_POINTS_ON_SCREEN points
+      return self.expandRangeToMinimumPoints(times, [times[startIndex], times[endIndex]], MIN_POINTS_ON_SCREEN);
+    },
+
+    /**
+     * Expand range to ensure minimum number of points are visible
+     */
+    expandRangeToMinimumPoints(times, originalBoundaries, minPoints) {
+      const startIndex = Math.round((times.length - 1) * self.defaultOverviewWidth[0]);
+      const endIndex = Math.round((times.length - 1) * self.defaultOverviewWidth[1]);
+
+      const currentPointCount = endIndex - startIndex + 1;
+      const pointsNeeded = minPoints - currentPointCount;
+
+      if (pointsNeeded <= 0) {
+        return originalBoundaries; // Should not happen, but safety check
+      }
+
+      // Expand to the right first (show more recent data)
+      const expandRight = Math.min(pointsNeeded, times.length - 1 - endIndex);
+      const expandLeft = pointsNeeded - expandRight;
+
+      const newStartIndex = Math.max(0, startIndex - expandLeft);
+      const newEndIndex = Math.min(times.length - 1, endIndex + expandRight);
+
+      return [times[newStartIndex], times[newEndIndex]];
+    },
+
     get dataObj() {
       if (!self.valueLoaded || !self.data) return null;
       let data = self.data;
@@ -240,10 +288,46 @@ const Model = types
         const dataLength = data[self.keyColumn].length;
         const timestamps = Array.from({ length: dataLength });
 
-        for (let i = 0; i < dataLength; i++) {
-          const value = data[self.keyColumn][i];
+        // Check if user is using %f (microseconds) which D3 doesn't support
+        let actualTimeFormat = self.timeformat;
+        let shouldConvertMicroseconds = false;
 
-          current = self.timeformat ? self.parseTime(value) : value;
+        if (self.timeformat && self.timeformat.includes("%f")) {
+          console.warn(
+            "TimeSeries: timeFormat contains %f (microseconds) which is not supported by D3. " +
+              "Converting microseconds to milliseconds and using %L instead. " +
+              "Consider updating your timeFormat to use %L and your data to use 3-digit milliseconds.",
+          );
+          actualTimeFormat = self.timeformat.replace("%f", "%L");
+          shouldConvertMicroseconds = true;
+        }
+
+        for (let i = 0; i < dataLength; i++) {
+          let value = data[self.keyColumn][i];
+
+          if (self.timeformat) {
+            // Convert microseconds to milliseconds if needed
+            if (shouldConvertMicroseconds && typeof value === "string") {
+              // Convert "00:00:01.123456" to "00:00:01.123"
+              value = value.replace(/\.(\d{3})\d{3}$/, ".$1");
+            }
+
+            // Use the corrected format for parsing
+            const parse = actualTimeFormat ? d3.utcParse(actualTimeFormat) : d3.utcParse(self.timeformat);
+            const dt = parse(value);
+
+            if (dt instanceof Date) {
+              current = dt.getTime();
+            } else if (dt === null) {
+              // Parsing failed - this will trigger the error handling below
+              current = 0;
+            } else {
+              current = dt;
+            }
+          } else {
+            current = value;
+          }
+
           timestamps[i] = current;
 
           if (current < previous) {
@@ -263,7 +347,9 @@ const Model = types
           previous = current;
         }
 
-        if (timestamps[0] === 0 && timestamps[1] === 0 && timestamps[2] === 0) {
+        // Check if parsing failed by looking for multiple null, 0, or NaN values
+        const failedValues = timestamps.slice(0, 3).filter((t) => t === null || t === 0 || isNaN(t));
+        if (failedValues.length >= 2) {
           const message = [
             `<b>timeColumn</b> (${self.timecolumn}) cannot be parsed.`,
             `First wrong values: ${data[self.keyColumn].slice(0, 3).join(", ")}`,
@@ -271,6 +357,12 @@ const Model = types
 
           if (self.timeformat) {
             message.push(`Your <b>timeFormat</b>: ${self.timeformat}. It should be compatible with these values.`);
+
+            if (self.timeformat.includes("%f")) {
+              message.push(
+                "<b>Note:</b> %f (microseconds) is not supported by D3. Use %L (milliseconds) instead and convert your data to 3-digit milliseconds.",
+              );
+            }
           } else {
             message.push("You have to use <b>timeFormat</b> parameter if your values are datetimes.");
           }
@@ -662,9 +754,8 @@ const Model = types
       // if current view already restored by PersistentState
       if (self.brushRange?.length) return;
 
-      const percentToLength = (percent) => times[Math.round((times.length - 1) * percent)];
-      const boundaries = self.defaultOverviewWidth.map(percentToLength);
-
+      // Calculate initial brush range ensuring minimum points are visible
+      const boundaries = self.calculateInitialBrushRange(times);
       self.updateTR(boundaries);
     },
 
@@ -1364,19 +1455,17 @@ const HtxTimeSeriesViewRTS = ({ item }) => {
       return;
     }
 
+    // Calculate the clicked time within the current brush range
     const timeClicked = brushTimeStartNative + (clickX / plottingAreaWidth) * brushDurationNative;
     const [minKey, maxKey] = item.keysRange;
     const finalTime = Math.max(minKey, Math.min(timeClicked, maxKey));
 
-    const insideView = item.brushRange && finalTime >= item.brushRange[0] && finalTime <= item.brushRange[1];
+    // Since we're clicking on the visible area, the time is always inside the current view
+    // Update cursor position to the clicked location
+    item.setCursor(finalTime);
 
-    if (insideView) {
-      // Just move cursor without changing brush range
-      item.setCursor(finalTime);
-    } else if (typeof item._updateViewForTime === "function") {
-      // Re-center only when outside current view
-      item._updateViewForTime(finalTime);
-    }
+    // Also update seekTo to ensure playhead moves to clicked position
+    item.setCursorAndSeek(finalTime);
 
     // If we're currently playing, update the playback state to restart from the clicked position
     if (item.isPlaying) {
@@ -1384,12 +1473,11 @@ const HtxTimeSeriesViewRTS = ({ item }) => {
     }
 
     if (isFF(FF_TIMESERIES_SYNC)) {
-      const referenceTime = insideView ? finalTime : (item.centerTime ?? finalTime);
       let relativeTime;
       if (item.isDate) {
-        relativeTime = (referenceTime - minKey) / 1000;
+        relativeTime = (finalTime - minKey) / 1000;
       } else {
-        relativeTime = referenceTime - minKey;
+        relativeTime = finalTime - minKey;
       }
       // Include current playing state to prevent other media from pausing during seek
       item.syncSend({ time: relativeTime, playing: item.isPlaying }, "seek");

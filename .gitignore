@@ -82,3 +82,5 @@ docker-compose.override.yml
 .netlify
 
 CLAUDE.local.md
+web/libs/editor/tests/coverage
+.cache

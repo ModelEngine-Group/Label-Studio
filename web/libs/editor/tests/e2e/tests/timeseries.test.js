@@ -89,6 +89,19 @@ const scenarios = {
       I.seeElement(locate(".lsf-errors"));
     },
   },
+
+  "Works with microseconds in time column and %f timeFormat": {
+    timeformat: "%Y-%m-%d %H:%M:%S.%f",
+    timeseries: {
+      time: ["2024-07-15 12:34:56.123456", "2024-07-15 12:34:57.654321", "2024-07-15 12:34:58.000123"],
+      one: [1, 2, 3],
+      two: [4, 5, 6],
+    },
+    assert(I) {
+      I.waitForVisible(".htx-timeseries", 5);
+      I.dontSeeElement(locate(".lsf-errors"));
+    },
+  },
 };
 
 function generateData(stepsNumber) {
