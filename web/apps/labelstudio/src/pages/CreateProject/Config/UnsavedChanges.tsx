@@ -3,13 +3,12 @@ import { Button } from "../../../components";
 import { LeaveBlocker, type LeaveBlockerCallbacks } from "../../../components/LeaveBlocker/LeaveBlocker";
 import { modal } from "../../../components/Modal/Modal";
 import { Space } from "../../../components/Space/Space";
-import i18n from 'i18next';
 
 type SaveAndLeaveButtonProps = {
   onSave: () => void;
   text?: string;
 };
-const SaveAndLeaveButton = ({ onSave, text = i18n.t('common_button_save_and_leave') }: SaveAndLeaveButtonProps) => {
+const SaveAndLeaveButton = ({ onSave, text = "Save and Leave" }: SaveAndLeaveButtonProps) => {
   const [saving, setSaving] = useState(false);
   const saveHandler = useCallback(async () => {
     setSaving(true);
@@ -41,8 +40,8 @@ export const unsavedChangesModal = ({
   cancelText,
   discardText,
   okText,
-  title = i18n.t('common_description_for_unsaved_title'),
-  body = i18n.t('common_description_for_unsaved_content'),
+  title = "You have unsaved changes.",
+  body = "Would you like to save them before leaving?",
   ...props
 }: UnsavedChangesModalProps) => {
   let modalInstance: any = undefined;
@@ -65,7 +64,7 @@ export const unsavedChangesModal = ({
           size="compact"
           autoFocus
         >
-          {cancelText ?? i18n.t('common_button_cancel')}
+          {cancelText ?? "Cancel"}
         </Button>
 
         {onDiscard && (
@@ -77,7 +76,7 @@ export const unsavedChangesModal = ({
             size="compact"
             look="danger"
           >
-            {discardText ?? i18n.t('common_button_discard_and_leave')}
+            {discardText ?? "Discard and leave"}
           </Button>
         )}
 

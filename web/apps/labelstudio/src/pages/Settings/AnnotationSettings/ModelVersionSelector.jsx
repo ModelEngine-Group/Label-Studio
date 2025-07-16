@@ -2,7 +2,6 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { useAPI } from "../../../providers/ApiProvider";
 import { Select } from "../../../components/Form";
 import { ProjectContext } from "../../../providers/ProjectProvider";
-import { useTranslation } from "react-i18next";
 
 export const ModelVersionSelector = ({
   name = "model_version",
@@ -10,7 +9,6 @@ export const ModelVersionSelector = ({
   apiName = "projectModelVersions",
   ...props
 }) => {
-  const { t } = useTranslation();
   const api = useAPI();
   const { project } = useContext(ProjectContext);
   const [loading, setLoading] = useState(true);
@@ -32,18 +30,18 @@ export const ModelVersionSelector = ({
       params: {
         pk,
         extended: true,
-        include_live_models: true
-      }
+        include_live_models: true,
+      },
     });
 
     if (modelVersions?.live?.length > 0) {
-      const liveModels = modelVersions.live.map(item => {
+      const liveModels = modelVersions.live.map((item) => {
         const label = `${item.title} (${item.readable_state})`;
 
         return {
           group: "Models",
           value: item.title,
-          label
+          label,
         };
       });
 
@@ -51,13 +49,13 @@ export const ModelVersionSelector = ({
     }
 
     if (modelVersions?.static?.length > 0) {
-      const staticModels = modelVersions.static.map(item => {
+      const staticModels = modelVersions.static.map((item) => {
         const label = `${item.model_version} (${item.count} predictions)`;
 
         return {
           group: "Predictions",
           value: item.model_version,
-          label
+          label,
         };
       });
 
@@ -65,7 +63,7 @@ export const ModelVersionSelector = ({
     }
 
     if (!modelVersions?.static?.length && !modelVersions?.live?.length) {
-      setPlaceholder(t('common_placeholder_no_model_or_predictions_available'));
+      setPlaceholder("No model or predictions available");
     }
 
     setLoading(false);
@@ -75,22 +73,16 @@ export const ModelVersionSelector = ({
 
   return (
     <div>
-      <label>{t("common_caption_for_select_predictions")}</label>
+      <label>Select which predictions or which model you want to use:</label>
       <div style={{ display: "flex", alignItems: "center", width: 400 }}>
         <div style={{ flex: 1, paddingRight: 16 }}>
           <Select
             name={name}
             disabled={!versions.length && !models.length}
             value={version}
-            onChange={e => setVersion(e.target.value)}
+            onChange={(e) => setVersion(e.target.value)}
             options={[...models, ...versions]}
-            placeholder={
-              loading
-                ? t("common_placehoder_loading")
-                : placeholder
-                ? placeholder
-                : t("common_placeholder_please_select_model_or_predictions")
-            }
+            placeholder={loading ? "Loading ..." : placeholder ? placeholder : "Please select model or predictions"}
             {...props}
           />
         </div>

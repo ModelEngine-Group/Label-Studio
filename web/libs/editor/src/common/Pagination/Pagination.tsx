@@ -2,7 +2,6 @@ import { type ChangeEvent, type FC, forwardRef, type KeyboardEvent, useCallback,
 import { Hotkey } from "../../core/Hotkey";
 import { useHotkey } from "../../hooks/useHotkey";
 import { Block, Elem } from "../../utils/bem";
-import { useTranslation } from 'react-i18next';
 import "./Pagination.scss";
 
 interface PaginationProps {
@@ -51,7 +50,6 @@ export const Pagination: FC<PaginationProps> = forwardRef<any, PaginationProps>(
     },
     _ref,
   ) => {
-    const { t } = useTranslation();
     const [inputMode, setInputMode] = useState(false);
 
     const handleChangeSelect = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -62,7 +60,7 @@ export const Pagination: FC<PaginationProps> = forwardRef<any, PaginationProps>(
       return pageSizeOptions.map((obj: number, index: number) => {
         return (
           <option value={obj} key={index}>
-            {obj} {t('common_label_per_page')}
+            {obj} per page
           </option>
         );
       });

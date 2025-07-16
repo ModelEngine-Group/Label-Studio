@@ -13,7 +13,6 @@ import { DataManagerPage } from "../DataManager/DataManager";
 import { SettingsPage } from "../Settings";
 import "./Projects.scss";
 import { EmptyProjectsList, ProjectsList } from "./ProjectsList";
-import { useTranslation } from 'react-i18next';
 
 const getCurrentPage = () => {
   const pageNumberFromURL = new URLSearchParams(location.search).get("page");
@@ -160,10 +159,9 @@ ProjectsPage.routes = ({ store }) => [
 ];
 ProjectsPage.context = ({ openModal, showButton }) => {
   if (!showButton) return null;
-  const { t } = useTranslation();
   return (
     <Button onClick={openModal} look="primary" size="compact">
-      {t('common_button_create')}
+      Create
     </Button>
   );
 };

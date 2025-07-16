@@ -24,20 +24,16 @@ import tags from "./schema.json";
 import { UnsavedChanges } from "./UnsavedChanges";
 import { Checkbox } from "@humansignal/ui";
 import { toSnakeCase } from "strman";
-import { useTranslation } from "react-i18next";
-import i18n from 'i18next';
 
 const wizardClass = cn("wizard");
 const configClass = cn("configure");
 
-const EmptyConfigPlaceholder = ({t}) => (
+const EmptyConfigPlaceholder = () => (
   <div className={configClass.elem("empty-config")}>
+    <p>Your labeling configuration is empty. It is required to label your data.</p>
     <p>
-      Your labeling configuration is empty. It is required to label your data.
-    </p>
-    <p>
-      Start from one of our predefined templates or create your own config on
-      the Code panel. The labeling config is XML-based and you can{" "}
+      Start from one of our predefined templates or create your own config on the Code panel. The labeling config is
+      XML-based and you can{" "}
       <a href="https://labelstud.io/tags/" target="_blank" rel="noreferrer">
         read about the available tags in our documentation
       </a>
@@ -46,7 +42,7 @@ const EmptyConfigPlaceholder = ({t}) => (
   </div>
 );
 
-const Label = ({t, label, template, color }) => {
+const Label = ({ label, template, color }) => {
   const value = label.getAttribute("value");
 
   return (
@@ -85,7 +81,7 @@ const Label = ({t, label, template, color }) => {
   );
 };
 
-const ConfigureControl = ({t, control, template }) => {
+const ConfigureControl = ({ control, template }) => {
   const refLabels = React.useRef();
   const tagname = control.tagName;
 
@@ -107,30 +103,20 @@ const ConfigureControl = ({t, control, template }) => {
   return (
     <div className={configClass.elem("labels")}>
       <form className={configClass.elem("add-labels")} action="">
-        <h4>{tagname === "Choices" ? t('common_title_add_choices') : t('common_title_add_label_names')}</h4>
-        <span>{t('common_subtitle_add_multiple_labels_tip')}</span>
-        <textarea
-          name="labels"
-          id=""
-          cols="50"
-          rows="5"
-          ref={refLabels}
-          onKeyPress={onKeyPress}
-          className="p-2 px-3"
-        />
+        <h4>{tagname === "Choices" ? "Add choices" : "Add label names"}</h4>
+        <span>Use new line as a separator to add multiple labels</span>
+        <textarea name="labels" id="" cols="50" rows="5" ref={refLabels} onKeyPress={onKeyPress} className="p-2 px-3" />
         <Button type="button" size="compact" onClick={onAddLabels}>
-          {t('common_button_add')}
+          Add
         </Button>
       </form>
       <div className={configClass.elem("current-labels")}>
         <h3>
-          {tagname === "Choices" ? t('common_title_choices') : t('common_title_labels')} (
-          {control.children.length})
+          {tagname === "Choices" ? "Choices" : "Labels"} ({control.children.length})
         </h3>
         <ul>
           {Array.from(control.children).map((label) => (
             <Label
-              t={t}
               label={label}
               template={template}
               key={label.getAttribute("value")}
@@ -143,7 +129,7 @@ const ConfigureControl = ({t, control, template }) => {
   );
 };
 
-const ConfigureSettings = ({ template, t }) => {
+const ConfigureSettings = ({ template }) => {
   const { settings } = template;
 
   if (!settings) return null;
@@ -233,7 +219,7 @@ const ConfigureSettings = ({ template, t }) => {
   return (
     <ul className={configClass.elem("settings")}>
       <li>
-        <h4>{t('common_title_configure_settings')}</h4>
+        <h4>Configure settings</h4>
         <ul className={configClass.elem("object-settings")}>{items}</ul>
       </li>
     </ul>
@@ -312,22 +298,19 @@ const ConfigureColumn = ({ template, obj, columns }) => {
   );
 };
 
-const ConfigureColumns = ({ t, columns, template }) => {
+const ConfigureColumns = ({ columns, template }) => {
   if (!template.objects.length) return null;
 
   return (
     <div className={configClass.elem("object")}>
-      <h4>{t("common_title_configure_data")}</h4>
-      {template.objects.length > 1 &&
-        columns?.length > 0 &&
-        columns.length < template.objects.length && (
-          <p className={configClass.elem("object-error")}>
-            {t('common_tip_template_require_data')}
-          </p>
-        )}
+      <h4>Configure data</h4>
+      {template.objects.length > 1 && columns?.length > 0 && columns.length < template.objects.length && (
+        <p className={configClass.elem("object-error")}>This template requires more data then you have for now</p>
+      )}
       {columns?.length === 0 && (
         <p className={configClass.elem("object-error")}>
-          {t('common_tip_select_field_label_data')}
+          To select which field(s) to label you need to upload the data. Alternatively, you can provide it using Code
+          mode.
         </p>
       )}
       {template.objects.map((obj) => (
@@ -350,10 +333,7 @@ const Configurator = ({
   warning,
   hasChanges,
 }) => {
-  const { t } = useTranslation();
-  const [configure, setConfigure] = React.useState(
-    isEmptyConfig(config) ? "code" : "visual"
-  );
+  const [configure, setConfigure] = React.useState(isEmptyConfig(config) ? "code" : "visual");
   const [visualLoaded, loadVisual] = React.useState(configure === "visual");
   const [waiting, setWaiting] = React.useState(false);
   const [saved, setSaved] = React.useState(false);
@@ -476,10 +456,10 @@ const Configurator = ({
 
   const extra = (
     <p className={configClass.elem("tags-link")}>
-      {t("common_tip_configure_label")}
+      Configure the labeling interface with tags.
       <br />
       <a href="https://labelstud.io/tags/" target="_blank" rel="noreferrer">
-        {t("common_tip_see_all_availabel_tags")}
+        See all available tags
       </a>
       .
     </p>
@@ -488,33 +468,18 @@ const Configurator = ({
   return (
     <div className={configClass}>
       <div className={configClass.elem("container")}>
-        <h1>
-          {t("common_title_labeling_interface")}
-          {hasChanges ? " *" : ""}
-        </h1>
+        <h1>Labeling Interface{hasChanges ? " *" : ""}</h1>
         <header>
-          <Button
-            type="button"
-            data-leave={true}
-            onClick={onBrowse}
-            size="compact"
-          >
-            {t("common_button_browse_templates")}
+          <Button type="button" data-leave={true} onClick={onBrowse} size="compact">
+            Browse Templates
           </Button>
-          <ToggleItems
-            items={{
-              code: t("common_label_code"),
-              visual: t("common_label_visual")
-            }}
-            active={configure}
-            onSelect={onSelect}
-          />
+          <ToggleItems items={{ code: "Code", visual: "Visual" }} active={configure} onSelect={onSelect} />
         </header>
         <div className={configClass.elem("editor")}>
           {configure === "code" && (
             <div className={configClass.elem("code")} style={{ display: configure === "code" ? undefined : "none" }}>
               <textarea value={config} onChange={(e) => {
-                  onChange(e.target.value);
+                onChange(e.target.value);
               }}></textarea>
               {/*<CodeMirror*/}
               {/*  name="code"*/}
@@ -551,21 +516,11 @@ const Configurator = ({
               style={{ display: configure === "visual" ? undefined : "none" }}
             >
               {isEmptyConfig(config) && <EmptyConfigPlaceholder />}
-              <ConfigureColumns 
-                t={t}
-                columns={columns}
-                project={project}
-                template={template}
-              />
-              {template.controls.map(control => (
-                <ConfigureControl
-                  t={t}
-                  control={control}
-                  template={template}
-                  key={control.getAttribute("name")}
-                />
+              <ConfigureColumns columns={columns} project={project} template={template} />
+              {template.controls.map((control) => (
+                <ConfigureControl control={control} template={template} key={control.getAttribute("name")} />
               ))}
-              <ConfigureSettings template={template} t={t} />
+              <ConfigureSettings template={template} />
             </div>
           )}
         </div>
@@ -574,18 +529,12 @@ const Configurator = ({
             {saved && (
               <Block name="form-indicator">
                 <Elem tag="span" mod={{ type: "success" }} name="item">
-                  {t("common_label_saved")}
+                  Saved!
                 </Elem>
               </Block>
             )}
-            <Button
-              look="primary"
-              size="compact"
-              style={{ width: 120 }}
-              onClick={onSave}
-              waiting={waiting}
-            >
-              {waiting ? t("common_tip_saving") : t("common_tip_save")}
+            <Button look="primary" size="compact" style={{ width: 120 }} onClick={onSave} waiting={waiting}>
+              {waiting ? "Saving..." : "Save"}
             </Button>
             {isFF(FF_UNSAVED_CHANGES) && <UnsavedChanges hasChanges={hasChanges} onSave={onSave} />}
           </Form.Actions>
@@ -613,7 +562,6 @@ export const ConfigPage = ({
   show = true,
   hasChanges,
 }) => {
-  const { t } = useTranslation();
   const [config, _setConfig] = React.useState("");
   const [mode, setMode] = React.useState("list"); // view | list
   const [selectedGroup, _setSelectedGroup] = React.useState(null);

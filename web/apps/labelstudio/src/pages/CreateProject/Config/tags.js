@@ -1,27 +1,25 @@
-import i18n from 'i18next';
-
 const OBJECTS = {
   Image: {
     type: "Image",
     settings: {
       strokeWidth: {
-        title: '区域边界宽度',
+        title: "Width of region borders",
         type: Number,
         param: ($obj, value) => $obj.$controls.forEach(($control) => $control.setAttribute("strokeWidth", value)),
         value: ($obj) => $obj.$controls[0]?.getAttribute("strokeWidth") ?? 1,
       },
       zoom: {
-        title: `${'允许图像缩放'} (ctrl+wheel)`,
+        title: "Allow image zoom (ctrl+wheel)",
         type: Boolean,
         param: "zoom",
       },
       zoomControl: {
-        title: '显示用于放大和缩小的控件',
+        title: "Show controls to zoom in and out",
         type: Boolean,
         param: "zoomControl",
       },
       rotateControl: {
-        title: '显示用于旋转图像的控件',
+        title: "Show controls to rotate image",
         type: Boolean,
         param: "rotateControl",
       },
@@ -31,7 +29,7 @@ const OBJECTS = {
     type: "Text",
     settings: {
       granularity: {
-        title: '按单词选择文本',
+        title: "Select text by words",
         type: Boolean,
         param: ($obj, value) =>
           value ? $obj.setAttribute("granularity", "word") : $obj.removeAttribute("granularity"),

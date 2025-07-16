@@ -10,7 +10,6 @@ import { useCopyText } from "../../../lib/hooks/useCopyText";
  */
 import { Input, TextArea } from "apps/labelstudio/src/components/Form";
 import { Button } from "apps/labelstudio/src/components/Button/Button";
-import { useTranslation } from "react-i18next";
 
 const tokenAtom = atomWithQuery(() => ({
   queryKey: ["access-token"],
@@ -49,7 +48,6 @@ export const PersonalAccessToken = () => {
   const curl = useAtomValue(curlStringAtom);
   const [copyToken, tokenCopied] = useCopyText(token);
   const [copyCurl, curlCopied] = useCopyText(curl);
-  const { t } = useTranslation();
 
   return (
     <div id="personal-access-token">
@@ -62,7 +60,7 @@ export const PersonalAccessToken = () => {
               {tokenCopied ? "Copied!" : "Copy"}
             </Button>
             <Button look="danger" onClick={reset.mutate}>
-              {t('common_button_reset')}
+              Reset
             </Button>
           </div>
         </div>
@@ -87,16 +85,15 @@ export const PersonalAccessToken = () => {
 };
 
 export function PersonalAccessTokenDescription() {
-  const { t } = useTranslation();
   return (
     <p className="m-0">
-      {t('common_caption_for_authenticate_api')}
+      Authenticate with our API using your personal access token.
       {!window.APP_SETTINGS?.whitelabel_is_active && (
         <>
-          
-          {t('common_label_see')}
+          {" "}
+          See{" "}
           <a href="https://labelstud.io/guide/api.html" target="_blank" rel="noreferrer" className="inline-flex gap-1">
-            {t('common_label_docs')}
+            Docs{" "}
             <span>
               <IconLaunch className="h-6 w-6" />
             </span>

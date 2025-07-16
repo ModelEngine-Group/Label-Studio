@@ -4,7 +4,6 @@ import { useAPI } from "../../../providers/ApiProvider";
 import { cn } from "../../../utils/bem";
 import "./Config.scss";
 import { IconInfo } from "../../../assets/icons";
-import { useTranslation } from "react-i18next";
 
 const listClass = cn("templates-list");
 
@@ -37,7 +36,6 @@ export const TemplatesList = ({ selectedGroup, selectedRecipe, onCustomTemplate,
   const [groups, setGroups] = React.useState([]);
   const [templates, setTemplates] = React.useState();
   const api = useAPI();
-  const { t } = useTranslation();
 
   React.useEffect(async () => {
     const res = await api.callApi("configTemplates");
@@ -69,12 +67,8 @@ export const TemplatesList = ({ selectedGroup, selectedRecipe, onCustomTemplate,
             </li>
           ))}
         </ul>
-        <button
-          type="button"
-          onClick={onCustomTemplate}
-          className={listClass.elem("custom-template")}
-        >
-          {t("common_label_custom_template")}
+        <button type="button" onClick={onCustomTemplate} className={listClass.elem("custom-template")}>
+          Custom template
         </button>
       </aside>
       <main>
@@ -84,7 +78,7 @@ export const TemplatesList = ({ selectedGroup, selectedRecipe, onCustomTemplate,
       <footer className="flex items-center justify-center gap-1">
         <IconInfo className={listClass.elem("info-icon")} width="20" height="20" />
         <span>
-          See the documentation to
+          See the documentation to{" "}
           <a href="https://labelstud.io/guide" target="_blank" rel="noreferrer">
             contribute a template
           </a>
