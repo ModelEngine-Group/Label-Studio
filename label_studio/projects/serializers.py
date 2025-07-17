@@ -399,7 +399,6 @@ class ProjectModelVersionExtendedSerializer(serializers.Serializer):
 class GetFieldsSerializer(serializers.Serializer):
     include = serializers.CharField(required=False)
     filter = serializers.CharField(required=False, default='all')
-    search = serializers.CharField(required=False, default=None)
 
     def validate_include(self, value):
         if value is not None:
