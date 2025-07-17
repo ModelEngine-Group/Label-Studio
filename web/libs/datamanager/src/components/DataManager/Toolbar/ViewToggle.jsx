@@ -19,14 +19,14 @@ export const ViewToggle = viewInjector(
       >
         <Tooltip title="List view">
           <div>
-            <RadioGroup.Button value="list">
+            <RadioGroup.Button value="list" aria-label="Switch to list view">
               <IconList />
             </RadioGroup.Button>
           </div>
         </Tooltip>
         <Tooltip title="Grid view">
           <div>
-            <RadioGroup.Button value="grid">
+            <RadioGroup.Button value="grid" aria-label="Switch to grid view">
               <IconGrid />
             </RadioGroup.Button>
           </div>

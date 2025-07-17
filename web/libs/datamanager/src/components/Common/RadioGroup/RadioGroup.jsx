@@ -23,12 +23,12 @@ export const RadioGroup = ({ size, value, onChange, children, ...rest }) => {
   );
 };
 
-const RadioButton = ({ value, disabled, children }) => {
+const RadioButton = ({ value, disabled, children, ...props }) => {
   const { onChange, value: currentValue } = React.useContext(RadioContext);
   const checked = value === currentValue;
 
   return (
-    <Elem tag="label" name="button" mod={{ checked, disabled }}>
+    <Elem {...props} tag="label" name="button" mod={{ checked, disabled }}>
       <Elem
         name="input"
         tag="input"

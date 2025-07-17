@@ -59,6 +59,7 @@ export const GridWidthButton = injector(({ view, isGrid, gridWidth, fitImagesToW
                 look="outlined"
                 leading={<IconMinus />}
                 size="small"
+                aria-label="Decrease columns number"
               />
               <Button
                 onClick={() => setGridWidth(width + 1)}
@@ -67,6 +68,7 @@ export const GridWidthButton = injector(({ view, isGrid, gridWidth, fitImagesToW
                 look="outlined"
                 leading={<IconPlus />}
                 size="small"
+                aria-label="Increase columns number"
               />
             </ButtonGroup>
           </div>
@@ -79,7 +81,7 @@ export const GridWidthButton = injector(({ view, isGrid, gridWidth, fitImagesToW
         </div>
       }
     >
-      <Button size={size} variant="neutral" look="outlined">
+      <Button size={size} variant="neutral" look="outlined" aria-label="Grid settings">
         <IconSettings />
       </Button>
     </Dropdown.Trigger>
