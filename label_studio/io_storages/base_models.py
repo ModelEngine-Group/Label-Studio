@@ -35,6 +35,8 @@ from tasks.serializers import AnnotationSerializer, PredictionSerializer
 from webhooks.models import WebhookAction
 from webhooks.utils import emit_webhooks_for_instance
 
+from .exceptions import UnsupportedFileFormatError
+
 logger = logging.getLogger(__name__)
 
 
@@ -451,7 +453,7 @@ class ImportStorage(Storage):
                 json_extensions = {'.json', '.jsonl', '.parquet'}
 
                 if ext and ext not in json_extensions:
-                    raise ValueError(
+                    raise UnsupportedFileFormatError(
                         f'File "{key}" is not a JSON/JSONL/Parquet file. Only .json, .jsonl, and .parquet files can be processed.\n'
                         f"If you're trying to import non-JSON data (images, audio, text, etc.), "
                         f'edit storage settings and enable "Treat every bucket object as a source file"'
@@ -571,7 +573,14 @@ class ProjectStorageMixin(models.Model):
 @job('low')
 def import_sync_background(storage_class, storage_id, timeout=settings.RQ_LONG_JOB_TIMEOUT, **kwargs):
     storage = storage_class.objects.get(id=storage_id)
-    storage.scan_and_create_links()
+    try:
+        storage.scan_and_create_links()
+    except UnsupportedFileFormatError:
+        # This is an expected error when user tries to import non-JSON files without enabling blob URLs
+        # We don't want to fail the job in this case, just mark the storage as failed with a clear message
+        storage.info_set_failed()
+        # Exit gracefully without raising exception to avoid job failure
+        return
 
 
 @job('low', timeout=settings.RQ_LONG_JOB_TIMEOUT)
