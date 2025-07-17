@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+// @deprecated should be removed along with FF_DEV_3873
+
 import { observer } from "mobx-react";
 import { type CSSProperties, type FC, Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Block, Elem } from "../../utils/bem";
