@@ -69,7 +69,7 @@ export function buttonVariant(
   const buttonStyles = [styles.base, variants[variant], looks[look], sizes[size], alignment[align]];
   return cn(
     "inline-flex items-center rounded-smaller border text-shadow-button box-border border transition-all",
-    "text-label-medium font-medium text-[color:--text-color] bg-[color:--background-color] bg-[image:--background-image] border-[color:--border-color] shadow-[shadow:--emboss-shadow] text-center",
+    "font-medium text-[color:--text-color] bg-[color:--background-color] bg-[image:--background-image] border-[color:--border-color] shadow-[shadow:--emboss-shadow] text-center",
     "hover:text-[color:--text-color] hover:bg-[color:--background-color-hover] hover:border-[color:--border-color-hover]",
     "active:bg-[color:--background-color-active] active:border-[color:--border-color]",
     "[&_svg]:h-full [&_svg]:inline-block [&_svg]:aspect-square",
