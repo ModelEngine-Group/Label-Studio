@@ -107,7 +107,7 @@ Set up a custom agreement metric for a specific project in Label Studio Enterpri
 
 1. Within a project on the Label Studio UI, click **Settings**.
 2. Click **Quality**.
-3. Under **Annotation Agreement**:
+3. Under **Task agreement**:
     - **Metric name**: Use the drop-down menu to select **Custom agreement metric**.
     - **Lambda Tags**: Add tags to AWS Lambda function using the syntax `tag_name tag_value`.
     - **Lambda Prefix**: Select a Prefix.
@@ -140,13 +140,11 @@ Using your preferred method, create an AWS IAM role.
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "VisualEditor0",
             "Effect": "Allow",
             "Action": "logs:CreateLogGroup",
             "Resource": "arn:aws:logs:*:YOUR_AWS_ACCOUNT:*"
         },
         {
-            "Sid": "VisualEditor1",
             "Effect": "Allow",
             "Action": [
                 "logs:CreateLogStream",
@@ -155,6 +153,16 @@ Using your preferred method, create an AWS IAM role.
             "Resource": [
                 "arn:aws:logs:*:YOUR_AWS_ACCOUNT:log-group:/aws/lambda/custom-metric-*"
             ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:PutRetentionPolicy"
+            ],
+           "Resource": [
+               "arn:aws:logs:*:YOUR_AWS_ACCOUNT:log-group:/aws/lambda/custom-metric-*"
+           ]
         }
     ]
 }
