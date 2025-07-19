@@ -708,18 +708,24 @@ def update_annotation_map(obj):
 
 class PreparedTaskManager(models.Manager):
     @staticmethod
-    def annotate_queryset(queryset, fields_for_evaluation=None, all_fields=False, request=None):
+    def annotate_queryset(
+        queryset, fields_for_evaluation=None, all_fields=False, excluded_fields_for_evaluation=None, request=None
+    ):
         annotations_map = get_annotations_map()
 
         if fields_for_evaluation is None:
             fields_for_evaluation = []
+
+        if excluded_fields_for_evaluation is None:
+            excluded_fields_for_evaluation = []
 
         first_task = queryset.first()
         project = None if first_task is None else first_task.project
 
         # db annotations applied only if we need them in ordering or filters
         for field in annotations_map.keys():
-            if field in fields_for_evaluation or all_fields:
+            # Include field if it's explicitly requested or all_fields=True, but exclude if it's in the exclusion list
+            if (field in fields_for_evaluation or all_fields) and field not in excluded_fields_for_evaluation:
                 queryset.project = project
                 queryset.request = request
                 function = annotations_map[field]
@@ -727,11 +733,14 @@ class PreparedTaskManager(models.Manager):
 
         return queryset
 
-    def get_queryset(self, fields_for_evaluation=None, prepare_params=None, all_fields=False):
+    def get_queryset(
+        self, fields_for_evaluation=None, prepare_params=None, all_fields=False, excluded_fields_for_evaluation=None
+    ):
         """
         :param fields_for_evaluation: list of annotated fields in task
         :param prepare_params: filters, ordering, selected items
         :param all_fields: evaluate all fields for task
+        :param excluded_fields_for_evaluation: list of fields to exclude even when all_fields=True
         :param request: request for user extraction
         :return: task queryset with annotated fields
         """
@@ -740,6 +749,7 @@ class PreparedTaskManager(models.Manager):
             queryset,
             fields_for_evaluation=fields_for_evaluation,
             all_fields=all_fields,
+            excluded_fields_for_evaluation=excluded_fields_for_evaluation,
             request=prepare_params.request,
         )
 
