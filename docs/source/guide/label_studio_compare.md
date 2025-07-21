@@ -187,7 +187,7 @@ Label Studio is available to everyone as open source software (Label Studio Comm
     <td style="text-align:center">✅</td>
   </tr>
   <tr>
-    <td><b>API/SDK & webhooks</b><br/><a href = "https://labelstud.io/guide/api.html"> APIs, SDK, and webhooks for programmatically accessing and managing Label Studio.</a></td>
+    <td><b>API/SDK & webhooks</b><br/><a href="api.html"> APIs, SDK, and webhooks for programmatically accessing and managing Label Studio.</a></td>
     <td style="text-align:center">✅</td>
     <td style="text-align:center">✅</td>
     <td style="text-align:center">✅</td>
@@ -319,7 +319,7 @@ Label Studio is available to everyone as open source software (Label Studio Comm
     <td style="text-align:center">✅</td>
   </tr>
   <tr>
-    <td><b>Label distribution charts</b><br/><a href="hhttps://docs.humansignal.com/guide/dashboard_project#Label-distribution">Identify possible problems with your dataset distribution, such as an unbalanced dataset.</a></td>
+    <td><b>Label distribution charts</b><br/><a href="https://docs.humansignal.com/guide/dashboard_project#Label-distribution">Identify possible problems with your dataset distribution, such as an unbalanced dataset.</a></td>
     <td style="text-align:center">❌</td>
     <td style="text-align:center">❌</td>
     <td style="text-align:center">✅</td>
