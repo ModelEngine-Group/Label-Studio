@@ -16,6 +16,7 @@ async function initLabelStudio({
   settings = {},
   additionalInterfaces = [],
   params = {},
+  taskId = undefined,
 }) {
   if (window.Konva && window.Konva.stages.length) window.Konva.stages.forEach((stage) => stage.destroy());
 
@@ -37,7 +38,7 @@ async function initLabelStudio({
     "edit-history",
     ...additionalInterfaces,
   ];
-  const task = { data, annotations, predictions };
+  const task = { id: taskId, data, annotations, predictions };
 
   window.LabelStudio.destroyAll();
   window.labelStudio = new window.LabelStudio("label-studio", { interfaces, config, task, settings, ...params });

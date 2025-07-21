@@ -1,3 +1,4 @@
+import { observer } from "mobx-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { IconZoomIn } from "@humansignal/icons";
@@ -6,6 +7,7 @@ import { Dropdown } from "../../../common/Dropdown/Dropdown";
 import { Menu } from "../../../common/Menu/Menu";
 import { ErrorMessage } from "../../../components/ErrorMessage/ErrorMessage";
 import ObjectTag from "../../../components/Tags/Object";
+import { VideoConfigControl } from "../../../components/Timeline/Controls/VideoConfigControl";
 import { Timeline } from "../../../components/Timeline/Timeline";
 import { clampZoom, VideoCanvas } from "../../../components/VideoCanvas/VideoCanvas";
 import {
@@ -108,6 +110,24 @@ function useZoom(videoDimensions, canvasDimentions, shouldClampPan) {
 
   return [zoomState, { setZoomAndPan, setZoom, setPan }];
 }
+
+const VideoConfig = observer(({ item }) => {
+  const [isConfigModalActive, setIsConfigModalActive] = useState(false);
+  const toggleConfigModal = useCallback((e) => {
+    e.preventDefault();
+    setIsConfigModalActive((prev) => !prev);
+  }, []);
+  return (
+    <VideoConfigControl
+      configModal={isConfigModalActive}
+      onSetModal={toggleConfigModal}
+      speed={item.speed}
+      onSpeedChange={item.handleSpeed}
+      loopTimelineRegion={item.loopTimelineRegion}
+      onLoopTimelineRegionChange={item.setLoopTimelineRegion}
+    />
+  );
+});
 
 const HtxVideoView = ({ item, store }) => {
   if (!item._value) return null;
@@ -357,7 +377,7 @@ const HtxVideoView = ({ item, store }) => {
       }
       return true;
     });
-  }, []);
+  }, [item]);
 
   const handlePause = useCallback(() => {
     setPlaying((_playing) => {
@@ -509,6 +529,8 @@ const HtxVideoView = ({ item, store }) => {
                   onPlay={handlePlay}
                   onPause={handlePause}
                   onSeeked={item.handleSeek}
+                  loopFrameRange={item.loopTimelineRegion}
+                  selectedFrameRange={item.selectedFrameRange}
                 />
               </>
             )}
@@ -537,22 +559,25 @@ const HtxVideoView = ({ item, store }) => {
                 position: "left",
                 component: () => {
                   return (
-                    <Dropdown.Trigger
-                      key="dd"
-                      inline={isFullScreen}
-                      content={
-                        <Menu size="auto" closeDropdownOnItemClick={false}>
-                          <Menu.Item onClick={zoomIn}>Zoom In</Menu.Item>
-                          <Menu.Item onClick={zoomOut}>Zoom Out</Menu.Item>
-                          <Menu.Item onClick={zoomToFit}>Zoom To Fit</Menu.Item>
-                          <Menu.Item onClick={zoomReset}>Zoom 100%</Menu.Item>
-                        </Menu>
-                      }
-                    >
-                      <Button size="small" variant="neutral" look="string">
-                        <IconZoomIn />
-                      </Button>
-                    </Dropdown.Trigger>
+                    <>
+                      <VideoConfig item={item} />
+                      <Dropdown.Trigger
+                        key="dd"
+                        inline={isFullScreen}
+                        content={
+                          <Menu size="auto" closeDropdownOnItemClick={false}>
+                            <Menu.Item onClick={zoomIn}>Zoom In</Menu.Item>
+                            <Menu.Item onClick={zoomOut}>Zoom Out</Menu.Item>
+                            <Menu.Item onClick={zoomToFit}>Zoom To Fit</Menu.Item>
+                            <Menu.Item onClick={zoomReset}>Zoom 100%</Menu.Item>
+                          </Menu>
+                        }
+                      >
+                        <Button size="small" variant="neutral" look="string">
+                          <IconZoomIn />
+                        </Button>
+                      </Dropdown.Trigger>
+                    </>
                   );
                 },
               },

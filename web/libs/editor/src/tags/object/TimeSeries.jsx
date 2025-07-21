@@ -438,6 +438,10 @@ const Model = types
       };
     },
 
+    get persistentFingerprint() {
+      return { task: getRoot(self).task?.id };
+    },
+
     states() {
       return self.annotation.toNames.get(self.name);
     },

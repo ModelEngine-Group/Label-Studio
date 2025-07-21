@@ -161,53 +161,57 @@ export const LabelStudio = {
    */
   init(params: LSParams, beforeLoadCallback?: (win: Cypress.AUTWindow) => void) {
     cy.log("Initialize LSF");
-    const windowLoadCallback = (win: Cypress.AUTWindow) => {
-      win.DEFAULT_LSF_INIT = false;
-      win.LSF_CONFIG = {
-        interfaces: [
-          "panel",
-          "update",
-          "submit",
-          "skip",
-          "controls",
-          "infobar",
-          "topbar",
-          "instruction",
-          "side-column",
-          "ground-truth",
-          "annotations:tabs",
-          "annotations:menu",
-          "annotations:current",
-          "annotations:add-new",
-          "annotations:delete",
-          "annotations:view-all",
-          "annotations:copy-link",
-          "predictions:tabs",
-          "predictions:menu",
-          "auto-annotation",
-          "edit-history",
-        ],
-        ...params,
+
+    // Make it part of the Cypress chain to allow run init more than once
+    cy.wrap(null).then(() => {
+      const windowLoadCallback = (win: Cypress.AUTWindow) => {
+        win.DEFAULT_LSF_INIT = false;
+        win.LSF_CONFIG = {
+          interfaces: [
+            "panel",
+            "update",
+            "submit",
+            "skip",
+            "controls",
+            "infobar",
+            "topbar",
+            "instruction",
+            "side-column",
+            "ground-truth",
+            "annotations:tabs",
+            "annotations:menu",
+            "annotations:current",
+            "annotations:add-new",
+            "annotations:delete",
+            "annotations:view-all",
+            "annotations:copy-link",
+            "predictions:tabs",
+            "predictions:menu",
+            "auto-annotation",
+            "edit-history",
+          ],
+          ...params,
+        };
+        beforeLoadCallback?.(win);
+
+        Cypress.off("window:before:load", windowLoadCallback);
       };
-      beforeLoadCallback?.(win);
 
-      Cypress.off("window:before:load", windowLoadCallback);
-    };
+      Cypress.on("window:before:load", windowLoadCallback);
 
-    Cypress.on("window:before:load", windowLoadCallback);
+      cy.visit("/").then((win) => {
+        cy.log(`Default feature flags set ${JSON.stringify(win.APP_SETTINGS.feature_flags, null, "  ")}`);
+        const labelStudio = new win.LabelStudio("label-studio", fixLSParams(win.LSF_CONFIG, win));
 
-    cy.visit("/").then((win) => {
-      cy.log(`Default feature flags set ${JSON.stringify(win.APP_SETTINGS.feature_flags, null, "  ")}`);
-      const labelStudio = new win.LabelStudio("label-studio", fixLSParams(win.LSF_CONFIG, win));
-
-      if (win.LSF_CONFIG.eventListeners) {
-        for (const [event, listener] of Object.entries(win.LSF_CONFIG.eventListeners)) {
-          labelStudio.on(event, listener);
+        if (win.LSF_CONFIG.eventListeners) {
+          for (const [event, listener] of Object.entries(win.LSF_CONFIG.eventListeners)) {
+            labelStudio.on(event, listener);
+          }
         }
-      }
-      expect(win.LabelStudio.instances.size).to.be.equal(1);
-      cy.get(".lsf-editor").should("be.visible");
-      cy.log("Label Studio initialized");
+        expect(win.LabelStudio.instances.size).to.be.equal(1);
+        cy.get(".lsf-editor").should("be.visible");
+        cy.log("Label Studio initialized");
+      });
     });
   },
 
