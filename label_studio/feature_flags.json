@@ -3500,7 +3500,7 @@
     },
     "fflag_fix_back_bros_182_api_task_optimizations": {
       "key": "fflag_fix_back_bros_182_api_task_optimizations",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -3522,7 +3522,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 2,
+      "version": 4,
       "deleted": false
     },
     "fflag_fix_back_dev_3668_review_stream_optimizaion_short": {
