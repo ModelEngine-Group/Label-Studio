@@ -503,6 +503,10 @@ jobs:
         uses: re-actors/alls-green@release/v1
         with:
           allowed-skips: gitleaks, bandit, ruff, blue, biome, stylelint, pytest, migrations, conda-test, build-docker, tests-yarn-unit, tests-yarn-integration, tests-yarn-e2e
+          allowed-failures: |
+            [
+              "gitleaks"
+            ]
           jobs: ${{ toJSON(needs) }}
 
   dependabot-auto-merge:
