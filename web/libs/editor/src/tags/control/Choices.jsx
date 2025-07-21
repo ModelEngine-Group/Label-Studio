@@ -92,6 +92,7 @@ import { Select, Tooltip } from "@humansignal/ui";
  * @param {boolean} [perItem]          - Use this tag to select a choice for a specific item inside the object instead of the whole object
  * @param {string} [value]             - Task data field containing a list of dynamically loaded choices (see example below)
  * @param {boolean} [allowNested]      - Allow to use `children` field in dynamic choices to nest them. Submitted result will contain array of arrays, every item is a list of values from topmost parent choice down to selected one.
+ * @param {select|inline|vertical} [layout] - Layout of the choices: `select` for dropdown/select box format, `inline` for horizontal single row display, `vertical` for vertically stacked display (default)
  */
 const TagAttrs = types.model({
   toname: types.maybeNull(types.string),

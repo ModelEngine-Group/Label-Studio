@@ -292,7 +292,13 @@ const Model = types
 
         self.height = self.parent.canvasToInternalY(canvasHeight);
       }
-      self.setPositionInternal(self.x, self.y, self.width, self.height, self.rotation);
+      self.setPosition(
+        self.parent.internalToCanvasX(self.x),
+        self.parent.internalToCanvasY(self.y),
+        self.parent.internalToCanvasX(self.width),
+        self.parent.internalToCanvasY(self.height),
+        self.rotation,
+      );
 
       const areaBBoxCoords = self?.bboxCoords;
 
@@ -336,13 +342,33 @@ const Model = types
      * @param {number} rotation
      */
     setPosition(x, y, width, height, rotation) {
-      self.setPositionInternal(
-        self.parent.canvasToInternalX(x),
-        self.parent.canvasToInternalY(y),
-        self.parent.canvasToInternalX(width),
-        self.parent.canvasToInternalY(height),
-        rotation,
-      );
+      const internalX = self.parent.canvasToInternalX(x);
+      const internalY = self.parent.canvasToInternalY(y);
+      const internalWidth = self.parent.canvasToInternalX(width);
+      const internalHeight = self.parent.canvasToInternalY(height);
+
+      // Apply snap to pixel if enabled
+      if (self.control?.snap === "pixel") {
+        // Snap top-left corner
+        const topLeftPoint = self.control.getSnappedPoint({
+          x: internalX,
+          y: internalY,
+        });
+
+        // Snap bottom-right corner
+        const bottomRightPoint = self.control.getSnappedPoint({
+          x: internalX + internalWidth,
+          y: internalY + internalHeight,
+        });
+
+        // Calculate snapped dimensions
+        const snappedWidth = bottomRightPoint.x - topLeftPoint.x;
+        const snappedHeight = bottomRightPoint.y - topLeftPoint.y;
+
+        self.setPositionInternal(topLeftPoint.x, topLeftPoint.y, snappedWidth, snappedHeight, rotation);
+      } else {
+        self.setPositionInternal(internalX, internalY, internalWidth, internalHeight, rotation);
+      }
     },
 
     setScale(x, y) {
@@ -478,6 +504,18 @@ const HtxRectangleView = ({ item, setShapeRef }) => {
       t.setAttr("scaleX", 1);
       t.setAttr("scaleY", 1);
 
+      if (self.control?.snap === "pixel") {
+        // If snap is enabled, we need to snap the coordinates to the pixel grid -
+        // Sync Konva shape attributes back to computed canvas coordinates to cause a re-render
+        // Canvas coordinates are updated in the setPosition method
+        t.position({
+          x: item.canvasX,
+          y: item.canvasY,
+          width: item.canvasWidth,
+          height: item.canvasHeight,
+        });
+      }
+
       item.notifyDrawingFinished();
     };
 
@@ -494,6 +532,19 @@ const HtxRectangleView = ({ item, setShapeRef }) => {
 
       item.setPosition(t.getAttr("x"), t.getAttr("y"), t.getAttr("width"), t.getAttr("height"), t.getAttr("rotation"));
       item.setScale(t.getAttr("scaleX"), t.getAttr("scaleY"));
+
+      if (item.control?.snap === "pixel") {
+        // If snap is enabled, we need to snap the coordinates to the pixel grid -
+        // Sync Konva shape attributes back to computed canvas coordinates to cause a re-render
+        // Canvas coordinates are updated in the setPosition method
+        t.position({
+          x: item.canvasX,
+          y: item.canvasY,
+          width: item.canvasWidth,
+          height: item.canvasHeight,
+        });
+      }
+
       item.annotation.history.unfreeze(item.id);
 
       item.notifyDrawingFinished();
