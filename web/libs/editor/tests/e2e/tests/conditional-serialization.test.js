@@ -55,6 +55,7 @@ Scenario("TextArea should not be serialized when parent View is not visible", as
   I.dontSee("Y");
   I.dontSee("details");
 
+  I.wait(1);
   I.say("Check serialization - details should not be included");
   const result = await LabelStudio.serialize();
 

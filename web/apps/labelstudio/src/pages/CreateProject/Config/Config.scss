@@ -1,17 +1,5 @@
 $scroll-width: 5px;
 
-@mixin styled-scroll() {
-  &::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-    background-color: var(--color-neutral-border-bolder);
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: var(--color-neutral-surface);
-  }
-}
-
 .panel {
   display: none;
 }
@@ -24,18 +12,18 @@ $scroll-width: 5px;
   flex-direction: column;
 }
 
-.sidebar-menu__content > .wizard {
+.sidebar-menu__content>.wizard {
   height: calc(100% + 64px);
-  margin: -32px -40px;
+  margin: -32px;
 }
 
-.wizard > .configure {
+.wizard>.configure {
   flex: 1;
   min-height: 0;
   display: flex;
   align-items: stretch;
 
-  > * {
+  >* {
     flex: 50%;
   }
 }
@@ -254,8 +242,6 @@ $scroll-width: 5px;
   display: flex;
   flex: 1;
   overflow-y: auto;
-
-  @include styled-scroll;
 }
 
 .configure__tags-link {
@@ -284,7 +270,7 @@ $scroll-width: 5px;
 }
 
 .wizard .configure__visual {
-  > * {
+  >* {
     border-top: 1px solid var(--color-neutral-border);
     padding-top: 16px;
     margin-bottom: 16px;
@@ -301,7 +287,8 @@ $scroll-width: 5px;
     }
   }
 
-  input, select {
+  input,
+  select {
     padding: 4px 8px;
     font: inherit;
     color: inherit;
@@ -316,12 +303,12 @@ $scroll-width: 5px;
     color: var(--color-neutral-content);
   }
 
-  > p {
+  >p {
     line-height: 32px;
     color: var(--color-neutral-content-subtler);
   }
 
-  > p.configure__object-error {
+  >p.configure__object-error {
     line-height: 22px;
     margin-top: 8px;
     color: var(--color-negative-content);
@@ -398,8 +385,6 @@ $scroll-width: 5px;
   flex-direction: column;
   align-items: stretch;
   flex: 1;
-
-  @include styled-scroll;
 
   .configure__label {
     display: flex;
@@ -545,8 +530,6 @@ $scroll-width: 5px;
   flex-direction: column;
   color: var(--color-neutral-content);
 
-  @include styled-scroll;
-
   h3 {
     margin: 8px 0 16px;
     font-size: 16px;
@@ -585,7 +568,7 @@ $scroll-width: 5px;
 
 
   .main-view {
-    &__annotation{
+    &__annotation {
       padding: 0;
     }
   }
