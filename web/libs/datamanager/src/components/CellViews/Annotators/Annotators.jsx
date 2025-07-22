@@ -65,7 +65,7 @@ export const Annotators = (cell) => {
             sdk.invoke("userCellCounterClick", e, column.alias, task, userList);
           }}
         >
-          <Userpic username={`+${extra}`} />
+          <Userpic addCount={`+${extra}`} />
         </div>
       )}
     </div>
