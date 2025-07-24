@@ -19,7 +19,7 @@ import { useObserver } from "mobx-react";
 import ResizeObserver from "../../utils/resize-observer";
 import { debounce } from "../../utils/debounce";
 import Constants from "../../core/Constants";
-import { fixRectToFit } from "../../utils/image";
+import { fixRectToFit, mapKonvaBrightness } from "../../utils/image";
 import {
   FF_DEV_1442,
   FF_DEV_3077,
@@ -1281,18 +1281,24 @@ const EntireStage = observer(
 
 const ImageLayer = observer(({ item }) => {
   const imageEntity = item.currentImageEntity;
-  const image = useMemo(() => {
-    const ent = item.currentImageEntity;
+  const konvaImageRef = useRef();
+  const [loadedImage, setLoadedImage] = useState(null);
 
-    if (ent && ent.downloaded) {
+  // Load image with proper CORS and load event
+  useEffect(() => {
+    if (imageEntity?.downloaded && imageEntity.currentSrc) {
       const img = new window.Image();
-      img.src = ent.currentSrc;
-      img.width = Number.parseInt(ent.naturalWidth);
-      img.height = Number.parseInt(ent.naturalHeight);
-      return img;
+      img.crossOrigin = "anonymous";
+      img.src = imageEntity.currentSrc;
+      img.width = imageEntity.naturalWidth;
+      img.height = imageEntity.naturalHeight;
+      img.onload = () => {
+        setLoadedImage(img);
+      };
+    } else {
+      setLoadedImage(null);
     }
-    return null;
-  }, [imageEntity?.downloaded]);
+  }, [imageEntity?.downloaded, imageEntity?.currentSrc]);
 
   const { width, height } = useMemo(() => {
     return {
@@ -1301,12 +1307,24 @@ const ImageLayer = observer(({ item }) => {
     };
   }, [imageEntity.naturalWidth, imageEntity.naturalHeight, item.stageWidth, item.stageHeight]);
 
-  return image ? (
-    <>
-      <Layer imageSmoothingEnabled={item.smoothing} scale={{ x: item.stageZoom, y: item.stageZoom }}>
-        <KonvaImage image={image} width={width} height={height} listening={false} />
-      </Layer>
-    </>
+  const brightness = mapKonvaBrightness(imageEntity.brightnessGrade);
+  const contrast = imageEntity.contrastGrade - 100;
+
+  useEffect(() => {
+    const node = konvaImageRef.current;
+    if (node && loadedImage) {
+      node.cache();
+      node.filters([Konva.Filters.Brighten, Konva.Filters.Contrast]);
+      node.brightness(brightness);
+      node.contrast(contrast);
+      node.getLayer()?.batchDraw();
+    }
+  }, [loadedImage, brightness, contrast]);
+
+  return loadedImage ? (
+    <Layer imageSmoothingEnabled={item.smoothing} scale={{ x: item.stageZoom, y: item.stageZoom }}>
+      <KonvaImage ref={konvaImageRef} image={loadedImage} width={width} height={height} listening={false} />
+    </Layer>
   ) : null;
 });
 
