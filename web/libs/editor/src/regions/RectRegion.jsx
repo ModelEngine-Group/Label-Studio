@@ -504,7 +504,7 @@ const HtxRectangleView = ({ item, setShapeRef }) => {
       t.setAttr("scaleX", 1);
       t.setAttr("scaleY", 1);
 
-      if (self.control?.snap === "pixel") {
+      if (item.control?.snap === "pixel") {
         // If snap is enabled, we need to snap the coordinates to the pixel grid -
         // Sync Konva shape attributes back to computed canvas coordinates to cause a re-render
         // Canvas coordinates are updated in the setPosition method
