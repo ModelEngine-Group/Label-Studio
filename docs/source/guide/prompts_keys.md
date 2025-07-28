@@ -23,7 +23,12 @@ There are two approaches to adding a model provider API key.
 * In the second scenario, you add a separate API key per model. Examples include:
 
     * Azure OpenAI
+    * Azure AI Foundry
     * Custom
+
+!!! note
+        If you are restricting network access to your resource, you may need to whitelist HumanSignal IP addresses ([IP ranges on SaaS](saas#Outbound-Connections-IP-Addresses)) when configuring network security.
+
 
 Once a model is added via the API key, anyone in the organization who has access to the Prompts feature can select the associated models when executing their prompt. 
 
@@ -77,12 +82,6 @@ To use Azure OpenAI, you must first create the Azure OpenAI resource and then a 
 
 1. From the Azure portal, [create an Azure OpenAI resource](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/create-resource?pivots=web-portal#create-a-resource). 
 
-!!! note
-    If you are restricting network access to your resource, you will need to add the following IP addresses when configuring network security:
-    
-    * 3.219.3.197
-    * 34.237.73.3
-    * 44.216.17.242
 
 2. From Azure OpenAI Studio, [create a deployment](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/create-resource?pivots=web-portal#deploy-a-model). This is a base model endpoint. 
 
