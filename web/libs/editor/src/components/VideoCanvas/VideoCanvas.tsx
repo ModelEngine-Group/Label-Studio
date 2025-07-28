@@ -264,11 +264,13 @@ export const VideoCanvas = memo(
       updateFrame();
 
       if (playing) {
-        raf.current = requestAnimationFrame(handleAnimationFrame);
+        raf.current = requestAnimationFrame(handleAnimationFrameRef.current);
       } else {
         cancelAnimationFrame(raf.current!);
       }
     };
+    const handleAnimationFrameRef = useRef(handleAnimationFrame);
+    handleAnimationFrameRef.current = handleAnimationFrame;
 
     useEffect(() => {
       if (!playing) {
@@ -277,7 +279,7 @@ export const VideoCanvas = memo(
     }, [drawVideo, playing]);
 
     useEffect(() => {
-      if (playing) raf.current = requestAnimationFrame(handleAnimationFrame);
+      if (playing) raf.current = requestAnimationFrame(handleAnimationFrameRef.current);
 
       return () => {
         cancelAnimationFrame(raf.current!);

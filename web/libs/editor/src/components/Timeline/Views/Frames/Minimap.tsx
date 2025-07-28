@@ -1,3 +1,4 @@
+import { useResizeObserver } from "@humansignal/core/hooks/useResizeObserver";
 import { type FC, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Block, Elem } from "../../../../utils/bem";
 import { isDefined } from "../../../../utils/utilities";
@@ -20,11 +21,12 @@ export const Minimap: FC<any> = () => {
     });
   }, [step, regions]);
 
+  const { width: rootWidth = 0 } = useResizeObserver(root.current || []);
   useEffect(() => {
     if (isDefined(root.current) && length > 0) {
-      setStep(root.current.clientWidth / length);
+      setStep(rootWidth / length);
     }
-  }, [length]);
+  }, [length, rootWidth]);
 
   return (
     <Block ref={root} name="minimap">

@@ -27,6 +27,8 @@ export const useLoopRange = ({
   framerateRef.current = framerate;
   const sourceRef = useRef(refSource);
   sourceRef.current = refSource;
+  const onRedrawRequestRef = useRef(onRedrawRequest);
+  onRedrawRequestRef.current = onRedrawRequest;
   const videoFrameCallbackIdRef = useRef<number | null>(null);
   const loopFrameRangeRef = useRef(loopFrameRange ?? false);
   loopFrameRangeRef.current = loopFrameRange ?? false;
@@ -49,10 +51,10 @@ export const useLoopRange = ({
         if (loopFrameRangeRef.current) {
           // If looping is enabled, reset to the start of the range
           sourceRef.current.goToFrame(endFrame);
-          onRedrawRequest?.();
+          onRedrawRequestRef.current?.();
           videoFrameCallbackIdRef.current = video.requestVideoFrameCallback(() => {
             sourceRef.current.goToFrame(startFrame);
-            onRedrawRequest?.();
+            onRedrawRequestRef.current?.();
             videoFrameCallbackIdRef.current = video.requestVideoFrameCallback(handeFrameChange);
           });
           return;
@@ -60,7 +62,7 @@ export const useLoopRange = ({
         // If not looping, pause the video at the end of the range
         sourceRef.current.pause();
         sourceRef.current.goToFrame(endFrame);
-        onRedrawRequest?.();
+        onRedrawRequestRef.current?.();
         return;
       }
       videoFrameCallbackIdRef.current = video.requestVideoFrameCallback(handeFrameChange);
