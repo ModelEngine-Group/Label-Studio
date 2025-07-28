@@ -154,7 +154,7 @@ def load_tasks_json_lso(blob: bytes, key: str) -> list[StorageObject]:
         raise ValueError(
             (
                 f'Can’t import JSON-formatted tasks from {key}. If you’re trying to import binary objects, '
-                f'perhaps you forgot to enable "Treat every bucket object as a source file" option?'
+                f'perhaps you forgot to enable "Tasks" import method?'
             )
         ) from exc
 

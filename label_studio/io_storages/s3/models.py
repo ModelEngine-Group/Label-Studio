@@ -192,7 +192,7 @@ class S3ImportStorageBase(S3StorageMixin, ImportStorage):
     )
 
     @catch_and_reraise_from_none
-    def iterkeys(self):
+    def iter_objects(self):
         client, bucket = self.get_client_and_bucket()
         if self.prefix:
             list_kwargs = {'Prefix': self.prefix.rstrip('/') + '/'}
@@ -210,7 +210,20 @@ class S3ImportStorageBase(S3StorageMixin, ImportStorage):
             if regex and not regex.match(key):
                 logger.debug(key + ' is skipped by regex filter')
                 continue
-            yield key
+            logger.debug(f's3 {key} has passed the regex filter')
+            yield obj
+
+    @catch_and_reraise_from_none
+    def iter_keys(self):
+        for obj in self.iter_objects():
+            yield obj.key
+
+    def get_unified_metadata(self, obj):
+        return {
+            'key': obj.key,
+            'last_modified': obj.last_modified,
+            'size': obj.size,
+        }
 
     @catch_and_reraise_from_none
     def scan_and_create_links(self):

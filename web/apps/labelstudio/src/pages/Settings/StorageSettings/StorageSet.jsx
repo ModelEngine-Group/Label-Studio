@@ -9,12 +9,16 @@ import { StorageCard } from "./StorageCard";
 import { StorageForm } from "./StorageForm";
 import { useAtomValue } from "jotai";
 import { useStorageCard } from "./hooks/useStorageCard";
+import { ff } from "@humansignal/core";
+import { StorageProviderForm } from "@humansignal/app-common/blocks/StorageProviderForm";
+import { providers } from "./providers";
 
 export const StorageSet = ({ title, target, rootClass, buttonLabel }) => {
   const api = useContext(ApiContext);
   const project = useAtomValue(projectAtom);
   const storageTypesQueryKey = ["storage-types", target];
   const storagesQueryKey = ["storages", target, project?.id];
+  const useNewStorageScreen = ff.isActive(ff.FF_NEW_STORAGES) && target !== "export";
 
   const {
     storageTypes,
@@ -32,15 +36,38 @@ export const StorageSet = ({ title, target, rootClass, buttonLabel }) => {
 
   const showStorageFormModal = useCallback(
     (storage) => {
-      const action = storage ? "Edit" : "Add";
+      const action = storage ? "Edit" : "Connect";
       const actionTarget = target === "export" ? "Target" : "Source";
       const title = `${action} ${actionTarget} Storage`;
 
       const modalRef = modal({
         title,
         closeOnClickOutside: false,
-        style: { width: 760 },
-        body: (
+        style: { width: 960 },
+        bare: useNewStorageScreen,
+        onHidden: () => {
+          // Reset state when modal is closed (including Escape key)
+          // This ensures clean state for next modal open
+        },
+        body: useNewStorageScreen ? (
+          <StorageProviderForm
+            title={title}
+            target={target}
+            storage={storage}
+            project={project.id}
+            rootClass={rootClass}
+            storageTypes={storageTypes}
+            providers={providers}
+            onSubmit={async () => {
+              modalRef.close();
+              fetchStorages();
+            }}
+            onHide={() => {
+              // This will be called when the modal is closed via Escape key
+              // The state reset is handled inside StorageProviderForm
+            }}
+          />
+        ) : (
           <StorageForm
             target={target}
             storage={storage}
@@ -52,19 +79,6 @@ export const StorageSet = ({ title, target, rootClass, buttonLabel }) => {
               modalRef.close();
             }}
           />
-        ),
-        footer: (
-          <>
-            <a
-              href="https://labelstud.io/guide/storage.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Learn more (Open in new tab)"
-            >
-              Learn more
-            </a>{" "}
-            about importing data and saving annotations to Cloud Storage.
-          </>
         ),
       });
     },

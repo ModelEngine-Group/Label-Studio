@@ -3,6 +3,7 @@
 import inspect
 import logging
 import os
+import time
 
 from core.permissions import all_permissions
 from core.utils.io import read_yaml
@@ -11,7 +12,7 @@ from drf_spectacular.utils import extend_schema
 from io_storages.serializers import ExportStorageSerializer, ImportStorageSerializer
 from projects.models import Project
 from rest_framework import generics, status
-from rest_framework.exceptions import NotFound, PermissionDenied, ValidationError
+from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
@@ -150,30 +151,51 @@ class StorageValidateAPI(generics.CreateAPIView):
     parser_classes = (JSONParser, FormParser, MultiPartParser)
 
     def create(self, request, *args, **kwargs):
-        storage_id = request.data.get('id')
-        instance = None
-        if storage_id:
-            instance = generics.get_object_or_404(self.serializer_class.Meta.model.objects.all(), pk=storage_id)
-            if not instance.has_permission(request.user):
-                raise PermissionDenied()
+        from .functions import validate_storage_instance
 
-        # combine instance fields with request.data
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        # if storage exists, we have to use instance from DB,
-        # because instance from serializer won't have credentials, they were popped intentionally
-        if instance:
-            instance = serializer.update(instance, serializer.validated_data)
-        else:
-            instance = serializer.Meta.model(**serializer.validated_data)
-
-        # double check: not all storages validate connection in serializer, just make another explicit check here
-        try:
-            instance.validate_connection()
-        except Exception as exc:
-            logger.error(f'Error validating storage connection: {exc}')
-            raise ValidationError('Error validating storage connection')
+        validate_storage_instance(request, self.serializer_class)
         return Response()
+
+
+@extend_schema(exclude=True)
+class ImportStorageListFilesAPI(generics.CreateAPIView):
+
+    permission_required = all_permissions.projects_change
+    parser_classes = (JSONParser, FormParser, MultiPartParser)
+    serializer_class = None  # Default serializer
+
+    def __init__(self, serializer_class=None, *args, **kwargs):
+        self.serializer_class = serializer_class
+        super().__init__(*args, **kwargs)
+
+    @extend_schema(exclude=True)
+    def create(self, request, *args, **kwargs):
+        from .functions import validate_storage_instance
+
+        instance = validate_storage_instance(request, self.serializer_class)
+        limit = request.data.get('limit', settings.DEFAULT_STORAGE_LIST_LIMIT)
+
+        try:
+            files = []
+            start_time = time.time()
+            timeout_seconds = 30
+
+            for object in instance.iter_objects():
+                files.append(instance.get_unified_metadata(object))
+
+                # Check if we've reached the file limit
+                if len(files) >= limit:
+                    files.append({'key': None, 'last_modified': None, 'size': None})
+                    break
+
+                # Check if we've exceeded the timeout
+                if time.time() - start_time > timeout_seconds:
+                    files.append({'key': '... storage scan timeout reached ...', 'last_modified': None, 'size': None})
+                    break
+
+            return Response({'files': files})
+        except Exception as exc:
+            raise ValidationError(exc)
 
 
 @extend_schema(exclude=True)

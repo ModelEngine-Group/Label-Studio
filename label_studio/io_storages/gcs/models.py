@@ -176,14 +176,25 @@ class GCSImportStorageBase(GCSStorageMixin, ImportStorage):
         _('presign_ttl'), default=1, help_text='Presigned URLs TTL (in minutes)'
     )
 
-    def iterkeys(self):
+    def iter_objects(self):
         return GCS.iter_blobs(
             client=self.get_client(),
             bucket_name=self.bucket,
             prefix=self.prefix,
             regex_filter=self.regex_filter,
-            return_key=True,
+            return_key=False,
         )
+
+    def iter_keys(self):
+        for obj in self.iter_objects():
+            yield obj.name
+
+    def get_unified_metadata(self, obj):
+        return {
+            'key': obj.name,
+            'last_modified': obj.updated,
+            'size': obj.size,
+        }
 
     def get_data(self, key) -> list[StorageObject]:
         if self.use_blob_urls:

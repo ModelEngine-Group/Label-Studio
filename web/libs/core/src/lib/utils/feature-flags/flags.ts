@@ -94,3 +94,9 @@ export const FF_ENTERPRISE_EMAIL_NOTIFICATIONS = "fflag_feat_front_fit_183_email
  * @link https://app.launchdarkly.com/projects/default/flags/fflag_front_feat_bros_87_pixel_wise_16062025_short
  */
 export const FF_BITMASK = "fflag_front_feat_bros_87_pixel_wise_16062025_short";
+
+/**
+ * New storage providers experience
+ * @link https://app.launchdarkly.com/projects/default/flags/fflag_feat_bros_193_new_cloud_storage_providers_short/targeting?env=production&selected-env=production
+ */
+export const FF_NEW_STORAGES = "fflag_feat_bros_193_new_cloud_storage_providers_short";

@@ -50,6 +50,7 @@ export const API_CONFIG = {
     updateStorage: "PATCH:/storages/:target?/:type/:pk",
     syncStorage: "POST:/storages/:target?/:type/:pk/sync",
     validateStorage: "POST:/storages/:target?/:type/validate",
+    storageFiles: "POST:/storages/:target?/:type/files",
 
     // ML
     mlBackends: "GET:/ml",

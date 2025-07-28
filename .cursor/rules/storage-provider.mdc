@@ -1,0 +1,464 @@
+
+# Cursor Rule: Implementing New Storage Providers in Label Studio
+
+## Overview
+This rule describes the process and best practices for adding a new storage provider to Label Studio using the declarative provider schema system.
+
+See comprehensive overview about storages @io_storages/README.md. 
+
+## Architecture Overview
+
+Label Studio supports 2 types of cloud storages:
+1. **Import Storages** (Source Cloud Storages) - for importing tasks/data
+2. **Export Storages** (Target Cloud Storages) - for exporting annotations
+
+Each storage type follows this inheritance hierarchy:
+```mermaid
+graph TD
+    Storage-->ImportStorage
+    Storage-->ExportStorage
+    
+    ProjectStorageMixin-->NewImportStorage
+    ImportStorage-->NewImportStorageBase
+
+    NewImportStorageBase-->NewImportStorage
+    
+    subgraph New Provider
+        NewImportStorage
+        NewImportStorageBase
+        NewExportStorage
+    end
+```
+
+## Backend Implementation
+
+### 1. Create Storage Models
+
+#### File Structure
+Create these files in `label_studio/io_storages/yourprovider/`:
+- `__init__.py`
+- `models.py` - Core storage models
+- `serializers.py` - API serializers
+- `api.py` - API views
+- `utils.py` - Provider-specific utilities
+- `form_layout.yml` - Form layout (optional, for compatibility)
+
+#### Storage Mixin Pattern
+```python
+# models.py
+import logging
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+from io_storages.base_models import (
+     ImportStorage, ExportStorage, ImportStorageLink, ExportStorageLink,
+     ProjectStorageMixin
+ )
+from io_storages.utils import StorageObject, load_tasks_json
+
+logger = logging.getLogger(__name__)
+
+class YourProviderStorageMixin(models.Model):
+    """Base mixin containing common fields for your provider"""
+    
+    # Common fields
+    bucket = models.TextField(_('bucket'), null=True, blank=True, help_text='Bucket name')
+    prefix = models.TextField(_('prefix'), null=True, blank=True, help_text='Bucket prefix')
+    regex_filter = models.TextField(_('regex_filter'), null=True, blank=True, 
+                                   help_text='Cloud storage regex for filtering objects')
+    use_blob_urls = models.BooleanField(_('use_blob_urls'), default=False,
+                                       help_text='Interpret objects as BLOBs and generate URLs')
+    
+    # Provider-specific credentials
+    api_key = models.TextField(_('api_key'), null=True, blank=True, help_text='API Key')
+    secret_key = models.TextField(_('secret_key'), null=True, blank=True, help_text='Secret Key')
+    endpoint_url = models.TextField(_('endpoint_url'), null=True, blank=True, help_text='API Endpoint')
+    
+    def get_client(self):
+        """Initialize and return provider client"""
+        # Implement provider-specific client initialization
+        # Cache clients to avoid repeated initialization
+        pass
+    
+    def validate_connection(self, client=None):
+        """Validate storage connection and credentials"""
+        # Required method - implement provider-specific validation
+        # Should raise appropriate exceptions for different error types
+        pass
+        
+    class Meta:
+        abstract = True
+
+class YourProviderImportStorageBase(YourProviderStorageMixin, ImportStorage):
+    """Base class for import functionality"""
+    
+    def iter_objects(self):
+        """Iterate over storage objects"""
+        # Implement provider-specific object iteration
+        # Apply regex_filter if specified
+        # Skip directories and empty objects
+        pass
+    
+    def get_data(self, key) -> list[StorageObject]:
+        """Get task data from storage object"""
+        uri = f'{self.url_scheme}://{self.bucket}/{key}'
+        if self.use_blob_urls:
+            # Return blob URL
+            data_key = settings.DATA_UNDEFINED_NAME
+            task = {data_key: uri}
+            return [StorageObject(key=key, task_data=task)]
+        
+        # Load and parse JSON task data
+        obj_data = self.get_object_data(key)
+        return load_tasks_json(obj_data, key)
+    
+    def generate_http_url(self, url):
+        """Generate HTTP URL for storage object"""
+        # Implement provider-specific URL generation
+        # Support both presigned URLs and proxy mode
+        pass
+    
+    def can_resolve_url(self, url: str) -> bool:
+        """Check if this storage can resolve given URL"""
+        # Check if URL matches this storage's pattern
+        pass
+        
+    class Meta:
+        abstract = True
+
+class YourProviderImportStorage(ProjectStorageMixin, YourProviderImportStorageBase):
+    """Concrete import storage implementation"""
+    class Meta:
+        abstract = False
+
+class YourProviderExportStorage(YourProviderStorageMixin, ExportStorage):
+    """Export storage implementation"""
+    
+    def save_annotation(self, annotation):
+        """Save annotation to storage"""
+        # Serialize annotation data
+        ser_annotation = self._get_serialized_data(annotation)
+        
+        # Generate storage key
+        key = YourProviderExportStorageLink.get_key(annotation)
+        if self.prefix:
+            key = f"{self.prefix}/{key}"
+        
+        # Save to storage
+        # Handle provider-specific upload logic
+        
+        # Create storage link
+        YourProviderExportStorageLink.create(annotation, self)
+    
+    def delete_annotation(self, annotation):
+        """Delete annotation from storage"""
+        # Delete from storage
+        # Remove storage link
+        pass
+
+# Storage link models
+class YourProviderImportStorageLink(ImportStorageLink):
+    storage = models.ForeignKey(YourProviderImportStorage, on_delete=models.CASCADE, related_name='links')
+
+class YourProviderExportStorageLink(ExportStorageLink):
+    storage = models.ForeignKey(YourProviderExportStorage, on_delete=models.CASCADE, related_name='links')
+
+# Signal handlers for automatic export
+from django.db.models.signals import post_save, pre_delete
+from django.dispatch import receiver
+from tasks.models import Annotation
+
+@receiver(post_save, sender=Annotation)
+def export_annotation_to_yourprovider_storages(sender, instance, **kwargs):
+    # Auto-export logic
+    pass
+
+@receiver(pre_delete, sender=Annotation)  
+def delete_annotation_from_yourprovider_storages(sender, instance, **kwargs):
+    # Auto-delete logic
+    pass
+```
+
+### 2. Create Serializers
+
+```python
+# serializers.py
+from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+from io_storages.serializers import ImportStorageSerializer, ExportStorageSerializer
+from .models import YourProviderImportStorage, YourProviderExportStorage
+
+class YourProviderStorageSerializerMixin:
+    """Common serializer functionality"""
+    secure_fields = ['api_key', 'secret_key']  # Fields to hide in responses
+    
+    def to_representation(self, instance):
+        result = super().to_representation(instance)
+        # Hide secure fields in responses
+        for field in self.secure_fields:
+            result.pop(field, None)
+        return result
+    
+    def validate(self, data):
+        """Validate storage configuration"""
+        data = super().validate(data)
+        
+        # Create temporary storage instance for validation
+        storage = self.instance or self.Meta.model(**data)
+        if self.instance:
+            for key, value in data.items():
+                setattr(storage, key, value)
+        
+        try:
+            storage.validate_connection()
+        except Exception as e:
+            raise ValidationError(f"Connection failed: {str(e)}")
+        
+        return data
+
+class YourProviderImportStorageSerializer(YourProviderStorageSerializerMixin, ImportStorageSerializer):
+    type = serializers.ReadOnlyField(default=os.path.basename(os.path.dirname(__file__)))
+    
+    class Meta:
+        model = YourProviderImportStorage
+        fields = '__all__'
+
+class YourProviderExportStorageSerializer(YourProviderStorageSerializerMixin, ExportStorageSerializer):
+    type = serializers.ReadOnlyField(default=os.path.basename(os.path.dirname(__file__)))
+    
+    class Meta:
+        model = YourProviderExportStorage
+        fields = '__all__'
+```
+
+### 3. Create API Views
+
+```python
+# api.py
+from django.utils.decorators import method_decorator
+from drf_spectacular.utils import extend_schema
+from io_storages.api import (
+    ImportStorageListAPI, ImportStorageDetailAPI, ImportStorageSyncAPI,
+    ImportStorageValidateAPI, ImportStorageFormLayoutAPI,
+    ExportStorageListAPI, ExportStorageDetailAPI, ExportStorageSyncAPI,
+    ExportStorageValidateAPI, ExportStorageFormLayoutAPI
+)
+from .models import YourProviderImportStorage, YourProviderExportStorage
+from .serializers import YourProviderImportStorageSerializer, YourProviderExportStorageSerializer
+
+@method_decorator(
+    name='get',
+    decorator=extend_schema(
+        tags=['Storage: YourProvider'],
+        summary='List YourProvider import storage',
+        description='Get a list of all YourProvider import storage connections.',
+    ),
+)
+@method_decorator(
+    name='post', 
+    decorator=extend_schema(
+        tags=['Storage: YourProvider'],
+        summary='Create new YourProvider storage',
+        description='Create new YourProvider import storage',
+    ),
+)
+class YourProviderImportStorageListAPI(ImportStorageListAPI):
+    queryset = YourProviderImportStorage.objects.all()
+    serializer_class = YourProviderImportStorageSerializer
+
+class YourProviderImportStorageDetailAPI(ImportStorageDetailAPI):
+    queryset = YourProviderImportStorage.objects.all()
+    serializer_class = YourProviderImportStorageSerializer
+
+class YourProviderImportStorageSyncAPI(ImportStorageSyncAPI):
+    serializer_class = YourProviderImportStorageSerializer
+
+class YourProviderImportStorageValidateAPI(ImportStorageValidateAPI):
+    serializer_class = YourProviderImportStorageSerializer
+
+class YourProviderImportStorageFormLayoutAPI(ImportStorageFormLayoutAPI):
+    pass
+
+# Export APIs follow same pattern
+class YourProviderExportStorageListAPI(ExportStorageListAPI):
+    queryset = YourProviderExportStorage.objects.all()
+    serializer_class = YourProviderExportStorageSerializer
+
+# ... other export APIs
+```
+
+### 4. Register URLs
+
+Add to `label_studio/io_storages/urls.py`:
+
+```python
+# In urlpatterns, add:
+path('api/storages/yourprovider/', include(('io_storages.yourprovider.urls', 'io_storages'), namespace='yourprovider-api')),
+
+# Import the APIs at the top
+from io_storages.yourprovider.api import (
+    YourProviderImportStorageListAPI,
+    YourProviderImportStorageDetailAPI,
+    # ... other APIs
+)
+```
+
+Create `label_studio/io_storages/yourprovider/urls.py`:
+
+```python
+from django.urls import path
+from . import api
+
+urlpatterns = [
+    # Import storage URLs
+    path('import/', api.YourProviderImportStorageListAPI.as_view(), name='yourprovider-import-list'),
+    path('import/<int:pk>/', api.YourProviderImportStorageDetailAPI.as_view(), name='yourprovider-import-detail'),
+    path('import/<int:pk>/sync/', api.YourProviderImportStorageSyncAPI.as_view(), name='yourprovider-import-sync'),
+    path('import/validate/', api.YourProviderImportStorageValidateAPI.as_view(), name='yourprovider-import-validate'),
+    path('import/form-layout/', api.YourProviderImportStorageFormLayoutAPI.as_view(), name='yourprovider-import-form-layout'),
+    
+    # Export storage URLs  
+    path('export/', api.YourProviderExportStorageListAPI.as_view(), name='yourprovider-export-list'),
+    path('export/<int:pk>/', api.YourProviderExportStorageDetailAPI.as_view(), name='yourprovider-export-detail'),
+    path('export/<int:pk>/sync/', api.YourProviderExportStorageSyncAPI.as_view(), name='yourprovider-export-sync'),
+    path('export/validate/', api.YourProviderExportStorageValidateAPI.as_view(), name='yourprovider-export-validate'),
+    path('export/form-layout/', api.YourProviderExportStorageFormLayoutAPI.as_view(), name='yourprovider-export-form-layout'),
+]
+```
+
+## Steps to Add a New Storage Provider
+
+1. **Create a Provider Config File**
+   - Add a new file under `web/lib/app-common/src/blocks/StorageProviderForm/providers/` named after your provider (e.g., `myProvider.ts`).
+
+2. **Define Fields**
+   - Use the `FieldDefinition` type for each field.
+   - Each field should specify:
+     - `name`: Unique string identifier
+     - `type`: One of `text`, `password`, `select`, `toggle`, `counter`, etc.
+     - `label`: User-facing label
+     - `required`: Boolean (if applicable)
+     - `placeholder`: Example value (if applicable)
+     - `description`: (optional) Help text for the user
+     - `autoComplete`: (optional) For password fields
+     - `accessKey`: Boolean for credential fields (enables edit mode handling)
+     - `options`: For select fields
+     - `min`, `max`, `step`: For counter fields
+     - `schema`: Zod schema for validation, with `.default()` for default values
+
+3. **Assemble the Layout**
+   - Use the `layout` array to group fields into rows.
+   - Each row is an object with a `fields` array listing the field names in order.
+   - Omit fields like `title`, `regex_filter`, and `use_blob_urls` from the provider schema; these are handled globally or in the preview step.
+
+4. **Validation**
+   - Use Zod for all field validation.
+   - Use `.default()` for default values where appropriate.
+   - For optional fields, use `.optional().default("")` or similar.
+
+5. **Credential Fields**
+   - Mark credential fields (e.g., API keys, secrets) with `accessKey: true`.
+   - Use `type: "password"` and set `autoComplete` as needed.
+   - Provide a realistic placeholder.
+
+6. **Placeholders and Descriptions**
+   - Always provide a meaningful placeholder for each field.
+   - Add a description if the field may be confusing or has special requirements.
+
+7. **Export the Provider**
+   - Export your provider config as the default export from the file.
+
+8. **Register the Provider**
+   - Add your provider to the central registry in `providers/index.ts`.
+
+## Example Field Definition
+```ts
+{
+  name: "api_key",
+  type: "password",
+  label: "API Key",
+  required: true,
+  accessKey: true,
+  placeholder: "sk-...",
+  autoComplete: "off",
+  schema: z.string().min(1, "API Key is required"),
+}
+```
+
+## Best Practices
+- Do **not** include global fields like `title`, `regex_filter`, or `use_blob_urls` in provider configs.
+- Use `.default()` in Zod schemas for all fields that should have a default value.
+- Use `accessKey: true` for any field that is a credential or secret.
+- Keep field and layout definitions minimal and focused on provider-specific configuration.
+- Test your provider in both create and edit modes to ensure correct behavior.
+
+## Testing
+
+Create tests in `label_studio/io_storages/tests/test_yourprovider.py`:
+
+```python
+from django.test import TestCase
+from io_storages.yourprovider.models import YourProviderImportStorage
+
+class TestYourProviderStorage(TestCase):
+    def test_connection_validation(self):
+        # Test connection validation logic
+        pass
+    
+    def test_object_iteration(self):
+        # Test object listing and filtering
+        pass
+    
+    def test_data_loading(self):
+        # Test task data loading
+        pass
+```
+
+## Implementation Checklist
+
+### Backend Implementation
+- [ ] Create provider directory structure
+- [ ] Implement storage mixin with common fields
+- [ ] Create import storage base class with required methods:
+  - [ ] `iter_objects()` - iterate over storage objects
+  - [ ] `get_data()` - load task data from objects
+  - [ ] `generate_http_url()` - create HTTP URLs
+  - [ ] `can_resolve_url()` - check URL resolution capability
+  - [ ] `validate_connection()` - validate credentials and connectivity
+- [ ] Create concrete import/export storage classes
+- [ ] Implement storage link models
+- [ ] Create serializers with validation logic
+- [ ] Implement API views following existing patterns
+- [ ] Register URLs in storage URL configuration
+- [ ] Add signal handlers for auto-export functionality
+- [ ] Create database migrations
+
+### Frontend Implementation  
+- [ ] Create provider configuration file with:
+  - [ ] All required fields with proper types
+  - [ ] Zod validation schemas
+  - [ ] Meaningful labels and placeholders
+  - [ ] Proper field layout definition
+- [ ] Register provider in central registry
+- [ ] Mark credential fields with `accessKey: true`
+- [ ] Test form rendering and validation
+- [ ] Verify edit mode behavior for credentials
+
+### Testing & Documentation
+- [ ] Write backend unit tests
+- [ ] Test connection validation
+- [ ] Test object iteration and filtering
+- [ ] Test task data loading
+- [ ] Test frontend form functionality
+- [ ] Test both create and edit modes
+- [ ] Update API documentation
+- [ ] Add provider to storage documentation
+
+### Integration & Deployment
+- [ ] Test end-to-end storage workflow
+- [ ] Verify task import/export functionality
+- [ ] Test URL resolution and proxy functionality
+- [ ] Test with both presigned URLs and proxy mode
+- [ ] Verify error handling and user feedback
+- [ ] Test storage sync and status reporting
+
+When in doubt, use this checklist. Proactive implementation following these patterns ensures complete requirements coverage and maintains consistency with existing storage providers.

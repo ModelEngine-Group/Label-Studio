@@ -25,8 +25,8 @@ Set up the following cloud and other storage systems with Label Studio:
 When working with an external cloud storage connection, keep the following in mind:
 
 * For Source storage:
-   * When "Treat every bucket object as a source file" is checked, Label Studio doesn’t import the data stored in the bucket, but instead creates *references* to the objects. Therefore, you have full access control on the data to be synced and shown on the labeling screen.
-   * When "Treat every bucket object as a source file" is unchecked, bucket files are assumed to be immutable; the only way to push an updated file's state to Label Studio is to upload it with a new filename or delete all tasks that are associated with that file and resync.
+   * When **Files** import method is selected, Label Studio doesn’t import the data stored in the bucket, but instead creates *references* to the objects. Therefore, you have full access control on the data to be synced and shown on the labeling screen.
+   * When **Tasks** import method is selected, bucket files are assumed to be immutable; the only way to push an updated file's state to Label Studio is to upload it with a new filename to storage or delete all tasks that are associated with that file and resync.
 * Sync operations with external buckets only goes one way. It either creates tasks from objects on the bucket (Source storage) or pushes annotations to the output bucket (Target storage). Changing something on the bucket side doesn't guarantee consistency in results.
 * We recommend using a separate bucket folder for each Label Studio project. 
 * Storage Regions: To minimize latency and improve efficiency, store data in cloud storage buckets that are geographically closer to your team rather than near the Label Studio server.
@@ -57,7 +57,7 @@ Task data synced from cloud storage is not stored in Label Studio. Instead, the 
 
 * If you set the import method to "Files", Label Studio backend will only need LIST permissions and won't download any data from your buckets.
 
-* If you set the import method to "JSON", Label Studio backend will require GET permissions to read JSON files and convert them to Label Studio tasks. 
+* If you set the import method to "Tasks", Label Studio backend will require GET permissions to read JSON files and convert them to Label Studio tasks. 
 
 When your users access labeling, the backend will attempt to resolve URI (e.g., s3://) to URL (https://) links. URLs will be returned to the frontend and loaded by the user's browser. To load these URLs, the browser will require HEAD and GET permissions from your Cloud Storage. The HEAD request is made at the beginning and allows the browser to determine the size of the audio, video, or other files. The browser then makes a GET request to retrieve the file body.
 
@@ -73,11 +73,14 @@ Source storage functionality can be divided into two parts:
 
 #### Import method
 
+!!! info
+    The "Treat every bucket object as a source file" option was renamed and reintroduced as the "Import method" dropdown.
+
 Label Studio Source Storages feature an "Import method" dropdown. This setting enables two different methods of loading tasks into Label Studio.
 
-###### JSON
+###### Tasks
 
-When set to "JSON", tasks in JSON or JSONL/NDJSON format can be loaded directly from storage buckets into Label Studio. This approach is particularly helpful when dealing with complex tasks that involve multiple media sources.
+When set to "Tasks", tasks in JSON, JSONL/NDJSON or Parquet format can be loaded directly from storage buckets into Label Studio. This approach is particularly helpful when dealing with complex tasks that involve multiple media sources.
 
 <img src="/images/source-storages-treat-off.png" class="make-intense-zoom">
 
@@ -392,7 +395,7 @@ After you [configure access to your S3 bucket](#Configure-access-to-your-S3-buck
     - In the **Session Token** field, specify a session token of the temporary security credentials for an AWS account with access to your S3 bucket.
     - In the **Import method** dropdown, choose how to import your data:
         - **Files** - Automatically creates a task for each storage object (e.g. JPG, MP3, TXT). Use this if your bucket contains BLOB storage files such as JPG, MP3, or similar file types.
-        - **JSON** - Treat each JSON or JSONL file as a task definition (one or more tasks per file). Use this if you have multiple JSON files in the bucket with one task per JSON file.
+        - **Tasks** - Treat each JSON, JSONL, or Parquet as a task definition (one or more tasks per file). Use this if you have multiple JSON files in the bucket with one task per JSON file.
     - (Optional) Enable **Scan all sub-folders** to include files from all nested folders within your S3 bucket prefix.
     - In the **Use pre-signed URLs (On) / Proxy through Label Studio (Off)** toggle, choose how media is loaded:
         - **ON** (Pre-signed URLs) - All data bypasses the platform and user browsers directly read data from storage.
@@ -559,7 +562,7 @@ In the Label Studio UI, do the following to set up the connection:
     - In the **External ID** field, specify the external ID that identifies Label Studio to your AWS account. You can find the external ID on your **Organization** page.
     - In the **Import method** dropdown, choose how to import your data:
         - **Files** - Automatically creates a task for each storage object (e.g. JPG, MP3, TXT). Use this if your bucket contains BLOB storage files such as JPG, MP3, or similar file types.
-        - **JSON** - Treat each JSON or JSONL file as a task definition (one or more tasks per file). Use this if you have multiple JSON files in the bucket with one task per JSON file.
+        - **Tasks** - Treat each JSON, JSONL, or Parquet as a task definition (one or more tasks per file). Use this if you have multiple JSON files in the bucket with one task per JSON file.
     - Enable **Scan all sub-folders** to include files from all nested folders within your S3 bucket prefix.
     - In the **Use pre-signed URLs (On) / Proxy through Label Studio (Off)** toggle, choose how media is loaded:
       - **ON** (Pre-signed URLs) - All data bypasses the platform and user browsers directly read data from storage.
@@ -703,7 +706,7 @@ In the Label Studio UI, do the following to set up the connection:
     - In the **File Filter Regex** field, specify a regular expression to filter bucket objects. Use `.*` to collect all objects.
     - In the **Import method** dropdown, choose how to import your data:
         - **Files** - Automatically creates a task for each storage object (e.g. JPG, MP3, TXT). Use this if your bucket contains BLOB storage files such as JPG, MP3, or similar file types.
-        - **JSON** - Treat each JSON or JSONL file as a task definition (one or more tasks per file). Use this if you have multiple JSON files in the bucket with one task per JSON file.
+        - **Tasks** - Treat each JSON, JSONL, or Parquet as a task definition (one or more tasks per file). Use this if you have multiple JSON files in the bucket with one task per JSON file.
     - In the **Use pre-signed URLs (On) / Proxy through Label Studio (Off)** toggle, choose how media is loaded:
       - **ON** (Pre-signed URLs) - All data bypasses the platform and user browsers directly read data from storage.
       - **OFF** (Proxy) - The platform proxies media using its own backend.  
@@ -1034,7 +1037,7 @@ Select the **GCS (WIF auth)** storage type and then complete the following field
 | Bucket Name                                | Enter the name of the Google Cloud bucket. |
 | Bucket Prefix                              | Optionally, enter the folder name within the bucket that you would like to use.  For example, `data-set-1` or `data-set-1/subfolder-2`.  |
 | File Name Filter                           | Optionally, specify a regular expression to filter bucket objects. |
-| [Treat every bucket object as a source file](#Treat-every-bucket-object-as-a-source-file) | Enable this option if your bucket contains BLOB storage files such as JPG, MP3, or similar file types. This setting creates a URL for each bucket object to use for labeling, such as `gs://my-gcs-bucket/image.jpg`. Leave this option disabled if you have are specifying your tasks in JSON files. |
+| Import method | Choose how to interpret your data:<br/>**Files** - Automatically creates a task for each storage object (e.g. JPG, MP3, TXT). Use this if your bucket contains BLOB storage files such as JPG, MP3, or similar file types.<br/>**Tasks** - Treat each JSON, JSONL, or Parquet as a task definition (one or more tasks per file). Use this if you have multiple JSON files in the bucket with one task per JSON file. |
 | [Use pre-signed URLs](#Pre-signed-URLs-vs-storage-proxies)                        | **ON** - Label Studio generates a pre-signed URL to load media. <br /> **OFF** - The platform proxies media using its own backend. |
 | Pre-signed URL counter                     | Adjust the counter for how many minutes the pre-signed URLs are valid. |
 | Workload Identity Pool ID                  | This is the ID you specified when creating the Work Identity Pool. You can find this in Google Cloud Console under **IAM & Admin > Workload Identity Pools**. |
@@ -1159,7 +1162,7 @@ In the Label Studio UI, do the following to set up the connection:
     - In the **File Filter Regex** field, specify a regular expression to filter bucket objects. Use `.*` to collect all objects.
     - In the **Account Name** field, specify the account name for the Azure storage. You can also set this field as an environment variable,`AZURE_BLOB_ACCOUNT_NAME`.
     - In the **Account Key** field, specify the secret key to access the storage account. You can also set this field as an environment variable,`AZURE_BLOB_ACCOUNT_KEY`.
-    - Enable **Treat every bucket object as a source file** if your bucket contains BLOB storage files such as JPG, MP3, or similar file types. This setting creates a URL for each bucket object to use for labeling, for example `azure-blob://container-name/image.jpg`. Leave this option disabled if you have multiple JSON files in the bucket with one task per JSON file. 
+    - Set **Import method** to **"Files"** if your bucket contains BLOB storage files such as JPG, MP3, or similar file types. This setting creates a URL for each bucket object to use for labeling, for example `azure-blob://container-name/image.jpg`. Set this option to **"Tasks"** if you have multiple JSON/JSONL/Parquet files in the bucket with tasks. 
     - Choose whether to disable [**Use pre-signed URLs**](#Pre-signed-URLs-vs-storage-proxies), or [shared access signatures](https://docs.microsoft.com/en-us/rest/api/storageservices/delegate-access-with-shared-access-signature). 
       - **ON** - Label Studio generates a pre-signed URL to load media. 
       - **OFF** - The platform proxies media using its own backend.    
@@ -1218,7 +1221,9 @@ In the Label Studio UI, do the following to set up the connection:
     - In the **Host** field, specify the IP of the server hosting the database, or `localhost`. 
     - In the **Port** field, specify the port that you can use to access the database. 
     - In the **File Filter Regex** field, specify a regular expression to filter database objects. Use `.*` to collect all objects.
-    - Enable **Treat every bucket object as a source file** if your database contains files such as JPG, MP3, or similar file types. This setting creates a URL for each database object to use for labeling. Leave this option disabled if you have multiple JSON files in the database, with one task per JSON file. 
+    - In the **Import method** dropdown, choose how to import your data:
+        - **Files** - Automatically creates a task for each storage object (e.g. JPG, MP3, TXT). Use this if your database contains BLOB storage files such as JPG, MP3, or similar file types.
+        - **Tasks** - Treat each JSON, JSONL, or Parquet as a task definition (one or more tasks per file). Use this if you have multiple JSON files in the database with one task per JSON file.
 8. Click **Add Storage**.
 9. Repeat these steps for **Target Storage** to sync completed data annotations to a database.
 
@@ -1268,9 +1273,9 @@ In the Label Studio UI, do the following to set up the connection:
     If you are using Windows, ensure that you use backslashes when entering your **Absolute local path**.  
 
 1. (Optional) In the **File Filter Regex** field, specify a regular expression to filter bucket objects. Use `.*` to collect all objects.
-2. (Optional) Toggle **Treat every bucket object as a source file**. 
-   - Enable this option if you want to create Label Studio tasks from media files automatically, such as JPG, MP3, or similar file types. Use this option for labeling configurations with one source tag.
-   - Disable this option if you want to import tasks in Label Studio JSON format directly from your storage. Use this option for complex labeling configurations with HyperText or multiple source tags.    
+2. (Optional) In the **Import method** dropdown, choose how to import your data:
+   - **Files** - Automatically creates a task for each storage object (e.g. JPG, MP3, TXT). Use this if you want to create Label Studio tasks from media files automatically. Use this option for labeling configurations with one source tag.
+   - **Tasks** - Treat each JSON, JSONL, or Parquet as a task definition (one or more tasks per file). Use this if you want to import tasks in Label Studio JSON format directly from your storage. Use this option for complex labeling configurations with HyperText or multiple source tags.    
 3. Click **Add Storage**.
 4.  Repeat these steps for **Add Target Storage** to use a local file directory for exporting.
 
@@ -1283,7 +1288,7 @@ In those cases, you have to repeat all stages above to create local storage, but
 
 Differences with instruction above: 
 - **7. File Filter Regex** - stay empty (because you will specify it inside tasks)
-- **8. Treat every bucket object as a source file** - switch off (because you will specify it inside tasks)
+- **8. Import method** - select **"Tasks"** (because you will specify file references inside your JSON task definitions)
 
 Your window will look like this:
 <img src="/images/local-storage-settings2.png" alt="Screenshot of the local storage settings for user task." class="gif-border">

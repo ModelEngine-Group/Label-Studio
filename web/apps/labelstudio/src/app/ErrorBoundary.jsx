@@ -19,6 +19,7 @@ export default class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, { componentStack }) {
+    console.error(error);
     // Capture the error in Sentry, so we can fix it directly
     // Don't make the users copy and paste the stacktrace, it's not actionable
     captureException(error, {

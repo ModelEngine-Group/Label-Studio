@@ -5,6 +5,7 @@ import json
 import logging
 import os
 import re
+from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import quote
 
@@ -66,7 +67,7 @@ class LocalFilesImportStorageBase(LocalFilesMixin, ImportStorage):
     def can_resolve_url(self, url):
         return False
 
-    def iterkeys(self):
+    def iter_objects(self):
         path = Path(self.path)
         regex = re.compile(str(self.regex_filter)) if self.regex_filter else None
         # For better control of imported tasks, file reading has been changed to ascending order of filenames.
@@ -77,7 +78,19 @@ class LocalFilesImportStorageBase(LocalFilesMixin, ImportStorage):
                 if regex and not regex.match(key):
                     logger.debug(key + ' is skipped by regex filter')
                     continue
-                yield str(file)
+                yield file
+
+    def iter_keys(self):
+        for obj in self.iter_objects():
+            yield str(obj)
+
+    def get_unified_metadata(self, obj):
+        stat = obj.stat()
+        return {
+            'key': str(obj),
+            'last_modified': datetime.fromtimestamp(stat.st_mtime, tz=timezone.utc),
+            'size': stat.st_size,
+        }
 
     def get_data(self, key) -> list[StorageObject]:
         path = Path(key)

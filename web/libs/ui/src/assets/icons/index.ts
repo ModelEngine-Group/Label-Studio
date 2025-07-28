@@ -254,3 +254,8 @@ export { ReactComponent as IconWarningCircle } from "./warning-circle.svg";
 export { ReactComponent as IconWarningCircleFilled } from "./warning-circle-filled.svg";
 export { ReactComponent as IconZoomIn } from "./zoom-in.svg";
 export { ReactComponent as IconZoomOut } from "./zoom-out.svg";
+
+export { ReactComponent as IconCloudProviderS3 } from "./cloud-provider-s3.svg";
+export { ReactComponent as IconCloudProviderRedis } from "./cloud-provider-redis.svg";
+export { ReactComponent as IconCloudProviderGCS } from "./cloud-provider-gcs.svg";
+export { ReactComponent as IconCloudProviderAzure } from "./cloud-provider-azure.svg";

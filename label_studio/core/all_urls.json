@@ -678,6 +678,12 @@
         "decorators": ""
     },
     {
+        "url": "/api/storages/s3/files",
+        "module": "io_storages.api.ImportStorageListFilesAPI",
+        "name": "storages:api:storage-s3-list-files",
+        "decorators": ""
+    },
+    {
         "url": "/api/storages/export/s3",
         "module": "io_storages.s3.api.S3ExportStorageListAPI",
         "name": "storages:api:export-storage-s3-list",
@@ -735,6 +741,12 @@
         "url": "/api/storages/azure/form",
         "module": "io_storages.azure_blob.api.AzureBlobImportStorageFormLayoutAPI",
         "name": "storages:api:storage-azure-form",
+        "decorators": ""
+    },
+    {
+        "url": "/api/storages/azure/files",
+        "module": "io_storages.api.ImportStorageListFilesAPI",
+        "name": "storages:api:storage-azure-list-files",
         "decorators": ""
     },
     {
@@ -798,6 +810,12 @@
         "decorators": ""
     },
     {
+        "url": "/api/storages/gcs/files",
+        "module": "io_storages.api.ImportStorageListFilesAPI",
+        "name": "storages:api:storage-gcs-list-files",
+        "decorators": ""
+    },
+    {
         "url": "/api/storages/export/gcs",
         "module": "io_storages.gcs.api.GCSExportStorageListAPI",
         "name": "storages:api:export-storage-gcs-list",
@@ -858,6 +876,12 @@
         "decorators": ""
     },
     {
+        "url": "/api/storages/redis/files",
+        "module": "io_storages.api.ImportStorageListFilesAPI",
+        "name": "storages:api:storage-redis-list-files",
+        "decorators": ""
+    },
+    {
         "url": "/api/storages/export/redis",
         "module": "io_storages.redis.api.RedisExportStorageListAPI",
         "name": "storages:api:export-storage-redis-list",
@@ -915,6 +939,12 @@
         "url": "/api/storages/localfiles/form",
         "module": "io_storages.localfiles.api.LocalFilesImportStorageFormLayoutAPI",
         "name": "storages:api:storage-localfiles-form",
+        "decorators": ""
+    },
+    {
+        "url": "/api/storages/localfiles/files",
+        "module": "io_storages.api.ImportStorageListFilesAPI",
+        "name": "storages:api:storage-localfiles-list-files",
         "decorators": ""
     },
     {

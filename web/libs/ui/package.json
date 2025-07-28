@@ -4,5 +4,8 @@
   "license": "MIT",
   "private": true,
   "main": "src/index.ts",
-  "files": ["src/tailwind.css", "src/shad/components", "src/ui/assets"]
+  "files": ["src/tailwind.css", "src/shad/components", "src/ui/assets"],
+  "dependencies": {
+    "@radix-ui/react-radio-group": "^1.3.7"
+  }
 }

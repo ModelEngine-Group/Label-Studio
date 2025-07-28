@@ -9,6 +9,8 @@ import { Button } from "@humansignal/ui";
 import { Space } from "../Space/Space";
 import { Modal } from "./ModalPopup";
 import { ToastProvider, ToastViewport } from "@humansignal/ui";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "../../utils/query-client";
 
 const standaloneModal = (props) => {
   const modalRef = createRef();
@@ -33,6 +35,7 @@ const standaloneModal = (props) => {
                 <ToastProvider key="toast" />,
                 <ApiProvider key="api" />,
                 <CurrentUserProvider key="current-user" />,
+                <QueryClientProvider client={queryClient} />,
               ]
         }
       >

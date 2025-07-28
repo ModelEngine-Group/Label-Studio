@@ -198,7 +198,7 @@ class AzureBlobImportStorageBase(AzureBlobStorageMixin, ImportStorage):
         _('presign_ttl'), default=1, help_text='Presigned URLs TTL (in minutes)'
     )
 
-    def iterkeys(self):
+    def iter_objects(self):
         container = self.get_container()
         prefix = str(self.prefix) if self.prefix else ''
         files = container.list_blobs(name_starts_with=prefix)
@@ -212,7 +212,19 @@ class AzureBlobImportStorageBase(AzureBlobStorageMixin, ImportStorage):
             if regex and not regex.match(file.name):
                 logger.debug(file.name + ' is skipped by regex filter')
                 continue
-            yield file.name
+            yield file
+
+    def iter_keys(self):
+        for obj in self.iter_objects():
+            yield obj.name
+
+    @staticmethod
+    def get_unified_metadata(obj):
+        return {
+            'key': obj.name,
+            'last_modified': obj.last_modified,
+            'size': obj.size,
+        }
 
     def get_data(self, key) -> list[StorageObject]:
         if self.use_blob_urls:

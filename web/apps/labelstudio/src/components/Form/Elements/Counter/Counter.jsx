@@ -85,6 +85,13 @@ const Counter = ({ label, className, validate, required, skip, labelProps, ...pr
     if (type === "decrease") return decrease();
   };
 
+  // Update currentValue when props.value changes
+  React.useEffect(() => {
+    if (props.value !== undefined && props.value !== null) {
+      setCurrentValue(normalizeValue(Number(props.value)));
+    }
+  }, [props.value]);
+
   const field = (
     <FormField
       label={label}
