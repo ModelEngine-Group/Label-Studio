@@ -312,6 +312,15 @@ const Model = types
               value = value.replace(/\.(\d{3})\d{3}$/, ".$1");
             }
 
+            // Pad fractional seconds to exactly 3 digits for consistent parsing
+            if (typeof value === "string" && value.includes(".")) {
+              // Match timestamp with decimal point and capture fractional part
+              value = value.replace(/\.(\d{0,3})\b/, (match, fractional) => {
+                // Pad fractional seconds to exactly 3 digits
+                return `.${fractional.padEnd(3, "0")}`;
+              });
+            }
+
             // Use the corrected format for parsing
             const parse = actualTimeFormat ? d3.utcParse(actualTimeFormat) : d3.utcParse(self.timeformat);
             const dt = parse(value);
