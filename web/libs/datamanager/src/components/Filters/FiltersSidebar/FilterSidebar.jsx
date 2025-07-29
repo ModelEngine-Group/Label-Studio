@@ -30,8 +30,8 @@ export const FiltersSidebar = sidebarInjector(({ viewsStore, sidebarEnabled, sid
           </Button>
           <Elem name="title">Filters</Elem>
         </Elem>
-        <Filters sidebar={true} />
       </Elem>
+      <Filters sidebar={true} />
     </Block>
   ) : null;
 });
