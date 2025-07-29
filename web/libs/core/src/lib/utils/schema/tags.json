@@ -69,6 +69,13 @@
         "required": false,
         "default": 32
       },
+      "spectrogram": {
+        "name": "spectrogram",
+        "description": "Determines whether an audio spectrogram is automatically displayed upon loading.",
+        "type": ["true", "false"],
+        "required": false,
+        "default": false
+      },
       "splitchannels": {
         "name": "splitchannels",
         "description": "Display multiple audio channels separately, if the audio file has more than one channel. (**NOTE: Requires more memory to operate.**)",
@@ -1074,6 +1081,12 @@
         "name": "allowNested",
         "description": "Allow to use `children` field in dynamic choices to nest them. Submitted result will contain array of arrays, every item is a list of values from topmost parent choice down to selected one.",
         "type": ["true", "false"],
+        "required": false
+      },
+      "layout": {
+        "name": "layout",
+        "description": "Layout of the choices: `select` for dropdown/select box format, `inline` for horizontal single row display, `vertical` for vertically stacked display (default)",
+        "type": ["select", "inline", "vertical"],
         "required": false
       }
     }
@@ -2104,6 +2117,13 @@
         "description": "Only show smart tool for interactive pre-annotations",
         "type": ["true", "false"],
         "required": false
+      },
+      "snap": {
+        "name": "snap",
+        "description": "Snap rectangle to image pixels",
+        "type": ["pixel", "none"],
+        "required": false,
+        "default": "none"
       }
     }
   },
@@ -2175,6 +2195,13 @@
         "type": ["true", "false"],
         "required": false,
         "default": true
+      },
+      "snap": {
+        "name": "snap",
+        "description": "Snap rectangle to image pixels",
+        "type": ["pixel", "none"],
+        "required": false,
+        "default": "none"
       }
     }
   },
@@ -2570,6 +2597,13 @@
         "name": "bordered",
         "description": "Shows border",
         "type": "string",
+        "required": false,
+        "default": false
+      },
+      "open": {
+        "name": "open",
+        "description": "Sets default collapsed state",
+        "type": ["true", "false"],
         "required": false,
         "default": false
       }

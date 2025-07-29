@@ -1,7 +1,7 @@
 import { types } from "mobx-state-tree";
 
-import Registry from "../../core/Registry";
 import ControlBase from "./Base";
+import Registry from "../../core/Registry";
 import { customTypes } from "../../core/CustomTypes";
 import { AnnotationMixin } from "../../mixins/AnnotationMixin";
 import SeparatedControlMixin from "../../mixins/SeparatedControlMixin";

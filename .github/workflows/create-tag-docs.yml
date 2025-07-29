@@ -18,6 +18,7 @@ env:
   FRONTEND_MONOREPO_DIR: "web"
   FRONTEND_BUILD_COMMIT_MESSAGE: "ci: Build tag docs"
   DOCS_TARGET_DIR: "docs/source/includes/tags"
+  SCHEMA_TARGET_DIR: "web/libs/core/src/lib/utils/schema/tags.json"
 
 jobs:
   build:
@@ -56,6 +57,7 @@ jobs:
           WORKFLOW_LINK: "Workflow run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         run: |
           git add "${{ env.DOCS_TARGET_DIR }}" || true
+          git add "${{ env.SCHEMA_TARGET_DIR }}" || true
           git status -s
           git commit -m "${COMMIT_MESSAGE}" -m "${WORKFLOW_LINK}" || true
           git push origin HEAD
