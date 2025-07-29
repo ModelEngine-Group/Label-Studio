@@ -17,6 +17,7 @@ from django.utils.translation import gettext_lazy as _
 from organizations.models import Organization
 from rest_framework.authtoken.models import Token
 from users.functions import hash_upload
+from users.functions.last_activity import get_user_last_activity, schedule_activity_sync, set_user_last_activity
 
 YEAR_START = 1980
 YEAR_CHOICES = []
@@ -65,8 +66,35 @@ class UserLastActivityMixin(models.Model):
     last_activity = models.DateTimeField(_('last activity'), default=timezone.now, editable=False)
 
     def update_last_activity(self):
-        self.last_activity = timezone.now()
-        self.save(update_fields=['last_activity'])
+        """Update user's last activity timestamp using Redis caching."""
+        current_time = timezone.now()
+
+        # Try to set in Redis first
+        redis_success = set_user_last_activity(self.id, current_time)
+
+        if not redis_success:
+            # Fallback to direct database update if Redis fails
+            self.last_activity = current_time
+            self.save(update_fields=['last_activity'])
+        else:
+            # Schedule sync if threshold is reached
+            schedule_activity_sync()
+
+    def get_last_activity(self):
+        """Get user's last activity timestamp with Redis caching."""
+        # Try Redis first, fallback to database
+        cached_activity = get_user_last_activity(self.id)
+
+        if cached_activity is not None:
+            return cached_activity
+
+        # If not in Redis, return database value
+        return self.last_activity
+
+    @property
+    def last_activity_cached(self):
+        """Property for accessing cached last activity."""
+        return self.get_last_activity()
 
     class Meta:
         abstract = True

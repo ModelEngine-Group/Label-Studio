@@ -15,6 +15,7 @@ class BaseUserSerializer(FlexFieldsModelSerializer):
     initials = serializers.SerializerMethodField(default='?', read_only=True)
     avatar = serializers.SerializerMethodField(read_only=True)
     active_organization_meta = serializers.SerializerMethodField(read_only=True)
+    last_activity = serializers.DateTimeField(read_only=True, source='last_activity_cached')
 
     def get_avatar(self, instance):
         return instance.avatar_url

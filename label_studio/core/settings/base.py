@@ -861,3 +861,9 @@ RESOLVER_PROXY_CACHE_TIMEOUT = int(get_env('RESOLVER_PROXY_CACHE_TIMEOUT', 3600)
 
 # Advanced validator for ImportStorageSerializer in enterprise
 IMPORT_STORAGE_SERIALIZER_VALIDATE = None
+
+# User activity Redis caching settings
+USER_ACTIVITY_REDIS_KEY_PREFIX = get_env('USER_ACTIVITY_REDIS_KEY_PREFIX', 'user_activity')
+USER_ACTIVITY_BATCH_SIZE = int(get_env('USER_ACTIVITY_BATCH_SIZE', '100'))
+USER_ACTIVITY_SYNC_THRESHOLD = int(get_env('USER_ACTIVITY_SYNC_THRESHOLD', '50'))
+USER_ACTIVITY_REDIS_TTL = int(get_env('USER_ACTIVITY_REDIS_TTL', '86400'))  # 24 hours
