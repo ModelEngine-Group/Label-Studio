@@ -7,8 +7,12 @@ import { Space } from "../../Common/Space/Space";
 import { IconCheckAlt, IconCrossAlt } from "@humansignal/icons";
 import { Tooltip, Userpic } from "@humansignal/ui";
 import { Common } from "../../Filters/types";
-import { VariantSelect } from "../../Filters/types/List";
 import "./Annotators.scss";
+import { isActive, FF_DM_FILTER_MEMBERS } from "@humansignal/core/lib/utils/feature-flags";
+import { VariantSelect } from "../../Filters/types/List";
+import { UserSelect } from "../../Common/UserSelect";
+
+const isFilterMembers = isActive(FF_DM_FILTER_MEMBERS);
 
 export const Annotators = (cell) => {
   const { value, column, original: task } = cell;
@@ -111,13 +115,13 @@ Annotators.customOperators = [
     key: "contains",
     label: "contains",
     valueType: "list",
-    input: (props) => <VariantSelect {...props} />,
+    input: (props) => (isFilterMembers ? <UserSelect {...props} /> : <VariantSelect {...props} />),
   },
   {
     key: "not_contains",
     label: "not contains",
     valueType: "list",
-    input: (props) => <VariantSelect {...props} />,
+    input: (props) => (isFilterMembers ? <UserSelect {...props} /> : <VariantSelect {...props} />),
   },
   ...Common,
 ];

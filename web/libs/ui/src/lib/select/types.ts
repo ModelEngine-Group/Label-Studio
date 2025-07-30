@@ -8,6 +8,12 @@ export type SelectOptionData<T = any> = {
   children?: SelectOptionData<T>[];
 };
 
+export enum SelectSize {
+  SMALL = "small",
+  MEDIUM = "medium",
+  LARGE = "large",
+}
+
 export type SelectOption<T> = string | number | SelectOptionData<T>;
 
 export type OptionProps = {
@@ -68,10 +74,15 @@ export type SelectProps<T, A extends SelectOption<T>[]> = {
   isInline?: boolean;
   isLoading?: boolean;
   dataTestid?: string;
-  size?: "small" | "medium" | "large";
+  size?: SelectSize | undefined;
   onSearch?: (value: string) => void;
   selectFirstIfEmpty?: boolean;
   renderSelected?: (selectedOptions?: A[number][], placeholder?: string) => React.ReactNode | string;
+  isVirtualList?: boolean;
+  loadMore?: () => void;
+  pageSize?: number;
+  page?: number;
+  itemCount?: number;
 } & SelectVirtualizedProps &
   Omit<React.SelectHTMLAttributes<HTMLSelectElement>, "value" | "placeholder">;
 

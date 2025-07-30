@@ -100,3 +100,8 @@ export const FF_BITMASK = "fflag_front_feat_bros_87_pixel_wise_16062025_short";
  * @link https://app.launchdarkly.com/projects/default/flags/fflag_feat_bros_193_new_cloud_storage_providers_short/targeting?env=production&selected-env=production
  */
 export const FF_NEW_STORAGES = "fflag_feat_bros_193_new_cloud_storage_providers_short";
+
+/**
+ * Datamanager filter members
+ */
+export const FF_DM_FILTER_MEMBERS = "fflag_feat_fit_449_datamanager_filter_members_short";
