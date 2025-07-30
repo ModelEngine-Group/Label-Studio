@@ -1,6 +1,6 @@
-import { ff } from "@humansignal/core";
 import { SampleDatasetSelect } from "@humansignal/app-common/blocks/SampleDatasetSelect/SampleDatasetSelect";
-import { IconErrorAlt, IconFileUpload, IconInfoOutline, IconTrash, IconUpload, IconCode } from "@humansignal/icons";
+import { ff } from "@humansignal/core";
+import { IconCode, IconErrorAlt, IconFileUpload, IconInfoOutline, IconTrash, IconUpload } from "@humansignal/icons";
 import { Badge } from "@humansignal/shad/components/ui/badge";
 import { cn as scn } from "@humansignal/shad/utils";
 import { useAtomValue } from "jotai";
@@ -11,9 +11,9 @@ import { cn } from "../../../utils/bem";
 import { unique } from "../../../utils/helpers";
 import { sampleDatasetAtom } from "../utils/atoms";
 import "./Import.scss";
+import { Button, CodeBlock, SimpleCard, Spinner, Tooltip } from "@humansignal/ui";
 import samples from "./samples.json";
 import { importFiles } from "./utils";
-import { Button, CodeBlock, SimpleCard, Spinner, Tooltip } from "@humansignal/ui";
 
 const importClass = cn("upload_page");
 const dropzoneClass = cn("dropzone");
@@ -158,10 +158,16 @@ export const ImportPage = ({
       return { ...state, uploading: [...action.sending, ...state.uploading] };
     }
     if (action.sent) {
-      return { ...state, uploading: state.uploading.filter((f) => !action.sent.includes(f)) };
+      return {
+        ...state,
+        uploading: state.uploading.filter((f) => !action.sent.includes(f)),
+      };
     }
     if (action.uploaded) {
-      return { ...state, uploaded: unique([...state.uploaded, ...action.uploaded], (a, b) => a.id === b.id) };
+      return {
+        ...state,
+        uploaded: unique([...state.uploaded, ...action.uploaded], (a, b) => a.id === b.id),
+      };
     }
     if (action.ids) {
       const ids = unique([...state.ids, ...action.ids]);
@@ -172,7 +178,11 @@ export const ImportPage = ({
     return state;
   };
 
-  const [files, dispatch] = useReducer(processFiles, { uploaded: [], uploading: [], ids: [] });
+  const [files, dispatch] = useReducer(processFiles, {
+    uploaded: [],
+    uploading: [],
+    ids: [],
+  });
   const showList = Boolean(files.uploaded?.length || files.uploading?.length || sample);
 
   const loadFilesList = useCallback(
@@ -328,12 +338,14 @@ export const ImportPage = ({
           onSubmit={onLoadURL}
         >
           <Input placeholder="Dataset URL" name="url" ref={urlRef} rawClassName="h-[40px]" />
-          <Button type="submit" aria-label="Add URL">
+          <Button variant="primary" look="outlined" type="submit" aria-label="Add URL">
             Add URL
           </Button>
         </form>
         <span>or</span>
         <Button
+          variant="primary"
+          look="outlined"
           type="button"
           onClick={() => document.getElementById("file-input").click()}
           leading={<IconUpload />}
@@ -364,7 +376,11 @@ export const ImportPage = ({
 
       <main>
         <Upload sendFiles={sendFiles} project={project}>
-          <div className={scn("flex gap-4 w-full min-h-full", { "justify-center": !showList })}>
+          <div
+            className={scn("flex gap-4 w-full min-h-full", {
+              "justify-center": !showList,
+            })}
+          >
             {!showList && (
               <div className="flex gap-4 justify-center items-start w-full h-full">
                 <label htmlFor="file-input" className="w-full h-full">

@@ -1,16 +1,16 @@
-import { type FC, useCallback, useContext, useMemo } from "react";
 import {
-  IconCursor,
+  IconBoundingBox,
   IconClockTimeFourOutline,
+  IconCursor,
   IconList,
   IconOutlinerEyeClosed,
   IconOutlinerEyeOpened,
+  IconPredictions,
   IconSortDown,
   IconSortUp,
-  IconBoundingBox,
-  IconPredictions,
 } from "@humansignal/icons";
 import { Button } from "@humansignal/ui";
+import { type FC, useCallback, useContext, useMemo } from "react";
 import { Dropdown } from "../../../common/Dropdown/Dropdown";
 // eslint-disable-next-line
 // @ts-ignore
@@ -18,8 +18,8 @@ import { Menu } from "../../../common/Menu/Menu";
 import { BemWithSpecifiContext } from "../../../utils/bem";
 import { SidePanelsContext } from "../SidePanelsContext";
 import "./ViewControls.scss";
-import { FF_DEV_3873, isFF } from "../../../utils/feature-flags";
 import { observer } from "mobx-react";
+import { FF_DEV_3873, isFF } from "../../../utils/feature-flags";
 
 const { Block, Elem } = BemWithSpecifiContext();
 
@@ -201,15 +201,13 @@ const Grouping = <T extends string>({
         size="smaller"
         data-testid={`grouping-${value}`}
         look="string"
+        leading={readableValue.icon}
         trailing={
-          <>
-            {readableValue.icon}{" "}
-            {isFF(FF_DEV_3873) ? (
-              extraIcon
-            ) : (
-              <DirectionIndicator direction={direction} name={value} value={value} wrap={false} />
-            )}
-          </>
+          isFF(FF_DEV_3873) ? (
+            extraIcon
+          ) : (
+            <DirectionIndicator direction={direction} name={value} value={value} wrap={false} />
+          )
         }
       >
         {readableValue.selectedLabel}

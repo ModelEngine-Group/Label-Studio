@@ -86,14 +86,6 @@
     button {
       margin-left: -1px;
       border-radius: 0 var(--corner-radius-smaller) var(--corner-radius-smaller) 0;
-      background: var(--color-primary-surface);
-      color: var(--color-primary-surface-content);
-      cursor: pointer;
-      transition: all 150ms ease-out;
-
-      &:hover {
-        background: var(--color-primary-surface-hover);
-      }
     }
 
     &+span {

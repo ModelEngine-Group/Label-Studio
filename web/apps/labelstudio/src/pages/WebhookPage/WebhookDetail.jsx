@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { IconCross, IconPlus } from "@humansignal/icons";
 import { Button } from "@humansignal/ui";
-import { Form, Input, Label, Toggle } from "../../components/Form";
-import { Block, cn, Elem } from "../../utils/bem";
 import { cloneDeep } from "lodash";
-import { IconPlus, IconCross } from "@humansignal/icons";
+import { useEffect, useState } from "react";
+import { Form, Input, Label, Toggle } from "../../components/Form";
 import { useAPI } from "../../providers/ApiProvider";
+import { Block, cn, Elem } from "../../utils/bem";
 import "./WebhookPage.scss";
 import { Space } from "../../components/Space/Space";
 import { useProject } from "../../providers/ProjectProvider";
@@ -146,15 +146,18 @@ const WebhookDetail = ({ webhook, webhooksInfo, fetchWebhooks, onBack, onSelectA
                       type="button"
                       onClick={onAddHeaderClick}
                       look="string"
+                      leading={<IconPlus />}
                       className={rootClass.elem("headers-add")}
-                      size="small"
-                    >
-                      <IconPlus className="!h-3" />
-                    </Button>
+                      tooltip="Add Header"
+                    />
                   </Space>
                   {headers.map(([headKey, headValue], index) => {
                     return (
-                      <Space key={index} className={rootClass.elem("headers-row")} columnCount={3}>
+                      <Space
+                        key={`header-${headKey || "empty"}-${headValue || "empty"}-${index}`}
+                        className={rootClass.elem("headers-row")}
+                        stretch
+                      >
                         <Input
                           className={rootClass.elem("headers-input")}
                           skip
@@ -173,9 +176,11 @@ const WebhookDetail = ({ webhook, webhooksInfo, fetchWebhooks, onBack, onSelectA
                           <Button
                             className={rootClass.elem("headers-remove")}
                             type="button"
+                            variant="negative"
                             look="string"
                             icon={<IconCross />}
                             onClick={() => onHeaderRemove(index)}
+                            tooltip="Remove Header"
                           />
                         </div>
                       </Space>
@@ -241,13 +246,16 @@ const WebhookDetail = ({ webhook, webhooksInfo, fetchWebhooks, onBack, onSelectA
             <Elem name="controls">
               {webhook === null ? null : (
                 <Button
-                  look="danger"
+                  variant="negative"
+                  look="outlined"
                   type="button"
                   className={rootClass.elem("delete-button")}
                   onClick={() =>
                     WebhookDeleteModal({
                       onDelete: async () => {
-                        await api.callApi("deleteWebhook", { params: { pk: webhook.id } });
+                        await api.callApi("deleteWebhook", {
+                          params: { pk: webhook.id },
+                        });
                         onBack();
                         await fetchWebhooks();
                       },
@@ -274,7 +282,7 @@ const WebhookDetail = ({ webhook, webhooksInfo, fetchWebhooks, onBack, onSelectA
                   className={rootClass.elem("save-button")}
                   aria-label={webhook === null ? "Add webhook" : "Save webhook"}
                 >
-                  {webhook === null ? "Add Webhook" : "Save"}
+                  {webhook === null ? "Add Webhook" : "Save Changes"}
                 </Button>
               </Space>
             </Elem>

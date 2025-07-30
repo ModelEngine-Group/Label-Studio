@@ -1,11 +1,10 @@
-import { useAtomValue } from "jotai";
 import { settingsAtom, TOKEN_SETTINGS_KEY } from "@humansignal/app-common/pages/AccountSettings/atoms";
-import { queryClientAtom } from "jotai-tanstack-query";
-import { Button } from "@humansignal/ui";
 import type { AuthTokenSettings } from "@humansignal/app-common/pages/AccountSettings/types";
-import { type ChangeEvent, useState } from "react";
-
+import { Button } from "@humansignal/ui";
 import { Form, Input, Toggle } from "apps/labelstudio/src/components/Form";
+import { useAtomValue } from "jotai";
+import { queryClientAtom } from "jotai-tanstack-query";
+import { type ChangeEvent, useState } from "react";
 
 export const TokenSettingsModal = ({
   showTTL,
@@ -32,7 +31,11 @@ function TokenSettingsModalView({
   settings,
   showTTL,
   onSaved,
-}: { settings: AuthTokenSettings; showTTL?: boolean; onSaved?: () => void }) {
+}: {
+  settings: AuthTokenSettings;
+  showTTL?: boolean;
+  onSaved?: () => void;
+}) {
   const [enableTTL, setEnableTTL] = useState(settings.api_tokens_enabled);
   const queryClient = useAtomValue(queryClientAtom);
   const reloadSettings = () => {
@@ -77,8 +80,8 @@ function TokenSettingsModalView({
         </Form.Row>
       )}
       <Form.Actions>
-        <Button look="outlined" type="submit">
-          Save
+        <Button variant="primary" look="filled" type="submit">
+          Save Changes
         </Button>
       </Form.Actions>
     </Form>

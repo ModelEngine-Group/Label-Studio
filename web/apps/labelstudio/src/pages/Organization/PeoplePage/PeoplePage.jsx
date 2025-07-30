@@ -1,5 +1,5 @@
-import { useCallback, useMemo, useRef, useState } from "react";
 import { Button } from "@humansignal/ui";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { HeidiTips } from "../../../components/HeidiTips/HeidiTips";
 import { modal } from "../../../components/Modal/Modal";
 import { Space } from "../../../components/Space/Space";
@@ -8,11 +8,11 @@ import { FF_AUTH_TOKENS, FF_LSDV_E_297, isFF } from "../../../utils/feature-flag
 import "./PeopleInvitation.scss";
 import { PeopleList } from "./PeopleList";
 import "./PeoplePage.scss";
-import { SelectedUser } from "./SelectedUser";
 import { TokenSettingsModal } from "@humansignal/app-common/blocks/TokenSettingsModal";
 import { IconPlus } from "@humansignal/icons";
 import { useToast } from "@humansignal/ui";
 import { InviteLink } from "./InviteLink";
+import { SelectedUser } from "./SelectedUser";
 
 export const PeoplePage = () => {
   const apiSettingsModal = useRef();

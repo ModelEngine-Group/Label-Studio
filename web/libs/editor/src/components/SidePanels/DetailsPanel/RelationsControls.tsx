@@ -1,9 +1,9 @@
-import { type FC, useCallback } from "react";
-import { observer } from "mobx-react";
-import { Block, Elem } from "../../../utils/bem";
 import { Button } from "@humansignal/ui";
+import { observer } from "mobx-react";
+import { type FC, useCallback } from "react";
+import { Block, Elem } from "../../../utils/bem";
 import "./RelationsControls.scss";
-import { IconOutlinerEyeClosed, IconOutlinerEyeOpened, IconSortUp, IconSortDown } from "@humansignal/icons";
+import { IconOutlinerEyeClosed, IconOutlinerEyeOpened, IconSortDown, IconSortUp } from "@humansignal/icons";
 
 const RelationsControlsComponent: FC<any> = ({ relationStore }) => {
   return (
@@ -34,6 +34,7 @@ const ToggleRelationsVisibilityButton = observer<FC<ToggleRelationsVisibilityBut
   return (
     <Elem
       tag={Button}
+      variant="neutral"
       look="string"
       size="small"
       disabled={isDisabled}
@@ -73,6 +74,7 @@ const ToggleRelationsOrderButton = observer<FC<ToggleRelationsOrderButtonProps>>
   return (
     <Elem
       tag={Button}
+      variant="neutral"
       look="string"
       size="small"
       onClick={toggleRelationsOrder}

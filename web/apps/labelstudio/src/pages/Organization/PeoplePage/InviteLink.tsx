@@ -1,12 +1,12 @@
-import { Block } from "apps/labelstudio/src/components/Menu/MenuContext";
-import { Input } from "../../../components/Form";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Space } from "@humansignal/ui/lib/space/space";
-import { API } from "apps/labelstudio/src/providers/ApiProvider";
-import { atomWithQuery } from "jotai-tanstack-query";
-import { useAtomValue } from "jotai";
-import { Modal } from "apps/labelstudio/src/components/Modal/ModalPopup";
 import { Button, Typography } from "@humansignal/ui";
+import { Space } from "@humansignal/ui/lib/space/space";
+import { Block } from "apps/labelstudio/src/components/Menu/MenuContext";
+import { Modal } from "apps/labelstudio/src/components/Modal/ModalPopup";
+import { API } from "apps/labelstudio/src/providers/ApiProvider";
+import { useAtomValue } from "jotai";
+import { atomWithQuery } from "jotai-tanstack-query";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Input } from "../../../components/Form";
 
 const linkAtom = atomWithQuery(() => ({
   queryKey: ["invite-link"],
@@ -65,7 +65,9 @@ const InvitationModal = () => {
           rel="noreferrer"
           className="hover:underline"
           onClick={() =>
-            __lsa("docs.organization.add_people.learn_more", { href: "https://labelstud.io/guide/signup.html" })
+            __lsa("docs.organization.add_people.learn_more", {
+              href: "https://labelstud.io/guide/signup.html",
+            })
           }
         >
           Learn more
@@ -83,7 +85,13 @@ const InvitationFooter = () => {
   return (
     <Space spread>
       <Space>
-        <Button look="outlined" style={{ width: 170 }} onClick={() => refetch()} aria-label="Refresh invite link">
+        <Button
+          variant="negative"
+          look="outlined"
+          style={{ width: 170 }}
+          onClick={() => refetch()}
+          aria-label="Refresh invite link"
+        >
           Reset Link
         </Button>
       </Space>

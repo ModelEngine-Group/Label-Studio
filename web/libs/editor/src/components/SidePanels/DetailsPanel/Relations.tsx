@@ -1,19 +1,18 @@
-import { observer } from "mobx-react";
-import { type FC, useCallback, useMemo, useState } from "react";
 import {
+  IconEyeClosed,
+  IconEyeOpened,
   IconMenu,
   IconRelationBi,
   IconRelationLeft,
   IconRelationRight,
   IconTrash,
-  IconEyeClosed,
-  IconEyeOpened,
 } from "@humansignal/icons";
-import { Button } from "@humansignal/ui";
+import { Button, Select } from "@humansignal/ui";
+import { observer } from "mobx-react";
+import { type FC, useCallback, useMemo, useState } from "react";
 import { Block, Elem } from "../../../utils/bem";
 import { wrapArray } from "../../../utils/utilities";
 import { RegionItem } from "./RegionItem";
-import { Select } from "@humansignal/ui";
 import "./Relations.scss";
 
 const RealtionsComponent: FC<any> = ({ relationStore }) => {
@@ -103,7 +102,10 @@ const RelationItem: FC<{ relation: any }> = observer(({ relation }) => {
           <Elem name="action">
             {(hovered || !relation.visible) && (
               <Button
-                type="text"
+                variant="neutral"
+                look="string"
+                size="small"
+                tooltip="Toggle Visibility"
                 onClick={relation.toggleVisibility}
                 aria-label={`${relation.visible ? "Hide" : "Show"} Relation`}
               >
@@ -118,9 +120,11 @@ const RelationItem: FC<{ relation: any }> = observer(({ relation }) => {
           <Elem name="action">
             {hovered && (
               <Button
-                type="text"
-                danger
+                variant="negative"
+                look="string"
+                size="small"
                 aria-label="Delete Relation"
+                tooltip="Delete Relation"
                 onClick={() => {
                   relation.node1.setHighlight(false);
                   relation.node2.setHighlight(false);
@@ -155,7 +159,11 @@ const RelationMeta: FC<any> = observer(({ relation }) => {
     [relation],
   );
   const options = useMemo(
-    () => children.map((c: any) => ({ value: c.value, style: { background: c.background } })),
+    () =>
+      children.map((c: any) => ({
+        value: c.value,
+        style: { background: c.background },
+      })),
     [children],
   );
 
