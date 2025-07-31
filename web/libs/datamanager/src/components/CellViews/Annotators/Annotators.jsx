@@ -18,8 +18,8 @@ const isFilterMembers = isActive(FF_DM_FILTER_MEMBERS);
 export const Annotators = (cell) => {
   const { value, column, original: task } = cell;
   const sdk = useSDK();
-  const maxUsersToDisplay = window.APP_SETTINGS.data_manager.max_users_to_display;
-  const userList = Array.from(value).slice(0, maxUsersToDisplay);
+  const maxUsersToDisplay = window.APP_SETTINGS.data_manager?.max_users_to_display ?? 0;
+  const userList = maxUsersToDisplay > 0 ? Array.from(value).slice(0, maxUsersToDisplay) : value;
   const userPickBadge = cn("userpic-badge");
   const annotatorsCN = cn("annotators");
   const isEnterprise = window.APP_SETTINGS.billing?.enterprise;
