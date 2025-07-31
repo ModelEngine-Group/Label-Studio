@@ -9,7 +9,7 @@ import logging
 from datetime import datetime
 from typing import List, Optional, Set
 
-from core.redis import redis_connected, start_job_async_or_sync
+from core.redis import _redis, redis_connected, start_job_async_or_sync
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import transaction
@@ -90,8 +90,8 @@ def get_user_last_activity(user_id: int) -> Optional[datetime]:
     Returns:
         Last activity timestamp or None if not found
     """
-    if not redis_connected():
-        return _get_user_activity_from_db(user_id)
+    if _redis is None:
+        return
 
     try:
         redis_key = _get_user_activity_key(user_id)
@@ -105,36 +105,8 @@ def get_user_last_activity(user_id: int) -> Optional[datetime]:
             # Parse ISO string back to datetime
             return datetime.fromisoformat(timestamp_str)
 
-        # Fallback to database
-        return _get_user_activity_from_db(user_id)
-
     except Exception as e:
         logger.error('Failed to get user activity for user %s: %s', user_id, e)
-        # Fallback to database
-        return _get_user_activity_from_db(user_id)
-
-
-def _get_user_activity_from_db(user_id: int) -> Optional[datetime]:
-    """
-    Get user last activity from database.
-
-    Args:
-        user_id: User ID
-
-    Returns:
-        Last activity timestamp or None if not found
-    """
-    try:
-        User = get_user_model()
-        user = User.objects.only('last_activity').get(id=user_id)
-        return user.last_activity
-
-    except User.DoesNotExist:
-        logger.warning('User %s not found in database', user_id)
-        return None
-    except Exception as e:
-        logger.error('Failed to get user activity from DB for user %s: %s', user_id, e)
-        return None
 
 
 def increment_activity_counter() -> int:
