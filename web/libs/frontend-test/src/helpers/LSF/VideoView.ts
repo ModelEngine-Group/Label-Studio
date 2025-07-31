@@ -45,15 +45,15 @@ export const VideoView = {
   },
 
   get configModal() {
-    return this.timelineToolbar.get(".lsf-video-config__modal");
+    return this.timelineToolbar.get('[class*="modal--"]');
   },
 
   get loopTimelineRegionToggle() {
-    return this.configModal.find(".lsf-video-config__toggle").find("label");
+    return this.configModal.find('[class*="toggle--"]').find("label");
   },
 
   get loopTimelineRegionCheckbox() {
-    return this.configModal.find('.lsf-video-config__toggle input[type="checkbox"]');
+    return this.configModal.find('[class*="toggle--"] input[type="checkbox"]');
   },
 
   get playButton() {
