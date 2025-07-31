@@ -34,6 +34,7 @@ $scroll-width: 5px;
   padding: 16px 16px - $scroll-width 16px 20px;
   overflow-y: scroll;
   background-color: var(--color-neutral-background);
+  gap: var(--spacing-base);
 
   &::-webkit-scrollbar {
     width: $scroll-width;
@@ -235,7 +236,6 @@ $scroll-width: 5px;
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin-bottom: 16px;
 }
 
 .configure__editor {
