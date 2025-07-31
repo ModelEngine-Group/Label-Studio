@@ -281,8 +281,7 @@ class TaskListAPI(generics.ListCreateAPIView):
     )
     pagination_class = TaskPagination
 
-    @staticmethod
-    def get_task_serializer_context(request, project):
+    def get_task_serializer_context(self, request, project, queryset):
         all_fields = request.GET.get('fields', None) == 'all'  # false by default
 
         return {
@@ -328,7 +327,6 @@ class TaskListAPI(generics.ListCreateAPIView):
         # get prepare params (from view or from payload directly)
         prepare_params = get_prepare_params(request, project)
         queryset = self.get_task_queryset(request, prepare_params)
-        context = self.get_task_serializer_context(self.request, project)
 
         # paginated tasks
         page = self.paginate_queryset(queryset)
@@ -343,16 +341,15 @@ class TaskListAPI(generics.ListCreateAPIView):
             all_fields = None
         if page is not None:
             ids = [task.id for task in page]  # page is a list already
-            tasks = list(
-                self.prefetch(
-                    Task.prepared.annotate_queryset(
-                        Task.objects.filter(id__in=ids),
-                        fields_for_evaluation=fields_for_evaluation,
-                        all_fields=all_fields,
-                        request=request,
-                    )
+            tasks = self.prefetch(
+                Task.prepared.annotate_queryset(
+                    Task.objects.filter(id__in=ids),
+                    fields_for_evaluation=fields_for_evaluation,
+                    all_fields=all_fields,
+                    request=request,
                 )
             )
+
             tasks_by_ids = {task.id: task for task in tasks}
             # keep ids ordering
             page = [tasks_by_ids[_id] for _id in ids]
@@ -367,6 +364,7 @@ class TaskListAPI(generics.ListCreateAPIView):
                 evaluate_predictions(tasks_for_predictions)
                 [tasks_by_ids[_id].refresh_from_db() for _id in ids]
 
+            context = self.get_task_serializer_context(self.request, project, tasks)
             serializer = self.task_serializer_class(page, many=True, context=context)
             return self.get_paginated_response(serializer.data)
         # all tasks
@@ -375,6 +373,7 @@ class TaskListAPI(generics.ListCreateAPIView):
         queryset = Task.prepared.annotate_queryset(
             queryset, fields_for_evaluation=fields_for_evaluation, all_fields=all_fields, request=request
         )
+        context = self.get_task_serializer_context(self.request, project, queryset)
         serializer = self.task_serializer_class(queryset, many=True, context=context)
         return Response(serializer.data)
 

@@ -94,6 +94,26 @@ const TrackedState = types.model("TrackedState", {
   relationStore: types.optional(RelationStore, {}),
 });
 
+// Create a union type that can handle both user references and frozen user objects
+const UserOrReference = types.union({
+  dispatcher: (snapshot) => {
+    // If it's a number, it's a reference to a user ID
+    if (typeof snapshot === "number") {
+      return types.safeReference(UserExtended);
+    }
+    // If it's a full user object, store it as frozen to avoid duplicate instances
+    if (snapshot && typeof snapshot === "object" && (snapshot.firstName || snapshot.email || snapshot.username)) {
+      return types.frozen();
+    }
+    // Default to reference for any other case
+    return types.safeReference(UserExtended);
+  },
+  cases: {
+    frozen: types.frozen(),
+    reference: types.safeReference(UserExtended),
+  },
+});
+
 const _Annotation = types
   .model("AnnotationBase", {
     id: types.identifier,
@@ -109,7 +129,7 @@ const _Annotation = types
     createdDate: types.optional(types.string, Utils.UDate.currentISODate()),
     createdAgo: types.maybeNull(types.string),
     createdBy: types.optional(types.string, "Admin"),
-    user: types.optional(types.maybeNull(types.safeReference(UserExtended)), null),
+    user: types.optional(types.maybeNull(UserOrReference), null),
     score: types.maybeNull(types.number),
 
     parent_prediction: types.maybeNull(types.integer),
@@ -169,7 +189,7 @@ const _Annotation = types
   }))
   .preProcessSnapshot((sn) => {
     // sn.draft = Boolean(sn.draft);
-    let user = sn.user ?? sn.completed_by ?? undefined;
+    const user = sn.user ?? sn.completed_by ?? undefined;
     let root;
 
     const updateIds = (item) => {
@@ -188,10 +208,6 @@ const _Annotation = types
 
     if (isFF(FF_DEV_3391)) {
       root = updateIds(sn.root.toJSON());
-    }
-
-    if (user && typeof user !== "number") {
-      user = user.id;
     }
 
     const getCreatedBy = (snapshot) => {

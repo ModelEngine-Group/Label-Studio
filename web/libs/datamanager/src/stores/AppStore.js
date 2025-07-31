@@ -1,6 +1,12 @@
 import { destroy, flow, types } from "mobx-state-tree";
 import { Modal } from "../components/Common/Modal/Modal";
-import { FF_DEV_2887, FF_LOPS_E_3, FF_REGION_VISIBILITY_FROM_URL, isFF } from "../utils/feature-flags";
+import {
+  FF_DEV_2887,
+  FF_DISABLE_GLOBAL_USER_FETCHING,
+  FF_LOPS_E_3,
+  FF_REGION_VISIBILITY_FROM_URL,
+  isFF,
+} from "../utils/feature-flags";
 import { History } from "../utils/history";
 import { isDefined } from "../utils/utils";
 import { Action } from "./Action";
@@ -569,7 +575,12 @@ export const AppStore = types
 
       self.viewsStore.fetchColumns();
 
-      const requests = [self.fetchProject(), self.fetchUsers()];
+      const requests = [self.fetchProject()];
+
+      // Only fetch all users if not disabled globally
+      if (!isFF(FF_DISABLE_GLOBAL_USER_FETCHING)) {
+        requests.push(self.fetchUsers());
+      }
 
       if (!isLabelStream || (self.project?.show_annotation_history && task)) {
         if (self.SDK.type === "dm") {

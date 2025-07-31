@@ -60,6 +60,13 @@ export const FF_AVERAGE_AGREEMENT_SCORE_POPOVER = "fflag_feat_all_leap_2042_aver
  */
 export const FF_ANNOTATION_RESULTS_FILTERING = "fflag_root_13_annotation_results_filtering";
 
+/**
+ * Disable global user fetching for large-scale deployments
+ * @link https://app.launchdarkly.com/projects/default/flags/fflag_all_feat_utc_204_users_performance_improvements_in_dm_for_large_orgs
+ */
+export const FF_DISABLE_GLOBAL_USER_FETCHING =
+  "fflag_all_feat_utc_204_users_performance_improvements_in_dm_for_large_orgs";
+
 // Customize flags
 const flags = {};
 
