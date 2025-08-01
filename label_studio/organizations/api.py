@@ -9,7 +9,7 @@ from django.conf import settings
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, extend_schema
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from organizations.models import Organization, OrganizationMember
 from organizations.serializers import (
     OrganizationIdSerializer,
@@ -231,9 +231,10 @@ class OrganizationMemberListAPI(generics.ListAPIView):
             ),
         ],
         responses={
-            204: 'Member deleted successfully.',
-            405: 'User cannot soft delete self.',
-            404: 'Member not found',
+            204: OpenApiResponse(description='Member deleted successfully.'),
+            405: OpenApiResponse(description='User cannot soft delete self.'),
+            404: OpenApiResponse(description='Member not found'),
+            403: OpenApiResponse(description='You can delete members only for your current active organization'),
         },
         extensions={
             'x-fern-sdk-group-name': ['organizations', 'members'],

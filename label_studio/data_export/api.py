@@ -85,7 +85,6 @@ class ExportFormatsListAPI(generics.RetrieveAPIView):
 @method_decorator(
     name='get',
     decorator=extend_schema(
-        deprecated=True,
         parameters=[
             OpenApiParameter(
                 name='export_type',
@@ -95,7 +94,7 @@ class ExportFormatsListAPI(generics.RetrieveAPIView):
             ),
             OpenApiParameter(
                 name='download_all_tasks',
-                type=OpenApiTypes.STR,
+                type=OpenApiTypes.BOOL,
                 location='query',
                 description='If true, download all tasks regardless of status. If false, download only annotated tasks.',
             ),
@@ -154,8 +153,8 @@ class ExportFormatsListAPI(generics.RetrieveAPIView):
             )
         },
         extensions={
-            'x-fern-sdk-group-name': 'projects',
-            'x-fern-sdk-method-name': 'export',
+            'x-fern-sdk-group-name': ['projects', 'exports'],
+            'x-fern-sdk-method-name': 'download_sync',
             'x-fern-audiences': ['public'],
         },
     ),
@@ -375,7 +374,7 @@ class ExportListAPI(generics.ListCreateAPIView):
             ),
             OpenApiParameter(
                 name='export_pk',
-                type=OpenApiTypes.STR,
+                type=OpenApiTypes.INT,
                 location='path',
                 description='Primary key identifying the export file.',
             ),
@@ -402,7 +401,7 @@ class ExportListAPI(generics.ListCreateAPIView):
             ),
             OpenApiParameter(
                 name='export_pk',
-                type=OpenApiTypes.STR,
+                type=OpenApiTypes.INT,
                 location='path',
                 description='Primary key identifying the export file.',
             ),
@@ -482,11 +481,20 @@ class ExportDetailAPI(generics.RetrieveDestroyAPIView):
             ),
             OpenApiParameter(
                 name='export_pk',
-                type=OpenApiTypes.STR,
+                type=OpenApiTypes.INT,
                 location='path',
                 description='Primary key identifying the export file.',
             ),
         ],
+        responses={
+            (200, 'application/*'): OpenApiResponse(
+                description='Export file',
+                response={
+                    'type': 'string',
+                    'format': 'binary',
+                },
+            ),
+        },
         extensions={
             'x-fern-sdk-group-name': ['projects', 'exports'],
             'x-fern-sdk-method-name': 'download',
@@ -628,11 +636,22 @@ def set_convert_background_failure(job, connection, type, value, traceback_obj):
             ),
             OpenApiParameter(
                 name='export_pk',
-                type=OpenApiTypes.STR,
+                type=OpenApiTypes.INT,
                 location='path',
                 description='Primary key identifying the export file.',
             ),
         ],
+        responses={
+            200: OpenApiResponse(
+                response={
+                    'type': 'object',
+                    'properties': {
+                        'export_type': {'type': 'string'},
+                        'converted_format': {'type': 'integer'},
+                    },
+                },
+            ),
+        },
         extensions={
             'x-fern-sdk-group-name': ['projects', 'exports'],
             'x-fern-sdk-method-name': 'convert',

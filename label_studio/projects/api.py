@@ -521,7 +521,10 @@ class LabelStreamHistoryAPI(generics.RetrieveAPIView):
         tags=['Projects'],
         summary='Validate label config',
         description='Validate an arbitrary labeling configuration.',
-        responses={204: 'Validation success'},
+        responses={
+            204: OpenApiResponse(description='Validation success'),
+            400: OpenApiResponse(description='Validation failed'),
+        },
         request=ProjectLabelConfigSerializer,
         extensions={
             'x-fern-audiences': ['internal'],
@@ -555,9 +558,7 @@ class LabelConfigValidateAPI(generics.CreateAPIView):
         tags=['Projects'],
         operation_id='api_projects_validate_label_config',
         summary='Validate project label config',
-        description="""
-        Determine whether the label configuration for a specific project is valid.
-        """,
+        description='Determine whether the label configuration for a specific project is valid.',
         parameters=[
             OpenApiParameter(
                 name='id',
@@ -567,6 +568,11 @@ class LabelConfigValidateAPI(generics.CreateAPIView):
             ),
         ],
         request=ProjectLabelConfigSerializer,
+        extensions={
+            'x-fern-sdk-group-name': 'projects',
+            'x-fern-sdk-method-name': 'validate_label_config',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 class ProjectLabelConfigValidateAPI(generics.RetrieveAPIView):
@@ -702,9 +708,8 @@ class ProjectReimportAPI(generics.RetrieveAPIView):
                 description='A unique integer value identifying this project.',
             ),
         ],
-        responses={204: 'Tasks deleted'},
         extensions={
-            'x-fern-sdk-group-name': 'projects',
+            'x-fern-sdk-group-name': 'tasks',
             'x-fern-sdk-method-name': 'delete_all_tasks',
             'x-fern-audiences': ['public'],
         },

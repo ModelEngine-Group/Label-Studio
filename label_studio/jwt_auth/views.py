@@ -39,6 +39,11 @@ class TokenExistsError(APIException):
         tags=['JWT'],
         summary='Retrieve JWT Settings',
         description='Retrieve JWT settings for the currently active organization.',
+        extensions={
+            'x-fern-sdk-group-name': 'jwt_settings',
+            'x-fern-sdk-method-name': 'get',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 @method_decorator(
@@ -47,6 +52,11 @@ class TokenExistsError(APIException):
         tags=['JWT'],
         summary='Update JWT Settings',
         description='Update JWT settings for the currently active organization.',
+        extensions={
+            'x-fern-sdk-group-name': 'jwt_settings',
+            'x-fern-sdk-method-name': 'update',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 class JWTSettingsAPI(CreateAPIView):
@@ -76,13 +86,18 @@ class JWTSettingsAPI(CreateAPIView):
         return Response(serializer.data)
 
 
-# Recommended implementation from JWT to support drf-yasg:
-# https://django-rest-framework-simplejwt.readthedocs.io/en/latest/drf_yasg_integration.html
 class DecoratedTokenRefreshView(TokenRefreshView):
     @extend_schema(
         tags=['JWT'],
+        summary='Refresh JWT token',
+        description='Get a new access token, using a refresh token.',
         responses={
             status.HTTP_200_OK: TokenRefreshResponseSerializer,
+        },
+        extensions={
+            'x-fern-sdk-group-name': 'tokens',
+            'x-fern-sdk-method-name': 'refresh',
+            'x-fern-audiences': ['public'],
         },
     )
     def post(self, request, *args, **kwargs):
@@ -95,6 +110,14 @@ class DecoratedTokenRefreshView(TokenRefreshView):
         tags=['JWT'],
         summary='List API tokens',
         description='List all API tokens for the current user.',
+        responses={
+            status.HTTP_200_OK: LSAPITokenListSerializer,
+        },
+        extensions={
+            'x-fern-sdk-group-name': 'tokens',
+            'x-fern-sdk-method-name': 'list',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 @method_decorator(
@@ -103,6 +126,14 @@ class DecoratedTokenRefreshView(TokenRefreshView):
         tags=['JWT'],
         summary='Create API token',
         description='Create a new API token for the current user.',
+        responses={
+            status.HTTP_201_CREATED: LSAPITokenCreateSerializer,
+        },
+        extensions={
+            'x-fern-sdk-group-name': 'tokens',
+            'x-fern-sdk-method-name': 'create',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 class LSAPITokenView(generics.ListCreateAPIView):
@@ -172,6 +203,11 @@ class LSTokenBlacklistView(TokenViewBase):
             status.HTTP_204_NO_CONTENT: 'Token was successfully blacklisted',
             status.HTTP_404_NOT_FOUND: 'Token is already blacklisted',
         },
+        extensions={
+            'x-fern-sdk-group-name': 'tokens',
+            'x-fern-sdk-method-name': 'blacklist',
+            'x-fern-audiences': ['public'],
+        },
     )
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -201,6 +237,11 @@ class LSAPITokenRotateView(TokenViewBase):
         responses={
             status.HTTP_200_OK: TokenRotateResponseSerializer,
             status.HTTP_400_BAD_REQUEST: 'Invalid token or token already blacklisted',
+        },
+        extensions={
+            'x-fern-sdk-group-name': 'tokens',
+            'x-fern-sdk-method-name': 'rotate',
+            'x-fern-audiences': ['public'],
         },
     )
     def post(self, request, *args, **kwargs):

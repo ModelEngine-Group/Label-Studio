@@ -259,6 +259,30 @@ class TaskPagination(PageNumberPagination):
             return self.paginate_totals_queryset(queryset, request, view)
         return self.sync_paginate_queryset(queryset, request, view)
 
+    def get_paginated_response_schema(self, schema):
+        return {
+            'type': 'object',
+            'properties': {
+                'tasks': schema,
+                'total': {
+                    'type': 'integer',
+                    'description': 'Total number of tasks',
+                    'example': 123,
+                },
+                'total_annotations': {
+                    'type': 'integer',
+                    'description': 'Total number of annotations',
+                    'example': 456,
+                },
+                'total_predictions': {
+                    'type': 'integer',
+                    'description': 'Total number of predictions',
+                    'example': 78,
+                },
+            },
+            'required': ['tasks', 'total', 'total_annotations', 'total_predictions'],
+        }
+
     def get_paginated_response(self, data):
         return Response(
             {

@@ -50,4 +50,9 @@ class JWTAuthScheme(OpenApiAuthenticationExtension):
             '<br><pre><code class="language-bash">'
             'curl https://label-studio-host/api/projects -H "Authorization: Token [your-token]"'
             '</code></pre>',
+            'x-fern-header': {
+                'name': 'api_key',
+                'env': 'LABEL_STUDIO_API_KEY',
+                'prefix': 'Token ',
+            },
         }

@@ -84,9 +84,9 @@ def test_batch_predictions_single_prediction_per_task(django_live_url, business_
             assert task.annotations[0]['result'][0]['value']['choices'][0] == 'Single'
 
             assert len(task.predictions) == 1
-            assert task.predictions[0]['result'][0]['value']['choices'][0] == 'Single'
-            assert task.predictions[0]['model_version'] == 'ModelSingle'
-            assert task.predictions[0]['score'] == 0.1
+            assert task.predictions[0].result[0]['value']['choices'][0] == 'Single'
+            assert task.predictions[0].model_version == 'ModelSingle'
+            assert task.predictions[0].score == 0.1
 
 
 @pytest.mark.django_db
@@ -143,6 +143,6 @@ def test_batch_predictions_multiple_predictions_per_task(
             assert len(task.predictions) == 2
 
             for i, prediction in enumerate(task.predictions):
-                assert prediction['result'][0]['value']['choices'][0] == f'label_{["A", "B"][i]}'
-                assert prediction['model_version'] == f'Model{"AB"[i]}'
-                assert prediction['score'] == 0.2 if i == 0 else 0.3
+                assert prediction.result[0]['value']['choices'][0] == f'label_{["A", "B"][i]}'
+                assert prediction.model_version == f'Model{"AB"[i]}'
+                assert prediction.score == 0.2 if i == 0 else 0.3

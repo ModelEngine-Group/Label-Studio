@@ -106,11 +106,11 @@ class ProjectSerializer(FlexFieldsModelSerializer):
             return next(iter(self.context['user_cache']))
 
     @staticmethod
-    def get_config_has_control_tags(project):
+    def get_config_has_control_tags(project) -> bool:
         return len(project.get_parsed_config()) > 0
 
     @staticmethod
-    def get_config_suitable_for_bulk_annotation(project):
+    def get_config_suitable_for_bulk_annotation(project) -> bool:
         li = LabelInterface(project.label_config)
 
         # List of tags that should not be present
@@ -168,7 +168,7 @@ class ProjectSerializer(FlexFieldsModelSerializer):
     def get_parsed_label_config(project):
         return project.get_parsed_config()
 
-    def get_start_training_on_annotation_update(self, instance):
+    def get_start_training_on_annotation_update(self, instance) -> bool:
         # FIXME: remake this logic with start_training_on_annotation_update
         return True if instance.min_annotations_to_start_training else False
 
@@ -285,14 +285,14 @@ class ProjectSerializer(FlexFieldsModelSerializer):
 
         return super().update(instance, validated_data)
 
-    def get_queue_total(self, project):
+    def get_queue_total(self, project) -> int:
         remain = project.tasks.filter(
             Q(is_labeled=False) & ~Q(annotations__completed_by_id=self.user_id)
             | Q(annotations__completed_by_id=self.user_id)
         ).distinct()
         return remain.count()
 
-    def get_queue_done(self, project):
+    def get_queue_done(self, project) -> int:
         tasks_filter = {
             'project': project,
             'annotations__completed_by_id': self.user_id,
