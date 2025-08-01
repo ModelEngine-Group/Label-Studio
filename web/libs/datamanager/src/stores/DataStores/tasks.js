@@ -38,9 +38,9 @@ export const create = (columns) => {
     updated_by: types.optional(types.array(Assignee), []),
     ...(isFF(FF_DISABLE_GLOBAL_USER_FETCHING)
       ? {
-          annotators_count: types.optional(types.number, 0),
-          reviewers_count: types.optional(types.number, 0),
-          comment_authors_count: types.optional(types.number, 0),
+          annotators_count: types.optional(types.maybeNull(types.number), 0),
+          reviewers_count: types.optional(types.maybeNull(types.number), 0),
+          comment_authors_count: types.optional(types.maybeNull(types.number), 0),
         }
       : {}),
     ...(isFF(FF_LOPS_E_3)
