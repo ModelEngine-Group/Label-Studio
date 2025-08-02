@@ -50,8 +50,7 @@ class PlaywrightAddon extends Helper {
     this.helpers.Playwright.debug(`Matched ${els.length} elements`);
     return await Promise.all(
       els.map((el) =>
-        el.$eval(
-          "xpath=.",
+        el.evaluate(
           (el, { cssProperty, pseudoElement }) => getComputedStyle(el, pseudoElement).getPropertyValue(cssProperty),
           { cssProperty, pseudoElement },
         ),
@@ -69,9 +68,7 @@ class PlaywrightAddon extends Helper {
     while (Date.now() - startTime < timeout) {
       try {
         const els = await this.helpers.Playwright._locate(selector);
-        const areFocused = await Promise.all(
-          els.map((el) => el.$eval("xpath=.", (el) => el === document.activeElement)),
-        );
+        const areFocused = await Promise.all(els.map((el) => el.evaluate((el) => el === document.activeElement)));
         if (areFocused.some((el) => el)) {
           isFocused = true;
           break;

@@ -139,6 +139,7 @@ describe("Sync: Audio Paragraphs", () => {
     LabelStudio.addFeatureFlagsOnPageLoad({
       ff_front_dev_2715_audio_3_280722_short: true,
       fflag_feat_front_lsdv_e_278_contextual_scrolling_short: true,
+      fflag_feat_front_bros_199_enable_select_all_in_ner_phrase_short: false,
     });
 
     // expect uncaught exception for fast play/pause
@@ -273,7 +274,7 @@ describe("Sync: Audio Paragraphs", () => {
       expect(audio.currentTime).to.equal(0);
     });
 
-    cy.get('[data-testid="phrase:0"] [aria-label="play"]').click();
+    cy.get('[data-testid="phrase:0"]').siblings('button[aria-label="play"]').click();
     cy.wait(100);
 
     cy.log("Audio is playing");
@@ -281,7 +282,7 @@ describe("Sync: Audio Paragraphs", () => {
       expect(audio.paused).to.equal(false);
     });
 
-    cy.get('[data-testid="phrase:0"] [aria-label="pause"]').click();
+    cy.get('[data-testid="phrase:0"]').siblings('button[aria-label="pause"]').click();
 
     cy.log("Audio is played and now paused");
     cy.get("audio").then(([audio]) => {
@@ -299,14 +300,14 @@ describe("Sync: Audio Paragraphs", () => {
       expect(audio.currentTime).to.equal(0);
     });
 
-    cy.get('[data-testid="phrase:0"] [aria-label="play"]').click();
+    cy.get('[data-testid="phrase:0"]').siblings('button[aria-label="play"]').click();
     cy.wait(100);
 
     cy.get("audio").then(([audio]) => {
       expect(audio.currentTime).to.not.equal(0);
     });
 
-    cy.get('[data-testid="phrase:1"] [aria-label="play"]').click();
+    cy.get('[data-testid="phrase:1"]').siblings('button[aria-label="play"]').click();
     cy.wait(100);
 
     cy.get("audio").then(([audio]) => {
@@ -327,29 +328,29 @@ describe("Sync: Audio Paragraphs", () => {
     AudioView.playButton.click();
 
     // Plays the first paragraph segment when the audio interface is played
-    cy.get('[data-testid="phrase:0"] [aria-label="pause"]').should("exist");
-    cy.get('[data-testid="phrase:1"] [aria-label="play"]').should("exist");
-    cy.get('[data-testid="phrase:2"] [aria-label="play"]').should("exist");
-    cy.get('[data-testid="phrase:3"] [aria-label="play"]').should("exist");
-    cy.get('[data-testid="phrase:4"] [aria-label="play"]').should("exist");
+    cy.get('[data-testid="phrase:0"]').siblings('button[aria-label="pause"]').should("exist");
+    cy.get('[data-testid="phrase:1"]').siblings('button[aria-label="play"]').should("exist");
+    cy.get('[data-testid="phrase:2"]').siblings('button[aria-label="play"]').should("exist");
+    cy.get('[data-testid="phrase:3"]').siblings('button[aria-label="play"]').should("exist");
+    cy.get('[data-testid="phrase:4"]').siblings('button[aria-label="play"]').should("exist");
 
     cy.wait(2000);
 
     // Plays the second paragraph segment when the audio progresses to the second paragraph segment
-    cy.get('[data-testid="phrase:1"] [aria-label="pause"]').should("exist");
-    cy.get('[data-testid="phrase:0"] [aria-label="play"]').should("exist");
-    cy.get('[data-testid="phrase:2"] [aria-label="play"]').should("exist");
-    cy.get('[data-testid="phrase:3"] [aria-label="play"]').should("exist");
-    cy.get('[data-testid="phrase:4"] [aria-label="play"]').should("exist");
+    cy.get('[data-testid="phrase:1"]').siblings('button[aria-label="pause"]').should("exist");
+    cy.get('[data-testid="phrase:0"]').siblings('button[aria-label="play"]').should("exist");
+    cy.get('[data-testid="phrase:2"]').siblings('button[aria-label="play"]').should("exist");
+    cy.get('[data-testid="phrase:3"]').siblings('button[aria-label="play"]').should("exist");
+    cy.get('[data-testid="phrase:4"]').siblings('button[aria-label="play"]').should("exist");
 
     cy.wait(2000);
 
     // Plays the third paragraph segment when the audio progresses to the third paragraph segment
-    cy.get('[data-testid="phrase:2"] [aria-label="pause"]').should("exist");
-    cy.get('[data-testid="phrase:0"] [aria-label="play"]').should("exist");
-    cy.get('[data-testid="phrase:1"] [aria-label="play"]').should("exist");
-    cy.get('[data-testid="phrase:3"] [aria-label="play"]').should("exist");
-    cy.get('[data-testid="phrase:4"] [aria-label="play"]').should("exist");
+    cy.get('[data-testid="phrase:2"]').siblings('button[aria-label="pause"]').should("exist");
+    cy.get('[data-testid="phrase:0"]').siblings('button[aria-label="play"]').should("exist");
+    cy.get('[data-testid="phrase:1"]').siblings('button[aria-label="play"]').should("exist");
+    cy.get('[data-testid="phrase:3"]').siblings('button[aria-label="play"]').should("exist");
+    cy.get('[data-testid="phrase:4"]').siblings('button[aria-label="play"]').should("exist");
   });
 
   it("Check if paragraph is scrolling automatically following the audio", () => {
@@ -357,6 +358,17 @@ describe("Sync: Audio Paragraphs", () => {
 
     LabelStudio.waitForObjectsReady();
     AudioView.isReady();
+
+    // Inject CSS to force scrolling in test environment
+    // cy.get("head").invoke(
+    //   "append",
+    //   `<style>
+    //     [data-testid="phrases-wrapper"] {
+    //       max-height: 120px !important;
+    //       overflow-y: auto !important;
+    //     }
+    //   </style>`,
+    // );
 
     cy.get("audio").then(([audio]) => {
       expect(audio.currentTime).to.equal(0);
@@ -390,7 +402,10 @@ describe("Sync: Audio Paragraphs", () => {
     cy.wait(1000);
 
     cy.get('[data-testid="phrases-wrapper"]').then(($el) => {
-      expect($el[0].scrollTop).to.equal(0);
+      const scrollTop = $el[0].scrollTop;
+      // Expect small padding for visual breathing room (should be greater than 0 but less than 20)
+      expect(scrollTop).to.be.greaterThan(0);
+      expect(scrollTop).to.be.lessThan(20);
     });
   });
 
