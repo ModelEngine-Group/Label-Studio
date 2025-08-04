@@ -196,6 +196,7 @@ const NewTaxonomy = ({
       placeholder={options.placeholder || "Click to add..."}
       style={style}
       className="htx-taxonomy"
+      popupClassName="htx-taxonomy-dropdown"
       disabled={!isEditable}
     />
   );

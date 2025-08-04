@@ -2,3 +2,9 @@
   padding: 4px;
   border-radius: 2px;
 }
+
+// increase specificity to override usual .ant-select-dropdown z-index
+:global(.htx-taxonomy-dropdown.ant-select-dropdown) {
+  // Create Project popup has 2000
+  z-index: 3000;
+}
