@@ -1,3 +1,4 @@
+import { ff } from "@humansignal/core";
 import {
   Children,
   cloneElement,
@@ -17,6 +18,8 @@ import { aroundTransition } from "@humansignal/core/lib/utils/transition";
 import { setRef } from "@humansignal/core/lib/utils/unwrapRef";
 import styles from "./Tooltip.module.scss";
 import clsx from "clsx";
+
+const isEnhancedTooltip = ff.isActive(ff.FF_TOOLTIP_ENHANCEMENT);
 
 export type TooltipProps = PropsWithChildren<{
   title: React.ReactNode;
@@ -160,30 +163,42 @@ const TooltipInner = forwardRef(
 
     const child = Children.only(children) as DetailedReactHTMLElement<any, HTMLElement>;
 
+    const needFallback = !!child.props.disabled;
+
+    const onMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+      if (disabled === true) return;
+      setInjected(true);
+      child.props.onMouseEnter?.(e);
+    };
+    const onMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+      if (disabled === true) return;
+      if (interactive) {
+        clearHideTimeout();
+        hideTimeoutRef.current = setTimeout(() => {
+          performAnimation(false);
+        }, 300);
+      } else {
+        performAnimation(false);
+      }
+      child.props.onMouseLeave?.(e);
+    };
+
     const clone = cloneElement(child, {
       ...child.props,
       ref(el: any) {
         setRef(triggerElement, el);
         setRef(ref, el);
       },
-      onMouseEnter(e: React.MouseEvent<HTMLDivElement>) {
-        if (disabled === true) return;
-        setInjected(true);
-        child.props.onMouseEnter?.(e);
-      },
-      onMouseLeave(e: React.MouseEvent<HTMLDivElement>) {
-        if (disabled === true) return;
-        if (interactive) {
-          clearHideTimeout();
-          hideTimeoutRef.current = setTimeout(() => {
-            performAnimation(false);
-          }, 300);
-        } else {
-          performAnimation(false);
-        }
-        child.props.onMouseLeave?.(e);
-      },
+      ...(!isEnhancedTooltip || !needFallback ? { onMouseEnter, onMouseLeave } : {}),
     });
+    const element =
+      isEnhancedTooltip && needFallback ? (
+        <span className={styles.wrapper} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+          {clone}
+        </span>
+      ) : (
+        clone
+      );
 
     useEffect(() => {
       if (injected) performAnimation(true);
@@ -194,7 +209,7 @@ const TooltipInner = forwardRef(
 
     return (
       <>
-        {clone}
+        {element}
         {createPortal(tooltip, document.body)}
       </>
     );
