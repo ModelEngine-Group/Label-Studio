@@ -5,6 +5,7 @@ interface FormFooterProps {
   totalSteps: number;
   onPrevious: () => void;
   onNext: () => void;
+  onSave?: () => void;
   isEditMode: boolean;
   connectionChecked: boolean;
   filesPreview: any[] | null;
@@ -19,6 +20,10 @@ interface FormFooterProps {
   createStorage: {
     isLoading: boolean;
   };
+  saveStorage?: {
+    isLoading: boolean;
+  };
+  target?: "import" | "export";
 }
 
 export const FormFooter = ({
@@ -26,12 +31,15 @@ export const FormFooter = ({
   totalSteps,
   onPrevious,
   onNext,
+  onSave,
   isEditMode,
   connectionChecked,
   filesPreview,
   testConnection,
   loadPreview,
   createStorage,
+  saveStorage,
+  target,
 }: FormFooterProps) => {
   return (
     <div className="flex items-center justify-between p-wide border-t border-neutral-border bg-neutral-background">
@@ -67,9 +75,17 @@ export const FormFooter = ({
           onClick={onNext}
           waiting={currentStep === totalSteps - 1 && createStorage.isLoading}
           disabled={!isEditMode && currentStep === 1 && !connectionChecked}
+          look={currentStep === totalSteps - 1 && target !== "export" ? "outlined" : undefined}
+          tooltip={currentStep === 1 && !connectionChecked ? "Test connection before continuing" : undefined}
         >
-          {currentStep < totalSteps - 1 ? "Next" : "Submit"}
+          {currentStep < totalSteps - 1 ? "Next" : target === "export" ? "Save" : "Save & Sync"}
         </Button>
+
+        {currentStep === totalSteps - 1 && target !== "export" && onSave && (
+          <Button onClick={onSave} waiting={saveStorage?.isLoading}>
+            Save
+          </Button>
+        )}
       </div>
     </div>
   );

@@ -9,6 +9,7 @@ interface ProviderFormProps {
   onChange: (name: string, value: any) => void;
   onBlur?: (name: string, value: any) => void;
   isEditMode?: boolean;
+  target?: "import" | "export";
 }
 
 export const ProviderForm: React.FC<ProviderFormProps> = ({
@@ -18,40 +19,46 @@ export const ProviderForm: React.FC<ProviderFormProps> = ({
   onChange,
   onBlur,
   isEditMode = false,
+  target,
 }) => {
   return (
     <div className="space-y-6">
-      {provider.layout.map((row, rowIndex) => (
-        <div
-          key={rowIndex}
-          className="grid gap-6"
-          style={{
-            gridTemplateColumns: `repeat(${row.fields.length}, 1fr)`,
-          }}
-        >
-          {getFieldsForRow(provider.fields, row.fields).map((field) => (
+      {provider.layout.map((row, rowIndex) => {
+        const fields = getFieldsForRow(provider.fields, row.fields, target);
+        return (
+          fields.length > 0 && (
             <div
-              key={field.name}
+              key={rowIndex}
+              className="grid gap-6"
               style={{
-                gridColumn: field.gridCols ?? "initial",
+                gridTemplateColumns: `repeat(${row.fields.length}, 1fr)`,
               }}
             >
-              {field.type === "message" ? (
-                <div>{field.content}</div>
-              ) : (
-                <FieldRenderer
-                  field={field}
-                  value={formData[field.name]}
-                  onChange={onChange}
-                  onBlur={onBlur}
-                  error={errors[field.name]}
-                  isEditMode={isEditMode}
-                />
-              )}
+              {fields.map((field) => (
+                <div
+                  key={field.name}
+                  style={{
+                    gridColumn: field.gridCols ?? "initial",
+                  }}
+                >
+                  {field.type === "message" ? (
+                    <div>{field.content}</div>
+                  ) : (
+                    <FieldRenderer
+                      field={field}
+                      value={formData[field.name]}
+                      onChange={onChange}
+                      onBlur={onBlur}
+                      error={errors[field.name]}
+                      isEditMode={isEditMode}
+                    />
+                  )}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      ))}
+          )
+        );
+      })}
     </div>
   );
 };

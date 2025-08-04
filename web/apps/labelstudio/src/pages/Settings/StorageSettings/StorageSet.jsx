@@ -18,7 +18,7 @@ export const StorageSet = ({ title, target, rootClass, buttonLabel }) => {
   const project = useAtomValue(projectAtom);
   const storageTypesQueryKey = ["storage-types", target];
   const storagesQueryKey = ["storages", target, project?.id];
-  const useNewStorageScreen = ff.isActive(ff.FF_NEW_STORAGES) && target !== "export";
+  const useNewStorageScreen = ff.isActive(ff.FF_NEW_STORAGES);
 
   const {
     storageTypes,

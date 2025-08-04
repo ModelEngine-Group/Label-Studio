@@ -161,6 +161,7 @@ class StorageValidateAPI(generics.CreateAPIView):
 class ImportStorageListFilesAPI(generics.CreateAPIView):
 
     permission_required = all_permissions.projects_change
+    permission_classes = api_settings.DEFAULT_PERMISSION_CLASSES + [StoragePermission]
     parser_classes = (JSONParser, FormParser, MultiPartParser)
     serializer_class = None  # Default serializer
 

@@ -19,6 +19,7 @@ export const ErrorWrapper = ({
   onGoBack,
   onReload,
   possum = false,
+  minimal = false,
 }) => {
   const preparedStackTrace = useMemo(() => {
     return (stacktrace ?? "").trim();
@@ -34,7 +35,7 @@ export const ErrorWrapper = ({
 
   return (
     <Block name="error-message">
-      {possum !== false && (
+      {!minimal && possum !== false && (
         <Elem
           tag="img"
           name="heidi"
@@ -44,9 +45,9 @@ export const ErrorWrapper = ({
         />
       )}
 
-      {title && <Elem name="title">{title}</Elem>}
+      {!minimal && title && <Elem name="title">{title}</Elem>}
 
-      {message && (
+      {!minimal && message && (
         <Elem
           name="detail"
           dangerouslySetInnerHTML={{
@@ -55,7 +56,7 @@ export const ErrorWrapper = ({
         />
       )}
 
-      {preparedStackTrace && (
+      {!minimal && preparedStackTrace && (
         <Elem
           name="stracktrace"
           dangerouslySetInnerHTML={{
@@ -76,7 +77,7 @@ export const ErrorWrapper = ({
         </Elem>
       )}
 
-      {(version || errorId) && (
+      {!minimal && (version || errorId) && (
         <Elem name="version">
           <Space>
             {version && `Version: ${version}`}
@@ -85,36 +86,38 @@ export const ErrorWrapper = ({
         </Elem>
       )}
 
-      <Elem name="actions">
-        <Space spread>
-          <Elem tag={Button} name="action-slack" target="_blank" icon={<IconSlack />} href={SLACK_INVITE_URL}>
-            Ask on Slack
-          </Elem>
+      {!minimal && (
+        <Elem name="actions">
+          <Space spread>
+            <Elem tag={Button} name="action-slack" target="_blank" icon={<IconSlack />} href={SLACK_INVITE_URL}>
+              Ask on Slack
+            </Elem>
 
-          <Space size="small">
-            {preparedStackTrace && (
-              <Button
-                disabled={copied}
-                onClick={copyStacktrace}
-                className="w-[100px]"
-                aria-label="Copy error stacktrace"
-              >
-                {copied ? "Copied" : "Copy Stacktrace"}
-              </Button>
-            )}
-            {onGoBack && (
-              <Button onClick={onGoBack} aria-label="Go back">
-                Go Back
-              </Button>
-            )}
-            {onReload && (
-              <Button onClick={onReload} aria-label="Reload page">
-                Reload
-              </Button>
-            )}
+            <Space size="small">
+              {preparedStackTrace && (
+                <Button
+                  disabled={copied}
+                  onClick={copyStacktrace}
+                  className="w-[100px]"
+                  aria-label="Copy error stacktrace"
+                >
+                  {copied ? "Copied" : "Copy Stacktrace"}
+                </Button>
+              )}
+              {onGoBack && (
+                <Button onClick={onGoBack} aria-label="Go back">
+                  Go Back
+                </Button>
+              )}
+              {onReload && (
+                <Button onClick={onReload} aria-label="Reload page">
+                  Reload
+                </Button>
+              )}
+            </Space>
           </Space>
-        </Space>
-      </Elem>
+        </Elem>
+      )}
     </Block>
   );
 };

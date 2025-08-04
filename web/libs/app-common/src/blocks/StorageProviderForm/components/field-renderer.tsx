@@ -3,6 +3,7 @@ import { Label, Toggle, Select } from "@humansignal/ui";
 import Counter from "apps/labelstudio/src/components/Form/Elements/Counter/Counter";
 import Input from "apps/labelstudio/src/components/Form/Elements/Input/Input";
 import type { FieldDefinition } from "../types/common";
+import { isFieldRequired } from "../types/provider";
 
 interface FieldRendererProps {
   field: FieldDefinition;
@@ -55,11 +56,11 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
     ghost: false,
     tooltip: "",
     tooltipIcon: null,
-    required: field.required,
+    required: isFieldRequired(field, isEditMode),
     label: field.label,
     description: field.description || "",
     footer: error ? <div className="text-negative-content">{error}</div> : "",
-    className: error ? "border-red-500" : "",
+    className: error ? "border-negative-content" : "",
     placeholder: field.placeholder,
     autoComplete: field.autoComplete,
   });
@@ -152,7 +153,7 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
           onChange={handleCounterChange}
           className=""
           validate=""
-          required={field.required || false}
+          required={isFieldRequired(field, isEditMode)}
           skip={false}
           labelProps={{}}
         />

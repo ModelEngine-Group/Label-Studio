@@ -53,12 +53,26 @@ export const useStorageApi = ({ target, storage, project, onSubmit, onClose }: U
         },
         body,
       });
-      console.log(result);
       return result;
     },
   });
 
-  // Create/Update storage mutation
+  // Sync storage mutation
+  const syncStorageMutation = useMutation({
+    mutationFn: async (storageData: any) => {
+      if (!api) throw new Error("API context not available");
+
+      return api.callApi("syncStorage", {
+        params: {
+          target,
+          type: storageData.provider,
+          pk: storageData.id,
+        },
+      });
+    },
+  });
+
+  // Create/Update storage mutation (with sync)
   const createStorageMutation = useMutation({
     mutationFn: async (storageData: any) => {
       if (!api) throw new Error("API context not available");
@@ -70,10 +84,57 @@ export const useStorageApi = ({ target, storage, project, onSubmit, onClose }: U
         body.id = storage.id;
       }
 
-      return api.callApi(action, {
+      // First, save the storage
+      const result = await api.callApi(action, {
         params: { target, type: storageData.provider, project, pk: storage?.id },
         body,
       });
+
+      // Only if storage save was successful, then trigger sync for import storages
+      if (result?.$meta?.ok && target !== "export" && result?.id) {
+        try {
+          await api.callApi("syncStorage", {
+            params: {
+              target,
+              type: storageData.provider,
+              pk: result.id,
+            },
+          });
+        } catch (error) {
+          console.error("Failed to auto-sync storage:", error);
+          // Don't fail the entire operation if sync fails
+        }
+      }
+
+      return result;
+    },
+    onSuccess: (response) => {
+      if (response?.$meta?.ok) {
+        onSubmit();
+        onClose();
+      }
+    },
+  });
+
+  // Save storage mutation (without sync)
+  const saveStorageMutation = useMutation({
+    mutationFn: async (storageData: any) => {
+      if (!api) throw new Error("API context not available");
+
+      const cleanedData = cleanFormDataForSubmission(storageData);
+      const body = { ...cleanedData };
+
+      if (isDefined(storage?.id)) {
+        body.id = storage.id;
+      }
+
+      // Only save the storage, don't sync
+      const result = await api.callApi(action, {
+        params: { target, type: storageData.provider, project, pk: storage?.id },
+        body,
+      });
+
+      return result;
     },
     onSuccess: (response) => {
       if (response?.$meta?.ok) {
@@ -109,7 +170,9 @@ export const useStorageApi = ({ target, storage, project, onSubmit, onClose }: U
   return {
     testConnectionMutation,
     createStorageMutation,
+    saveStorageMutation,
     loadFilesPreviewMutation,
+    syncStorageMutation,
     isEditMode,
     action,
   };

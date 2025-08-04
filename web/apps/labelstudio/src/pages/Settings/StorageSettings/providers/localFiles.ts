@@ -16,12 +16,16 @@ export const localFilesProvider: ProviderConfig = {
       placeholder: "/data/my-folder/",
       schema: z.string().min(1, "Path is required"),
     },
-  ],
-  layout: [
     {
-      fields: ["path"],
+      name: "prefix",
+      type: "text",
+      label: "Path",
+      placeholder: "path/to/files",
+      schema: z.string().optional().default(""),
+      target: "export",
     },
   ],
+  layout: [{ fields: ["path"] }, { fields: ["prefix"] }],
 };
 
 export default localFilesProvider;

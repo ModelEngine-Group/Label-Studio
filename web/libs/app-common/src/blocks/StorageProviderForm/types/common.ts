@@ -21,6 +21,8 @@ export interface FieldDefinition {
   autoComplete?: string; // For input fields
   gridCols?: number; // How many columns this field should span (1-12)
   accessKey?: boolean; // Whether this field is an access key/credential that should be handled specially in edit mode
+  target?: "import" | "export"; // Only show this field for the specified storage type (undefined = show for both)
+  resetConnection?: boolean; // Whether changing this field should reset the connection check (default: true)
 }
 
 export interface MessageDefinition {
