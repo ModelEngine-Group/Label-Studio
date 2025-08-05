@@ -19,7 +19,14 @@ export const isDefined = <T>(value: T | undefined | null): value is T => {
 
 export const userDisplayName = (user: Record<string, string> = {}) => {
   if (!user) return "";
-  const { firstName, lastName, username, email } = user;
+  let { firstName, lastName, first_name, last_name, username, email } = user;
+
+  if (first_name) {
+    firstName = first_name;
+  }
+  if (last_name) {
+    lastName = last_name;
+  }
 
   return firstName || lastName
     ? [firstName, lastName]
