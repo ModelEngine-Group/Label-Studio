@@ -76,7 +76,7 @@ class StorageInfo(models.Model):
         self.last_sync_job = job_id
         self.save(update_fields=['last_sync_job'])
 
-    def info_set_queued(self):
+    def _update_queued_status(self):
         self.last_sync = None
         self.last_sync_count = None
         self.last_sync_job = None
@@ -86,6 +86,32 @@ class StorageInfo(models.Model):
         self.meta = {'attempts': self.meta.get('attempts', 0) + 1, 'time_queued': str(timezone.now())}
 
         self.save(update_fields=['last_sync_job', 'last_sync', 'last_sync_count', 'status', 'meta'])
+
+    def info_set_queued(self):
+        if settings.DJANGO_DB == settings.DJANGO_DB_SQLITE:
+            self._update_queued_status()
+            return True
+
+        with transaction.atomic():
+            try:
+                locked_storage = self.__class__.objects.select_for_update().get(pk=self.pk)
+            except self.__class__.DoesNotExist:
+                logger.error(f'Storage {self.__class__.__name__} with pk={self.pk} does not exist')
+                return False
+
+            if locked_storage.status in [self.Status.QUEUED, self.Status.IN_PROGRESS]:
+                logger.error(
+                    f'Storage {locked_storage} (id={locked_storage.id}) is already in status '
+                    f'"{locked_storage.status}". Cannot set to QUEUED. '
+                    f'Last sync job: {locked_storage.last_sync_job}, '
+                    f'Meta: {locked_storage.meta}'
+                )
+                return False
+
+            locked_storage._update_queued_status()
+
+            self.refresh_from_db()
+            return True
 
     def info_set_in_progress(self):
         # only QUEUED => IN_PROGRESS transition is possible, because in QUEUED we reset states
@@ -546,7 +572,8 @@ class ImportStorage(Storage):
             if not is_job_in_queue(queue, 'import_sync_background', meta=meta) and not is_job_on_worker(
                 job_id=self.last_sync_job, queue_name='low'
             ):
-                self.info_set_queued()
+                if not self.info_set_queued():
+                    return
                 sync_job = queue.enqueue(
                     import_sync_background,
                     self.__class__,
@@ -562,7 +589,8 @@ class ImportStorage(Storage):
         else:
             try:
                 logger.info(f'Start syncing storage {self}')
-                self.info_set_queued()
+                if not self.info_set_queued():
+                    return
                 import_sync_background(self.__class__, self.id)
             except Exception:
                 # needed to facilitate debugging storage-related testcases, since otherwise no exception is logged
@@ -727,7 +755,8 @@ class ExportStorage(Storage, ProjectStorageMixin):
 
         if redis_connected():
             queue = django_rq.get_queue('low')
-            self.info_set_queued()
+            if not self.info_set_queued():
+                return
             sync_job = queue.enqueue(
                 export_sync_fn,
                 self.__class__,
@@ -742,7 +771,8 @@ class ExportStorage(Storage, ProjectStorageMixin):
         else:
             try:
                 logger.info(f'Start syncing storage {self}')
-                self.info_set_queued()
+                if not self.info_set_queued():
+                    return
                 export_sync_fn(self.__class__, self.id)
             except Exception:
                 storage_background_failure(self)
