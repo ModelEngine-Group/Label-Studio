@@ -33,7 +33,7 @@ export const useShortcut = (
 
   // Check for custom shortcut in app settings
   const customMapping = window.APP_SETTINGS?.lookupHotkey?.(`data_manager:${actionName}`);
-  if (customMapping !== undefined) {
+  if (customMapping) {
     // Explicitly use the custom key even if it's null
     shortcut = customMapping.key;
   }
