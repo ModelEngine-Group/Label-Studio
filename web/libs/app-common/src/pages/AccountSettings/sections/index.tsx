@@ -7,9 +7,10 @@ import type React from "react";
 import { PersonalJWTToken } from "./PersonalJWTToken";
 import type { AuthTokenSettings } from "../types";
 import { ff } from "@humansignal/core";
+import { Badge } from "@humansignal/ui";
 
-type SectionType = {
-  title: string;
+export type SectionType = {
+  title: string | React.ReactNode;
   id: string;
   component: React.FC;
   description?: React.FC;
@@ -23,7 +24,12 @@ export const accountSettingsSections = (settings: AuthTokenSettings): SectionTyp
       component: PersonalInfo,
     },
     {
-      title: "Hotkeys",
+      title: (
+        <div className="flex items-center gap-tight">
+          <span>Hotkeys</span>
+          <Badge variant="beta">Beta</Badge>
+        </div>
+      ),
       id: "hotkeys",
       component: HotkeysManager,
       description: () =>

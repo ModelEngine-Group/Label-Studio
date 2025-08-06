@@ -15,14 +15,14 @@ import { settingsAtom } from "./atoms";
 import { SidebarMenu } from "apps/labelstudio/src/components/SidebarMenu/SidebarMenu";
 
 const AccountSettingsSection = () => {
-  const { sectionId } = useParams();
+  const { sectionId } = useParams<{ sectionId: string }>();
   const settings = useAtomValue(settingsAtom);
   const contentClassName = clsx(styles.accountSettings__content, {
     [styles.accountSettingsPadding]: window.APP_SETTINGS.billing !== undefined,
   });
 
   const resolvedSections = useMemo(() => {
-    return settings.data ? accountSettingsSections(settings.data) : [];
+    return settings.data && !("error" in settings.data) ? accountSettingsSections(settings.data) : [];
   }, [settings.data]);
 
   const currentSection = useMemo(
@@ -35,38 +35,34 @@ const AccountSettingsSection = () => {
   }
 
   return currentSection ? (
-    currentSection.raw ? (
-      <currentSection.component />
-    ) : (
-      <div className={contentClassName}>
-        <Card key={currentSection.id}>
-          <CardHeader>
-            <div className="flex flex-col gap-tight">
-              <div className="flex justify-between items-center">
-                <CardTitle>{currentSection.title}</CardTitle>
-                {currentSection.id === "hotkeys" && (
-                  <div className="flex-shrink-0">
-                    <HotkeysHeaderButtons />
-                  </div>
-                )}
-              </div>
-              {currentSection.description && (
-                <CardDescription>
-                  {isValidElement(currentSection.description) ? (
-                    currentSection.description
-                  ) : (
-                    <currentSection.description />
-                  )}
-                </CardDescription>
+    <div className={contentClassName}>
+      <Card key={currentSection.id}>
+        <CardHeader>
+          <div className="flex flex-col gap-tight">
+            <div className="flex justify-between items-center">
+              <CardTitle>{currentSection.title}</CardTitle>
+              {currentSection.id === "hotkeys" && (
+                <div className="flex-shrink-0">
+                  <HotkeysHeaderButtons />
+                </div>
               )}
             </div>
-          </CardHeader>
-          <CardContent>
-            <currentSection.component />
-          </CardContent>
-        </Card>
-      </div>
-    )
+            {currentSection.description && (
+              <CardDescription>
+                {isValidElement(currentSection.description) ? (
+                  currentSection.description
+                ) : (
+                  <currentSection.description />
+                )}
+              </CardDescription>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent>
+          <currentSection.component />
+        </CardContent>
+      </Card>
+    </div>
   ) : null;
 };
 
@@ -74,10 +70,10 @@ const AccountSettingsPage = () => {
   const settings = useAtomValue(settingsAtom);
   const history = useHistory();
   const match = useRouteMatch();
-  const { sectionId } = useParams();
+  const { sectionId } = useParams<{ sectionId: string }>();
 
   const resolvedSections = useMemo(() => {
-    return settings.data ? accountSettingsSections(settings.data) : [];
+    return settings.data && !("error" in settings.data) ? accountSettingsSections(settings.data) : [];
   }, [settings.data]);
 
   const menuItems = useMemo(
