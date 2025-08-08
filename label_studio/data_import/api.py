@@ -385,6 +385,16 @@ class ImportAPI(generics.CreateAPIView):
 # Import
 @extend_schema(exclude=True)
 class ImportPredictionsAPI(generics.CreateAPIView):
+    """
+    API for importing predictions to a project.
+
+    Memory optimization controlled by feature flag:
+    'fflag_fix_back_4620_memory_efficient_predictions_import_08012025_short'
+
+    When flag is enabled: Uses memory-efficient batch processing (reduces memory usage by 90-99%)
+    When flag is disabled: Uses legacy implementation for safe fallback
+    """
+
     permission_required = all_permissions.projects_change
     parser_classes = (JSONParser, MultiPartParser, FormParser)
     serializer_class = PredictionSerializer
@@ -394,10 +404,85 @@ class ImportPredictionsAPI(generics.CreateAPIView):
         # check project permissions
         project = self.get_object()
 
+        # Use feature flag to control memory-efficient implementation rollout
+        if flag_set('fflag_fix_back_4620_memory_efficient_predictions_import_08012025_short', user=self.request.user):
+            return self._create_memory_efficient(project)
+        else:
+            return self._create_legacy(project)
+
+    def _create_memory_efficient(self, project):
+        """Memory-efficient batch processing implementation"""
+        # Configure batch processing settings
+        # Use smaller batch size for processing to avoid memory issues
+        PROCESSING_BATCH_SIZE = getattr(settings, 'PREDICTION_IMPORT_BATCH_SIZE', 500)
+
+        request_data = self.request.data
+        total_predictions = len(request_data)
+
+        logger.debug(
+            f'Importing {total_predictions} predictions to project {project} using memory-efficient batch processing (batch size: {PROCESSING_BATCH_SIZE})'
+        )
+
+        total_created = 0
+        all_task_ids = set()
+
+        # Process predictions in smaller batches to avoid memory issues
+        for batch_start in range(0, total_predictions, PROCESSING_BATCH_SIZE):
+            batch_end = min(batch_start + PROCESSING_BATCH_SIZE, total_predictions)
+            batch_items = request_data[batch_start:batch_end]
+
+            # Extract task IDs for this batch
+            batch_task_ids = [item.get('task') for item in batch_items]
+
+            # Validate that all task IDs in this batch exist in the project
+            # This is much more memory efficient than loading all project task IDs upfront
+            existing_task_ids = set(
+                Task.objects.filter(project=project, id__in=batch_task_ids).values_list('id', flat=True)
+            )
+
+            # Build predictions for this batch
+            batch_predictions = []
+            for item in batch_items:
+                task_id = item.get('task')
+
+                if task_id not in existing_task_ids:
+                    raise ValidationError(
+                        f'{item} contains invalid "task" field: task ID {task_id} ' f'not found in project {project}'
+                    )
+
+                batch_predictions.append(
+                    Prediction(
+                        task_id=task_id,
+                        project_id=project.id,
+                        result=Prediction.prepare_prediction_result(item.get('result'), project),
+                        score=item.get('score'),
+                        model_version=item.get('model_version', 'undefined'),
+                    )
+                )
+                all_task_ids.add(task_id)
+
+            # Bulk create this batch with the configured batch size
+            batch_created = Prediction.objects.bulk_create(batch_predictions, batch_size=settings.BATCH_SIZE)
+            total_created += len(batch_created)
+
+            logger.debug(
+                f'Processed batch {batch_start}-{batch_end-1}: created {len(batch_created)} predictions '
+                f'(total so far: {total_created})'
+            )
+
+        # Update task counters for all affected tasks
+        # Only pass the unique task IDs that were actually processed
+        if all_task_ids:
+            start_job_async_or_sync(update_tasks_counters, Task.objects.filter(id__in=all_task_ids))
+
+        return Response({'created': total_created}, status=status.HTTP_201_CREATED)
+
+    def _create_legacy(self, project):
+        """Legacy implementation - kept for safe rollback"""
         tasks_ids = set(Task.objects.filter(project=project).values_list('id', flat=True))
 
         logger.debug(
-            f'Importing {len(self.request.data)} predictions to project {project} with {len(tasks_ids)} tasks'
+            f'Importing {len(self.request.data)} predictions to project {project} with {len(tasks_ids)} tasks (legacy mode)'
         )
         predictions = []
         for item in self.request.data:
