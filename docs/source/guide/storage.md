@@ -1177,6 +1177,110 @@ You can also create a storage connection using the Label Studio API.
 - See [Create new import storage](/api#operation/api_storages_azure_create) then [sync the import storage](/api#operation/api_storages_azure_sync_create). 
 - See [Create export storage](/api#operation/api_storages_export_azure_create) and after annotating, [sync the export storage](/api#operation/api_storages_export_azure_sync_create).
 
+
+<div class="enterprise-only">
+
+
+### Azure Blob Storage with Service Principal authentication
+
+You can use Azure Service Principal authentication to securely connect Label Studio Enterprise to Azure Blob Storage without using storage account keys. Service Principal authentication provides enhanced security through Azure Active Directory (Azure AD) identity and access management, allowing for fine-grained permissions and audit capabilities.
+
+Service Principal authentication is a secure method that uses Azure AD identity to authenticate applications. Unlike storage account keys that provide full access to the storage account, Service Principal authentication allows you to grant specific permissions and can be easily revoked or rotated.
+
+#### Prerequisites
+
+- Azure subscription and Storage Account
+- Permission to create App Registrations and assign roles on the Storage Account
+- A private container for your data (create one if needed)
+
+#### Set up a Service Principal in Azure
+
+1. Create an App Registration: Azure AD → App registrations → New registration → name it (e.g., "LabelStudio-ServicePrincipal").
+2. Capture IDs: from the app Overview, copy the Directory (tenant) ID and Application (client) ID.
+3. Create a Client Secret: Certificates & secrets → New client secret → copy the Value immediately.
+4. Grant Storage access: Storage Account → Access control (IAM) → Add role assignment → Storage Blob Data Contributor → assign to the App Registration.
+5. Create a container: Data storage → Containers → + Container → set Public access level = Private.
+
+    !!! warning
+    If you plan to use pre-signed URLs, configure CORS on the Storage Account Blob service: methods GET/HEAD/OPTIONS; allowed origins = your Label Studio domain(s); headers = *; exposed headers = *; max age ≈ 3600.
+
+#### Set up import storage in the Label Studio UI
+
+1. Open your project → **Settings > Cloud Storage** → **Add Source Storage** → select **Azure Blob Storage with Service Principal**.
+2. Fill the fields exactly as labeled in the UI (matches backend schema):
+   - **Integration Name**: Display name for this connection.
+   - **Storage Name**: Azure Storage Account name (not a URL).
+   - **Container Name** and optional **Container Prefix**.
+   - **Tenant ID**, **Client ID**, **Client Secret**: values from the App Registration.
+   - Optional: **File Filter Regex** to include specific objects.
+   - Import mode: toggle **Treat every items object as an image/src file**
+     - ON = Files (create a task per blob)
+     - OFF = Tasks (JSON/JSONL/Parquet task definitions)
+   - **Use pre-signed URLs** (ON) or proxy (OFF), and **Expiration minutes**.
+3. Click **Add Storage**, then **Sync** (or use the API) to load tasks.
+
+UI fields reference
+
+   Navigate to your Azure Storage Account:
+   - Go to **Access control (IAM)**
+   - Click **Add > Add role assignment**
+   - Select the **Storage Blob Data Contributor** role
+   - In the **Members** tab, select **User, group, or service principal**
+   - Search for and select your App Registration
+   - Click **Review + assign**
+
+#### Set up connection in the Label Studio UI
+
+In the Label Studio UI, do the following to set up the connection:
+
+1. Open Label Studio in your web browser.
+2. For a specific project, open **Settings > Cloud Storage**.
+3. Click **Add Source Storage**.
+4. In the dialog box that appears, select **Azure Blob Storage with Service Principal** as the storage type.
+5. In the **Storage Name** field, type a name for the storage to appear in the Label Studio UI.
+6. Specify the name of the Azure Storage Account in the **Storage Name** field.
+7. Specify the name of the Azure Blob container, and if relevant, the container prefix to specify an internal folder.
+8. Configure the Service Principal authentication:
+   - In the **Tenant ID** field, specify the Directory (tenant) ID from your App Registration.
+   - In the **Client ID** field, specify the Application (client) ID from your App Registration.
+   - In the **Client Secret** field, specify the client secret value you created.
+9. Adjust the remaining optional parameters:
+   - In the **File Filter Regex** field, specify a regular expression to filter bucket objects. Use `.*` to collect all objects.
+   - In the **Import method** dropdown, choose how to import your data:
+     - **Files** - Automatically creates a task for each storage object (e.g. JPG, MP3, TXT). Use this if your container contains BLOB storage files such as JPG, MP3, or similar file types.
+     - **Tasks** - Treat each JSON, JSONL, or Parquet as a task definition (one or more tasks per file). Use this if you have multiple JSON files in the container with one task per JSON file.
+   - In the **Use pre-signed URLs (On) / Proxy through Label Studio (Off)** toggle, choose how media is loaded:
+     - **ON** (Pre-signed URLs) - All data bypasses the platform and user browsers directly read data from storage.
+     - **OFF** (Proxy) - The platform proxies media using its own backend.
+   - Set the **Expire pre-signed URLs (minutes)** counter to control how long pre-signed URLs remain valid.
+10. Click **Add Storage**.
+
+After adding the storage, click **Sync** to collect tasks from the container, or make an API call to sync import storage.
+
+#### Create a target storage connection in the Label Studio UI
+
+Repeat the steps from the previous section but using **Add Target Storage**. Use the same fields:
+- **Storage Name**, **Container Name/Prefix**, **Tenant ID**, **Client ID**, **Client Secret**.
+
+After adding, click **Sync** (or use the API) to push exports.
+
+#### Required permissions
+
+- Source: `Microsoft.Storage/storageAccounts/blobServices/containers/read`, `.../containers/blobs/read`
+- Target: `.../containers/blobs/read`, `.../containers/blobs/write`, `.../containers/read`, `.../containers/blobs/delete` (optional)
+
+These are included in the built-in **Storage Blob Data Contributor** role.
+
+#### Validate and troubleshoot
+
+- After adding the storage, the connection is checked. If it fails, verify:
+  - Tenant ID, Client ID, Client Secret values (no extra spaces; secret not expired)
+  - Storage account and container names (case-sensitive)
+  - Role assignment: App Registration has Storage Blob Data Contributor on the Storage Account
+  - CORS is set when using pre-signed URLs; try proxy mode if testing
+
+</div>
+
 ## Redis database
 
 You can also store your tasks and annotations in a [Redis database](https://redis.io/). You must store the tasks and annotations in different databases. You might want to use a Redis database if you find that relying on a file-based cloud storage connection is slow for your datasets. 
