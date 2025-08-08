@@ -3525,6 +3525,33 @@
       "version": 4,
       "deleted": false
     },
+    "fflag_fix_back_4620_memory_efficient_predictions_import_08012025_short": {
+      "key": "fflag_fix_back_4620_memory_efficient_predictions_import_08012025_short",
+      "on": false,
+      "prerequisites": [],
+      "targets": [],
+      "contextTargets": [],
+      "rules": [],
+      "fallthrough": {
+        "variation": 0
+      },
+      "offVariation": 1,
+      "variations": [
+        true,
+        false
+      ],
+      "clientSideAvailability": {
+        "usingMobileKey": false,
+        "usingEnvironmentId": false
+      },
+      "clientSide": false,
+      "salt": "43e3fb5be5084d848c08a2d9759d0b86",
+      "trackEvents": false,
+      "trackEventsFallthrough": false,
+      "debugEventsUntilDate": null,
+      "version": 2,
+      "deleted": false
+    },
     "fflag_fix_back_bros_182_api_task_optimizations": {
       "key": "fflag_fix_back_bros_182_api_task_optimizations",
       "on": true,
