@@ -105,10 +105,3 @@ export const FF_NEW_STORAGES = "fflag_feat_bros_193_new_cloud_storage_providers_
  * Datamanager filter members
  */
 export const FF_DM_FILTER_MEMBERS = "fflag_feat_fit_449_datamanager_filter_members_short";
-
-/**
- * Allow tooltip working with the disabled button
- *
- * @link https://app.launchdarkly.com/projects/default/flags/fflag_feat_front_fit_418_tooltip_enhancements_short
- */
-export const FF_TOOLTIP_ENHANCEMENT = "fflag_feat_front_fit_418_tooltip_enhancements_short";

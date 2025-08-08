@@ -1,4 +1,3 @@
-import { ff } from "@humansignal/core";
 import {
   Children,
   cloneElement,
@@ -18,8 +17,6 @@ import { aroundTransition } from "@humansignal/core/lib/utils/transition";
 import { setRef } from "@humansignal/core/lib/utils/unwrapRef";
 import styles from "./Tooltip.module.scss";
 import clsx from "clsx";
-
-const isEnhancedTooltip = ff.isActive(ff.FF_TOOLTIP_ENHANCEMENT);
 
 export type TooltipProps = PropsWithChildren<{
   title: React.ReactNode;
@@ -189,16 +186,15 @@ const TooltipInner = forwardRef(
         setRef(triggerElement, el);
         setRef(ref, el);
       },
-      ...(!isEnhancedTooltip || !needFallback ? { onMouseEnter, onMouseLeave } : {}),
+      ...(!needFallback ? { onMouseEnter, onMouseLeave } : {}),
     });
-    const element =
-      isEnhancedTooltip && needFallback ? (
-        <span className={styles.wrapper} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-          {clone}
-        </span>
-      ) : (
-        clone
-      );
+    const element = needFallback ? (
+      <span className={styles.wrapper} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+        {clone}
+      </span>
+    ) : (
+      clone
+    );
 
     useEffect(() => {
       if (injected) performAnimation(true);

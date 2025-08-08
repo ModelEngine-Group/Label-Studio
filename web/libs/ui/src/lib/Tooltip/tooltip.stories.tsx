@@ -1,9 +1,6 @@
-import { ff } from "@humansignal/core";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Tooltip } from "./Tooltip";
 import { Button } from "../button/button";
-
-const isEnhancedTooltip = ff.isActive(ff.FF_TOOLTIP_ENHANCEMENT);
 
 const meta: Meta<typeof Tooltip> = {
   component: Tooltip,
@@ -79,7 +76,7 @@ export const WithDisabledButton: Story = {
     return (
       <div className="flex items-center gap-tight">
         <Tooltip {...props} title="This button is disabled for the reason that it is disabled">
-          <Button disabled>{isEnhancedTooltip ? "hover over me" : "Do not work without related feature flag"}</Button>
+          <Button disabled>hover over me</Button>
         </Tooltip>
       </div>
     );
