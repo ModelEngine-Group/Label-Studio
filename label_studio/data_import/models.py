@@ -197,6 +197,63 @@ class FileUpload(models.Model):
 
         return tasks, dict(Counter(fileformats)), common_data_fields
 
+    @classmethod
+    def load_tasks_from_uploaded_files_streaming(
+        cls, project, file_upload_ids=None, formats=None, files_as_tasks_list=True, batch_size=5000
+    ):
+        """Stream tasks from uploaded files in batches to reduce memory usage"""
+        fileformats = []
+        common_data_fields = set()
+        batch = []
+        total_yielded = 0
+
+        # scan all files
+        file_uploads = FileUpload.objects.filter(project=project)
+        if file_upload_ids:
+            file_uploads = file_uploads.filter(id__in=file_upload_ids)
+
+        for file_upload in file_uploads:
+            file_format = file_upload.format
+            if formats and file_format not in formats:
+                continue
+
+            new_tasks = file_upload.read_tasks(files_as_tasks_list)
+            fileformats.append(file_format)
+
+            # Validate data fields consistency
+            if new_tasks:
+                new_data_fields = set(new_tasks[0]['data'].keys())
+                if not common_data_fields:
+                    common_data_fields = new_data_fields
+                elif not common_data_fields.intersection(new_data_fields):
+                    raise ValidationError(
+                        _old_vs_new_data_keys_inconsistency_message(
+                            new_data_fields, common_data_fields, file_upload.file.name
+                        )
+                    )
+                else:
+                    common_data_fields &= new_data_fields
+
+            # Add file_upload_id to tasks and batch them
+            for task in new_tasks:
+                task['file_upload_id'] = file_upload.id
+                batch.append(task)
+
+                # Yield batch when it reaches the size limit
+                if len(batch) >= batch_size:
+                    yield batch, dict(Counter(fileformats)), common_data_fields
+                    total_yielded += len(batch)
+                    batch = []
+
+        # Yield remaining tasks if any
+        if batch:
+            yield batch, dict(Counter(fileformats)), common_data_fields
+            total_yielded += len(batch)
+
+        # If no tasks were yielded, return empty batch with metadata
+        if total_yielded == 0:
+            yield [], dict(Counter(fileformats)), common_data_fields
+
 
 def _old_vs_new_data_keys_inconsistency_message(new_data_keys, old_data_keys, current_file):
     new_data_keys_list = ','.join(new_data_keys)
