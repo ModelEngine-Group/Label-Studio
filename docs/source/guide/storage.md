@@ -1201,33 +1201,8 @@ Service Principal authentication is a secure method that uses Azure AD identity 
 4. Grant Storage access: Storage Account → Access control (IAM) → Add role assignment → Storage Blob Data Contributor → assign to the App Registration.
 5. Create a container: Data storage → Containers → + Container → set Public access level = Private.
 
-    !!! warning
+!!! warning
     If you plan to use pre-signed URLs, configure CORS on the Storage Account Blob service: methods GET/HEAD/OPTIONS; allowed origins = your Label Studio domain(s); headers = *; exposed headers = *; max age ≈ 3600.
-
-#### Set up import storage in the Label Studio UI
-
-1. Open your project → **Settings > Cloud Storage** → **Add Source Storage** → select **Azure Blob Storage with Service Principal**.
-2. Fill the fields exactly as labeled in the UI (matches backend schema):
-   - **Integration Name**: Display name for this connection.
-   - **Storage Name**: Azure Storage Account name (not a URL).
-   - **Container Name** and optional **Container Prefix**.
-   - **Tenant ID**, **Client ID**, **Client Secret**: values from the App Registration.
-   - Optional: **File Filter Regex** to include specific objects.
-   - Import mode: toggle **Treat every items object as an image/src file**
-     - ON = Files (create a task per blob)
-     - OFF = Tasks (JSON/JSONL/Parquet task definitions)
-   - **Use pre-signed URLs** (ON) or proxy (OFF), and **Expiration minutes**.
-3. Click **Add Storage**, then **Sync** (or use the API) to load tasks.
-
-UI fields reference
-
-   Navigate to your Azure Storage Account:
-   - Go to **Access control (IAM)**
-   - Click **Add > Add role assignment**
-   - Select the **Storage Blob Data Contributor** role
-   - In the **Members** tab, select **User, group, or service principal**
-   - Search for and select your App Registration
-   - Click **Review + assign**
 
 #### Set up connection in the Label Studio UI
 
