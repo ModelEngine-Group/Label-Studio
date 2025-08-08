@@ -778,7 +778,10 @@ PUBLIC_API_DOCS = get_bool_env('PUBLIC_API_DOCS', False)
 # By default, we disallow filters with foreign keys in data manager for security reasons.
 # Add to this list (either here in code, or via the env) to allow specific filters that rely on foreign keys.
 DATA_MANAGER_FILTER_ALLOWLIST = list(
-    set(get_env_list('DATA_MANAGER_FILTER_ALLOWLIST') + ['updated_by__active_organization'])
+    set(
+        get_env_list('DATA_MANAGER_FILTER_ALLOWLIST')
+        + ['updated_by__active_organization', 'annotations__completed_by']
+    )
 )
 
 if ENABLE_CSP := get_bool_env('ENABLE_CSP', True):

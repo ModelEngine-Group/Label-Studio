@@ -110,10 +110,12 @@ export const Tab = types
     },
 
     get currentFilters() {
-      if (isFF(FF_ANNOTATION_RESULTS_FILTERING)) {
-        return self.filters.filter((f) => f.target === self.target);
-      }
-      return self.filters.filter((f) => f.target === self.target && !f.field.isAnnotationResultsFilterColumn);
+      return self.filters.filter((f) => {
+        const targetMatches = f.target === self.target;
+        const annotationResultsOK = isFF(FF_ANNOTATION_RESULTS_FILTERING) || !f.field.isAnnotationResultsFilterColumn;
+
+        return targetMatches && annotationResultsOK;
+      });
     },
 
     get currentOrder() {
@@ -142,15 +144,26 @@ export const Tab = types
     },
 
     get serializedFilters() {
-      return self.validFilters.map((el) => {
-        const filterItem = {
-          ...getSnapshot(el),
-          type: el.filter.currentType,
+      const serialize = (filterModel) => {
+        const item = {
+          ...getSnapshot(filterModel),
+          type: filterModel.filter.currentType,
         };
 
-        filterItem.value = normalizeFilterValue(filterItem.type, filterItem.operator, filterItem.value);
-        return filterItem;
-      });
+        // cleanup or recurse on child_filter
+        if (item.child_filter) {
+          if (!filterModel.child_filter?.isValidFilter) {
+            item.child_filter = null;
+          } else {
+            item.child_filter = serialize(filterModel.child_filter);
+          }
+        }
+
+        item.value = normalizeFilterValue(item.type, item.operator, item.value);
+        return item;
+      };
+
+      return self.validFilters.map((el) => serialize(el));
     },
 
     get selectedCount() {
@@ -375,7 +388,25 @@ export const Tab = types
 
       self.filters.push(filter);
 
+      // Immediately materialize child filter for the default column, if any
+      self.applyChildFilter(filter);
+
       if (filter.isValidFilter) self.save();
+    },
+
+    /**
+     * Create a new filter row for the provided filter *type* (column).
+     */
+    createChildFilterForType(filterType, parentFilter) {
+      const filter = TabFilter.create({
+        filter: filterType,
+        view: self.id,
+      });
+
+      // Don't add to main filters array - child is owned by parent
+      parentFilter.child_filter = filter;
+
+      return filter;
     },
 
     toggleColumn(column) {
@@ -399,11 +430,17 @@ export const Tab = types
     }),
 
     deleteFilter(filter) {
-      const index = self.filters.findIndex((f) => f === filter);
+      // Recursively delete child filter first
+      if (filter.child_filter) {
+        self.deleteFilter(filter.child_filter);
+      }
 
-      self.filters.splice(index, 1);
-      destroy(filter);
-      self.save();
+      const index = self.filters.findIndex((f) => f === filter);
+      if (index > -1) {
+        self.filters.splice(index, 1);
+        destroy(filter);
+        self.save();
+      }
     },
 
     afterAttach() {
@@ -451,6 +488,37 @@ export const Tab = types
 
     markSaved() {
       self.saved = true;
+    },
+
+    /**
+     * Create child filters for a given root filter according to its column's `child_filter` metadata.
+     */
+    applyChildFilter(rootFilter) {
+      if (!rootFilter || !rootFilter.filter || !rootFilter.filter.field) return;
+
+      const column = rootFilter.field;
+      const childFilter = column?.child_filter;
+
+      if (!childFilter) return;
+
+      // NOTE: using targetColumns instead of columns means that annotation results columns cannot be used in child_filters, but seems fine for now
+      const firstChildColumn = self.targetColumns.find((c) => c.alias === childFilter);
+
+      if (firstChildColumn && !rootFilter.child_filter) {
+        const filterType = self.availableFilters.find((ft) => ft.field.id === firstChildColumn.id);
+
+        if (filterType) {
+          const childFilter = self.createChildFilterForType(filterType, rootFilter);
+        }
+      }
+    },
+
+    /** Remove any child filters previously created */
+    clearChildFilter(rootFilter) {
+      if (rootFilter.child_filter) {
+        self.deleteFilter(rootFilter.child_filter);
+        rootFilter.child_filter = null;
+      }
     },
   }))
   .preProcessSnapshot((snapshot) => {
