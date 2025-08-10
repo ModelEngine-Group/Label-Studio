@@ -24,16 +24,37 @@ export interface WaveformOptions {
   container: string | HTMLElement;
 
   /**
-   * Height of the interface. Inferred from the container size
-   * @default 110
+   * Height of the interface.
+   * @deprecated Use waveformHeight and spectrogramHeight for explicit control
+   * Falls back to this value for both components if specific heights not provided
+   * @default 96
    * */
   height?: number;
 
   /**
    * Height of a single waveform per channel.
-   * @default 30
+   * @deprecated Use waveformHeight instead
+   * @default 32
    * */
   waveHeight?: number;
+
+  /**
+   * Height of the waveform component
+   * @default height ?? 32
+   */
+  waveformHeight?: number;
+
+  /**
+   * Height of the spectrogram component
+   * @default height ?? 32
+   */
+  spectrogramHeight?: number;
+
+  /**
+   * Height of the timeline component
+   * @default 20
+   */
+  timelineHeight?: number;
 
   /**
    * Zoom factor. 1 – no zoom
