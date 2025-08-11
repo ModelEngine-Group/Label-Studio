@@ -20,7 +20,7 @@ on:
       - ".github/workflows/yarn-docs.yml"
 
 env:
-  NODE: "18"
+  NODE: "22"
   FRONTEND_MONOREPO_DIR: "web"
 
 jobs:
