@@ -25,6 +25,11 @@ const filterFormatters: Formatter = {
 
     return String(value);
   },
+  List: (_op, value) => {
+    // Ensure that List filter values are always serialized as arrays.
+    if (Array.isArray(value) || value === null || value === undefined) return value;
+    return [value];
+  },
 };
 
 export const normalizeFilterValue = (type: string, op: string, value: any) => {
