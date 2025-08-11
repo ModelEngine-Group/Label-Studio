@@ -507,6 +507,7 @@ const PixelGridLayer = observer(({ item }) => {
     </Layer>
   );
 });
+
 /**
  * Component that creates an overlay on top
  * of the image to support Magic Wand tool
@@ -1313,7 +1314,7 @@ const ImageLayer = observer(({ item }) => {
   useEffect(() => {
     const node = konvaImageRef.current;
     if (node && loadedImage) {
-      node.cache();
+      node.cache({ pixelRatio: 1 });
       node.filters([Konva.Filters.Brighten, Konva.Filters.Contrast]);
       node.brightness(brightness);
       node.contrast(contrast);
