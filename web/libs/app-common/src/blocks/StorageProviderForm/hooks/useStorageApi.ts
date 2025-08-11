@@ -2,6 +2,7 @@ import { useContext, useCallback } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { ApiContext } from "apps/labelstudio/src/providers/ApiProvider";
 import { isDefined } from "apps/labelstudio/src/utils/helpers";
+import { getProviderConfig } from "../providers";
 
 interface UseStorageApiProps {
   target?: "import" | "export";
@@ -22,9 +23,20 @@ export const useStorageApi = ({ target, storage, project, onSubmit, onClose }: U
       if (!isEditMode) return data;
 
       const cleanedData = { ...data };
-      // Remove empty access key fields in edit mode
+
+      // Get the current provider config to identify access key fields
+      const providerConfig = getProviderConfig(data.provider);
+
+      // Remove empty values only for access key fields in edit mode
       Object.keys(cleanedData).forEach((key) => {
-        if (cleanedData[key] === "" || cleanedData[key] === undefined || cleanedData[key] === "••••••••••••••••") {
+        const field = providerConfig?.fields.find((f) => f.name === key);
+        const isAccessKey = field && "type" in field && (field as any).accessKey;
+
+        // Only remove empty values for access key fields
+        if (
+          isAccessKey &&
+          (cleanedData[key] === "" || cleanedData[key] === undefined || cleanedData[key] === "••••••••••••••••")
+        ) {
           delete cleanedData[key];
         }
       });
