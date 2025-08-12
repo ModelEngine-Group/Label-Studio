@@ -344,7 +344,7 @@ def ml_backend_for_test_predict(ml_backend):
                     'model_version': 'ModelSingle',
                     'score': 0.1,
                     'result': [
-                        {'from_name': 'label', 'to_name': 'text', 'type': 'choices', 'value': {'choices': ['Single']}}
+                        {'from_name': 'label', 'to_name': 'text', 'type': 'choices', 'value': {'choices': ['label_A']}}
                     ],
                 },
             ]
@@ -445,7 +445,7 @@ def project_dialog():
       <TextEditor>
         <Text name="dialog" value="$dialog"></Text>
         <Header value="Your answer is:"></Header>
-        <TextArea name="answer"></TextArea>
+        <TextArea name="answer" toName="dialog"></TextArea>
       </TextEditor>
     </View>"""
 

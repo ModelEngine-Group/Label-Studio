@@ -52,11 +52,11 @@ def test_batch_predictions_single_prediction_per_task(django_live_url, business_
     assert len(predictions) == 2
 
     # check that the first prediction has the correct value
-    assert predictions[0].result[0]['value']['choices'][0] == 'Single'
+    assert predictions[0].result[0]['value']['choices'][0] == 'label_A'
     assert predictions[0].model_version == 'ModelSingle'
 
     # check that the second prediction has the correct value
-    assert predictions[1].result[0]['value']['choices'][0] == 'Single'
+    assert predictions[1].result[0]['value']['choices'][0] == 'label_A'
     assert predictions[1].model_version == 'ModelSingle'
 
     # additionally let's test actions: convert predictions to annotations
@@ -81,10 +81,10 @@ def test_batch_predictions_single_prediction_per_task(django_live_url, business_
             assert not task.predictions
         else:
             assert len(task.annotations) == 1
-            assert task.annotations[0]['result'][0]['value']['choices'][0] == 'Single'
+            assert task.annotations[0]['result'][0]['value']['choices'][0] == 'label_A'
 
             assert len(task.predictions) == 1
-            assert task.predictions[0].result[0]['value']['choices'][0] == 'Single'
+            assert task.predictions[0].result[0]['value']['choices'][0] == 'label_A'
             assert task.predictions[0].model_version == 'ModelSingle'
             assert task.predictions[0].score == 0.1
 

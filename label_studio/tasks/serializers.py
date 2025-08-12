@@ -10,6 +10,7 @@ from core.utils.db import fast_first
 from django.conf import settings
 from django.db import IntegrityError, transaction
 from drf_spectacular.utils import extend_schema_field
+from label_studio_sdk.label_interface import LabelInterface
 from projects.models import Project
 from rest_flex_fields import FlexFieldsModelSerializer
 from rest_framework import generics, serializers
@@ -72,6 +73,31 @@ class PredictionSerializer(ModelSerializer):
         'select specific model version for showing preannotations in the labeling interface',
     )
     created_ago = serializers.CharField(default='', read_only=True, help_text='Delta time from creation time')
+
+    def validate(self, data):
+        """Validate prediction using LabelInterface against project configuration"""
+        # Only validate if we're updating the result field
+        if 'result' not in data:
+            return data
+
+        # Get the project from the task or directly from data
+        project = None
+        if 'task' in data:
+            project = data['task'].project
+        elif 'project' in data:
+            project = data['project']
+
+        if not project:
+            raise ValidationError('Project is required for prediction validation')
+
+        # Validate prediction using LabelInterface
+        li = LabelInterface(project.label_config)
+        validation_errors = li.validate_prediction(data, return_errors=True)
+
+        if validation_errors:
+            raise ValidationError(f'Error validating prediction: {validation_errors}')
+
+        return data
 
     class Meta:
         model = Prediction
@@ -395,7 +421,11 @@ class BaseTaskSerializerBulk(serializers.ListSerializer):
 
             db_tasks = self.add_tasks(task_annotations, task_predictions, validated_tasks)
             db_annotations = self.add_annotations(task_annotations, user)
-            self.add_predictions(task_predictions)
+            prediction_errors = self.add_predictions(task_predictions)
+
+            # If there are prediction validation errors, raise them
+            if prediction_errors:
+                raise ValidationError({'predictions': prediction_errors})
 
         self.post_process_annotations(user, db_annotations, 'imported')
         self.post_process_tasks(self.project.id, [t.id for t in self.db_tasks])
@@ -416,36 +446,64 @@ class BaseTaskSerializerBulk(serializers.ListSerializer):
     def add_predictions(self, task_predictions):
         """Save predictions to DB and set the latest model version in the project"""
         db_predictions = []
+        validation_errors = []
+
+        should_validate = self.project.label_config_is_not_default
 
         # add predictions
         last_model_version = None
         for i, predictions in enumerate(task_predictions):
-            for prediction in predictions:
+            for j, prediction in enumerate(predictions):
                 if not isinstance(prediction, dict):
+                    validation_errors.append(f'Task {i}, prediction {j}: Prediction must be a dictionary')
                     continue
 
-                # we need to call result normalizer here since "bulk_create" doesn't call save() method
-                result = Prediction.prepare_prediction_result(prediction['result'], self.project)
-                prediction_score = prediction.get('score')
-                if prediction_score is not None:
+                # Validate prediction only when project label config is not default
+                if should_validate:
                     try:
-                        prediction_score = float(prediction_score)
-                    except ValueError:
-                        logger.error(
-                            "Can't upload prediction score: should be in float format." 'Fallback to score=None'
-                        )
-                        prediction_score = None
+                        li = LabelInterface(self.project.label_config) if should_validate else None
+                        validation_errors_list = li.validate_prediction(prediction, return_errors=True)
 
-                last_model_version = prediction.get('model_version', 'undefined')
-                db_predictions.append(
-                    Prediction(
-                        task=self.db_tasks[i],
-                        project=self.db_tasks[i].project,
-                        result=result,
-                        score=prediction_score,
-                        model_version=last_model_version,
+                        if validation_errors_list:
+                            # Format errors for better readability
+                            for error in validation_errors_list:
+                                validation_errors.append(f'Task {i}, prediction {j}: {error}')
+                            continue
+
+                    except Exception as e:
+                        validation_errors.append(f'Task {i}, prediction {j}: Error validating prediction - {str(e)}')
+                        continue
+
+                try:
+                    # we need to call result normalizer here since "bulk_create" doesn't call save() method
+                    result = Prediction.prepare_prediction_result(prediction['result'], self.project)
+                    prediction_score = prediction.get('score')
+                    if prediction_score is not None:
+                        try:
+                            prediction_score = float(prediction_score)
+                        except ValueError:
+                            logger.error(
+                                "Can't upload prediction score: should be in float format." 'Fallback to score=None'
+                            )
+                            prediction_score = None
+
+                    last_model_version = prediction.get('model_version', 'undefined')
+                    db_predictions.append(
+                        Prediction(
+                            task=self.db_tasks[i],
+                            project=self.db_tasks[i].project,
+                            result=result,
+                            score=prediction_score,
+                            model_version=last_model_version,
+                        )
                     )
-                )
+                except Exception as e:
+                    validation_errors.append(f'Task {i}, prediction {j}: Failed to create prediction - {str(e)}')
+                    continue
+
+        # Return validation errors if they exist
+        if validation_errors:
+            return validation_errors
 
         # predictions: DB bulk create
         self.db_predictions = Prediction.objects.bulk_create(db_predictions, batch_size=settings.BATCH_SIZE)
@@ -456,7 +514,7 @@ class BaseTaskSerializerBulk(serializers.ListSerializer):
             self.project.model_version = last_model_version
             self.project.save()
 
-        return self.db_predictions, last_model_version
+        return None  # No errors
 
     def add_reviews(self, task_reviews, annotation_mapping, project):
         """Save task reviews to DB"""

@@ -264,7 +264,10 @@ def make_project(config, user, use_ml_backend=True, team_id=None, org=None):
 @pytest.fixture
 @pytest.mark.django_db
 def project_id(business_client):
-    payload = dict(title='test_project')
+    payload = dict(
+        title='test_project',
+        label_config='<View><Text name="text" value="$text"/><Choices name="test_batch_predictions" toName="text"><Choice value="class_A"/><Choice value="class_B"/></Choices></View>',
+    )
     response = business_client.post(
         '/api/projects/',
         data=json.dumps(payload),

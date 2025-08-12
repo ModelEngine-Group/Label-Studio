@@ -7,7 +7,9 @@ from core.feature_flags import flag_set
 from core.utils.common import load_func
 from django.conf import settings
 from django.db import transaction
+from label_studio_sdk.label_interface import LabelInterface
 from projects.models import ProjectImport, ProjectReimport, ProjectSummary
+from rest_framework.exceptions import ValidationError
 from tasks.models import Task
 from users.models import User
 from webhooks.models import WebhookAction
@@ -46,7 +48,35 @@ def async_import_background(
 
     if project_import.preannotated_from_fields:
         # turn flat task JSONs {"column1": value, "column2": value} into {"data": {"column1"..}, "predictions": [{..."column2"}]
-        tasks = reformat_predictions(tasks, project_import.preannotated_from_fields)
+        tasks = reformat_predictions(tasks, project_import.preannotated_from_fields, project)
+
+    # Always validate predictions regardless of commit_to_project setting
+    if project.label_config_is_not_default:
+        validation_errors = []
+        li = LabelInterface(project.label_config)
+
+        for i, task in enumerate(tasks):
+            if 'predictions' in task:
+                for j, prediction in enumerate(task['predictions']):
+                    try:
+                        validation_errors_list = li.validate_prediction(prediction, return_errors=True)
+                        if validation_errors_list:
+                            for error in validation_errors_list:
+                                validation_errors.append(f'Task {i}, prediction {j}: {error}')
+                    except Exception as e:
+                        error_msg = f'Task {i}, prediction {j}: Error validating prediction - {str(e)}'
+                        validation_errors.append(error_msg)
+                        logger.error(f'Exception during validation: {error_msg}')
+
+        if validation_errors:
+            error_message = f'Prediction validation failed ({len(validation_errors)} errors):\n'
+            for error in validation_errors:
+                error_message += f'- {error}\n'
+
+            project_import.error = error_message
+            project_import.status = ProjectImport.Status.FAILED
+            project_import.save()
+            return
 
     if project_import.commit_to_project:
         with transaction.atomic():
@@ -56,32 +86,41 @@ def async_import_background(
             # Immediately create project tasks and update project states and counters
             serializer = ImportApiSerializer(data=tasks, many=True, context={'project': project})
             serializer.is_valid(raise_exception=True)
-            tasks = serializer.save(project_id=project.id)
-            emit_webhooks_for_instance(user.active_organization, project, WebhookAction.TASKS_CREATED, tasks)
 
-            task_count = len(tasks)
-            annotation_count = len(serializer.db_annotations)
-            prediction_count = len(serializer.db_predictions)
-            # Update counters (like total_annotations) for new tasks and after bulk update tasks stats. It should be a
-            # single operation as counters affect bulk is_labeled update
+            try:
+                tasks = serializer.save(project_id=project.id)
+                emit_webhooks_for_instance(user.active_organization, project, WebhookAction.TASKS_CREATED, tasks)
 
-            recalculate_stats_counts = {
-                'task_count': task_count,
-                'annotation_count': annotation_count,
-                'prediction_count': prediction_count,
-            }
+                task_count = len(tasks)
+                annotation_count = len(serializer.db_annotations)
+                prediction_count = len(serializer.db_predictions)
+                # Update counters (like total_annotations) for new tasks and after bulk update tasks stats. It should be a
+                # single operation as counters affect bulk is_labeled update
 
-            project.update_tasks_counters_and_task_states(
-                tasks_queryset=tasks,
-                maximum_annotations_changed=False,
-                overlap_cohort_percentage_changed=False,
-                tasks_number_changed=True,
-                recalculate_stats_counts=recalculate_stats_counts,
-            )
-            logger.info('Tasks bulk_update finished (async import)')
+                recalculate_stats_counts = {
+                    'task_count': task_count,
+                    'annotation_count': annotation_count,
+                    'prediction_count': prediction_count,
+                }
 
-            summary.update_data_columns(tasks)
-            # TODO: summary.update_created_annotations_and_labels
+                project.update_tasks_counters_and_task_states(
+                    tasks_queryset=tasks,
+                    maximum_annotations_changed=False,
+                    overlap_cohort_percentage_changed=False,
+                    tasks_number_changed=True,
+                    recalculate_stats_counts=recalculate_stats_counts,
+                )
+                logger.info('Tasks bulk_update finished (async import)')
+
+                summary.update_data_columns(tasks)
+                # TODO: summary.update_created_annotations_and_labels
+            except Exception as e:
+                # Handle any other unexpected errors during task creation
+                error_message = f'Error creating tasks: {str(e)}'
+                project_import.error = error_message
+                project_import.status = ProjectImport.Status.FAILED
+                project_import.save()
+                return
     else:
         # Do nothing - just output file upload ids for further use
         task_count = len(tasks)
@@ -120,13 +159,103 @@ def set_reimport_background_failure(job, connection, type, value, _):
     )
 
 
-def reformat_predictions(tasks, preannotated_from_fields):
+def reformat_predictions(tasks, preannotated_from_fields, project=None):
+    """
+    Transform flat task JSON objects into proper format with separate data and predictions fields.
+    Also validates the predictions to ensure they are properly formatted using LabelInterface.
+
+    Args:
+        tasks: List of task data
+        preannotated_from_fields: List of field names to convert to predictions
+        project: Optional project instance to determine correct to_name and type from label config
+    """
     new_tasks = []
-    for task in tasks:
+    validation_errors = []
+
+    # If project is provided, create LabelInterface to determine correct mappings
+    li = None
+    if project:
+        try:
+            li = LabelInterface(project.label_config)
+        except Exception as e:
+            logger.warning(f'Could not create LabelInterface for project {project.id}: {e}')
+
+    for task_index, task in enumerate(tasks):
         if 'data' in task:
-            task = task['data']
-        predictions = [{'result': task.pop(field)} for field in preannotated_from_fields]
-        new_tasks.append({'data': task, 'predictions': predictions})
+            task_data = task['data']
+        else:
+            task_data = task
+
+        predictions = []
+        for field in preannotated_from_fields:
+            if field not in task_data:
+                validation_errors.append(f"Task {task_index}: Preannotated field '{field}' not found in task data")
+                continue
+
+            value = task_data[field]
+            if value is not None:
+                # Try to determine correct to_name and type from project configuration
+                to_name = 'text'  # Default fallback
+                prediction_type = 'choices'  # Default fallback
+
+                if li:
+                    # Find a control tag that matches the field name
+                    try:
+                        control_tag = li.get_control(field)
+                        # Use the control's to_name and determine type
+                        if hasattr(control_tag, 'to_name') and control_tag.to_name:
+                            to_name = (
+                                control_tag.to_name[0]
+                                if isinstance(control_tag.to_name, list)
+                                else control_tag.to_name
+                            )
+                            prediction_type = control_tag.tag.lower()
+                    except Exception:
+                        # Control not found, use defaults
+                        pass
+
+                # Create prediction from preannotated field
+                # Handle different types of values
+                if isinstance(value, dict):
+                    # For complex structures like bounding boxes, use the value directly
+                    prediction_value = value
+                else:
+                    # For simple values, use the prediction_type as the key
+                    # Handle cases where the type doesn't match the expected key
+                    value_key = prediction_type
+                    if prediction_type == 'textarea':
+                        value_key = 'text'
+
+                    # Most types expect lists, but some expect single values
+                    if prediction_type in ['rating', 'number', 'datetime']:
+                        prediction_value = {value_key: value}
+                    else:
+                        # Wrap in list for most types
+                        prediction_value = {value_key: [value] if not isinstance(value, list) else value}
+
+                prediction = {
+                    'result': [
+                        {
+                            'from_name': field,
+                            'to_name': to_name,
+                            'type': prediction_type,
+                            'value': prediction_value,
+                        }
+                    ],
+                    'score': 1.0,
+                    'model_version': 'preannotated',
+                }
+
+                predictions.append(prediction)
+
+        # Create new task structure
+        new_task = {'data': task_data, 'predictions': predictions}
+        new_tasks.append(new_task)
+
+    # If there are validation errors, raise them
+    if validation_errors:
+        raise ValidationError({'preannotated_fields': validation_errors})
+
     return new_tasks
 
 

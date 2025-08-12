@@ -105,15 +105,16 @@ export const StorageSummary = ({ target, storage, className, storageTypes = [] }
             "Queued: sync job is in the queue, but not yet started",
             "In progress: sync job is running",
             "Failed: sync job stopped, some errors occurred",
+            "Completed with errors: sync job completed but some tasks had validation errors",
             "Completed: sync job completed successfully",
           ].join("\n")}
         >
-          {storageStatus === "Failed" ? (
+          {storageStatus === "Failed" || storageStatus === "Completed with errors" ? (
             <span
               className="cursor-pointer border-b border-dashed border-negative-border-subtle text-negative-content"
               onClick={handleButtonClick}
             >
-              Failed (View Logs)
+              {storageStatus} (View Logs)
             </span>
           ) : (
             storageStatus
