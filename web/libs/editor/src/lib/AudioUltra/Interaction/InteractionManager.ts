@@ -130,7 +130,8 @@ export class InteractionManager {
       const cursor = interactive.getCursor();
       this.container.style.cursor = cursor;
     } else {
-      this.container.style.cursor = "default";
+      // Clear inline cursor to allow parent container (e.g., Visualizer) to control it
+      this.container.style.cursor = "";
     }
   }
 
@@ -233,7 +234,8 @@ export class InteractionManager {
     if (this.hoveredObject) {
       this.hoveredObject.onMouseLeave?.(event);
       this.hoveredObject = null;
-      this.updateCursor(null);
+      // Clear inline cursor to allow parent container to control it
+      this.container.style.cursor = "";
     }
   };
 
