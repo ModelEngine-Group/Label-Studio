@@ -165,9 +165,16 @@ class ViewAPI(viewsets.ModelViewSet):
     @extend_schema(
         tags=['Data Manager'],
         summary='Delete all project views',
-        description='Delete all views for a specific project. Request body example: `{"project": 1}`.',
-        # Note: OpenAPI3 does not support request body for DELETE requests
-        # see https://github.com/tfranzel/drf-spectacular/issues/431#issuecomment-862738643
+        description='Delete all views for a specific project.',
+        parameters=[
+            OpenApiParameter(
+                name='project',
+                type=OpenApiTypes.INT,
+                location='query',
+                description='Project ID',
+                required=True,
+            ),
+        ],
         extensions={
             'x-fern-sdk-group-name': 'views',
             'x-fern-sdk-method-name': 'delete_all',
@@ -176,7 +183,12 @@ class ViewAPI(viewsets.ModelViewSet):
     )
     @action(detail=False, methods=['delete'])
     def reset(self, request):
-        serializer = ViewResetSerializer(data=request.data)
+        # Note: OpenAPI 3.0 does not support request body for DELETE requests
+        # see https://github.com/tfranzel/drf-spectacular/issues/431#issuecomment-862738643
+        # as a hack for the SDK, fallback to query params if request body is empty
+        serializer = ViewResetSerializer(
+            data=request.data if 'project' in request.data else {'project': request.query_params.get('project')}
+        )
         serializer.is_valid(raise_exception=True)
         project = generics.get_object_or_404(
             Project.objects.for_user(request.user), pk=serializer.validated_data['project'].id
@@ -190,6 +202,7 @@ class ViewAPI(viewsets.ModelViewSet):
         summary='Update order of views',
         description='Update the order field of views based on the provided list of view IDs',
         request=ViewOrderSerializer,
+        responses={200: OpenApiResponse(description='View order updated successfully')},
         extensions={
             'x-fern-sdk-group-name': 'views',
             'x-fern-sdk-method-name': 'update_order',
@@ -514,6 +527,72 @@ class ProjectStateAPI(APIView):
         tags=['Data Manager'],
         summary='Get actions',
         description='Retrieve all the registered actions with descriptions that data manager can use.',
+        parameters=[
+            OpenApiParameter(
+                name='project',
+                type=OpenApiTypes.INT,
+                location='query',
+                description='Project ID',
+                required=True,
+            ),
+        ],
+        responses={
+            200: OpenApiResponse(
+                description='Actions retrieved successfully',
+                response={
+                    'type': 'array',
+                    'title': 'Action list',
+                    'description': 'List of available actions',
+                    'items': {
+                        'type': 'object',
+                        'title': 'Action',
+                        'properties': {
+                            'id': {'type': 'string', 'title': 'Action ID'},
+                            'title': {'type': 'string', 'title': 'Title'},
+                            'order': {'type': 'integer', 'title': 'Order'},
+                            'permission': {'type': 'string', 'title': 'Permission'},
+                            'experimental': {'type': 'boolean', 'title': 'Experimental'},
+                            'dialog': {
+                                'type': 'object',
+                                'title': 'Dialog',
+                                'properties': {
+                                    'title': {'type': 'string', 'title': 'Title', 'nullable': True},
+                                    'text': {'type': 'string', 'title': 'Text', 'nullable': True},
+                                    'type': {'type': 'string', 'title': 'Type', 'nullable': True},
+                                    'form': {
+                                        'type': 'array',
+                                        'title': 'Form',
+                                        'items': {'type': 'object'},
+                                        'nullable': True,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+                examples=[
+                    OpenApiExample(
+                        name='response',
+                        value=[
+                            {
+                                'id': 'predictions_to_annotations',
+                                'title': 'Create Annotations From Predictions',
+                                'order': 91,
+                                'permission': 'tasks.change',
+                                'experimental': False,
+                                'dialog': {
+                                    'title': 'Create Annotations From Predictions',
+                                    'text': 'Create annotations from predictions using selected predictions set for each selected task. Your account will be assigned as an owner to those annotations.',
+                                    'type': 'confirm',
+                                    'form': None,
+                                },
+                            }
+                        ],
+                        media_type='application/json',
+                    ),
+                ],
+            )
+        },
         extensions={
             'x-fern-sdk-group-name': 'actions',
             'x-fern-sdk-method-name': 'list',
