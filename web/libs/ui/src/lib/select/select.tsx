@@ -377,7 +377,7 @@ export const Select = forwardRef(
                             itemData={renderedOptions}
                             itemSize={() => VARIABLE_LIST_ITEM_HEIGHT}
                             itemCount={renderedOptions.length}
-                            height={VARIABLE_LIST_COUNT_RENDERED * VARIABLE_LIST_ITEM_HEIGHT} // this makes the height based on available items
+                            height={5 * VARIABLE_LIST_ITEM_HEIGHT} // only render 5 items
                             // width={VARIABLE_LIST_WIDTH}
                             onItemsRendered={onItemsRendered}
                             ref={infiniteLoaderRef}
