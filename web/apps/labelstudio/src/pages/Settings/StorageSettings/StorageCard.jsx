@@ -39,7 +39,7 @@ export const StorageCard = ({ rootClass, target, storage, onEditStorage, onDelet
 
   return (
     <Card
-      header={storageData.title?.slice?.(0, 70) ?? `Untitled ${storageData.type}`}
+      header={storageData.title ?? `Untitled ${storageData.type}`}
       extra={
         <Dropdown.Trigger
           align="right"
