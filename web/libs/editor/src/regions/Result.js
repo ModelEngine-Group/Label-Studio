@@ -25,7 +25,7 @@ const Result = types
     // @todo pid?
     // parentID: types.optional(types.string, ""),
 
-    // ImageRegion, TextRegion, HyperTextRegion, AudioRegion)),
+    // KonvaRegion, TextRegion, HyperTextRegion, AudioRegion)),
     // optional for classifications
     // labeling/control tag
     from_name: types.late(() => types.reference(types.union(...Registry.modelsArr()))),
@@ -373,25 +373,6 @@ const Result = types
       }
 
       return data;
-    },
-
-    /**
-     * Remove region
-     */
-    deleteRegion() {
-      if (self.annotation.isReadOnly()) return;
-
-      self.unselectRegion();
-
-      self.annotation.relationStore.deleteNodeRelation(self);
-
-      if (self.type === "polygonregion") {
-        self.destroyRegion();
-      }
-
-      self.annotation.regionStore.deleteRegion(self);
-
-      self.annotation.deleteRegion(self);
     },
 
     setHighlight(val) {

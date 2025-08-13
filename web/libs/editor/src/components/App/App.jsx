@@ -9,7 +9,6 @@ import { observer, Provider } from "mobx-react";
 /**
  * Core
  */
-import Tree from "../../core/Tree";
 import { CommentsOverlay } from "../InteractiveOverlays/CommentsOverlay";
 import { TreeValidation } from "../TreeValidation/TreeValidation";
 
@@ -49,7 +48,6 @@ import { BottomBar } from "../BottomBar/BottomBar";
 import Debug from "../Debug";
 import { InstructionsModal } from "../InstructionsModal/InstructionsModal";
 import { RelationsOverlay } from "../InteractiveOverlays/RelationsOverlay";
-import Segment from "../Segment/Segment";
 import Settings from "../Settings/Settings";
 import { SidePanels } from "../SidePanels/SidePanels";
 import { SideTabsPanels } from "../SidePanels/TabPanels/SideTabsPanels";
@@ -138,21 +136,6 @@ class App extends Component {
 
   renderLoader() {
     return <Result icon={<Spin size="large" />} />;
-  }
-
-  _renderAll(obj) {
-    if (obj.length === 1) return <Segment annotation={obj[0]}>{[Tree.renderItem(obj[0].root)]}</Segment>;
-    const renderAllClassName = cn("renderall").toClassName();
-    const fadeClassName = cn("fade").toClassName();
-    return (
-      <div className={renderAllClassName}>
-        {obj.map((c, i) => (
-          <div key={`all-${i}`} className={fadeClassName}>
-            <Segment annotation={c}>{[Tree.renderItem(c.root)]}</Segment>
-          </div>
-        ))}
-      </div>
-    );
   }
 
   _renderUI(root, as) {
@@ -267,9 +250,10 @@ class App extends Component {
             ) : (
               <>
                 {store.showingDescription && (
-                  <Segment>
+                  <div className="p-base mb-base">
+                    {/* biome-ignore lint/security/noDangerouslySetInnerHtml: we need html here and it's sanitized */}
                     <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(store.description) }} />
-                  </Segment>
+                  </div>
                 )}
               </>
             )}

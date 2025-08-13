@@ -3,7 +3,6 @@ import { getType } from "mobx-state-tree";
 import { observer } from "mobx-react";
 import { ApartmentOutlined, AudioOutlined, LineChartOutlined, MessageOutlined } from "@ant-design/icons";
 
-import { NodeView } from "./NodeView";
 import "./Node.scss";
 import {
   IconBrushTool,
@@ -22,9 +21,18 @@ import {
   IconTimelineRegion,
 } from "@humansignal/icons";
 
-const NodeViews = {
+interface NodeViewProps {
+  name: string;
+  icon: any;
+  altIcon?: any;
+  getContent?: (node: any) => JSX.Element | null;
+  fullContent?: (node: any) => JSX.Element | null;
+}
+
+const NodeViews: Record<string, NodeViewProps> = {
   // fake view for virtual node representing label group
   LabelModel: {
+    name: "",
     icon: () => null,
   },
 
@@ -42,98 +50,98 @@ const NodeViews = {
     ),
   },
 
-  ParagraphsRegionModel: NodeView({
+  ParagraphsRegionModel: {
     name: "Paragraphs",
     icon: IconText,
     getContent: (node) => <span style={{ color: "#5a5a5a" }}>{node.text}</span>,
-  }),
+  },
 
-  AudioRegionModel: NodeView({
+  AudioRegionModel: {
     name: "Audio",
     icon: AudioOutlined,
-  }),
+  },
 
-  TimeSeriesRegionModel: NodeView({
+  TimeSeriesRegionModel: {
     name: "TimeSeries",
     icon: LineChartOutlined,
-  }),
+  },
 
-  TextAreaRegionModel: NodeView({
+  TextAreaRegionModel: {
     name: "Input",
     icon: MessageOutlined,
     getContent: (node) => <span style={{ color: "#5a5a5a" }}>{node._value}</span>,
-  }),
+  },
 
-  RectRegionModel: NodeView({
+  RectRegionModel: {
     name: "Rect",
     icon: IconRectangleTool,
     altIcon: IconRectangleToolSmart,
-  }),
+  },
 
-  Rect3PointRegionModel: NodeView({
+  Rect3PointRegionModel: {
     name: "Rect3Point",
     icon: IconRectangle3PointTool,
     altIcon: IconRectangle3PointToolSmart,
-  }),
+  },
 
-  VideoRectangleRegionModel: NodeView({
+  VideoRectangleRegionModel: {
     name: "Video Rect",
     icon: IconRectangleTool,
     altIcon: IconRectangleToolSmart,
     getContent: (node) => <span style={{ color: "#5a5a5a" }}>from {node.sequence[0]?.frame} frame</span>,
-  }),
+  },
 
-  PolygonRegionModel: NodeView({
+  PolygonRegionModel: {
     name: "Polygon",
     icon: IconPolygonTool,
     altIcon: IconPolygonToolSmart,
-  }),
+  },
 
-  EllipseRegionModel: NodeView({
+  EllipseRegionModel: {
     name: "Ellipse",
     icon: IconCircleTool,
     altIcon: IconCircleToolSmart,
-  }),
+  },
 
   // @todo add coords
-  KeyPointRegionModel: NodeView({
+  KeyPointRegionModel: {
     name: "KeyPoint",
     icon: IconKeypointsTool,
     altIcon: IconKeypointsToolSmart,
-  }),
+  },
 
-  BrushRegionModel: NodeView({
+  BrushRegionModel: {
     name: "Brush",
     icon: IconBrushTool,
     altIcon: IconBrushToolSmart,
-  }),
+  },
 
-  BitmaskRegionModel: NodeView({
+  BitmaskRegionModel: {
     name: "Brush",
     icon: IconBrushTool,
     altIcon: IconBrushToolSmart,
-  }),
+  },
 
-  ChoicesModel: NodeView({
+  ChoicesModel: {
     name: "Classification",
     icon: ApartmentOutlined,
-  }),
+  },
 
-  TextAreaModel: NodeView({
+  TextAreaModel: {
     name: "Input",
     icon: MessageOutlined,
-  }),
+  },
 
-  TimelineRegionModel: NodeView({
+  TimelineRegionModel: {
     name: "Timeline Span",
     icon: IconTimelineRegion,
-  }),
+  },
 };
 
 const NodeIcon: FC<any> = observer(({ node, ...props }) => {
   const name = useNodeName(node);
 
-  if (!(name in NodeViews)) {
+  if (!name || !(name in NodeViews)) {
     console.error(`No ${name} in NodeView`);
     return null;
   }

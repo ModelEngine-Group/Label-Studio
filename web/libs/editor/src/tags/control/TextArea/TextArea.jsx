@@ -214,10 +214,6 @@ const Model = types
         self.onChange(region);
       },
 
-      perRegionCleanup() {
-        self.regions = [];
-      },
-
       createRegion(text, pid, leadTime) {
         const r = TextAreaRegionModel.create({ pid, leadTime, _value: text });
 
