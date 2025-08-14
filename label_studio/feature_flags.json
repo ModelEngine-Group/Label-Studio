@@ -2094,6 +2094,33 @@
       "version": 4,
       "deleted": false
     },
+    "fflag_feat_fit_528_icon_menu_short": {
+      "key": "fflag_feat_fit_528_icon_menu_short",
+      "on": false,
+      "prerequisites": [],
+      "targets": [],
+      "contextTargets": [],
+      "rules": [],
+      "fallthrough": {
+        "variation": 0
+      },
+      "offVariation": 1,
+      "variations": [
+        true,
+        false
+      ],
+      "clientSideAvailability": {
+        "usingMobileKey": false,
+        "usingEnvironmentId": false
+      },
+      "clientSide": false,
+      "salt": "2ca9a6f250e8410dbf942fdfc052d736",
+      "trackEvents": false,
+      "trackEventsFallthrough": false,
+      "debugEventsUntilDate": null,
+      "version": 2,
+      "deleted": false
+    },
     "fflag_feat_fit_52_label_studio_enterprise_embed": {
       "key": "fflag_feat_fit_52_label_studio_enterprise_embed",
       "on": false,
