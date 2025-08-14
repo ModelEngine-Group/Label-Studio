@@ -177,12 +177,7 @@ export function PersonalJWTToken() {
       </div>
       <Tooltip title="You can only have one active token" disabled={!disallowAddingTokens}>
         <div style={{ width: "max-content" }}>
-          <Button
-            disabled={disallowAddingTokens || dialogOpened}
-            variant="neutral"
-            look="outlined"
-            onClick={openDialog}
-          >
+          <Button disabled={disallowAddingTokens || dialogOpened} onClick={openDialog}>
             Create New Token
           </Button>
         </div>
