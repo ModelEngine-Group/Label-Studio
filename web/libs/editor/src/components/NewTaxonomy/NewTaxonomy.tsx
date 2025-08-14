@@ -85,14 +85,15 @@ const convert = (
 
   const convertItem = (item: TaxonomyItem): AntTaxonomyItem => {
     const value = item.path.join(options.pathSeparator);
-    const disabledNode = options.leafsOnly && (item.isLeaf === false || !!item.children);
+    const isLeaf = item.isLeaf !== false && !item.children?.length;
+    const disabledNode = options.leafsOnly && !isLeaf;
     const maxUsagesReached = options.maxUsagesReached && !selectedPaths.includes(value);
 
     return {
       title: enrich(item),
       value,
       key: value,
-      isLeaf: item.isLeaf !== false && !item.children,
+      isLeaf,
       disableCheckbox: disabledNode || maxUsagesReached,
       children: item.children?.map(convertItem),
     };
