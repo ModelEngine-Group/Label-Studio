@@ -262,9 +262,123 @@ export const VideoView = {
 
   // Get current frame number from timeline controls
   getCurrentFrame() {
-    return this.frameCounter.invoke("text").then((text) => {
-      const match = text.match(/(\d+) of/);
-      return match ? Number.parseInt(match[1]) : null;
+    return this.frameCounter.invoke("text").then((text) => Number.parseInt(text.split(" ")[0]));
+  },
+
+  // Wait a couple of animation frames based on requestAnimationFrame pattern
+  waitForStableState() {
+    // This ensures React has completed its render cycle
+    cy.window().then((win) => {
+      return new Cypress.Promise((resolve) => {
+        win.requestAnimationFrame(() => {
+          // Wait one more frame to be extra sure
+          win.requestAnimationFrame(resolve);
+        });
+      });
+    });
+  },
+
+  // Wait for region by index to be passed to Konva Stage
+  // Gets region ID from store and checks if it exists in Konva
+  waitForRegionInKonvaByIndex(regionIndex: number) {
+    cy.log(`Wait for region at index ${regionIndex} to be available in Konva Stage`);
+
+    // First get the region ID from store
+    cy.window().then((win) => {
+      const store = (win as any).Htx || (win as any).store;
+      if (!store?.annotationStore?.selected?.regionStore?.regions) {
+        cy.log("No regions found in store");
+        return;
+      }
+
+      const regions = store.annotationStore.selected.regionStore.regions;
+      if (regionIndex >= regions.length) {
+        cy.log(`Region index ${regionIndex} out of bounds (${regions.length} regions)`);
+        return;
+      }
+
+      const region = regions[regionIndex];
+      const regionId = region.id;
+
+      cy.log(`Found region ID: ${regionId} for index ${regionIndex}`);
+
+      // Now wait for this region in Konva
+      this.waitForRegionInKonva(regionId);
+    });
+  },
+
+  // Find specific Konva stage by DOM element and check for region
+  waitForRegionInKonva(regionId: string) {
+    cy.log(`Wait for region ${regionId} to be available in Konva Stage`);
+
+    cy.window().then((win) => {
+      this.drawingArea.should(($drawingArea) => {
+        // Get the specific Konva stage from this DOM element
+        const drawingArea = $drawingArea[0];
+        const stage = (win as any).Konva?.stages?.find((stage) => stage.content === drawingArea);
+
+        if (!stage) {
+          throw new Error("Konva stage not found for this canvas");
+        }
+
+        // Find region in this specific stage
+        const elements = stage.find(`#${regionId}`);
+        if (!elements || elements.length === 0) {
+          throw new Error(`Region ${regionId} not found in Konva Stage`);
+        }
+      });
+    });
+  },
+
+  // Check that specific region is NOT in Konva Stage
+  waitForRegionNotInKonva(regionId: string) {
+    cy.log(`Wait for region ${regionId} to be NOT available in Konva Stage`);
+
+    cy.window().then((win) => {
+      this.drawingArea.should(($drawingArea) => {
+        // Get the specific Konva stage from this DOM element
+        const drawingArea = $drawingArea[0];
+        const stage = (win as any).Konva?.stages?.find((stage) => stage.content === drawingArea);
+
+        if (!stage) {
+          // No stage means no regions - that's what we want
+          return;
+        }
+
+        // Find region in this specific stage
+        const elements = stage.find(`#${regionId}`);
+        if (elements && elements.length > 0) {
+          throw new Error(`Region ${regionId} should NOT be in Konva Stage but it was found`);
+        }
+      });
+    });
+  },
+
+  // Check region by index is NOT in Konva Stage
+  waitForRegionNotInKonvaByIndex(regionIndex: number) {
+    cy.log(`Wait for region at index ${regionIndex} to be NOT available in Konva Stage`);
+
+    // First get the region ID from store
+    cy.window().then((win) => {
+      const store = (win as any).Htx || (win as any).store;
+      if (!store?.annotationStore?.selected?.regionStore?.regions) {
+        cy.log("No regions found in store - that's expected");
+        return;
+      }
+
+      const regions = store.annotationStore.selected.regionStore.regions;
+      if (regionIndex >= regions.length) {
+        cy.log(`Region index ${regionIndex} out of bounds (${regions.length} regions) - that's expected`);
+        return;
+      }
+
+      const region = regions[regionIndex];
+      const regionId = region.id;
+
+      cy.log(`Checking that region ID: ${regionId} for index ${regionIndex} is NOT in Konva`);
+
+      // Now check this region is NOT in Konva
+      this.waitForRegionNotInKonva(regionId);
     });
   },
 

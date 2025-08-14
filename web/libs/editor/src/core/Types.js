@@ -68,6 +68,8 @@ function isType(node, types) {
 }
 
 function getParentOfTypeString(node, str) {
+  if (isRoot(node)) return null;
+
   // same as getParentOfType but checks models .name instead of type
   let parent = getParent(node);
 

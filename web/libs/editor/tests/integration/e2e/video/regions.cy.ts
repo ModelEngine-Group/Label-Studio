@@ -77,18 +77,19 @@ describe("Video segmentation", suiteConfig, () => {
 
     cy.log("Remember an empty canvas state");
     VideoView.clickAtFrame(4);
-    cy.wait(1000);
+    VideoView.waitForFrame(4);
+    VideoView.waitForRegionNotInKonvaByIndex(0);
+    VideoView.waitForStableState();
     VideoView.captureCanvas("canvas");
 
     VideoView.clickAtFrame(3);
-    cy.wait(TWO_FRAMES_TIMEOUT);
+    VideoView.waitForRegionInKonvaByIndex(0);
+    VideoView.waitForStableState();
     cy.log("Select region");
     VideoView.clickAtRelative(0.5, 0.5);
-    cy.wait(TWO_FRAMES_TIMEOUT);
     Sidebar.hasSelectedRegions(1);
-    cy.wait(TWO_FRAMES_TIMEOUT);
     VideoView.clickAtFrame(4);
-    cy.wait(TWO_FRAMES_TIMEOUT);
+    VideoView.waitForFrame(4); // Wait for frame 4
     Sidebar.hasSelectedRegions(1);
 
     cy.wait(1000);

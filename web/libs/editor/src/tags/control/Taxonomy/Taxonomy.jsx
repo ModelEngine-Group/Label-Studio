@@ -360,6 +360,10 @@ const Model = types
       }
     },
 
+    afterClone(node) {
+      self.selected = [...node.selected];
+    },
+
     /**
      * Load items from `apiUrl` and set them indirectly to `items` (via `_items`)
      * @param {string[]} path to load nested items by this path
