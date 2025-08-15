@@ -386,6 +386,12 @@ SPECTACULAR_SETTINGS = {
     'AUTHENTICATION_WHITELIST': [
         'jwt_auth.auth.TokenAuthenticationPhaseout',
     ],
+    'SERVERS': [
+        {
+            'url': HOSTNAME,
+            'description': 'Label Studio',
+        },
+    ],
     'CONTACT': {'url': 'https://labelstud.io'},
     'X_LOGO': {'url': '../../static/icons/logo-black.svg'},
 }
