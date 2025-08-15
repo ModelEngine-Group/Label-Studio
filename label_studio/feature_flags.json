@@ -1635,6 +1635,33 @@
       "version": 3,
       "deleted": false
     },
+    "fflag_feat_all_utc_179_custom_function_logs": {
+      "key": "fflag_feat_all_utc_179_custom_function_logs",
+      "on": false,
+      "prerequisites": [],
+      "targets": [],
+      "contextTargets": [],
+      "rules": [],
+      "fallthrough": {
+        "variation": 0
+      },
+      "offVariation": 1,
+      "variations": [
+        true,
+        false
+      ],
+      "clientSideAvailability": {
+        "usingMobileKey": false,
+        "usingEnvironmentId": false
+      },
+      "clientSide": false,
+      "salt": "46211fe6c7124fd4b8e731efc8bb8572",
+      "trackEvents": false,
+      "trackEventsFallthrough": false,
+      "debugEventsUntilDate": null,
+      "version": 2,
+      "deleted": false
+    },
     "fflag_feat_all_utc_222_prompts_api_keys_enterprise_only": {
       "key": "fflag_feat_all_utc_222_prompts_api_keys_enterprise_only",
       "on": false,
