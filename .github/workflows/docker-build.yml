@@ -86,23 +86,6 @@ jobs:
     steps:
       - uses: hmarr/debug-action@v3.0.0
 
-      - name: Check user's membership
-        uses: actions/github-script@v7
-        id: actor-membership
-        env:
-          ACTOR: ${{ github.actor }}
-        with:
-          github-token: ${{ secrets.GIT_PAT }}
-          script: |
-            const { repo, owner } = context.repo;
-            const actor = process.env.ACTOR;
-            const { data: membership } = await github.rest.orgs.getMembershipForUser({
-              org: owner,
-              username: actor,
-            });
-            core.setOutput("state", membership.state);
-            core.setOutput("active", membership.state == "active");
-
       - name: Prepare
         run: |
           platform=${{ matrix.platform }}
@@ -144,16 +127,11 @@ jobs:
             exit 1
           fi
 
-      - name: Extract Docker metadata
+      - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.IMAGE_NAME }}
-          labels: |
-            org.opencontainers.image.revision=${{ inputs.sha }}
-          tags: |
-            type=raw,value=${{ needs.calculate_version.outputs.image_version }}
-            type=raw,value=${{ needs.calculate_version.outputs.build_version }}
 
       - name: Push Docker image (${{ matrix.platform }})
         uses: docker/build-push-action@v6.18.0
@@ -164,11 +142,11 @@ jobs:
           platforms: ${{ matrix.platform }}
           sbom: true
           provenance: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ env.IMAGE_NAME }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=min
-          outputs: type=image,push-by-digest=true,name-canonical=true,push=${{ steps.actor-membership.outputs.active }}
+          outputs: type=image,push-by-digest=true,name-canonical=true,push=true
           build-args: |
             BRANCH_OVERRIDE=${{ inputs.branch_name }}
             VERSION_OVERRIDE=${{ needs.calculate_version.outputs.build_version }}
