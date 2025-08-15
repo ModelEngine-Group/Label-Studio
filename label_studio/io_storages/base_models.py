@@ -499,7 +499,11 @@ class ImportStorage(Storage):
             prediction_ser = PredictionSerializer(data=predictions, many=True)
 
             # Always validate predictions and raise exception if invalid
-            if prediction_ser.is_valid(raise_exception=True):
+            raise_prediction_exception = (
+                flag_set('fflag_feat_utc_210_prediction_validation_15082025', user=project.organization.created_by)
+                or raise_exception
+            )
+            if prediction_ser.is_valid(raise_exception=raise_prediction_exception):
                 prediction_ser.save()
 
             # add annotations

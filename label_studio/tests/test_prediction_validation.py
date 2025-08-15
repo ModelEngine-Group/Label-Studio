@@ -556,7 +556,7 @@ class TestPredictionValidation:
 
         # This should raise a ValidationError
         with pytest.raises(ValidationError):
-            reformat_predictions(tasks, preannotated_fields)
+            reformat_predictions(tasks, preannotated_fields, raise_errors=True)
 
     def test_multiple_validation_errors(self):
         """Test that multiple validation errors are collected and reported."""
