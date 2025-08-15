@@ -168,7 +168,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=min
-          outputs: type=image,push-by-digest=true,name-canonical=true,push={{ steps.actor-membership.outputs.active }}
+          outputs: type=image,push-by-digest=true,name-canonical=true,push=${{ steps.actor-membership.outputs.active }}
           build-args: |
             BRANCH_OVERRIDE=${{ inputs.branch_name }}
             VERSION_OVERRIDE=${{ needs.calculate_version.outputs.build_version }}
