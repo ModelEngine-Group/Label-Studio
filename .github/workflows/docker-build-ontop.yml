@@ -90,6 +90,9 @@ jobs:
           sed -i "s#^FROM .*#FROM ${IMAGE_NAME}:${BASE_DOCKER_IMAGE_VERSION}#g" "${DOCKERFILE_PATH}"
           cat "${DOCKERFILE_PATH}"
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.11.1
 

@@ -89,6 +89,9 @@ jobs:
           version="${current_time}$(echo $branch | cut -c1-$((50 - short_sha_length - current_time_length)))-${short_sha}"
           echo "build_version=$version" >> $GITHUB_OUTPUT
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.11.1
 
