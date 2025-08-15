@@ -186,7 +186,7 @@ def get_all_columns(project, *_):
             'type': 'List',
             'target': 'tasks',
             'help': 'Model versions aggregated over all predictions',
-            'schema': {'items': project.get_model_versions()},
+            'schema': {'items': project.get_model_versions(), 'multiple': True},
             'visibility_defaults': {'explore': False, 'labeling': False},
             'project_defined': False,
         },
