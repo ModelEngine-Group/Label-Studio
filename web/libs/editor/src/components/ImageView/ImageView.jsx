@@ -460,7 +460,7 @@ const PixelGridLayer = observer(({ item }) => {
   const ZOOM_THRESHOLD = 20;
 
   const visible = item.zoomScale > ZOOM_THRESHOLD;
-  const { naturalWidth, naturalHeight } = item.currentImageEntity;
+  const { naturalWidth, naturalHeight } = item.currentImageEntity ?? {};
   const { stageWidth, stageHeight } = item;
   const imageSmallerThanStage = naturalWidth < stageWidth || naturalHeight < stageHeight;
 
