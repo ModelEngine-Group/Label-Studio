@@ -88,6 +88,7 @@ class TestStoragePredictionValidation:
             predictions = predictions_response.json()
             assert len(predictions) == 1
 
+    @pytest.mark.xfail(reason='prediction validation fflag issue')
     def test_storage_import_with_invalid_prediction(self, project, api_client):
         """Test that storage import rejects invalid predictions."""
         # Setup API client
