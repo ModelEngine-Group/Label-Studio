@@ -92,8 +92,10 @@ const ImageRenderer = observer(
       // Real dimension will still be available via `naturalWidth` and `naturalHeight`
       const style = ff.isActive(FF_BITMASK)
         ? {
-            width: 0,
-            height: 0,
+            // For now, we can't fully hide it as it is used by the Magic Wand tool, so this will hide it visually, but allow using it on the canvas.
+            // It is still possible that there is another way to get the right image data in the tool, so it's a temporary quick fix
+            ...imageTransform,
+            clip: "rect(1px, 1px, 1px, 1px)",
           }
         : imageTransform;
 
