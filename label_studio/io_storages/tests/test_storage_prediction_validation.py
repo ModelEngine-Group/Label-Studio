@@ -6,6 +6,7 @@ from io_storages.models import S3ImportStorage
 from moto import mock_s3
 from projects.tests.factories import ProjectFactory
 from rest_framework.test import APIClient
+from tests.conftest import set_feature_flag_envvar  # noqa: F401
 
 
 @pytest.mark.django_db
@@ -32,7 +33,7 @@ class TestStoragePredictionValidation:
         """Create API client for testing."""
         return APIClient()
 
-    def test_storage_import_with_valid_prediction(self, project, api_client):
+    def test_storage_import_with_valid_prediction(self, project, api_client, set_feature_flag_envvar):
         """Test that storage import accepts valid predictions."""
         # Setup API client
         api_client.force_authenticate(user=project.created_by)
@@ -88,8 +89,7 @@ class TestStoragePredictionValidation:
             predictions = predictions_response.json()
             assert len(predictions) == 1
 
-    @pytest.mark.xfail(reason='prediction validation fflag issue')
-    def test_storage_import_with_invalid_prediction(self, project, api_client):
+    def test_storage_import_with_invalid_prediction(self, project, api_client, set_feature_flag_envvar):
         """Test that storage import rejects invalid predictions."""
         # Setup API client
         api_client.force_authenticate(user=project.created_by)
