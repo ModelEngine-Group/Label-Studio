@@ -27,6 +27,27 @@ export const useStorageApi = ({ target, storage, project, onSubmit, onClose }: U
       // Get the current provider config to identify access key fields
       const providerConfig = getProviderConfig(data.provider);
 
+      // Get all field names from the current provider schema
+      const validFieldNames = new Set([
+        "project", // Always include project
+        "provider", // Always include provider
+        "title", // Always include title
+        "prefix", // Common field for bucket prefix
+        "path", // Common field for file path (used by redis)
+        "use_blob_urls", // Common field for import method
+        "regex_filter", // Common field for file filtering
+        "recursive_scan", // Common field for recursive scanning
+        "can_delete_objects", // Common field for export
+        ...(providerConfig?.fields.map((field) => field.name) || []),
+      ]);
+
+      // Remove fields that aren't in the current provider's schema
+      Object.keys(cleanedData).forEach((key) => {
+        if (!validFieldNames.has(key)) {
+          delete cleanedData[key];
+        }
+      });
+
       // Remove empty values only for access key fields in edit mode
       Object.keys(cleanedData).forEach((key) => {
         const field = providerConfig?.fields.find((f) => f.name === key);

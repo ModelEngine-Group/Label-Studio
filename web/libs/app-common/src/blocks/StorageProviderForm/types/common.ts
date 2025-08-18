@@ -3,7 +3,7 @@ import type { FC } from "react";
 import type { z } from "zod";
 
 // Field types that can be rendered
-export type FieldType = "text" | "password" | "number" | "select" | "toggle" | "counter" | "textarea";
+export type FieldType = "text" | "password" | "number" | "select" | "toggle" | "counter" | "textarea" | "hidden";
 
 // Field definition interface
 export interface FieldDefinition {
@@ -14,6 +14,7 @@ export interface FieldDefinition {
   placeholder?: string;
   required?: boolean;
   schema: z.ZodType;
+  hidden?: boolean;
   options?: Array<{ value: string | boolean | number; label: string }>; // For select fields
   min?: number; // For number/counter fields
   max?: number; // For number/counter fields
@@ -23,12 +24,17 @@ export interface FieldDefinition {
   accessKey?: boolean; // Whether this field is an access key/credential that should be handled specially in edit mode
   target?: "import" | "export"; // Only show this field for the specified storage type (undefined = show for both)
   resetConnection?: boolean; // Whether changing this field should reset the connection check (default: true)
+  readOnly?: boolean; // Whether this field should be read-only (not editable by user)
+  dependsOn?: {
+    field: string; // Name of the field this depends on
+    value: any | ((dependencyValue: any, formData: Record<string, any>) => boolean); // The value or function to check if field should be enabled
+  };
 }
 
 export interface MessageDefinition {
   name: string;
   type: "message";
-  content: JSX.Element;
+  content: JSX.Element | FC;
   gridCols?: number;
   variant?: CalloutVariant;
 }

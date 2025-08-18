@@ -1,6 +1,8 @@
 import type React from "react";
 import { FieldRenderer } from "./field-renderer";
 import { type ProviderConfig, getFieldsForRow } from "../types/provider";
+import type { FieldDefinition, MessageDefinition } from "../types/common";
+import type { FC } from "react";
 
 interface ProviderFormProps {
   provider: ProviderConfig;
@@ -21,8 +23,26 @@ export const ProviderForm: React.FC<ProviderFormProps> = ({
   isEditMode = false,
   target,
 }) => {
+  const getHiddenFields = (field: FieldDefinition | MessageDefinition) =>
+    field.type === "hidden" && (!target || !field.target || field.target === target);
+
   return (
     <div className="space-y-6">
+      {/* Render hidden fields first, outside of layout */}
+      {provider.fields.filter(getHiddenFields).map((field) => (
+        <FieldRenderer
+          key={field.name}
+          field={field as FieldDefinition}
+          value={formData[field.name]}
+          onChange={onChange}
+          onBlur={onBlur}
+          error={errors[field.name]}
+          isEditMode={isEditMode}
+          formData={formData}
+        />
+      ))}
+
+      {/* Render visible fields in layout */}
       {provider.layout.map((row, rowIndex) => {
         const fields = getFieldsForRow(provider.fields, row.fields, target);
         return (
@@ -34,27 +54,43 @@ export const ProviderForm: React.FC<ProviderFormProps> = ({
                 gridTemplateColumns: `repeat(${row.fields.length}, 1fr)`,
               }}
             >
-              {fields.map((field) => (
-                <div
-                  key={field.name}
-                  style={{
-                    gridColumn: field.gridCols ?? "initial",
-                  }}
-                >
-                  {field.type === "message" ? (
-                    <div>{field.content}</div>
-                  ) : (
-                    <FieldRenderer
-                      field={field}
-                      value={formData[field.name]}
-                      onChange={onChange}
-                      onBlur={onBlur}
-                      error={errors[field.name]}
-                      isEditMode={isEditMode}
-                    />
-                  )}
-                </div>
-              ))}
+              {fields.map((field) => {
+                // Skip hidden fields from layout - they'll be rendered separately
+                if (field.type === "hidden") {
+                  return null;
+                }
+                const Message =
+                  field.type === "message"
+                    ? field.content instanceof Function
+                      ? field.content
+                      : ((() => field.content) as FC)
+                    : null;
+
+                return (
+                  <div
+                    key={field.name}
+                    style={{
+                      gridColumn: field.gridCols ?? "initial",
+                    }}
+                  >
+                    {Message ? (
+                      <div>
+                        <Message />
+                      </div>
+                    ) : (
+                      <FieldRenderer
+                        field={field as FieldDefinition}
+                        value={formData[field.name]}
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        error={errors[field.name]}
+                        isEditMode={isEditMode}
+                        formData={formData}
+                      />
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )
         );

@@ -12,9 +12,10 @@ interface UseStorageFormProps {
   isEditMode: boolean;
   steps: Array<{ title: string; schema?: z.ZodSchema }>;
   storage?: any;
+  defaultValues?: Record<string, Record<string, any>>;
 }
 
-export const useStorageForm = ({ project, isEditMode, steps, storage }: UseStorageFormProps) => {
+export const useStorageForm = ({ project, isEditMode, steps, storage, defaultValues }: UseStorageFormProps) => {
   const [formState, setFormState] = useState<FormState>({
     currentStep: 0,
     formData: {
@@ -36,17 +37,27 @@ export const useStorageForm = ({ project, isEditMode, steps, storage }: UseStora
     if (formData.provider && !isEditMode) {
       const providerConfig = getProviderConfig(formData.provider);
       if (providerConfig) {
-        const defaultValues = extractDefaultValues(providerConfig.fields);
+        const schemaDefaults = extractDefaultValues(providerConfig.fields);
+
+        // Get custom defaults for this provider if available
+        const customDefaults = defaultValues?.[formData.provider] || {};
+
+        // Merge schema defaults with custom defaults (custom defaults take precedence)
+        const mergedDefaults = {
+          ...schemaDefaults,
+          ...customDefaults,
+        };
+
         setFormState((prevState) => ({
           ...prevState,
           formData: {
             ...prevState.formData,
-            ...defaultValues,
+            ...mergedDefaults,
           },
         }));
       }
     }
-  }, [formData.provider, setFormState, isEditMode]);
+  }, [formData.provider, setFormState, isEditMode, defaultValues]);
 
   // Initialize form data with existing storage data in edit mode (only once)
   useEffect(() => {
@@ -62,18 +73,35 @@ export const useStorageForm = ({ project, isEditMode, steps, storage }: UseStora
 
       // Debug logging to help identify provider issues
       if (!providerConfig) {
-        console.warn(`Provider config not found for storage type: "${storageType}"`, {
-          availableProviders: Object.keys(providerRegistry),
-          storageType,
-        });
-
         // If no provider config found, we'll still populate the form with existing data
         // but we'll retry when more providers are registered
         return;
       }
 
-      // Prepare form data with placeholder values for access keys
-      const formDataWithPlaceholders = { ...storage };
+      // Get valid field names for the current provider
+      const validFieldNames = new Set([
+        "project", // Always include project
+        "provider", // Always include provider
+        "title", // Always include title
+        "prefix", // Common field for bucket prefix
+        "path", // Common field for file path (used by redis)
+        "use_blob_urls", // Common field for import method
+        "regex_filter", // Common field for file filtering
+        "recursive_scan", // Common field for recursive scanning
+        "can_delete_objects", // Common field for export
+        ...(providerConfig.fields.map((field) => field.name) || []),
+      ]);
+
+      // Filter storage data to only include valid fields for the current provider
+      const formDataWithPlaceholders = Object.keys(storage).reduce(
+        (acc, key) => {
+          if (validFieldNames.has(key)) {
+            acc[key] = storage[key];
+          }
+          return acc;
+        },
+        {} as Record<string, any>,
+      );
 
       // Process provider-specific fields
       if (providerConfig) {
@@ -206,7 +234,6 @@ export const useStorageForm = ({ project, isEditMode, steps, storage }: UseStora
         });
         return true;
       } catch (error) {
-        console.log("Field validation failed:", error);
         if (error instanceof z.ZodError) {
           const formattedErrors = formatValidationErrors(error);
           setErrors((prev) => ({
@@ -230,7 +257,6 @@ export const useStorageForm = ({ project, isEditMode, steps, storage }: UseStora
       setErrors({});
       return true;
     } catch (error) {
-      console.log("Form validation failed:", error);
       if (error instanceof z.ZodError) {
         const formattedErrors = formatValidationErrors(error);
         setErrors(formattedErrors);
@@ -246,18 +272,72 @@ export const useStorageForm = ({ project, isEditMode, steps, storage }: UseStora
       // If changing provider, get new defaults first (only in create mode)
       if (name === "provider" && !isEditMode) {
         const providerConfig = getProviderConfig(value);
+
         if (providerConfig) {
-          const defaultValues = extractDefaultValues(providerConfig.fields);
-          setFormState((prev) => ({
-            ...prev,
-            formData: {
-              ...prev.formData,
-              ...defaultValues,
-              [name]: value,
-            },
-          }));
+          const schemaDefaults = extractDefaultValues(providerConfig.fields);
+
+          // Get custom defaults for this provider if available
+          const customDefaults = defaultValues?.[value] || {};
+
+          // Merge schema defaults with custom defaults (custom defaults take precedence)
+          const mergedDefaults = {
+            ...schemaDefaults,
+            ...customDefaults,
+          };
+
+          // Get valid field names for the new provider
+          const validFieldNames = new Set([
+            "project", // Always include project
+            "provider", // Always include provider
+            "title", // Always include title
+            "prefix", // Common field for bucket prefix
+            "path", // Common field for file path (used by redis)
+            "use_blob_urls", // Common field for import method
+            "regex_filter", // Common field for file filtering
+            "recursive_scan", // Common field for recursive scanning
+            "can_delete_objects", // Common field for export
+            ...(providerConfig.fields.map((field) => field.name) || []),
+          ]);
+
+          setFormState((prev) => {
+            // Filter existing form data to only include valid fields for the new provider
+            const filteredFormData = Object.keys(prev.formData).reduce(
+              (acc, key) => {
+                if (validFieldNames.has(key)) {
+                  acc[key] = prev.formData[key];
+                }
+                return acc;
+              },
+              {} as Record<string, any>,
+            );
+
+            const newFormData = {
+              project: prev.formData.project,
+              title: prev.formData.title || "",
+              use_blob_urls: prev.formData.use_blob_urls || false,
+              recursive_scan: prev.formData.recursive_scan !== undefined ? prev.formData.recursive_scan : true,
+              regex_filter: prev.formData.regex_filter || "",
+              ...filteredFormData,
+              ...mergedDefaults,
+              provider: value, // Set provider last to ensure it's not overridden
+            };
+
+            return {
+              ...prev,
+              formData: newFormData,
+            };
+          });
           return;
         }
+
+        // Fallback: just update the provider field
+        setFormState((prev) => ({
+          ...prev,
+          formData: {
+            ...prev.formData,
+            provider: value,
+          },
+        }));
       }
 
       const newFormData = { ...formData, [name]: value };
@@ -286,7 +366,7 @@ export const useStorageForm = ({ project, isEditMode, steps, storage }: UseStora
         onConnectionChange?.();
       }
     },
-    [formData, setFormState, isEditMode],
+    [formData, setFormState, isEditMode, defaultValues],
   );
 
   // Handle field blur

@@ -59,7 +59,10 @@ export const gcsProvider: ProviderConfig = {
       schema: z.number().min(1).max(10080).default(15),
       target: "import",
       resetConnection: false,
-      // dependency: "presign" // Not implemented in UI yet
+      dependsOn: {
+        field: "presign",
+        value: true,
+      },
     },
   ],
   layout: [

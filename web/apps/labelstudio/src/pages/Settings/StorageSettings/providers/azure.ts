@@ -62,6 +62,10 @@ export const azureProvider: ProviderConfig = {
       schema: z.number().min(1).max(10080).default(15),
       target: "import",
       resetConnection: false,
+      dependsOn: {
+        field: "presign",
+        value: true,
+      },
     },
   ],
   layout: [

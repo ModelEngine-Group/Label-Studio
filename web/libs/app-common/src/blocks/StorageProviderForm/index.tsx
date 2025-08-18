@@ -21,12 +21,16 @@ interface StorageProviderFormProps {
     name: string;
   }[];
   providers: Record<string, ProviderConfig>;
+  defaultValues?: Record<string, Record<string, any>>;
   onClose?: () => void;
   onHide?: () => void;
 }
 
 export const StorageProviderForm = forwardRef<unknown, StorageProviderFormProps>(
-  ({ onSubmit, target, project, storage, title, storageTypes, providers, onClose = () => {}, onHide }, ref) => {
+  (
+    { onSubmit, target, project, storage, title, storageTypes, providers, defaultValues, onClose = () => {}, onHide },
+    ref,
+  ) => {
     const modal = useModalControls();
     const [type, setType] = useState<string | undefined>(storage?.type || storage?.provider || "s3");
     const [filesPreview, setFilesPreview] = useState<any[] | null>(null);
@@ -88,6 +92,7 @@ export const StorageProviderForm = forwardRef<unknown, StorageProviderFormProps>
       isEditMode,
       steps: currentSteps,
       storage,
+      defaultValues,
     });
 
     const { currentStep, formData } = formState;
