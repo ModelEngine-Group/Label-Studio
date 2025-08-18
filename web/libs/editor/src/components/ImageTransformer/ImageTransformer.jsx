@@ -56,10 +56,6 @@ export default class TransformerComponent extends Component {
     const selectedNodes = [];
 
     selectedRegions.forEach((shape) => {
-      if (shape.height < 0) {
-        shape.flipRegion?.();
-      }
-
       const shapeContainer = stage.findOne((node) => {
         return node.hasName(shape.id) && node.parent;
       });
