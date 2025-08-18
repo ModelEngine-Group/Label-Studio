@@ -54,7 +54,9 @@ def async_import_background(
         tasks = reformat_predictions(tasks, project_import.preannotated_from_fields, project, raise_errors)
 
     # Always validate predictions regardless of commit_to_project setting
-    if project.label_config_is_not_default:
+    if project.label_config_is_not_default and flag_set(
+        'fflag_feat_utc_210_prediction_validation_15082025', user=project.organization.created_by
+    ):
         validation_errors = []
         li = LabelInterface(project.label_config)
 

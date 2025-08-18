@@ -456,7 +456,9 @@ class BaseTaskSerializerBulk(serializers.ListSerializer):
         db_predictions = []
         validation_errors = []
 
-        should_validate = self.project.label_config_is_not_default
+        should_validate = self.project.label_config_is_not_default and flag_set(
+            'fflag_feat_utc_210_prediction_validation_15082025', user='auto'
+        )
 
         # add predictions
         last_model_version = None
