@@ -424,16 +424,17 @@ const RootTitle: FC<any> = observer(
               </Elem>
             )}
           </Elem>
-          <RegionControls
-            hovered={hovered}
-            item={item}
-            entity={props.entity}
-            regions={props.children}
-            type={props.type}
-            collapsed={collapsed}
-            hasControls={hasControls && isArea}
-            toggleCollapsed={toggleCollapsed}
-          />
+          {item?.hideable !== false && (
+            <RegionControls
+              item={item}
+              entity={props.entity}
+              regions={props.children}
+              type={props.type}
+              collapsed={collapsed}
+              hasControls={hasControls && isArea}
+              toggleCollapsed={toggleCollapsed}
+            />
+          )}
         </Elem>
 
         {!collapsed && hasControls && isArea && (

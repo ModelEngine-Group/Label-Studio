@@ -1,5 +1,5 @@
 import { types } from "mobx-state-tree";
-
+import Registry from "../core/Registry";
 import { AudioRegionModel } from "./AudioRegion";
 import { BrushRegionModel, HtxBrush } from "./BrushRegion";
 import { BitmaskRegionModel, HtxBitmask } from "./BitmaskRegion";
@@ -30,6 +30,7 @@ const AllRegionsType = types.union(
   TimelineRegionModel,
   ParagraphsRegionModel,
   VideoRectangleRegionModel,
+  ...Registry.customTags.map((t) => t.region),
 );
 
 export {

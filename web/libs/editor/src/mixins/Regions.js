@@ -34,6 +34,7 @@ const RegionsMixin = types
     perRegionFocusRequest: null,
     shapeRef: null,
     drawingTimeout: null,
+    hideable: true,
   }))
   .views((self) => ({
     get perRegionStates() {

@@ -48,6 +48,11 @@ const Area = types.union(
     dispatcher(sn) {
       // for some deserializations
       if (sn.$treenode) return sn.$treenode.type;
+
+      for (const customTag of Registry.customTags) {
+        if (sn.value?.[customTag.resultName] || sn[customTag.resultName]) return customTag.region;
+      }
+
       if (
         !sn.points && // dirty hack to make it work with polygons, but may be the whole condition is not necessary at all
         // `sequence` and `ranges` are used for video regions
@@ -89,6 +94,7 @@ const Area = types.union(
   BitmaskRegionModel,
   VideoRectangleRegionModel,
   ClassificationArea,
+  ...Registry.customTags.map((t) => t.region),
 );
 
 export default Area;

@@ -155,15 +155,17 @@ const RegionAction: FC<any> = observer(({ region, annotation, editMode, onEditMo
           aria-label="Unlock Region"
           tooltip="Unlock Region"
         />
-        <RegionActionButton
-          aria-label={`${region.hidden ? "Show" : "Hide"} selected region`}
-          variant="neutral"
-          look="string"
-          onClick={region.toggleHidden}
-          tooltip={`${region.hidden ? "Show" : "Hide"} selected region`}
-        >
-          {region.hidden ? <IconEyeClosed /> : <IconEyeOpened />}
-        </RegionActionButton>
+        {region.hideable && (
+          <RegionActionButton
+            aria-label={`${region.hidden ? "Show" : "Hide"} selected region`}
+            variant="neutral"
+            look="string"
+            onClick={region.toggleHidden}
+            tooltip={`${region.hidden ? "Show" : "Hide"} selected region`}
+          >
+            {region.hidden ? <IconEyeClosed /> : <IconEyeOpened />}
+          </RegionActionButton>
+        )}
         <RegionActionButton
           variant="negative"
           look="string"

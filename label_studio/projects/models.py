@@ -590,6 +590,9 @@ class Project(ProjectMixin, models.Model):
             diff_str = []
             for ann_tuple in different_annotations:
                 from_name, to_name, t = ann_tuple.split('|')
+                # TODO tags that operate as both object and control tags; should be special registry/logic for them
+                if from_name == to_name and t.lower() == 'chatmessage':
+                    continue
                 if t.lower() == 'textarea':  # avoid textarea to_name check (see DEV-1598)
                     continue
                 if (

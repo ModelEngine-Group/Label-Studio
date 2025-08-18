@@ -75,6 +75,7 @@ const PanelModel = types
       "timeserieslabels",
       "paragraphs",
       "paragraphlabels",
+      ...Registry.customTags.map((t) => t.tag.toLowerCase()),
     ]),
   })
   .views((self) => ({

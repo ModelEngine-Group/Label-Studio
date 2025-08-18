@@ -41,7 +41,7 @@ export type ExtractValue<T, A extends SelectOption<T>[]> = A[number] extends { v
 export type SelectProps<T, A extends SelectOption<T>[]> = {
   label?: string;
   description?: string;
-  options: A[];
+  options: A;
   value?: ExtractOption<A[number]> | null;
   defaultValue?: ExtractOption<A[number]> | null;
   validate?: any;
