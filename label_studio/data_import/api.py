@@ -268,6 +268,7 @@ class ImportAPI(generics.CreateAPIView):
         if preannotated_from_fields:
             # turn flat task JSONs {"column1": value, "column2": value} into {"data": {"column1"..}, "predictions": [{..."column2"}]
             raise_errors = flag_set('fflag_feat_utc_210_prediction_validation_15082025', user='auto')
+            logger.info(f'Reformatting predictions with raise_errors: {raise_errors}')
             parsed_data = reformat_predictions(parsed_data, preannotated_from_fields, project, raise_errors)
 
         # Conditionally validate predictions: skip when label config is default during project creation
@@ -295,7 +296,9 @@ class ImportAPI(generics.CreateAPIView):
                 if flag_set('fflag_feat_utc_210_prediction_validation_15082025', user='auto'):
                     raise ValidationError({'predictions': [error_message]})
                 else:
-                    logger.error(f'Prediction validation failed ({len(validation_errors)} errors):\n{error_message}')
+                    logger.error(
+                        f'Prediction validation failed, not raising error - ({len(validation_errors)} errors):\n{error_message}'
+                    )
 
         if commit_to_project:
             # Immediately create project tasks and update project states and counters

@@ -51,6 +51,7 @@ def async_import_background(
         raise_errors = flag_set(
             'fflag_feat_utc_210_prediction_validation_15082025', user=project.organization.created_by
         )
+        logger.info(f'Reformatting predictions with raise_errors: {raise_errors}')
         tasks = reformat_predictions(tasks, project_import.preannotated_from_fields, project, raise_errors)
 
     # Always validate predictions regardless of commit_to_project setting
@@ -84,7 +85,9 @@ def async_import_background(
                 project_import.save(update_fields=['error', 'status'])
                 return
             else:
-                logger.error(f'Prediction validation failed ({len(validation_errors)} errors):\n{error_message}')
+                logger.error(
+                    f'Prediction validation failed, not raising error - ({len(validation_errors)} errors):\n{error_message}'
+                )
 
     if project_import.commit_to_project:
         with transaction.atomic():
