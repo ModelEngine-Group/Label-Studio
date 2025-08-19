@@ -1637,7 +1637,7 @@
     },
     "fflag_feat_all_utc_179_custom_function_logs": {
       "key": "fflag_feat_all_utc_179_custom_function_logs",
-      "on": false,
+      "on": true,
       "prerequisites": [],
       "targets": [],
       "contextTargets": [],
@@ -1659,7 +1659,7 @@
       "trackEvents": false,
       "trackEventsFallthrough": false,
       "debugEventsUntilDate": null,
-      "version": 2,
+      "version": 3,
       "deleted": false
     },
     "fflag_feat_all_utc_222_prompts_api_keys_enterprise_only": {
