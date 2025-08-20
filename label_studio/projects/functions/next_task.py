@@ -4,6 +4,7 @@ from typing import List, Tuple, Union
 
 from core.feature_flags import flag_set
 from core.utils.common import conditional_atomic, db_is_not_sqlite, load_func
+from core.utils.db import fast_first
 from django.conf import settings
 from django.db.models import BooleanField, Case, Count, Exists, F, Max, OuterRef, Q, QuerySet, Value, When
 from django.db.models.fields import DecimalField
@@ -254,27 +255,43 @@ def get_next_task_without_dm_queue(
     return next_task, use_task_lock, queue_info
 
 
-def skipped_queue(next_task, prepared_tasks, project, user, queue_info):
+def skipped_queue(next_task, prepared_tasks, project, user, assigned_flag, queue_info):
     if not next_task and project.skip_queue == project.SkipQueue.REQUEUE_FOR_ME:
         q = Q(project=project, task__isnull=False, was_cancelled=True, task__is_labeled=False)
         skipped_tasks = user.annotations.filter(q).order_by('updated_at').values_list('task__pk', flat=True)
         if skipped_tasks.exists():
             preserved_order = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(skipped_tasks)])
             skipped_tasks = prepared_tasks.filter(pk__in=skipped_tasks).order_by(preserved_order)
-            next_task = _get_first_unlocked(skipped_tasks, user)
+
+            # for assigned annotators locks don't make sense, moreover,
+            # _get_first_unlocked breaks label stream for manual mode because
+            # it evaluates locks based on auto-mode logic and returns None
+            # when there are no more tasks to label in auto-mode
+            if assigned_flag:
+                next_task = fast_first(skipped_tasks)
+            else:
+                next_task = _get_first_unlocked(skipped_tasks, user)
             queue_info = 'Skipped queue'
 
     return next_task, queue_info
 
 
-def postponed_queue(next_task, prepared_tasks, project, user, queue_info):
+def postponed_queue(next_task, prepared_tasks, project, user, assigned_flag, queue_info):
     if not next_task:
         q = Q(task__project=project, task__isnull=False, was_postponed=True, task__is_labeled=False)
         postponed_tasks = user.drafts.filter(q).order_by('updated_at').values_list('task__pk', flat=True)
         if postponed_tasks.exists():
             preserved_order = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(postponed_tasks)])
             postponed_tasks = prepared_tasks.filter(pk__in=postponed_tasks).order_by(preserved_order)
-            next_task = _get_first_unlocked(postponed_tasks, user)
+
+            # for assigned annotators locks don't make sense, moreover,
+            # _get_first_unlocked breaks label stream for manual mode because
+            # it evaluates locks based on auto-mode logic and returns None
+            # when there are no more tasks to label in auto-mode
+            if assigned_flag:
+                next_task = fast_first(postponed_tasks)
+            else:
+                next_task = _get_first_unlocked(postponed_tasks, user)
             if next_task is not None:
                 next_task.allow_postpone = False
             queue_info = 'Postponed draft queue'
@@ -357,9 +374,9 @@ def get_next_task(
                     not_solved_tasks, user_solved_tasks_array, prepared_tasks, user, project, queue_info
                 )
 
-        next_task, queue_info = postponed_queue(next_task, prepared_tasks, project, user, queue_info)
+        next_task, queue_info = postponed_queue(next_task, prepared_tasks, project, user, assigned_flag, queue_info)
 
-        next_task, queue_info = skipped_queue(next_task, prepared_tasks, project, user, queue_info)
+        next_task, queue_info = skipped_queue(next_task, prepared_tasks, project, user, assigned_flag, queue_info)
 
         if next_task and use_task_lock:
             # set lock for the task with TTL 3x time more then current average lead time (or 1 hour by default)
