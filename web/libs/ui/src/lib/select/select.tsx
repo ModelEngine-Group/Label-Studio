@@ -186,7 +186,17 @@ export const Select = forwardRef(
     );
 
     const selectedOptions = useMemo(() => {
-      return flatOptions.filter((option) => isSelected(option));
+      const allSelected = flatOptions.filter((option) => isSelected(option));
+
+      const uniqueSelected = new Map();
+      allSelected.forEach((option) => {
+        const optionValue = option?.value ?? option;
+        if (!uniqueSelected.has(optionValue)) {
+          uniqueSelected.set(optionValue, option);
+        }
+      });
+
+      return Array.from(uniqueSelected.values());
     }, [flatOptions, isSelected, value, multiple]);
 
     const onSearchInputHandler = useCallback(
