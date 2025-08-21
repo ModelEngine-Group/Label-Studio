@@ -1109,14 +1109,41 @@ class Project(ProjectMixin, models.Model):
 
         return objs
 
+    def get_max_annotation_result_size(self):
+        """Get the maximum annotation result size for this project"""
+        # For SQLite, return 0 (no annotations to consider)
+        if settings.DJANGO_DB == settings.DJANGO_DB_SQLITE:
+            return 0
+
+        # Using raw SQL to ensure we use the specific index annotation_proj_result_octlen_idx
+        # which is optimized for this query pattern (project_id, octet_length DESC)
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT id,
+                       octet_length(result::text) AS bytes
+                FROM   task_completion
+                WHERE  project_id = %s
+                ORDER  BY octet_length(result::text) DESC
+                LIMIT  1
+            """,
+                [self.id],
+            )
+
+            row = cursor.fetchone()
+            if not row or not row[1]:
+                return 0
+
+            return row[1]
+
     def get_task_batch_size(self):
-        """Calculate optimal batch size based on task data size"""
+        """Calculate optimal batch size based on task data size and annotation result size"""
         # For SQLite, use default MAX_TASK_BATCH_SIZE
         if settings.DJANGO_DB == settings.DJANGO_DB_SQLITE:
             return settings.MAX_TASK_BATCH_SIZE
 
-        # Using raw SQL to ensure we use the specific index task_proj_octlen_idx
-        # which is optimized for this query pattern (project_id, octet_length DESC)
+        # Get maximum task data size using the optimized index
+        max_task_size = 0
         with connection.cursor() as cursor:
             cursor.execute(
                 """
@@ -1131,10 +1158,17 @@ class Project(ProjectMixin, models.Model):
             )
 
             row = cursor.fetchone()
-            if not row or not row[1]:
-                return settings.MAX_TASK_BATCH_SIZE
+            if row and row[1]:
+                max_task_size = row[1]
 
-            max_data_size = row[1]
+        # Get maximum annotation result size using the new optimized index
+        max_annotation_size = self.get_max_annotation_result_size()
+
+        # Use the larger of the two sizes for batch calculation
+        max_data_size = max(max_task_size, max_annotation_size)
+
+        if max_data_size == 0:
+            return settings.MAX_TASK_BATCH_SIZE
 
         batch_size = settings.TASK_DATA_PER_BATCH // max_data_size
 
@@ -1143,7 +1177,11 @@ class Project(ProjectMixin, models.Model):
         elif batch_size < 1:
             batch_size = 1
 
-        logger.info(f'Project {self.id}: max task data size {max_data_size} bytes, calculated batch size {batch_size}')
+        logger.info(
+            f'Project {self.id}: max task size {max_task_size} bytes, '
+            f'max annotation size {max_annotation_size} bytes, '
+            f'calculated batch size {batch_size}'
+        )
         return batch_size
 
     def __str__(self):
