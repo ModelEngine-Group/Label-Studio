@@ -1,3 +1,4 @@
+import { ff } from "@humansignal/core";
 import type { WaveformAudio } from "../Media/WaveformAudio";
 import { BROWSER_SCROLLBAR_WIDTH, clamp, debounce, warn } from "../Common/Utils";
 import type { Waveform, WaveformOptions } from "../Waveform";
@@ -26,6 +27,8 @@ import { RateLimitedRenderer } from "./Renderer/RateLimitedRenderer";
 import { InteractionManager } from "../Interaction/InteractionManager";
 import type { LayerInfo } from "../Interaction/InteractionManager";
 import type { Interactive } from "../Interaction/Interactive";
+
+const isSyncedBuffering = ff.isActive(ff.FF_SYNCED_BUFFERING);
 
 interface VisualizerEvents {
   draw: (visualizer: Visualizer) => void;
@@ -461,7 +464,26 @@ export class Visualizer extends Events<VisualizerEvents> {
     this.seekLocked = false;
   }
 
+  drawRequestId: number | null = null;
+  drawRequestDry = false;
   draw(dry = false) {
+    if (!isSyncedBuffering) {
+      this._draw(dry);
+      return;
+    }
+    if (this.drawRequestId) {
+      this.drawRequestDry = this.drawRequestDry || dry;
+    } else {
+      this.drawRequestDry = dry;
+      this.drawRequestId = requestAnimationFrame(() => {
+        this.drawRequestId = null;
+        if (this.isDestroyed) return;
+        this._draw(this.drawRequestDry);
+      });
+    }
+  }
+
+  _draw(dry = false) {
     if (this.isDestroyed) return;
     if (!dry) {
       // Center to the current time if playing and autoCenter are enabled

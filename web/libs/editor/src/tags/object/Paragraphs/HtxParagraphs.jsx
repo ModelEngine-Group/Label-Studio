@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useCallback } from "react";
 import { inject, observer } from "mobx-react";
 
 import ObjectTag from "../../../components/Tags/Object";
@@ -11,16 +11,21 @@ import {
   isFF,
 } from "../../../utils/feature-flags";
 import { findNodeAt, matchesSelector, splitBoundaries } from "../../../utils/html";
+import { patchPlayPauseMethods } from "../../../utils/patchPlayPauseMethods";
 import { isSelectionContainsSpan } from "../../../utils/selection-tools";
+import { useUpdateBuffering } from "../../../hooks/useUpdateBuffering";
 import styles from "./Paragraphs.module.scss";
 import { AuthorFilter } from "./AuthorFilter";
 import { Phrases } from "./Phrases";
 import { IconHelp } from "@humansignal/icons";
 import { Toggle, Tooltip } from "@humansignal/ui";
 import { cn } from "../../../utils/bem";
+import { cnm } from "@humansignal/shad/utils";
+import { ff } from "@humansignal/core";
 import { useHotkey } from "../../../hooks/useHotkey";
 
 const audioDefaultProps = {};
+const isSyncedBuffering = ff.isActive(ff.FF_SYNCED_BUFFERING);
 
 if (isFF(FF_LSDV_4711)) audioDefaultProps.crossOrigin = "anonymous";
 
@@ -46,6 +51,48 @@ const ParagraphHotkeys = ({ item }) => {
 
   return null; // This component renders nothing
 };
+
+const ParagraphAudio = observer(({ item }) => {
+  const isBuffering = isSyncedBuffering && item.isBuffering;
+
+  const updateBuffering = useUpdateBuffering(item.audioRef, item.handleBuffering);
+
+  const attachRef = useCallback(
+    (audio) => {
+      if (audio) {
+        audio = patchPlayPauseMethods(audio);
+      }
+      if (item.audioRef instanceof Function) {
+        item.audioRef(audio);
+      } else if (item.audioRef) {
+        item.audioRef.current = audio;
+      }
+    },
+    [item],
+  );
+
+  return (
+    <>
+      {isBuffering && <div className="lsf-timeline-controls__buffering" aria-label="Buffering Media Source" />}
+      <audio
+        {...audioDefaultProps}
+        controls={item.showplayer && !item.syncedAudio}
+        className={styles.audio}
+        src={item.audio}
+        ref={attachRef}
+        onLoadedMetadata={item.handleAudioLoaded}
+        onEnded={item.reset}
+        onError={item.handleError}
+        {...(isSyncedBuffering
+          ? {
+              onCanPlay: updateBuffering,
+              onWaiting: updateBuffering,
+            }
+          : {})}
+      />
+    </>
+  );
+});
 
 class HtxParagraphsView extends Component {
   // Constants for scroll behavior
@@ -963,20 +1010,8 @@ class HtxParagraphsView extends Component {
     return (
       <>
         <ParagraphHotkeys item={item} />
-        <ObjectTag item={item} className={cn("paragraphs").toClassName()}>
-          {withAudio && (
-            <audio
-              {...audioDefaultProps}
-              controls={item.showplayer && !item.syncedAudio}
-              className={styles.audio}
-              src={item.audio}
-              ref={item.audioRef}
-              onLoadedMetadata={item.handleAudioLoaded}
-              onEnded={item.reset}
-              onError={item.handleError}
-              onCanPlay={item.handleCanPlay}
-            />
-          )}
+        <ObjectTag item={item} className={cnm(cn("paragraphs").toClassName(), styles.paragraphs)}>
+          {withAudio && <ParagraphAudio item={item} />}
           {isFF(FF_LSDV_E_278) ? this.renderWrapperHeader() : isFF(FF_DEV_2669) && <AuthorFilter item={item} />}
           <div
             ref={this.myRef}
