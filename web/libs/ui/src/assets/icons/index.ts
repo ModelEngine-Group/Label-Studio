@@ -36,6 +36,7 @@ export { ReactComponent as IconBubbleSpikeAlt } from "./bubble-spike-alt.svg";
 export { ReactComponent as IconBulb } from "./bulb.svg";
 export { ReactComponent as IconBulkLabeling } from "./bulk-labeling.svg";
 export { ReactComponent as IconCalendar } from "./calendar.svg";
+export { ReactComponent as IconChat } from "./chat.svg";
 export { ReactComponent as IconCheck } from "./check.svg";
 export { ReactComponent as IconCheck2 } from "./check2.svg";
 export { ReactComponent as IconCheck3 } from "./check3.svg";

@@ -7,7 +7,7 @@ export const RegionLabels: FC<{ region: LSFRegion }> = observer(({ region }) => 
   const labelsInResults = region.labelings.map((result: any) => result.selectedLabels || []);
   const labels: any[] = [].concat(...labelsInResults);
 
-  if (!labels.length) return <Block name="labels-list">No label</Block>;
+  if (!labels.length) return <Block name="labels-list">{region.noLabelView || "No label"}</Block>;
 
   return (
     <Block name="labels-list">
