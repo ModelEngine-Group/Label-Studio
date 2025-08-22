@@ -791,15 +791,21 @@ class ExportStorage(Storage, ProjectStorageMixin):
         self.info_set_in_progress()
         self.cached_user = self.project.organization.created_by
 
+        # Calculate optimal batch size based on project data and worker count
+        project_batch_size = self.project.get_task_batch_size()
+        chunk_size = max(1, project_batch_size // self.max_workers)
+        logger.info(
+            f'Export storage {self.id}: using chunk_size={chunk_size} '
+            f'(project_batch_size={project_batch_size}, max_workers={self.max_workers})'
+        )
+
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             # Batch annotations so that we update progress before having to submit every future.
             # Updating progress in thread requires coordinating on count and db writes, so just
             # batching to keep it simpler.
             for annotation_batch in _batched(
-                Annotation.objects.filter(project=self.project).iterator(
-                    chunk_size=settings.STORAGE_EXPORT_CHUNK_SIZE
-                ),
-                settings.STORAGE_EXPORT_CHUNK_SIZE,
+                Annotation.objects.filter(project=self.project).iterator(chunk_size=chunk_size),
+                chunk_size,
             ):
                 futures = []
                 for annotation in annotation_batch:
