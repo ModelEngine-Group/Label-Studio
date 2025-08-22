@@ -1,6 +1,5 @@
 import { ff } from "@humansignal/core";
 import { getEnv, getRoot, types } from "mobx-state-tree";
-import { cloneNode } from "../core/Helpers";
 import { FF_DEV_3391 } from "../utils/feature-flags";
 import { AnnotationMixin } from "./AnnotationMixin";
 
@@ -46,22 +45,6 @@ const ToolMixin = types
 
     get fullName() {
       return self.toolName + (self.dynamic ? "-dynamic" : "");
-    },
-
-    get clonedStates() {
-      const states = [self.control];
-      const activeStates = states
-        ? states.filter((c) => c.isSelected)
-        : // .filter(
-          //   c =>
-          //     c.type === IMAGE_CONSTANTS.rectanglelabels ||
-          //     c.type === IMAGE_CONSTANTS.keypointlabels ||
-          //     c.type === IMAGE_CONSTANTS.polygonlabels ||
-          //     c.type === IMAGE_CONSTANTS.brushlabels,
-          // )
-          null;
-
-      return activeStates ? activeStates.map((s) => cloneNode(s)) : null;
     },
 
     get getActiveShape() {

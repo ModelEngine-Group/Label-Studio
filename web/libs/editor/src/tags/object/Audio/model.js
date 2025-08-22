@@ -487,9 +487,12 @@ export const AudioModel = types.compose(
             return;
           }
 
-          const control = self.activeState;
+          const activeStates = self.activeStates();
+          const [control, ...rest] = activeStates;
           const labels = { [control.valueType]: control.selectedValues() };
-          const r = self.annotation.createResult(wsRegion, labels, control, self);
+          const r = ff.isActive(ff.FF_MULTIPLE_LABELS_REGIONS)
+            ? self.annotation.createResult(wsRegion, labels, control, self, false, rest)
+            : self.annotation.createResult(wsRegion, labels, control, self, false);
           const updatedRegion = wsRegion.convertToRegion(labels.labels);
 
           r.setWSRegion(updatedRegion);
@@ -626,7 +629,7 @@ export const AudioModel = types.compose(
               self._ws.destroy();
               self._ws = null;
             }
-          } catch (err) {
+          } catch (_err) {
             self._ws = null;
             console.warn("Already destroyed");
           }

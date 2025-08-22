@@ -115,3 +115,8 @@ export const FF_DM_FILTER_MEMBERS = "fflag_feat_fit_449_datamanager_filter_membe
  * Modify MST models to allow custom tags
  */
 export const FF_CUSTOM_TAGS = "fflag_feat_front_bros_194_custom_tags_short";
+
+/**
+ * Multiple labels support for region creation - improved label blocks handling
+ */
+export const FF_MULTIPLE_LABELS_REGIONS = "fflag_feat_front_bros_327_multiple_labels_regions_short";

@@ -976,7 +976,7 @@ const _Annotation = types
       Hotkey.setScope(Hotkey.DEFAULT_SCOPE);
     },
 
-    createResult(areaValue, resultValue, control, object, skipAfrerCreate = false) {
+    createResult(areaValue, resultValue, control, object, skipAfrerCreate = false, additionalStates = []) {
       // Without correct validation object may be null, but it it shouldn't be so in results - so we should find any
       if (!object && control.type === "textarea") {
         object = self.objects[0];
@@ -1009,6 +1009,13 @@ const _Annotation = types
       objectTag?.afterResultCreated?.(area);
 
       if (!area) return;
+
+      if (ff.isActive(ff.FF_MULTIPLE_LABELS_REGIONS)) {
+        // Add additional states before any deselection happens
+        additionalStates.forEach((state) => {
+          area.setValue(state);
+        });
+      }
 
       // This is added mostly for the reason of updating indexes in labels
       // for the elements (like highlights in text) that won't be dynamically changed

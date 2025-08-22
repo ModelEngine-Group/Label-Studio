@@ -374,13 +374,17 @@ const Model = types
           },
         ];
 
-        const area = self.annotation.createResult({ sequence }, {}, control, self);
+        const activeStates = self.activeStates();
+        const area = ff.isActive(ff.FF_MULTIPLE_LABELS_REGIONS)
+          ? self.annotation.createResult({ sequence }, {}, control, self, false, activeStates)
+          : self.annotation.createResult({ sequence }, {}, control, self, false);
 
-        // add labels
-        for (const tag of self.activeStates()) {
-          area.setValue(tag);
+        if (!ff.isActive(ff.FF_MULTIPLE_LABELS_REGIONS)) {
+          // add labels
+          for (const tag of self.activeStates()) {
+            area.setValue(tag);
+          }
         }
-
         return area;
       },
 
@@ -396,13 +400,24 @@ const Model = types
         const value = {
           ranges: [{ start: frame, end: frame }],
         };
-        // @todo only one attached labeling tag is supported right now :(
-        const labels = self.activeStates()?.[0];
-        const labeling = {
-          [labels.valueType]: labels.selectedValues(),
-        };
+        let labeling;
+        let additionalStates;
+        if (ff.isActive(ff.FF_MULTIPLE_LABELS_REGIONS)) {
+          const activeStates = self.activeStates();
+          additionalStates = activeStates.filter((state) => state !== control);
+          labeling = {
+            [control.valueType]: control.selectedValues(),
+          };
+        } else {
+          const labels = self.activeStates()?.[0];
+          labeling = {
+            [labels.valueType]: labels.selectedValues(),
+          };
+        }
 
-        return self.annotation.createResult(value, labeling, control, self);
+        return ff.isActive(ff.FF_MULTIPLE_LABELS_REGIONS)
+          ? self.annotation.createResult(value, labeling, control, self, false, additionalStates)
+          : self.annotation.createResult(value, labeling, control, self, false);
       },
 
       deleteRegion(id) {
