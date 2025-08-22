@@ -1,38 +1,30 @@
-import { useCallback, useContext } from "react";
-import { Columns } from "../../../components";
+import { StorageProviderForm } from "@humansignal/app-common/blocks/StorageProviderForm";
+import { ff } from "@humansignal/core";
 import { Button } from "@humansignal/ui";
+import { useAtomValue } from "jotai";
+import { forwardRef, useCallback, useContext, useImperativeHandle } from "react";
+import { Columns } from "../../../components";
 import { confirm, modal } from "../../../components/Modal/Modal";
 import { Spinner } from "../../../components/Spinner/Spinner";
 import { ApiContext } from "../../../providers/ApiProvider";
 import { projectAtom } from "../../../providers/ProjectProvider";
+import { useStorageCard } from "./hooks/useStorageCard";
+import { providers } from "./providers";
 import { StorageCard } from "./StorageCard";
 import { StorageForm } from "./StorageForm";
-import { useAtomValue } from "jotai";
-import { useStorageCard } from "./hooks/useStorageCard";
-import { ff } from "@humansignal/core";
-import { StorageProviderForm } from "@humansignal/app-common/blocks/StorageProviderForm";
-import { providers } from "./providers";
 
-export const StorageSet = ({ title, target, rootClass, buttonLabel }) => {
+export const StorageSet = forwardRef(({ title, target, rootClass, buttonLabel }, ref) => {
   const api = useContext(ApiContext);
   const project = useAtomValue(projectAtom);
-  const storageTypesQueryKey = ["storage-types", target];
-  const storagesQueryKey = ["storages", target, project?.id];
+  // The useStorageCard hook now consolidates this
+  // logic providing only the essential state needed by this component/
+
   const useNewStorageScreen = ff.isActive(ff.FF_NEW_STORAGES);
 
-  const {
-    storageTypes,
-    storageTypesLoading,
-    storageTypesLoaded,
-    reloadStorageTypes,
-    storages,
-    storagesLoading,
-    storagesLoaded,
-    reloadStoragesList,
-    loading,
-    loaded,
-    fetchStorages,
-  } = useStorageCard(target, project?.id);
+  const { storageTypes, storages, storagesLoaded, loading, loaded, fetchStorages } = useStorageCard(
+    target,
+    project?.id,
+  );
 
   const showStorageFormModal = useCallback(
     (storage) => {
@@ -92,12 +84,21 @@ export const StorageSet = ({ title, target, rootClass, buttonLabel }) => {
     [showStorageFormModal],
   );
 
+  // Expose showStorageFormModal to parent via ref
+  useImperativeHandle(
+    ref,
+    () => ({
+      openAddModal: () => showStorageFormModal(),
+    }),
+    [showStorageFormModal],
+  );
+
   const onDeleteStorage = useCallback(
     async (storage) => {
       confirm({
         title: "Deleting storage",
         body: "This action cannot be undone. Are you sure?",
-        buttonLook: "destructive",
+        buttonLook: "negative",
         onOk: async () => {
           const response = await api.callApi("deleteStorage", {
             params: {
@@ -141,4 +142,4 @@ export const StorageSet = ({ title, target, rootClass, buttonLabel }) => {
       )}
     </Columns.Column>
   );
-};
+});

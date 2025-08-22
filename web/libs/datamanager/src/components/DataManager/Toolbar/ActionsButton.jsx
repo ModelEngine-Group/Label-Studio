@@ -1,9 +1,9 @@
+import { IconChevronDown, IconChevronRight, IconTrash } from "@humansignal/icons";
+import { Button, Spinner, Tooltip } from "@humansignal/ui";
 import { inject, observer } from "mobx-react";
-import { useCallback, useRef, useEffect, useState, useMemo } from "react";
-import { IconChevronRight, IconChevronDown, IconTrash } from "@humansignal/icons";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Block, Elem } from "../../../utils/bem";
 import { FF_LOPS_E_3, isFF } from "../../../utils/feature-flags";
-import { Button, Spinner, Tooltip } from "@humansignal/ui";
 import { Dropdown } from "../../Common/Dropdown/DropdownComponent";
 import Form from "../../Common/Form/Form";
 import { Menu } from "../../Common/Menu/Menu";
@@ -32,9 +32,9 @@ const DialogContent = ({ text, form, formRef, store, action }) => {
           setIsLoading(false);
         });
     }
-  }, [formData]);
+  }, [formData, store, action.id]);
 
-  const fields = formData && formData.toJSON ? formData.toJSON() : formData;
+  const fields = formData?.toJSON ? formData.toJSON() : formData;
 
   return (
     <Block name="dialog-content">
@@ -126,7 +126,7 @@ const ActionButton = ({ action, parentRef, store, formRef }) => {
         <Menu.Item
           size="small"
           key={action.id}
-          danger={isDeleteAction}
+          variant={isDeleteAction ? "negative" : undefined}
           onClick={onClick}
           className={`actionButton${action.isSeparator ? "_isSeparator" : action.isTitle ? "_isTitle" : ""} ${
             action.disabled ? "actionButton_disabled" : ""
@@ -147,10 +147,45 @@ const invokeAction = (action, destructive, store, formRef) => {
     const { type: dialogType, text, form, title } = action.dialog;
     const dialog = Modal[dialogType] ?? Modal.confirm;
 
+    // Generate dynamic content for destructive actions
+    let dialogTitle = title;
+    let dialogText = text;
+    let okButtonText = "OK";
+
+    if (destructive && !title) {
+      // Extract object type from action ID and title
+      const objectMap = {
+        delete_tasks: "tasks",
+        delete_annotations: "annotations",
+        delete_predictions: "predictions",
+        delete_reviews: "reviews",
+        delete_reviewers: "review assignments",
+        delete_annotators: "annotator assignments",
+        delete_ground_truths: "ground truths",
+      };
+
+      const objectType = objectMap[action.id] || action.title.toLowerCase().replace("delete ", "");
+      dialogTitle = `Delete selected ${objectType}?`;
+
+      // Convert to title case for button text
+      const titleCaseObject = objectType
+        .split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+      okButtonText = `Delete ${titleCaseObject}`;
+    }
+
+    if (destructive && !form) {
+      // Use standardized warning message for simple delete actions
+      const objectType = dialogTitle ? dialogTitle.replace("Delete selected ", "").replace("?", "") : "items";
+      dialogText = `You are about to delete the selected ${objectType}.\n\nThis can't be undone.`;
+    }
+
     dialog({
-      title: title ? title : destructive ? "Destructive action" : "Confirm action",
-      body: <DialogContent text={text} form={form} formRef={formRef} store={store} action={action} />,
-      buttonLook: destructive ? "destructive" : "primary",
+      title: dialogTitle ? dialogTitle : destructive ? "Destructive action" : "Confirm action",
+      body: <DialogContent text={dialogText} form={form} formRef={formRef} store={store} action={action} />,
+      buttonLook: destructive ? "negative" : "primary",
+      okText: destructive ? okButtonText : undefined,
       onOk() {
         const body = formRef.current?.assembleFormData({ asJSON: true });
 
@@ -182,7 +217,7 @@ export const ActionsButton = injector(
           setIsLoading(false);
         });
       }
-    }, [isOpen, actions]);
+    }, [isOpen, actions, store]);
 
     const actionButtons = actions.map((action) => (
       <ActionButton key={action.id} action={action} parentRef={formRef} store={store} formRef={formRef} />

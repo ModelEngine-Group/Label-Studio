@@ -137,6 +137,9 @@ export class DataManager {
   /** @type {"dm" | "labelops"} */
   type = "dm";
 
+  /** @type {string} */
+  role = null;
+
   /**
    * Constructor
    * @param {DMConfig} config
@@ -162,6 +165,7 @@ export class DataManager {
     this.instruments = prepareInstruments(config.instruments ?? {});
     this.apiTransform = config.apiTransform ?? {};
     this.preload = config.preload ?? {};
+    this.role = config.role ?? null;
     this.interfaces = objectToMap({
       tabs: true,
       toolbar: true,

@@ -1,8 +1,8 @@
+import { Button, buttonVariant, ToastContext, ToastType } from "@humansignal/ui";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { generatePath, useHistory } from "react-router";
 import { Link, NavLink } from "react-router-dom";
 import { Spinner } from "../../components";
-import { Button, buttonVariant } from "@humansignal/ui";
 import { modal } from "../../components/Modal/Modal";
 import { Space } from "../../components/Space/Space";
 import { useAPI } from "../../providers/ApiProvider";
@@ -14,7 +14,6 @@ import { isDefined } from "../../utils/helpers";
 import { ImportModal } from "../CreateProject/Import/ImportModal";
 import { ExportPage } from "../ExportPage/ExportPage";
 import { APIConfig } from "./api-config";
-import { ToastContext, ToastType } from "@humansignal/ui";
 
 import "./DataManager.scss";
 
@@ -125,6 +124,11 @@ export const DataManagerPage = ({ ...props }) => {
 
     dataManager.on("importClicked", () => {
       history.push(buildLink("/data/import", { id: params.id }));
+    });
+
+    // Navigate to Storage Settings and auto-open Add Source Storage modal
+    dataManager.on("openSourceStorageModal", () => {
+      history.push(buildLink("/settings/storage?open=source", { id: params.id }));
     });
 
     dataManager.on("exportClicked", () => {
@@ -289,7 +293,13 @@ DataManagerPage.context = ({ dmRef }) => {
           onClick={() => {
             modal({
               title: "Instructions",
-              body: () => <div dangerouslySetInnerHTML={{ __html: project.expert_instruction }} />,
+              body: () => (
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: project.expert_instruction,
+                  }}
+                />
+              ),
             });
           }}
         >
