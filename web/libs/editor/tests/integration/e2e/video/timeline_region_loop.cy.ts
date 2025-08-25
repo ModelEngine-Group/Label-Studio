@@ -5,6 +5,7 @@ import {
   singleTimelineRegionResult,
   multipleTimelineRegionsResult,
   overlappingTimelineRegionsResult,
+  multipleTimelineRegionsLongResult,
 } from "../../data/video_segmentation/timeline_regions";
 import { TWO_FRAMES_TIMEOUT } from "../utils/constants";
 
@@ -261,7 +262,7 @@ describe("Video Timeline Region Loop Playback", suiteConfig, () => {
       LabelStudio.params()
         .config(timelineVideoConfig)
         .data(timelineVideoData)
-        .withResult(multipleTimelineRegionsResult)
+        .withResult(multipleTimelineRegionsLongResult)
         .init();
 
       LabelStudio.waitForObjectsReady();
