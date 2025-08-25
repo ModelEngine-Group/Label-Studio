@@ -101,7 +101,7 @@ export const SkipButton = memo(
         aria-label="skip-task"
         disabled={disabled}
         look="outlined"
-        tooltip="Cancel (skip) tapk [ Ctrl+Space ]"
+        tooltip="Cancel (skip) task [ Ctrl+Space ]"
         onClick={async (e) => {
           const action = () => store.skipTask({});
           const selected = store.annotationStore?.selected;
