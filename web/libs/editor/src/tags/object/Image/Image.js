@@ -597,6 +597,9 @@ const Model = types
     function createImageEntities() {
       if (!self.store.task) return;
 
+      // Clear existing entities to prevent duplicates from React StrictMode double mounting
+      self.imageEntities.clear();
+
       const parsedValue = self.multiImage ? self.parsedValueList : self.parsedValue;
       const idPostfix = self.annotation ? `@${self.annotation.id}` : "";
 
