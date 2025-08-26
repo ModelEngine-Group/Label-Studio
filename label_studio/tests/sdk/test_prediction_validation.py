@@ -325,9 +325,10 @@ class TestSDKPredictionValidation:
 
         prediction_data = {'task': self.task.id, 'result': [], 'score': 0.95, 'model_version': 'v1.0'}  # Empty array
 
-        # Empty results are not allowed - this should fail validation
-        with pytest.raises(Exception):
-            ls.predictions.create(**prediction_data)
+        prediction = ls.predictions.create(**prediction_data)
+        assert prediction.id is not None
+        assert prediction.task == self.task.id
+        assert prediction.result == prediction_data['result']
 
     def test_multiple_regions_mixed_validity(self, django_live_url, business_client):
         """Test prediction with multiple regions where some are valid and some are invalid using SDK"""
