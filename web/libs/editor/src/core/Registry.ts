@@ -1,3 +1,5 @@
+import { ConfigurationError } from "../utils/errors";
+
 interface ObjectTag {
   name: string;
 }
@@ -116,7 +118,7 @@ class _Registry {
     if (!model) {
       const models = Object.keys(this.models);
 
-      throw new Error(`No model registered for tag: ${tag}\nAvailable models:\n\t${models.join("\n\t")}`);
+      throw new ConfigurationError(`No model registered for tag: ${tag}\nAvailable models:\n\t${models.join("\n\t")}`);
     }
 
     return model;
