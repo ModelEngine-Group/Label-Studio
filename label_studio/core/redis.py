@@ -7,6 +7,7 @@ from functools import partial
 
 import django_rq
 import redis
+from django.conf import settings
 from django_rq import get_connection
 from rq.command import send_stop_job_command
 from rq.exceptions import InvalidJobOperation
@@ -128,7 +129,13 @@ def start_job_async_or_sync(job, *args, in_seconds=0, **kwargs):
         enqueue_method = queue.enqueue
         if in_seconds > 0:
             enqueue_method = partial(queue.enqueue_in, timedelta(seconds=in_seconds))
-        job = enqueue_method(job, *args, **kwargs, job_timeout=job_timeout)
+        job = enqueue_method(
+            job,
+            *args,
+            **kwargs,
+            job_timeout=job_timeout,
+            failure_ttl=settings.RQ_FAILED_JOB_TTL,
+        )
         return job
     else:
         on_failure = kwargs.pop('on_failure', None)

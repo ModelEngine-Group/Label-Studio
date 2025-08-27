@@ -369,6 +369,9 @@ RQ_QUEUES = {
     },
 }
 
+# How long to keep failed RQ jobs (in seconds); default is 30 days
+RQ_FAILED_JOB_TTL = int(get_env('RQ_FAILED_JOB_TTL', 30 * 24 * 60 * 60))
+
 # drf-spectacular settings for OpenAPI 3.0 schema generation
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Label Studio API',
