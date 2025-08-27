@@ -4,7 +4,7 @@ import { Button, ButtonGroup } from "@humansignal/ui";
 import { Dropdown } from "../../Common/Dropdown/DropdownComponent";
 import { Toggle } from "../../Common/Form";
 import { IconSettings, IconMinus, IconPlus } from "@humansignal/icons";
-import debounce from "lodash.debounce";
+import debounce from "lodash/debounce";
 
 const injector = inject(({ store }) => {
   const view = store?.currentView;

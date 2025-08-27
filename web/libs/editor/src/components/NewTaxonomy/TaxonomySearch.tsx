@@ -11,7 +11,7 @@ import React, {
 import "./TaxonomySearch.scss";
 import { Block } from "../../utils/bem";
 import type { AntTaxonomyItem } from "./NewTaxonomy";
-import { debounce } from "lodash";
+import debounce from "lodash/debounce";
 
 type TaxonomySearchProps = {
   treeData: AntTaxonomyItem[];

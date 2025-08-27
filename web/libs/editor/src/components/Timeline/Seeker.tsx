@@ -1,4 +1,4 @@
-import { clamp } from "lodash";
+import clamp from "lodash/clamp";
 import { type FC, type ReactElement, useCallback, useRef } from "react";
 import { Block, Elem } from "../../utils/bem";
 import type { TimelineMinimapProps } from "./Types";

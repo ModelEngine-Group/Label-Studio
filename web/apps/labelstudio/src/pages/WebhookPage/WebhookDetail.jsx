@@ -1,6 +1,6 @@
 import { IconCross, IconPlus } from "@humansignal/icons";
 import { Button } from "@humansignal/ui";
-import { cloneDeep } from "lodash";
+import cloneDeep from "lodash/cloneDeep";
 import { useEffect, useState } from "react";
 import { Form, Input, Label, Toggle } from "../../components/Form";
 import { useAPI } from "../../providers/ApiProvider";

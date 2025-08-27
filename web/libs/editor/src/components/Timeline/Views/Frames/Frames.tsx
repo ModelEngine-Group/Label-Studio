@@ -1,5 +1,5 @@
 import { useResizeObserver } from "@humansignal/core/hooks/useResizeObserver";
-import { clamp } from "lodash";
+import clamp from "lodash/clamp";
 import { type FC, type MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useMemoizedHandlers } from "../../../../hooks/useMemoizedHandlers";
 import { Block, Elem } from "../../../../utils/bem";
