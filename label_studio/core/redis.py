@@ -14,6 +14,28 @@ from rq.registry import StartedJobRegistry
 
 logger = logging.getLogger(__name__)
 
+
+def _truncate_args_for_logging(args, kwargs, max_length=30):
+    try:
+        truncated_args = [repr(arg)[:max_length] + ('...' if len(repr(arg)) > max_length else '') for arg in args]
+
+        truncated_kwargs = {
+            k: repr(v)[:max_length] + ('...' if len(repr(v)) > max_length else '')
+            for k, v in kwargs.items()
+            if k != 'on_failure'
+        }
+
+        result = []
+        if truncated_args:
+            result.append(f'args: {truncated_args}')
+        if truncated_kwargs:
+            result.append(f'kwargs: {truncated_kwargs}')
+
+        return ', '.join(result) if result else 'no arguments'
+    except Exception:
+        return 'failed to format arguments'
+
+
 try:
     _redis = get_connection()
     _redis.ping()
@@ -97,7 +119,11 @@ def start_job_async_or_sync(job, *args, in_seconds=0, **kwargs):
         job_timeout = kwargs['job_timeout']
         del kwargs['job_timeout']
     if redis:
-        logger.info(f'Start async job {job.__name__} on queue {queue_name}.')
+        try:
+            args_info = _truncate_args_for_logging(args, kwargs)
+            logger.info(f'Start async job {job.__name__} on queue {queue_name} with {args_info}.')
+        except Exception:
+            logger.info(f'Start async job {job.__name__} on queue {queue_name}.')
         queue = django_rq.get_queue(queue_name)
         enqueue_method = queue.enqueue
         if in_seconds > 0:
