@@ -235,4 +235,5 @@ class HotkeysSerializer(serializers.Serializer):
 
 
 UserSerializer = load_func(settings.USER_SERIALIZER)
+WhoAmIUserSerializer = load_func(settings.WHOAMI_USER_SERIALIZER)
 UserSerializerUpdate = load_func(settings.USER_SERIALIZER_UPDATE)
