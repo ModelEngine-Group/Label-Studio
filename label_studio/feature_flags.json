@@ -4308,6 +4308,33 @@
       "version": 3,
       "deleted": false
     },
+    "fflag_fix_back_plt_863_remove_iterator_27082025_short": {
+      "key": "fflag_fix_back_plt_863_remove_iterator_27082025_short",
+      "on": true,
+      "prerequisites": [],
+      "targets": [],
+      "contextTargets": [],
+      "rules": [],
+      "fallthrough": {
+        "variation": 0
+      },
+      "offVariation": 1,
+      "variations": [
+        true,
+        false
+      ],
+      "clientSideAvailability": {
+        "usingMobileKey": false,
+        "usingEnvironmentId": false
+      },
+      "clientSide": false,
+      "salt": "bdfb77aefe4b4b01ab8125128c45fdb6",
+      "trackEvents": false,
+      "trackEventsFallthrough": false,
+      "debugEventsUntilDate": null,
+      "version": 3,
+      "deleted": false
+    },
     "fflag_fix_bros_113_members_user_order_20250816": {
       "key": "fflag_fix_bros_113_members_user_order_20250816",
       "on": false,
