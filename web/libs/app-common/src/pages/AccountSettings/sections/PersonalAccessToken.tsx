@@ -1,4 +1,4 @@
-import { useCopyText } from "@humansignal/core/lib/hooks/useCopyText";
+import { useCopyText } from "@humansignal/core";
 import { Button, IconFileCopy, IconLaunch, Label, Typography } from "@humansignal/ui";
 /**
  * FIXME: This is legacy imports. We're not supposed to use such statements
@@ -44,8 +44,8 @@ export const PersonalAccessToken = () => {
   const token = useAtomValue(currentTokenAtom);
   const reset = useAtomValue(resetTokenAtom);
   const curl = useAtomValue(curlStringAtom);
-  const [copyToken, tokenCopied] = useCopyText(token);
-  const [copyCurl, curlCopied] = useCopyText(curl);
+  const [copyToken, tokenCopied] = useCopyText({ defaultText: token });
+  const [copyCurl, curlCopied] = useCopyText({ defaultText: curl });
 
   return (
     <div id="personal-access-token">
@@ -56,7 +56,7 @@ export const PersonalAccessToken = () => {
             <Input name="token" className={styles.input} readOnly value={token} />
             <Button
               leading={<IconFileCopy />}
-              onClick={copyToken}
+              onClick={() => copyToken()}
               disabled={tokenCopied}
               variant="primary"
               look="outlined"
@@ -81,7 +81,7 @@ export const PersonalAccessToken = () => {
             />
             <Button
               leading={<IconFileCopy />}
-              onClick={copyCurl}
+              onClick={() => copyCurl()}
               disabled={curlCopied}
               variant="primary"
               look="outlined"

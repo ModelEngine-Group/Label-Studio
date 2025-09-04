@@ -4,14 +4,14 @@ import { DescriptionList } from "../../../components/DescriptionList/Description
 import { modal } from "../../../components/Modal/Modal";
 import { Oneof } from "../../../components/Oneof/Oneof";
 import { getLastTraceback } from "../../../utils/helpers";
-import { useCopyText } from "@humansignal/core/lib/hooks/useCopyText";
+import { useCopyText } from "@humansignal/core";
 
 // Component to handle copy functionality within the modal
 const CopyButton = ({ msg }) => {
-  const [copyText, copied] = useCopyText(msg);
+  const [copyText, copied] = useCopyText({ defaultText: msg });
 
   return (
-    <Button variant="neutral" icon={<IconFileCopy />} onClick={copyText} disabled={copied} className="w-[7rem]">
+    <Button variant="neutral" icon={<IconFileCopy />} onClick={() => copyText()} disabled={copied} className="w-[7rem]">
       {copied ? "Copied!" : "Copy"}
     </Button>
   );

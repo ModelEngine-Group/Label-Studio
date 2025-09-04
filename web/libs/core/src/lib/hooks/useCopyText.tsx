@@ -13,5 +13,5 @@ export const useCopyText = ({ defaultText = "", timeout = 1200 }: { defaultText?
     [defaultText, timeout],
   );
 
-  return [copied, copyTextCallback] as const;
+  return [copyTextCallback, copied] as const;
 };

@@ -6,7 +6,7 @@ import { Icon } from "../Icon/Icon";
 import { modal } from "../Modal/Modal";
 import { IconCode, IconGear, IconGearNewUI, IconCopyOutline } from "@humansignal/icons";
 import { AutoSizerTable, Tooltip, Button } from "@humansignal/ui";
-import { useCopyText } from "@humansignal/core/lib/hooks/useCopyText";
+import { useCopyText } from "@humansignal/core";
 import "./Table.scss";
 import { TableCheckboxCell } from "./TableCheckbox";
 import { tableCN, TableContext } from "./TableContext";
@@ -448,7 +448,7 @@ const TaskSourceView = ({ content, onTaskLoad, sdkType }) => {
     return source ? JSON.stringify(source, null, 2) : "";
   }, [source]);
 
-  const [handleCopy, copied] = useCopyText(jsonString);
+  const [handleCopy, copied] = useCopyText({ defaultText: jsonString });
 
   return (
     <div
@@ -470,7 +470,7 @@ const TaskSourceView = ({ content, onTaskLoad, sdkType }) => {
               zIndex: 10,
               color: "var(--color-neutral-content-subtle)",
             }}
-            onClick={handleCopy}
+            onClick={() => handleCopy()}
             leading={<Icon icon={IconCopyOutline} style={{ color: "var(--color-neutral-content-subtle)" }} />}
           />
         </Tooltip>

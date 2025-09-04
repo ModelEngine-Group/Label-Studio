@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { inject, observer } from "mobx-react";
-import { useCopyText } from "@humansignal/core/lib/hooks/useCopyText";
+import { useCopyText } from "@humansignal/core";
 import { isDefined, userDisplayName } from "@humansignal/core/lib/utils/helpers";
 import { Block, cn, Elem } from "../../utils/bem";
 import {
@@ -114,7 +114,7 @@ export const AnnotationButton = observer(
           url.searchParams.delete("region");
           return url.toString();
         }, [entity.pk]);
-        const [copyLink] = useCopyText(annotationLink);
+        const [copyLink] = useCopyText({ defaultText: annotationLink });
         const toast = useToast();
         const dropdown = useDropdown();
         const clickHandler = () => {

@@ -21,7 +21,7 @@ export function CodeBlock({
     negative: "bg-negative-background border-negative-border-subtle",
   };
 
-  const [isCopied, copyCode] = useCopyText();
+  const [copyCode, isCopied] = useCopyText();
 
   return (
     <div

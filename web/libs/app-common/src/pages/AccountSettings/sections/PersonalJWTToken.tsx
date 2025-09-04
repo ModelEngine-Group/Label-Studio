@@ -5,7 +5,7 @@ import { useAtomValue } from "jotai";
 import clsx from "clsx";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
-import { useCopyText } from "@humansignal/core/lib/hooks/useCopyText";
+import { useCopyText } from "@humansignal/core";
 import styles from "./PersonalJWTToken.module.scss";
 import { Button } from "@humansignal/ui";
 
@@ -188,7 +188,7 @@ export function PersonalJWTToken() {
 
 function CreateTokenForm() {
   const { data, mutate: createToken } = useAtomValue(refreshTokenAtom);
-  const [copy, copied] = useCopyText(data ?? "");
+  const [copy, copied] = useCopyText({ defaultText: data ?? "" });
 
   useEffect(() => {
     createToken();
@@ -206,7 +206,7 @@ function CreateTokenForm() {
           readOnly
           value={data}
         />
-        <Button onClick={copy} disabled={copied} variant="neutral" look="outlined">
+        <Button onClick={() => copy()} disabled={copied} variant="neutral" look="outlined">
           {copied ? "Copied!" : "Copy"}
         </Button>
       </div>
