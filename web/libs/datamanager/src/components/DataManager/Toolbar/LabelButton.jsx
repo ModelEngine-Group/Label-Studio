@@ -95,7 +95,7 @@ export const LabelButton = injector(({ store, canLabel, size, target, selectedCo
             Label {selectedCount ? selectedCount : "All"} Task{!selectedCount || selectedCount > 1 ? "s" : ""}
           </Button>
           <Dropdown.Trigger
-            align="right"
+            align="bottom-right"
             content={
               <Menu size="compact">
                 <Menu.Item onClick={onLabelVisible}>Label Tasks As Displayed</Menu.Item>
