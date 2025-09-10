@@ -147,7 +147,7 @@ export class DataManager {
   constructor(config) {
     this.root = config.root;
     this.project = config.project;
-    this.projectId = config.projectId;
+    this.projectId = config.projectId ?? this?.project?.id;
     this.dataset = config.dataset;
     this.datasetId = config.datasetId;
     this.settings = config.settings;
