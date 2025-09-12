@@ -141,6 +141,9 @@ const DrawingTool = types
         self.annotation.setIsDrawing(true);
         self.annotation.regionStore.selection.drawingSelect(self.currentArea);
         self.listenForClose?.();
+        if (self.manager.findSelectedTool() !== self) {
+          self.manager.selectTool(self, true);
+        }
       },
       commitDrawingRegion() {
         const { currentArea, control, obj } = self;
