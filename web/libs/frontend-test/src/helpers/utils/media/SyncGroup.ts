@@ -8,7 +8,7 @@ class SyncGroup {
     this.views = views;
   }
 
-  checkSynchronization(tolerance = 0.01, maxShiftAlias: string | null = null, attempts = 3) {
+  checkSynchronization(tolerance = 0.01, maxShiftAlias: string | null = null, attempts = 5) {
     const mediaChains = this.views.map((view) => view.mediaElement);
 
     mediaChains[0].then((baseMedia) => {

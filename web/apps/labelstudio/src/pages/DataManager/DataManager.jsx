@@ -112,27 +112,27 @@ export const DataManagerPage = ({ ...props }) => {
       }
 
       if (isMissingTaskError) {
-        history.push(buildLink("", { id: params.id }));
+        history.push(buildLink("", { id: params?.id ?? project?.id }));
       } else if (isMissingProjectError) {
         history.push("/projects");
       }
     });
 
     dataManager.on("settingsClicked", () => {
-      history.push(buildLink("/settings/labeling", { id: params.id }));
+      history.push(buildLink("/settings/labeling", { id: params?.id ?? project?.id }));
     });
 
     dataManager.on("importClicked", () => {
-      history.push(buildLink("/data/import", { id: params.id }));
+      history.push(buildLink("/data/import", { id: params?.id ?? project?.id }));
     });
 
     // Navigate to Storage Settings and auto-open Add Source Storage modal
     dataManager.on("openSourceStorageModal", () => {
-      history.push(buildLink("/settings/storage?open=source", { id: params.id }));
+      history.push(buildLink("/settings/storage?open=source", { id: params?.id ?? project?.id }));
     });
 
     dataManager.on("exportClicked", () => {
-      history.push(buildLink("/data/export", { id: params.id }));
+      history.push(buildLink("/data/export", { id: params?.id ?? project?.id }));
     });
 
     dataManager.on("error", (response) => {
@@ -146,7 +146,7 @@ export const DataManagerPage = ({ ...props }) => {
     dataManager.on("navigate", (route) => {
       const target = route.replace(/^projects/, "");
 
-      if (target) history.push(buildLink(target, { id: params.id }));
+      if (target) history.push(buildLink(target, { id: params?.id ?? project?.id }));
       else history.push("/projects");
     });
 
