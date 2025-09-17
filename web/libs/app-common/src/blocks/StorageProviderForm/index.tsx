@@ -342,6 +342,7 @@ export const StorageProviderForm = forwardRef<unknown, StorageProviderFormProps>
             isLoading: saveStorageMutation.isLoading,
           }}
           target={effectiveTarget}
+          isProviderDisabled={providers[formData.provider]?.disabled || false}
         />
       </div>
     );

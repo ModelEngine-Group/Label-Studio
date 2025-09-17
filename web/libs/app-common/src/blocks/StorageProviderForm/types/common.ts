@@ -1,4 +1,4 @@
-import type { CalloutVariant } from "@humansignal/ui";
+import type { CalloutVariant } from "@humansignal/ui/lib/callout/callout";
 import type { FC } from "react";
 import type { z } from "zod";
 
@@ -53,4 +53,6 @@ export interface ProviderConfig {
   fields: (FieldDefinition | MessageDefinition)[];
   layout: LayoutRow[];
   icon?: FC<any>;
+  disabled?: boolean;
+  badge?: JSX.Element;
 }

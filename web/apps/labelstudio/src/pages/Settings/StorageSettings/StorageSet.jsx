@@ -35,7 +35,7 @@ export const StorageSet = forwardRef(({ title, target, rootClass, buttonLabel },
       const modalRef = modal({
         title,
         closeOnClickOutside: false,
-        style: { width: 960 },
+        style: { width: 840 },
         bare: useNewStorageScreen,
         onHidden: () => {
           // Reset state when modal is closed (including Escape key)
