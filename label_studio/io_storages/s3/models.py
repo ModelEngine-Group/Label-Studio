@@ -193,14 +193,13 @@ class S3ImportStorageBase(S3StorageMixin, ImportStorage):
 
     @catch_and_reraise_from_none
     def iter_objects(self):
-        client, bucket = self.get_client_and_bucket()
+        _, bucket = self.get_client_and_bucket()
+        list_kwargs = {}
         if self.prefix:
-            list_kwargs = {'Prefix': self.prefix.rstrip('/') + '/'}
-            if not self.recursive_scan:
-                list_kwargs['Delimiter'] = '/'
-            bucket_iter = bucket.objects.filter(**list_kwargs).all()
-        else:
-            bucket_iter = bucket.objects.all()
+            list_kwargs['Prefix'] = self.prefix.rstrip('/') + '/'
+        if not self.recursive_scan:
+            list_kwargs['Delimiter'] = '/'
+        bucket_iter = bucket.objects.filter(**list_kwargs).all()
         regex = re.compile(str(self.regex_filter)) if self.regex_filter else None
         for obj in bucket_iter:
             key = obj.key

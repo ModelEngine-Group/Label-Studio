@@ -197,22 +197,54 @@ class AzureBlobImportStorageBase(AzureBlobStorageMixin, ImportStorage):
     presign_ttl = models.PositiveSmallIntegerField(
         _('presign_ttl'), default=1, help_text='Presigned URLs TTL (in minutes)'
     )
+    recursive_scan = models.BooleanField(
+        _('recursive scan'),
+        default=False,
+        db_default=False,
+        null=True,
+        help_text=_('Perform recursive scan over the container content'),
+    )
 
     def iter_objects(self):
         container = self.get_container()
-        prefix = str(self.prefix) if self.prefix else ''
-        files = container.list_blobs(name_starts_with=prefix)
+        prefix = (str(self.prefix).rstrip('/') + '/') if self.prefix else ''
         regex = re.compile(str(self.regex_filter)) if self.regex_filter else None
 
-        for file in files:
-            # skip folder
-            if file.name == (prefix.rstrip('/') + '/'):
-                continue
-            # check regex pattern filter
-            if regex and not regex.match(file.name):
-                logger.debug(file.name + ' is skipped by regex filter')
-                continue
-            yield file
+        if self.recursive_scan:
+            # Recursive scan - use list_blobs to get all blobs
+            files_iter = container.list_blobs(name_starts_with=prefix)
+            for file in files_iter:
+                # skip folder placeholders
+                if file.name == (prefix.rstrip('/') + '/'):
+                    continue
+                # check regex pattern filter
+                if regex and not regex.match(file.name):
+                    logger.debug(file.name + ' is skipped by regex filter')
+                    continue
+                yield file
+        else:
+            # Non-recursive scan - use walk_blobs with delimiter to handle hierarchical structure
+            def _iter_hierarchical(current_prefix=''):
+                search_prefix = prefix + current_prefix if current_prefix else (prefix or None)
+                files_iter = container.walk_blobs(name_starts_with=search_prefix, delimiter='/')
+
+                for item in files_iter:
+                    if hasattr(item, 'name') and hasattr(item, 'size'):
+                        # This is a blob (file)
+                        # skip folder placeholders
+                        if item.name == (prefix.rstrip('/') + '/'):
+                            continue
+                        # check regex pattern filter
+                        if regex and not regex.match(item.name):
+                            logger.debug(item.name + ' is skipped by regex filter')
+                            continue
+                        yield item
+                    else:
+                        # This is a BlobPrefix (directory) - skip it in non-recursive mode
+                        logger.debug(f'Skipping directory prefix: {item.name}')
+                        continue
+
+            yield from _iter_hierarchical()
 
     def iter_keys(self):
         for obj in self.iter_objects():

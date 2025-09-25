@@ -67,12 +67,21 @@ class LocalFilesImportStorageBase(LocalFilesMixin, ImportStorage):
     def can_resolve_url(self, url):
         return False
 
+    recursive_scan = models.BooleanField(
+        _('recursive scan'),
+        default=False,
+        db_default=False,
+        null=True,
+        help_text=_('Perform recursive scan over the directory content'),
+    )
+
     def iter_objects(self):
         path = Path(self.path)
         regex = re.compile(str(self.regex_filter)) if self.regex_filter else None
         # For better control of imported tasks, file reading has been changed to ascending order of filenames.
         # In other words, the task IDs are sorted by filename order.
-        for file in sorted(path.rglob('*'), key=os.path.basename):
+        iterator = path.rglob('*') if self.recursive_scan else path.glob('*')
+        for file in sorted(iterator, key=os.path.basename):
             if file.is_file():
                 key = file.name
                 if regex and not regex.match(key):

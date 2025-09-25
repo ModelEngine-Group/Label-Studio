@@ -125,13 +125,14 @@ def test_import_multiple_tasks_s3(project, common_task_data):
             aws_access_key_id='example',
             aws_secret_access_key='example',
             use_blob_urls=False,
+            recursive_scan=True,
         )
 
 
 @pytest.mark.fflag_feat_dia_2092_multitasks_per_storage_link_on
 def test_import_multiple_tasks_gcs(project, common_task_data):
     # initialize mock with sample data
-    with gcs_client_mock():
+    with gcs_client_mock(sample_blob_names=['test.json']):
         _test_storage_import(
             project,
             GCSImportStorageFactory,
@@ -139,6 +140,7 @@ def test_import_multiple_tasks_gcs(project, common_task_data):
             # magic bucket name to set correct data in gcs_client_mock
             bucket='multitask_JSON',
             use_blob_urls=False,
+            recursive_scan=True,
         )
 
 
@@ -151,6 +153,7 @@ def test_import_multiple_tasks_azure(project, common_task_data):
             AzureBlobImportStorageFactory,
             common_task_data,
             use_blob_urls=False,
+            recursive_scan=True,
         )
 
 
@@ -187,6 +190,7 @@ def test_storagelink_fields(project, common_task_data):
             aws_access_key_id='example',
             aws_secret_access_key='example',
             use_blob_urls=False,
+            recursive_scan=True,
         )
         storage.save()
         storage.sync()

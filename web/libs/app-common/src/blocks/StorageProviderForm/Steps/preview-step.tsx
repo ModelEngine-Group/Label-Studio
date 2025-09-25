@@ -243,7 +243,7 @@ export const PreviewStep = ({
                   <p className="text-sm text-muted-foreground">Include files from all nested folders</p>
                 </div>
                 <Toggle
-                  checked={formData.recursive_scan ?? true}
+                  checked={formData.recursive_scan ?? false}
                   onChange={(e) => {
                     setFormState((prevState) => ({
                       ...prevState,

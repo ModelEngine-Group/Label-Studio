@@ -1524,6 +1524,7 @@ stages:
         title: Testing S3 storage (bucket from conftest.py)
         use_blob_urls: true
         presign_ttl: 3600
+        recursive_scan: true
       method: POST
       url: '{django_live_url}/api/storages/s3'
     response:
