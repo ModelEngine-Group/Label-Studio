@@ -19,6 +19,8 @@ Set up the following cloud and other storage systems with Label Studio:
 - [Microsoft Azure Blob storage](#Microsoft-Azure-Blob-storage)
 - [Redis database](#Redis-database)
 - [Local storage](#Local-storage) <div class="enterprise-only">(for On-prem only)</div>
+- [Databricks Files (UC Volumes)](#Databricks-Files-UC-Volumes)
+
 
 ## Troubleshooting
 
@@ -42,6 +44,7 @@ For more troubleshooting information, see [Troubleshooting Label Studio](trouble
 For more troubleshooting information, see [Troubleshooting Import, Export, & Storage](https://support.humansignal.com/hc/en-us/sections/16982163062029-Import-Export-Storage) in the HumanSignal support center.
 
 </div>
+
 
 ## How external storage connections and sync work
 
@@ -1483,7 +1486,86 @@ You can also create a storage connection using the Label Studio API.
 If you're using Label Studio in Docker, you need to mount the local directory that you want to access as a volume when you start the Docker container. See [Run Label Studio on Docker and use local storage](https://labelstud.io/guide/start#Run-Label-Studio-on-Docker-and-use-Local-Storage).
 
 
-### Troubleshooting cloud storage
+
+
+## Databricks Files (UC Volumes)
+
+<div class="enterprise-only">
+
+Connect Label Studio Enterprise to Databricks Unity Catalog (UC) Volumes to import files as tasks and export annotations as JSON back to your volumes. This connector uses the Databricks Files API and operates only in proxy mode (no presigned URLs are supported by Databricks).
+
+### Prerequisites
+- A Databricks workspace URL (Workspace Host), for example `https://adb-12345678901234.1.databricks.com` (or Azure domain)
+- A Databricks Personal Access Token (PAT) with permission to access the Files API
+- A UC Volume path under `/Volumes/<catalog>/<schema>/<volume>` with files you want to label
+
+References:
+- Databricks workspace: https://docs.databricks.com/en/getting-started/index.html
+- Personal access tokens: https://docs.databricks.com/en/dev-tools/auth/pat.html
+- Unity Catalog and Volumes: https://docs.databricks.com/en/files/volumes.html
+
+### Set up connection in the Label Studio UI
+1. Open Label Studio → project → **Settings > Cloud Storage**.
+2. Click **Add Source Storage**. Select **Databricks Files (UC Volumes)**.
+3. Configure the connection:
+   - Workspace Host: your Databricks workspace base URL (no trailing slash)
+   - Access Token: your PAT
+   - Catalog / Schema / Volume: Unity Catalog coordinates
+   - Click **Next** to open Import Settings & Preview
+4. Import Settings & Preview:
+   - Bucket Prefix (optional): relative subpath under the volume (e.g., `images/train`)
+   - File Name Filter (optional): regex to filter files (e.g., `.*\.json$`)
+   - Scan all sub-folders: enable for recursive listing; disable to list only current folder
+   - Click **Load preview** to verify files
+5. Click **Save** (or **Save & Sync**) to create the connection and sync tasks.
+
+### Target storage (export)
+1. Open **Settings > Cloud Storage** → **Add Target Storage** → **Databricks Files (UC Volumes)**.
+2. Use the same Workspace Host/Token and UC coordinates.
+3. Set an Export Prefix (e.g., `exports/${project_id}`).
+4. Click **Save** and then **Sync** to push annotations as JSON files to your volume.
+
+!!! note "URI schema"
+    To reference Databricks files directly in task JSON (without using an Import Storage), use Label Studio’s Databricks URI scheme:
+    
+    `dbx://Volumes/<catalog>/<schema>/<volume>/<path>`
+    
+    Example:
+    
+    ```
+    { "image": "dbx://Volumes/main/default/dataset/images/1.jpg" }
+    ```
+
+
+!!! note "Troubleshooting"
+    - If listing returns zero files, verify the path under `/Volumes/<catalog>/<schema>/<volume>/<prefix?>` and your PAT permissions.
+    - Ensure the Workspace Host has no trailing slash and matches your workspace domain.
+    - If previews work but media fails to load, confirm proxy mode is allowed for your organization in Label Studio and network egress allows Label Studio to reach Databricks.
+
+
+!!! warning "Proxy and security"
+    This connector streams data **through the Label Studio backend** with HTTP Range support. Databricks does not support presigned URLs, so this option is also not available in Label Studio.
+
+
+</div>
+
+<div class="opensource-only">
+
+### Use Databricks Files in Label Studio Enterprise
+
+Databricks Unity Catalog (UC) Volumes integration is available in Label Studio Enterprise. It lets you:
+
+- Import files directly from UC Volumes under `/Volumes/<catalog>/<schema>/<volume>`
+- Stream media securely via the platform proxy (no presigned URLs)
+- Export annotations back to your Databricks Volume as JSON
+
+Learn more and see the full setup guide in the Enterprise documentation: [Databricks Files (UC Volumes)](https://docs.humansignal.com/guide/storage#Databricks-Files-UC-Volumes). If your organization needs governed access to Databricks data with Unity Catalog, consider [Label Studio Enterprise](https://humansignal.com/).
+
+</div>
+
+
+
+## Troubleshooting cloud storage
 
 <div class="opensource-only">
 

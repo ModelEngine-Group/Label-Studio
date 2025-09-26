@@ -2,86 +2,141 @@
 description: How to add a new storage or data connector for Label Studio
 alwaysApply: false
 ---
-# Cursor Rule: Implementing New Storage Providers in Label Studio
+# Implementing New Storage Providers in Label Studio
 
 ## Overview
-This rule describes the process and best practices for adding a new storage provider to Label Studio using the declarative provider schema system.
-
-See comprehensive overview about storages @io_storages/README.md. 
-
-## Architecture Overview
+This document describes the process and best practices for adding a new storage provider to Label Studio using the declarative provider schema system.
 
 Label Studio supports 2 types of cloud storages:
 1. **Import Storages** (Source Cloud Storages) - for importing tasks/data
 2. **Export Storages** (Target Cloud Storages) - for exporting annotations
 
-### Key Differences Between Storage Types
+See comprehensive overview about storages @io_storages/README.md. 
 
-| Aspect | Import Storage | Export Storage |
-|--------|----------------|----------------|
-| **Purpose** | Import tasks FROM cloud storage | Export annotations TO cloud storage |
-| **Triggering** | Manual sync via API/UI | Automatic via Django signals |
-| **Data Flow** | Storage → Label Studio | Label Studio → Storage |
-| **Validation** | Must check prefix exists | No prefix check (auto-created) |
-| **Primary Methods** | `iter_objects()`, `get_data()` | `save_annotation()`, `save_annotations()` |
-| **Threading** | Single-threaded iteration | Multi-threaded export (max_workers) |
 
-Each storage type follows this inheritance hierarchy:
-```mermaid
-graph TD
-    Storage-->ImportStorage
-    Storage-->ExportStorage
-    
-    ProjectStorageMixin-->NewImportStorage
-    ImportStorage-->NewImportStorageBase
-    
-    NewStorageMixin-->NewExportStorage
-    ExportStorage-->NewExportStorage
+## Implementation Checklist
 
-    NewImportStorageBase-->NewImportStorage
-    
-    subgraph New Provider
-        NewImportStorage
-        NewImportStorageBase
-        NewExportStorage
-        NewStorageMixin[NewProviderStorageMixin]
-    end
-```
+Follow all steps below to implement a new storage. More details follow after the checklist; review them all. Do it on your best, until all items are done and tests are passing. 
 
-## Key Export Storage Insights
+### 1. Exploration and preparation
+1. [ ] Carefully read @io_storages/README.md
+2. [ ] Search official documentation for the new storage you want to add
+  - [ ] Determine whether pre-signed URLs are supported, or whether only direct reads are possible. In case of direct reads, we should hide pre-signed URLs toggle and use Label Studio proxy. 
+  - [ ] Determine whether writes are supported, and how annotations will be stored (objects/blobs, files, rows/strings in a table, etc.)
+  - [ ] Understand the provider's Python API/SDK, especially how to read, write, and list objects. If SDK is available, use SDK
+3. If the requester hasn't specified the target edition, recommend Open Source or Enterprise and confirm the choice
+4. Check storage directory structure in `label_studio/io_storages` (or `label_studio_enterprise/lse_io_storages` for Enterprise) and the `s3` (or `s3s` for Enterprise) subfolder
+5. [ ] Create the new provider directory structure based on the pattern you observed
+6. [ ] Create a README.md file in the new provider folder
+7. [ ] Add a brief Overview section about the new storage and your findings from step 2
+8. [ ] Add a section on how to configure the storage from scratch for users unfamiliar with it. Provide clear, correct, up-to-date steps with links to official docs to reduce manual QA time
 
-Based on the implementation patterns in the codebase, here are the critical aspects specific to export storages (target storages):
+### 2. Backend Implementation
+1. [ ] Implement storage mixin with common fields:
+  - [ ] Basic fields: bucket, prefix, regex_filter, use_blob_urls (pre-signed URLs on/off), recursive_scan (if applicable)
+  - [ ] URL resolution: presign, presign_ttl (if applicable to the storage)
+  - [ ] Provider credentials: api_key, secret_key, endpoint_url
+  - [ ] Common methods: get_client(), validate_connection()
+2. [ ] Create import storage base class with required methods:
+  - [ ] `iter_objects()` - iterate over storage objects
+  - [ ] `get_data()` - load task data from objects
+  - [ ] `generate_http_url()` - create HTTP URLs
+  - [ ] `can_resolve_url()` - check URL resolution capability
+  - [ ] `validate_connection()` - validate credentials and that the prefix contains files
+3. [ ] Create export storage class with required methods:
+  - [ ] `save_annotation()` - save single annotation to storage
+  - [ ] `delete_annotation()` - delete annotation from storage (optional)
+  - [ ] `validate_connection()` - validate credentials and bucket access (NO prefix check)
+4. [ ] Create non-abstract provider-specific concrete classes for import and export
+5. [ ] Implement storage link models:
+  - [ ] ImportStorageLink for tracking task imports
+  - [ ] ExportStorageLink for tracking annotation exports
+6. [ ] **CRITICAL: Add `app_label = 'io_storages'` to Meta classes** - All concrete storage models (ImportStorage, ExportStorage, and StorageLink classes) must include `app_label = 'io_storages'` in their Meta class to avoid Django app registration errors. This is required because storage providers are in subdirectories of `io_storages` but need to be registered under the main `io_storages` app. **Note**: Enterprise providers do NOT need app_label - see enterprise guide.
+7. [ ] Create serializers with validation logic
+8. [ ] Implement API views following existing patterns
+9. [ ] Register URLs in storage URL configuration
+10. [ ] Add signal handlers for auto-export functionality:
+  - [ ] post_save signal for automatic annotation export
+  - [ ] pre_delete signal for automatic annotation deletion
+  - [ ] Async export functions with error handling
+11. [ ] If you use SDK: add provider SDK library to pyproject.toml
+  - [ ] Make poetry lock: `poetry install && poetry lock`
+12. [ ] Create database migrations using `poetry run python manage.py makemigrations` only!   
+13. [ ] Ensure that you correctly handle token and security fields; they should not be displayed on the frontend or backend after they are initially entered and saved. Verify how this works with other storage codes.
 
-### 1. **Automatic vs Manual Operation**
-- **Import storages**: Require manual sync via API calls
-- **Export storages**: Automatically triggered by Django signals when annotations are created/updated
+### 3. Frontend Implementation  
+1. [ ] Check examples: for Open Source see: `label-studio/web/apps/labelstudio/src/pages/Settings/StorageSettings/providers/`, for Enterprise see: `label-studio-enterprise/web/apps/labelstudio/src/pages/Settings/StorageSettings/providers/`
+2. [ ] Create a provider configuration file in `web/apps/labelstudio/src/pages/Settings/StorageSettings/providers/` with:
+  - [ ] All required fields with proper types
+  - [ ] Zod validation schemas
+  - [ ] Meaningful labels and placeholders
+  - [ ] Proper field layout definition
+3. [ ] Register provider in central registry
+4. [ ] Mark credential fields with `accessKey: true`
+5. [ ] Test form rendering and validation
+6. [ ] Verify edit mode behavior for credentials
 
-### 2. **Connection Validation Differences**
-- **Import storages**: Must validate that prefix contains files during `validate_connection()`
-- **Export storages**: Only validate bucket access, NOT prefix (prefixes are created automatically)
+### 4. Testing
+- [ ] Write backend pytests for newly added API calls (see @backend-unit-tests.mdc for details)
+- [ ] Test connection validation (validate_connection)
+- [ ] Test object iteration and filtering (iter_objects)
+- [ ] Test task data loading (get_data)
+- [ ] Test frontend form functionality
+- [ ] Test export annotations on Sync button click and when Submit button clicked (post save signal)
+- [ ] Test delete exported annotation
+- [ ] Critical: run all created tests, check how to run them in @backend-unit-tests.mdc
 
-### 3. **Data Serialization**
-Export storages use `_get_serialized_data()` which returns different formats based on feature flags:
-- **Default**: Only annotation data (backward compatibility)
-- **With `fflag_feat_optic_650_target_storage_task_format_long`**: Full task + annotations data
+### 5. Documentation
+- [ ] Add provider to storage documentation (docs/source/guide/storage.md)
+- [ ] Update API documentation using `@method_decorator` for storage API classes (see @updating-label-studio-sdk.mdc)
 
-### 4. **Built-in Threading**
-- Export storages inherit `save_annotations()` with built-in parallel processing
-- Uses ThreadPoolExecutor with configurable `max_workers` (default: min(8, cpu_count * 4))
-- Includes progress tracking and automatic batch processing
+### 6. Git
+- [ ] Commit all added and modified files related to the new storage into git, use `git add <specific files>` and never use `git commit -a`.
 
-### 5. **Storage Links & Key Generation**
-- **Import links**: Track task imports with custom keys
-- **Export links**: Track annotation exports with keys based on feature flags:
-  - Default: `annotation.id`
-  - With feature flag: `task.id` + optional `.json` extension
+### 7. Integration & Deployment
+These steps are for manual QA by the requester; remind them after you finish your work:
+- [ ] Test end-to-end storage workflow 
+  - [ ] Create a project, add a new import storage, sync it, and check Data Manager for new files
+  - [ ] Create a project, add a new export storage, create a few annotations, sync the storage, and check that files appear in the storage admin console 
+- [ ] Test URL resolution: verify that storage URIs like `s3://xxx/1.jpg` are resolved and load in the editor 
+- [ ] Test with both presigned URLs and proxy mode
+- [ ] Test storage error and status reporting: if there are any errors, a user should be able to click "Failed - View logs" and see an error description 
 
-### 6. **Optional Deletion Support**
-- Export storages can implement `delete_annotation()` 
-- Controlled by `can_delete_objects` field
-- Automatically called when annotations are deleted from Label Studio
+
+## Decision: Open Source vs Enterprise
+
+**CRITICAL FIRST DECISION**: Where should your new storage provider be implemented?
+
+### Add to Open Source (`io_storages`) if:
+- Basic authentication (API keys, service accounts)
+- Standard file formats (JSON, JSONL, images)
+- Community-focused features
+- Simple cloud storage connectivity
+- User request: the requester explicitly asks for Open Source
+
+### Add to Enterprise (`lse_io_storages`) if you need:
+- **Advanced Authentication**: IAM roles, Workload Identity Federation, cross-account access
+- **Enterprise Security**: Server-side encryption, ACL controls, audit logging
+- **Advanced Data Formats**: Parquet support, complex data transformations
+- **Billing Restrictions**: Storage limits, organizational constraints
+- **Advanced Review Workflows**: Review-based export triggers
+- **User request**: The requester explicitly asks for Enterprise
+
+### Key Enterprise Advantages
+
+1. **No App Label Issues**: LSE uses proper app configuration, avoiding Django registration conflicts
+2. **Advanced Authentication**: Support for IAM roles, WIF, cross-account access  
+3. **Enhanced Security**: Built-in encryption, ACL controls, audit capabilities
+4. **Enterprise Features**: Parquet support, billing controls, review workflows
+5. **Better Error Handling**: Enhanced logging, metrics, and monitoring
+6. **Scalability**: Client caching, optimized performance patterns
+
+**Default Recommendation**: Most new storage providers should be added to Enterprise for better security, features, and future extensibility.
+
 
 ## Backend Implementation
+
+Important note: if you implement a storage for Label Studio Enterprise, replace all paths `label_studio/io_storages` with `label_studio_enterprise/lse_io_storages`.
 
 ### 1. Create Storage Models
 
@@ -136,7 +191,7 @@ class YourProviderImportStorage(ProjectStorageMixin, YourProviderImportStorageBa
 
 #### Export Storage Class
 
-**Reference Implementation**: Follow `io_storages/s3/models.py` `S3ExportStorage` class
+**Reference Implementation**: Follow `io_storages/s3/models.py` `S3ExportStorage` class as an example
 
 **Required Class**:
 ```python
@@ -230,8 +285,7 @@ Create API views in `label_studio/io_storages/yourprovider/api.py`:
 
 **Key Features**:
 1. **OpenAPI Documentation**: Use `@method_decorator` with `extend_schema` for each endpoint
-2. **Proper Tags**: Use `['Storage: YourProvider']` and `['Export Storage: YourProvider']`
-3. **Queryset & Serializer**: Set `queryset` and `serializer_class` for each view
+2. **Queryset & Serializer**: Set `queryset` and `serializer_class` for each view
 
 ### 4. Register URLs
 
@@ -254,9 +308,9 @@ path('api/storages/yourprovider/', include(('io_storages.yourprovider.urls', 'io
 
 ### Create Provider Configuration
 
-**Reference Implementation**: Follow `web/lib/app-common/src/blocks/StorageProviderForm/providers/s3.ts`
+**Reference Implementation**: Follow `web/apps/labelstudio/src/pages/Settings/StorageSettings/providers/s3.ts`
 
-**Create**: `web/lib/app-common/src/blocks/StorageProviderForm/providers/yourprovider.ts`
+**Create**: `web/apps/labelstudio/src/pages/Settings/StorageSettings/providers/yourprovider.ts`
 
 **Required Structure**:
 ```ts
@@ -285,7 +339,7 @@ const yourProviderProvider: ProviderConfig = {
 
 ## Testing
 
-**Reference Implementation**: Follow `label_studio/io_storages/tests/test_s3.py` patterns
+**Reference Implementation**: Follow tests in `label_studio/io_storages/tests/` and `label_studio_enterprise/lse_io_storages/tests/`. Useful examples include `test_import_storage_list_files_api.py`, `test_proxy_api.py`, and `test_get_bytes_stream.py`.
 
 **Create**: `label_studio/io_storages/tests/test_yourprovider.py`
 
@@ -300,72 +354,10 @@ const yourProviderProvider: ProviderConfig = {
 - `test_data_loading()` - Test task data loading from storage objects
 - `test_export_functionality()` - Test annotation export and deletion
 
-## Implementation Checklist
-
-### Backend Implementation
-- [ ] Create provider directory structure
-- [ ] Implement storage mixin with common fields:
-  - [ ] Basic fields: bucket, prefix, regex_filter, use_blob_urls
-  - [ ] URL resolution: presign, presign_ttl 
-  - [ ] Provider credentials: api_key, secret_key, endpoint_url
-  - [ ] Common methods: get_client(), validate_connection()
-- [ ] Create import storage base class with required methods:
-  - [ ] `iter_objects()` - iterate over storage objects
-  - [ ] `get_data()` - load task data from objects
-  - [ ] `generate_http_url()` - create HTTP URLs
-  - [ ] `can_resolve_url()` - check URL resolution capability
-  - [ ] `validate_connection()` - validate credentials and prefix has files
-- [ ] Create export storage class with required methods:
-  - [ ] `save_annotation()` - save single annotation to storage
-  - [ ] `delete_annotation()` - delete annotation from storage (optional)
-  - [ ] `validate_connection()` - validate credentials and bucket access (NO prefix check)
-- [ ] Create concrete import/export storage classes
-- [ ] Implement storage link models:
-  - [ ] ImportStorageLink for tracking task imports
-  - [ ] ExportStorageLink for tracking annotation exports
-- [ ] **CRITICAL: Add `app_label = 'io_storages'` to Meta classes** - All concrete storage models (ImportStorage, ExportStorage, and StorageLink classes) must include `app_label = 'io_storages'` in their Meta class to avoid Django app registration errors. This is required because storage providers are in subdirectories of `io_storages` but need to be registered under the main `io_storages` app. **Note**: Enterprise providers do NOT need app_label - see enterprise guide.
-- [ ] Create serializers with validation logic
-- [ ] Implement API views following existing patterns
-- [ ] Register URLs in storage URL configuration
-- [ ] Add signal handlers for auto-export functionality:
-  - [ ] post_save signal for automatic annotation export
-  - [ ] pre_delete signal for automatic annotation deletion
-  - [ ] Async export functions with error handling
-- [ ] Create database migrations
-- [ ] Add basic pytests for newly added API calls
-
-### Frontend Implementation  
-- [ ] Create provider configuration file with:
-  - [ ] All required fields with proper types
-  - [ ] Zod validation schemas
-  - [ ] Meaningful labels and placeholders
-  - [ ] Proper field layout definition
-- [ ] Register provider in central registry
-- [ ] Mark credential fields with `accessKey: true`
-- [ ] Test form rendering and validation
-- [ ] Verify edit mode behavior for credentials
-
-### Testing & Documentation
-- [ ] Write backend unit tests
-- [ ] Test connection validation
-- [ ] Test object iteration and filtering
-- [ ] Test task data loading
-- [ ] Test frontend form functionality
-- [ ] Test both create and edit modes
-- [ ] Update API documentation
-- [ ] Add provider to storage documentation (docs/source/guide/storage.md)
-
-### Integration & Deployment
-- [ ] Test end-to-end storage workflow
-- [ ] Verify task import/export functionality
-- [ ] Test URL resolution and proxy functionality
-- [ ] Test with both presigned URLs and proxy mode
-- [ ] Verify error handling and user feedback
-- [ ] Test storage sync and status reporting
-
 ## Common Issues & Solutions
 
 ### Django App Label Error
+
 **Error**: `RuntimeError: Model class doesn't declare an explicit app_label and isn't in an application in INSTALLED_APPS`
 
 **Cause**: Storage provider models in subdirectories (e.g., `io_storages.databricks`) are not automatically recognized as belonging to the `io_storages` app.
@@ -394,6 +386,7 @@ class YourProviderImportStorageLink(ImportStorageLink):
 **Note**: This is required for ALL concrete models (not abstract ones) including storage classes and link models.
 
 ### Django Model Conflict Error
+
 **Error**: `RuntimeError: Conflicting 'providernameimportstorage' models in application 'io_storages'`
 
 **Cause**: Django is registering the same model through two different import paths:

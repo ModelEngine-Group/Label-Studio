@@ -261,3 +261,4 @@ export { ReactComponent as IconCloudProviderS3 } from "./cloud-provider-s3.svg";
 export { ReactComponent as IconCloudProviderRedis } from "./cloud-provider-redis.svg";
 export { ReactComponent as IconCloudProviderGCS } from "./cloud-provider-gcs.svg";
 export { ReactComponent as IconCloudProviderAzure } from "./cloud-provider-azure.svg";
+export { ReactComponent as IconCloudProviderDatabricks } from "./cloud-provider-databricks.svg";

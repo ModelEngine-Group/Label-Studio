@@ -187,11 +187,11 @@ export const useStorageApi = ({ target, storage, project, onSubmit, onClose }: U
 
       if (isDefined(storage?.id)) {
         body.id = storage.id;
+        body.limit = 30;
       }
 
       return api.callApi<{ files: any[] }>("storageFiles", {
         params: {
-          limit: 10,
           target,
           type: previewData.provider,
         },
