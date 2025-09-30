@@ -192,7 +192,7 @@ jobs:
           file: ${{ steps.release_dockerfile.outputs.release_dir }}/${{ env.RELEASE_DOCKERFILE }}
           sbom: true
           provenance: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ env.IMAGE_NAME }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -241,8 +241,7 @@ jobs:
           images: ${{ env.IMAGE_NAME }}
           labels: |
             org.opencontainers.image.revision=${{ needs.docker_release_retag.outputs.sha }}
-          tags: |
-            ${{ steps.generate-tags.outputs.ubuntu-tags }}
+          tags: ${{ needs.docker_release_retag.outputs.ubuntu_tags }}
 
       - name: Create manifest list and push
         working-directory: ${{ runner.temp }}/digests
