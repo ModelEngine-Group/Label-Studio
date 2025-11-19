@@ -369,9 +369,9 @@ const Model = types
       return useRawResult
         ? structuredClone(region._rawResult)
         : {
-            ...imageDimension,
-            value,
-          };
+          ...imageDimension,
+          value,
+        };
     },
 
     /**
@@ -997,15 +997,15 @@ const Model = types
         this.setZoomPosition(
           self.zoomingPositionY * ratioK,
           self.stageComponentSize.height -
-            self.zoomingPositionX * ratioK -
-            self.stageComponentSize.height * self.zoomScale,
+          self.zoomingPositionX * ratioK -
+          self.stageComponentSize.height * self.zoomScale,
         );
       }
       if (degree === 90) {
         this.setZoomPosition(
           self.stageComponentSize.width -
-            self.zoomingPositionY * ratioK -
-            self.stageComponentSize.width * self.zoomScale,
+          self.zoomingPositionY * ratioK -
+          self.stageComponentSize.width * self.zoomScale,
           self.zoomingPositionX * ratioK,
         );
       }

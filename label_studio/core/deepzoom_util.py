@@ -1,10 +1,22 @@
 import os
 import io
+import logging
 from pathlib import Path
 from typing import Any, Callable, Optional, Tuple, Union
+from xml.etree.ElementTree import fromstring, tostring, SubElement
+
+logger = logging.getLogger(__name__)
 
 import openslide
-import opensdpc
+from openslide import OpenSlide
+slide_openers = [OpenSlide]
+try:
+    import opensdpc
+    slide_openers.append(opensdpc.OpenSdpc)
+
+except ImportError:
+    pass
+
 from PIL import Image
 
 from .annotated_deepzoom_generator import AnnotatedDeepZoomGenerator
@@ -23,11 +35,17 @@ class DeepZoomWrapper:
         self.is_sdpc = ext.lower() == ".sdpc"
         
         # Load the appropriate slide object
-        if self.is_sdpc:
-            self._osr = opensdpc.OpenSdpc(full_path_str)
-        else:
-            self._osr = openslide.OpenSlide(full_path_str)
-        
+        self._osr: Optional[OpenSlide] = None
+        for opener in slide_openers:
+            try:
+                self._osr = opener(full_path_str)
+                break
+            except Exception:
+                continue
+
+        if self._osr is None:
+            raise RuntimeError(f'Could not open slide: {full_path_str}')
+
         # Setup the deep zoom generator
         self._dzg = AnnotatedDeepZoomGenerator(
             self._osr,
@@ -63,8 +81,34 @@ class DeepZoomWrapper:
         return tile_img
     
     def get_dzi(self, format:str = "jpeg") -> str:
-        """Get the DZI XML for this slide"""
-        return self._dzg.get_dzi(format)
+        """Get the DZI XML for this slide with MPP metadata"""
+        dzi_xml = self._dzg.get_dzi(format)
+        
+        # If we have MPP data, inject it into the DZI XML using proper XML parsing
+        if self.mpp > 0:
+            try:
+                # Parse the XML
+                root = fromstring(dzi_xml)
+                
+                # Add Property elements as children of Image
+                prop_x = SubElement(root, 'Property', Name='openslide.mpp-x')
+                prop_x.text = str(self.mpp)
+                
+                prop_y = SubElement(root, 'Property', Name='openslide.mpp-y')
+                prop_y.text = str(self.mpp)
+                
+                # Convert back to string
+                dzi_xml = tostring(root, encoding='unicode')
+                
+                logger.debug(f"DZI with MPP metadata for {self.filename}:\n{dzi_xml}")
+            except Exception as e:
+                logger.error(f"Failed to add MPP metadata to DZI: {e}")
+                # Return original DZI if modification fails
+                logger.debug(f"Original DZI for {self.filename}:\n{dzi_xml}")
+        else:
+            logger.debug(f"DZI without MPP (mpp={self.mpp}) for {self.filename}:\n{dzi_xml}")
+        
+        return dzi_xml
     
     def get_tile_bytes(self, level: int, tile: tuple[int, int], format:str = "jpeg", quality:int = 75) -> bytes:
         """Get a tile as bytes, optimized for HTTP response"""

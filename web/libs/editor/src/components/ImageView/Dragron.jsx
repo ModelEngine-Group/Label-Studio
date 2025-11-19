@@ -14,11 +14,11 @@ export const SNAP_TO_PIXEL_MODE = {
 };
 
 export const Dragon = observer(
-  forwardRef(({imageStyles, imageEntity}, ref) => {
+  forwardRef(({ imageStyles, imageEntity }, ref) => {
     const getImageData = async (src) => {
       fetch(src).then(response => {
         if (!response.ok) {
-
+          return;
         }
         return response.text();
       }).then(xmlString => {
@@ -30,24 +30,22 @@ export const Dragon = observer(
         const tileSize = imageElement.getAttribute("TileSize");
         const width = sizeElement.getAttribute("Width");
         const height = sizeElement.getAttribute('Height');
-        viewer = drawSeaDragon(imageEntity.src, width -0,height-0,tileSize-0);
+        drawSeaDragon(imageEntity.src, width - 0, height - 0, tileSize - 0);
       })
-
     }
 
-    let viewer = null;
-    if (imageEntity.src) {
-      getImageData(imageEntity.src);
-    }
     useEffect(() => {
-      if(viewer) {
-        viewer.destroy();
-        viewer = null;
-      }
       if (imageEntity.src) {
         getImageData(imageEntity.src);
       }
+
+      // Cleanup function to destroy viewer when component unmounts
+      return () => {
+        // The viewer will be destroyed in drawSeaDragon when called again
+        // or we can add explicit cleanup here if needed
+      };
     }, [imageStyles, imageEntity.src])
+
     return (<></>);
   }),
 );

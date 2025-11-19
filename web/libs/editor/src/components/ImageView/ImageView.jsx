@@ -119,23 +119,23 @@ const SelectionBorders = observer(({ item, selectionArea }) => {
 
   const points = bbox
     ? [
-        {
-          x: bbox.left,
-          y: bbox.top,
-        },
-        {
-          x: bbox.right,
-          y: bbox.top,
-        },
-        {
-          x: bbox.left,
-          y: bbox.bottom,
-        },
-        {
-          x: bbox.right,
-          y: bbox.bottom,
-        },
-      ]
+      {
+        x: bbox.left,
+        y: bbox.top,
+      },
+      {
+        x: bbox.right,
+        y: bbox.top,
+      },
+      {
+        x: bbox.left,
+        y: bbox.bottom,
+      },
+      {
+        x: bbox.right,
+        y: bbox.bottom,
+      },
+    ]
     : [];
   const ANCHOR_SIZE = isFF(FF_DEV_3793) ? 6 / item.stageScale : 6;
 
@@ -921,156 +921,165 @@ export default observer(
         if (!src) {
           return true;
         }
-        const data = ['.svs', '.csp','.sdpc', 'tiff', '.ndpi', '.scn', '.mrxs', '.bif','.svslide']
+        const data = ['.svs', '.csp', '.sdpc', 'tiff', '.ndpi', '.scn', '.mrxs', '.bif', '.svslide']
         return !data.some(key => src?.includes(key));
-      }      
+      }
       return (
-        (!isDragon(item?.currentImageEntity?.src) ? <>
-              <>
-                <div id="img-mem-view" style={{width: '100%', height:'100%'}}></div>
-                <Dragon imageEntity={item.currentImageEntity}></Dragon>
-              </>
-            </> :
-            <ObjectTag item={item} className={wrapperClasses.join(" ")}>
-          {paginationEnabled ? (
-            <div
-              className={styles.pagination}
-              title={isViewingAll ? "Pagination is not supported in View All Annotations" : undefined}
-            >
-              <Pagination
-                size="small"
-                outline={false}
-                align="left"
-                noPadding
-                hotkey={{
-                  prev: "image:prev",
-                  next: "image:next",
-                }}
-                currentPage={item.currentImage + 1}
-                totalPages={item.parsedValueList.length}
-                onChange={(n) => item.setCurrentImage(n - 1)}
-                pageSizeSelectable={false}
-                disabled={isViewingAll}
-              />
-            </div>
-          ) : null}
-
-          <div
-            ref={(node) => {
-              item.setContainerRef(node);
-              this.attachObserver(node);
-            }}
-            className={containerClassName}
-            style={containerStyle}
-          >
+        (!isDragon(item?.currentImageEntity?.src) ?
+          <ObjectTag item={item} className={wrapperClasses.join(" ")} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <div
               ref={(node) => {
-                this.filler = node;
+                item.setContainerRef(node);
+                this.attachObserver(node);
               }}
-              className={styles.filler}
-              style={{ width: "100%", marginTop: item.fillerHeight }}
-            />
+              className={containerClassName}
+              style={{ ...containerStyle, flex: 1, minHeight: 0, display: 'flex', position: 'relative' }}
+            >
+              <div id="img-mem-view" style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}></div>
+              <Dragon imageEntity={item.currentImageEntity}></Dragon>
+            </div>
+          </ObjectTag>
+          :
+          <ObjectTag item={item} className={wrapperClasses.join(" ")}>
+            {paginationEnabled ? (
+              <div
+                className={styles.pagination}
+                title={isViewingAll ? "Pagination is not supported in View All Annotations" : undefined}
+              >
+                <Pagination
+                  size="small"
+                  outline={false}
+                  align="left"
+                  noPadding
+                  hotkey={{
+                    prev: "image:prev",
+                    next: "image:next",
+                  }}
+                  currentPage={item.currentImage + 1}
+                  totalPages={item.parsedValueList.length}
+                  onChange={(n) => item.setCurrentImage(n - 1)}
+                  pageSizeSelectable={false}
+                  disabled={isViewingAll}
+                />
+              </div>
+            ) : null}
 
-            {isFF(FF_LSDV_4583_6) ? (
-              <Image
-                ref={(ref) => {
-                  item.setImageRef(ref);
-                  this.imageRef.current = ref;
+            <div
+              ref={(node) => {
+                item.setContainerRef(node);
+                this.attachObserver(node);
+              }}
+              className={containerClassName}
+              style={containerStyle}
+            >
+              <div
+                ref={(node) => {
+                  this.filler = node;
                 }}
-                usedValue={item.usedValue}
-                imageEntity={item.currentImageEntity}
-                imageTransform={item.imageTransform}
-                updateImageSize={item.updateImageSize}
-                size={item.canvasSize}
-                overlay={<CanvasOverlay item={item} />}
+                className={styles.filler}
+                style={{ width: "100%", marginTop: item.fillerHeight }}
               />
-            ) : (
-              <div className={[styles.frame, ...imagePositionClassnames].join(" ")} style={item.canvasSize}>
-                <img
+
+              {isFF(FF_LSDV_4583_6) ? (
+                <Image
                   ref={(ref) => {
                     item.setImageRef(ref);
                     this.imageRef.current = ref;
                   }}
-                  loading={isFF(FF_DEV_3077) && !item.lazyoff ? "lazy" : "false"}
-                  style={item.imageTransform}
-                  src={item.currentSrc}
-                  onLoad={(e) => {
-                    item.updateImageSize(e);
-                    item.currentImageEntity.setImageLoaded(true);
-                  }}
-                  onError={this.handleError}
-                  crossOrigin={item.imageCrossOrigin}
-                  alt="LS"
+                  usedValue={item.usedValue}
+                  imageEntity={item.currentImageEntity}
+                  imageTransform={item.imageTransform}
+                  updateImageSize={item.updateImageSize}
+                  size={item.canvasSize}
+                  overlay={<CanvasOverlay item={item} />}
                 />
-                <CanvasOverlay item={item} />
+              ) : (
+                <div className={[styles.frame, ...imagePositionClassnames].join(" ")} style={item.canvasSize}>
+                  <img
+                    ref={(ref) => {
+                      item.setImageRef(ref);
+                      this.imageRef.current = ref;
+                    }}
+                    loading={isFF(FF_DEV_3077) && !item.lazyoff ? "lazy" : "false"}
+                    style={item.imageTransform}
+                    src={item.currentSrc}
+                    onLoad={(e) => {
+                      item.updateImageSize(e);
+                      item.currentImageEntity.setImageLoaded(true);
+                    }}
+                    onError={this.handleError}
+                    crossOrigin={item.imageCrossOrigin}
+                    alt="LS"
+                  />
+                  <CanvasOverlay item={item} />
+                </div>
+              )}
+              {/* @todo this is dirty hack; rewrite to proper async waiting for data to load */}
+              {stageLoading || !toolsReady ? (
+                <div className={styles.loading}>
+                  <LoadingOutlined />
+                </div>
+              ) : imageIsLoaded ? (
+                <EntireStage
+                  item={item}
+                  crosshairRef={this.crosshairRef}
+                  onClick={this.handleOnClick}
+                  imagePositionClassnames={imagePositionClassnames}
+                  state={this.state}
+                  onMouseEnter={() => {
+                    if (this.crosshairRef.current) {
+                      this.crosshairRef.current.updateVisibility(true);
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (this.crosshairRef.current) {
+                      this.crosshairRef.current.updateVisibility(false);
+                    }
+                    const { width: stageWidth, height: stageHeight } = item.canvasSize;
+                    const { offsetX: mouseposX, offsetY: mouseposY } = e.evt;
+                    const newEvent = { ...e };
+
+                    if (mouseposX <= 0) {
+                      e.offsetX = 0;
+                    } else if (mouseposX >= stageWidth) {
+                      e.offsetX = stageWidth;
+                    }
+
+                    if (mouseposY <= 0) {
+                      e.offsetY = 0;
+                    } else if (mouseposY >= stageHeight) {
+                      e.offsetY = stageHeight;
+                    }
+                    this.handleMouseMove(newEvent);
+                  }}
+                  onDragMove={this.updateCrosshair}
+                  onMouseDown={this.handleMouseDown}
+                  onMouseMove={this.handleMouseMove}
+                  onMouseUp={this.handleMouseUp}
+                  onWheel={item.zoom ? this.handleZoom : () => { }}
+                />
+              ) : null}
+            </div>
+
+            {toolsReady && imageIsLoaded && this.renderTools()}
+            {item.images.length > 1 && (
+              <div className={styles.gallery}>
+                {item.images.map((src, i) => (
+                  <img
+                    {...imgDefaultProps}
+                    alt=""
+                    key={src}
+                    src={src}
+                    className={i === item.currentImage && styles.active}
+                    height="60"
+                    onClick={() => item.setCurrentImage(i)}
+                  />
+                ))}
               </div>
             )}
-            {/* @todo this is dirty hack; rewrite to proper async waiting for data to load */}
-            {stageLoading || !toolsReady ? (
-              <div className={styles.loading}>
-                <LoadingOutlined />
-              </div>
-            ) : imageIsLoaded ? (
-              <EntireStage
-                item={item}
-                crosshairRef={this.crosshairRef}
-                onClick={this.handleOnClick}
-                imagePositionClassnames={imagePositionClassnames}
-                state={this.state}
-                onMouseEnter={() => {
-                  if (this.crosshairRef.current) {
-                    this.crosshairRef.current.updateVisibility(true);
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (this.crosshairRef.current) {
-                    this.crosshairRef.current.updateVisibility(false);
-                  }
-                  const { width: stageWidth, height: stageHeight } = item.canvasSize;
-                  const { offsetX: mouseposX, offsetY: mouseposY } = e.evt;
-                  const newEvent = { ...e };
-
-                  if (mouseposX <= 0) {
-                    e.offsetX = 0;
-                  } else if (mouseposX >= stageWidth) {
-                    e.offsetX = stageWidth;
-                  }
-
-                  if (mouseposY <= 0) {
-                    e.offsetY = 0;
-                  } else if (mouseposY >= stageHeight) {
-                    e.offsetY = stageHeight;
-                  }
-                  this.handleMouseMove(newEvent);
-                }}
-                onDragMove={this.updateCrosshair}
-                onMouseDown={this.handleMouseDown}
-                onMouseMove={this.handleMouseMove}
-                onMouseUp={this.handleMouseUp}
-                onWheel={item.zoom ? this.handleZoom : () => {}}
-              />
-            ) : null}
-          </div>
-
-          {toolsReady && imageIsLoaded && this.renderTools()}
-          {item.images.length > 1 && (
-            <div className={styles.gallery}>
-              {item.images.map((src, i) => (
-                <img
-                  {...imgDefaultProps}
-                  alt=""
-                  key={src}
-                  src={src}
-                  className={i === item.currentImage && styles.active}
-                  height="60"
-                  onClick={() => item.setCurrentImage(i)}
-                />
-              ))}
-            </div>
-          )}
-        </ObjectTag>
-      )
-        );
+          </ObjectTag>
+        )
+      );
     }
   },
 );

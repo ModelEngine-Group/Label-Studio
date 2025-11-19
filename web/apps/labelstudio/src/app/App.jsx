@@ -19,6 +19,12 @@ import { TourProvider } from "@humansignal/core";
 import { ToastProvider, ToastViewport } from "@humansignal/ui";
 import { QueryClient } from "@tanstack/react-query";
 import { JotaiProvider, JotaiStore } from "../utils/jotai-store";
+
+// Setup OpenSeadragon globally for extensions to use
+import OpenSeadragon from 'openseadragon';
+if (typeof window !== 'undefined') {
+  window.OpenSeadragon = OpenSeadragon;
+}
 import { CurrentUserProvider } from "../providers/CurrentUser";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { LSQueryClient } from "../utils/query-client";
@@ -98,13 +104,40 @@ const content = document.querySelector("#main-content");
 render(<App content={content.innerHTML} />, root);
 
 setTimeout(() => {
-  const script = document.createElement('script');
-  script.src = '/static/js/openseadragon.js';
-  script.defer = true;
-  document.body.appendChild(script);
+  // Wait for OpenSeadragon to be available on window before loading scalebar
+  // Only load once by checking if it's already loaded
+  if (window._scalebarScriptLoaded) {
+    return;
+  }
+
+  const loadScalebar = () => {
+    if (window.OpenSeadragon) {
+      // Check if Scalebar is already loaded
+      if (window.OpenSeadragon.Scalebar) {
+        console.log('Scalebar extension already loaded, skipping');
+        window._scalebarScriptLoaded = true;
+        return;
+      }
+
+      const scalebarScript = document.createElement('script');
+      scalebarScript.src = '/static/js/openseadragon-scalebar.js';
+      scalebarScript.async = true;
+      scalebarScript.onload = () => {
+        window._scalebarScriptLoaded = true;
+        console.log('Scalebar extension loaded successfully');
+      };
+      document.body.appendChild(scalebarScript);
+    } else {
+      // Retry after a short delay if OpenSeadragon isn't ready yet
+      setTimeout(loadScalebar, 100);
+    }
+  };
+
+  loadScalebar();
+
   const script2 = document.createElement('script');
   script2.src = '/static/js/jquery.min.js';
-  script2.defer = true;
+  script2.async = true;
   document.body.appendChild(script2);
 
 }, 0)
