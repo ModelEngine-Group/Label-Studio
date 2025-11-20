@@ -211,6 +211,11 @@ tldextract = ">=5.1.3"
 # Humansignal repo dependencies
 label-studio-sdk = "1.0.11"
 
+# Whole slide image dependencies
+openslide-bin = "^4.0.0.8"
+openslide-python = "^1.4.2"
+loguru = "^0.7.3"
+
 [tool.poetry.group.test.dependencies]
 pytest = "7.2.2"
 pytest-cov = "2.12.1"

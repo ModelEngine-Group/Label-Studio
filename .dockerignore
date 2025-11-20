@@ -9,6 +9,7 @@
 !deploy/default.conf
 !label_studio/**
 !wheels/**
+!wheels/
 # Re-ignore pyc files and frontend
 label_studio/frontend
 label_studio/**/*.pyc

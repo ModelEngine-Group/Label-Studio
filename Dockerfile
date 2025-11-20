@@ -76,10 +76,9 @@ RUN --mount=type=cache,target="/var/cache/apt",sharing=locked \
     apt-get install --no-install-recommends -y \
     build-essential git; \
     apt-get autoremove -y
-
+    
 WORKDIR /label-studio
 
-COPY wheels/ wheels/
 
 ENV VENV_PATH="/label-studio/.venv"
 ENV PATH="$VENV_PATH/bin:$PATH"
@@ -94,15 +93,16 @@ ARG INCLUDE_DEV=false
 
 # Install dependencies without dev packages
 RUN --mount=type=cache,target=$POETRY_CACHE_DIR,sharing=locked \
-    poetry check --lock && \
+poetry check --lock && \
     if [ "$INCLUDE_DEV" = "true" ]; then \
     poetry install --no-root --extras uwsgi --with test; \
     else \
     poetry install --no-root --without test --extras uwsgi; \
     fi
-
-# Install extra Python packages (from wheels and PyPI)
-RUN pip install wheels/*.whl openslide-bin openslide-python loguru
+    
+# Install extra Python packages (from wheels)
+COPY wheels/ wheels/
+RUN pip install wheels/*.whl
 
 # Install LS
 COPY label_studio label_studio
