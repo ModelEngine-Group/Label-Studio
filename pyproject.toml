@@ -1,10 +1,6 @@
 [project]
 name = "label-studio"
-<<<<<<< HEAD
-version = "1.17.0"
-=======
 version = "1.21.0"
->>>>>>> ls-release/1.21.0
 description = "Label Studio annotation tool"
 authors = [
     { name = "HumanSignal", email = "support@humansignal.com" },
@@ -79,6 +75,11 @@ dependencies = [
     ## HumanSignal repo dependencies :start
     "label-studio-sdk (==2.0.4)",
     ## HumanSignal repo dependencies :end
+
+    ## Whole slide image dependencies
+    "openslide-bin (==4.0.0.8)",
+    "openslide-python (==1.4.2)",
+    "loguru (==0.7.3)"
 ]
 
 [project.urls]
@@ -215,76 +216,6 @@ exclude = [
     { path = "label_studio/frontend", format = ["sdist", "wheel"] },
 ]
 requires-poetry = '>=2.0.0,<3.0.0'
-
-[tool.poetry.dependencies]
-python = ">=3.10,<4"
-wheel = "<=0.40.0,>=0.38.1"
-appdirs = ">=1.4.3"
-attr = "0.3.1"
-attrs = ">=19.2.0"
-pyyaml = ">=6.0.0"
-azure-storage-blob = ">=12.6.0"
-boto = "^2.49.0"
-boto3 = "^1.28.58"
-botocore = "^1.31.58"
-bleach = "~=5.0.0"
-Django = "~=5.1.6"
-django-storages = "1.12.3"
-django-annoying = "0.10.6"
-django-debug-toolbar = "3.2.1"
-django-environ = "0.10.0"
-django-filter = "24.3"
-django-model-utils = "4.1.1"
-django-rq = "^2.10.2"
-django-cors-headers = "3.6.0"
-django-extensions = "3.2.3"
-django-user-agents = "0.4.0"
-django-ranged-fileresponse = ">=0.1.2"
-drf-dynamic-fields = "0.3.0"
-djangorestframework = "3.15.2"
-drf-flex-fields = "0.9.5"
-humansignal-drf-yasg = ">=1.21.10.post1"
-drf-generators = "0.3.0"
-lockfile = ">=0.12.0"
-lxml = {extras = ["html_clean"], version = ">=4.9.4"}
-defusedxml = ">=0.7.1"
-numpy = "^1.26.4"
-ordered-set = "4.0.2"
-pandas = ">=2.2.3"
-psycopg2-binary = "2.9.10"
-pydantic = ">=2.9.2"
-python-dateutil = ">=2.8.1"
-pytz = "~=2022.1"
-requests = "~=2.32.3"
-urllib3 = "^1.26.18"
-rq = "^1.16.2"
-rules = "3.4"
-ujson = ">=3.0.0"
-xmljson = "0.2.1"
-colorama = ">=0.4.4"
-pyboxen = ">=1.3.0"
-redis = "~=5.2.1"
-sentry-sdk = ">=2.16.0"
-launchdarkly-server-sdk = "8.2.1"
-python-json-logger = "2.0.4"
-google-cloud-storage = "^2.13.0"
-google-cloud-logging = "^3.10.0"
-pyuwsgi = { version = "2.0.28.post1", optional = true }
-uwsgitop = { version = "0.12", optional = true }
-django-csp = "3.7"
-openai = "^1.10.0"
-django-migration-linter = "^5.1.0"
-setuptools = ">=75.4.0"
-djangorestframework-simplejwt = {extras = ["crypto"], version = "^5.4.0"}
-tldextract = ">=5.1.3"
-
-# Humansignal repo dependencies
-label-studio-sdk = "1.0.11"
-
-# Whole slide image dependencies
-openslide-bin = "^4.0.0.8"
-openslide-python = "^1.4.2"
-loguru = "^0.7.3"
 
 [tool.poetry.group.test.dependencies]
 pytest = "7.2.2"
