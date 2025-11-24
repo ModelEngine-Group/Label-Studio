@@ -3,7 +3,7 @@ import { type FC, type MouseEvent, useEffect, useState } from "react";
 import { Block, Elem } from "../../../utils/bem";
 
 import "./AudioControl.scss";
-import { IconSoundConfig, IconSoundMutedConfig } from "../../../assets/icons/timeline";
+import { IconSoundConfig, IconSoundMutedConfig } from "@humansignal/ui";
 import { ControlButton } from "../Controls";
 import { Slider } from "./Slider";
 
@@ -79,7 +79,7 @@ export const AudioControl: FC<AudioControlProps> = ({ volume, onVolumeChange, on
 
   return (
     <Block name="audio-control" onClick={(e: MouseEvent<HTMLButtonElement>) => e.stopPropagation()}>
-      <ControlButton look={audioModal ? "active" : undefined} onClick={onSetModal}>
+      <ControlButton look={audioModal ? "filled" : undefined} onClick={onSetModal}>
         {isMuted ? <IconSoundMutedConfig /> : <IconSoundConfig />}
       </ControlButton>
       {audioModal && renderModal()}

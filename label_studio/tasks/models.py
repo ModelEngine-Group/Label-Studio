@@ -23,7 +23,7 @@ from core.utils.common import (
     string_is_url,
     temporary_disconnect_list_signal,
 )
-from core.utils.db import fast_first
+from core.utils.db import batch_delete, fast_first
 from core.utils.params import get_env
 from data_import.models import FileUpload
 from data_manager.managers import PreparedTaskManager, TaskManager
@@ -276,6 +276,15 @@ class Task(TaskMixin, models.Model):
         """
         from projects.functions.next_task import get_next_task_logging_level
 
+        if self.project.show_ground_truth_first and flag_set(
+            'fflag_feat_all_leap_1825_annotator_evaluation_short', user='auto'
+        ):
+            # in show_ground_truth_first mode(onboarding)
+            # we ignore overlap setting for ground_truth tasks
+            # https://humansignal.atlassian.net/browse/LEAP-1963
+            if self.annotations.filter(ground_truth=True).exists():
+                return False
+
         q = self.get_lock_exclude_query(user)
 
         num_locks = self.num_locks_user(user=user)
@@ -411,12 +420,10 @@ class Task(TaskMixin, models.Model):
     def resolve_storage_uri(self, url) -> Optional[Mapping[str, Any]]:
         from io_storages.functions import get_storage_by_url
 
-        storage = self.storage
-        project = self.project
-
-        if not storage:
-            storage_objects = project.get_all_storage_objects(type_='import')
-            storage = get_storage_by_url(url, storage_objects)
+        # Instead of using self.storage, we check all storage objects for the project to
+        # support imported tasks that point to another bucket
+        storage_objects = self.project.get_all_import_storage_objects
+        storage = get_storage_by_url(url, storage_objects)
 
         if storage:
             return {
@@ -440,7 +447,7 @@ class Task(TaskMixin, models.Model):
                 protected_data[key] = value
             return protected_data
         else:
-            storage_objects = project.get_all_storage_objects(type_='import')
+            storage_objects = project.get_all_import_storage_objects
 
             # try resolve URLs via storage associated with that task
             for field in task_data:
@@ -459,20 +466,12 @@ class Task(TaskMixin, models.Model):
 
                 # project storage
                 # TODO: to resolve nested lists and dicts we should improve get_storage_by_url(),
-                # TODO: problem with current approach: it can be used only the first storage that get_storage_by_url
-                # TODO: returns. However, maybe the second storage will resolve uris properly.
-                # TODO: resolve_uri() already supports them
-                storage = self.storage or get_storage_by_url(task_data[field], storage_objects)
+                # Now always using get_storage_by_url to ensure the storage with the correct bucket is used
+                # As a last fallback we can use self.storage which is the storage the Task was imported from
+                storage = get_storage_by_url(task_data[field], storage_objects) or self.storage
                 if storage:
                     try:
-                        proxy_task = None
-                        if flag_set(
-                            'fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short',
-                            user='auto',
-                        ):
-                            proxy_task = self
-
-                        resolved_uri = storage.resolve_uri(task_data[field], proxy_task)
+                        resolved_uri = storage.resolve_uri(task_data[field], self)
                     except Exception as exc:
                         logger.debug(exc, exc_info=True)
                         resolved_uri = None
@@ -483,6 +482,9 @@ class Task(TaskMixin, models.Model):
     @property
     def storage(self):
         # maybe task has storage link
+        # TODO: this is bad idea to use storage from storage_link,
+        # because storage resolver will be limited to this storage,
+        # however, we may need to use other storages to resolve the uri.
         storage_link = self.get_storage_link()
         if storage_link:
             return storage_link.storage
@@ -533,7 +535,7 @@ class Task(TaskMixin, models.Model):
     @staticmethod
     def delete_tasks_without_signals(queryset):
         """
-        Delete Tasks queryset with switched off signals
+        Delete Tasks queryset with switched off signals in batches to minimize memory usage
         :param queryset: Tasks queryset
         """
         signals = [
@@ -541,7 +543,7 @@ class Task(TaskMixin, models.Model):
             (pre_delete, remove_data_columns, Task),
         ]
         with temporary_disconnect_list_signal(signals):
-            queryset.delete()
+            return batch_delete(queryset, batch_size=500)
 
     @staticmethod
     def delete_tasks_without_signals_from_task_ids(task_ids):
@@ -1180,6 +1182,9 @@ class PredictionMeta(models.Model):
                 completion_tokens_count=data.get('completion_tokens'),
                 total_tokens_count=data.get('prompt_tokens', 0) + data.get('completion_tokens', 0),
                 inference_time=data.get('inference_time'),
+                extra={
+                    'message_counts': data.get('message_counts', {}),
+                },
             )
             if isinstance(prediction, Prediction):
                 prediction_meta.prediction = prediction
@@ -1371,7 +1376,7 @@ def update_task_stats(task, stats=('is_labeled',), save=True):
         task.save()
 
 
-def bulk_update_stats_project_tasks(tasks, project=None):
+def deprecated_bulk_update_stats_project_tasks(tasks, project=None):
     """bulk Task update accuracy
        ex: after change settings
        apply several update queries size of batch
@@ -1390,7 +1395,6 @@ def bulk_update_stats_project_tasks(tasks, project=None):
 
     with transaction.atomic():
         use_overlap = project._can_use_overlap()
-        maximum_annotations = project.maximum_annotations
         # update filters if we can use overlap
         if use_overlap:
             # following definition of `completed_annotations` above, count cancelled annotations
@@ -1398,9 +1402,7 @@ def bulk_update_stats_project_tasks(tasks, project=None):
             completed_annotations_f_expr = F('total_annotations')
             if project.skip_queue == project.SkipQueue.IGNORE_SKIPPED:
                 completed_annotations_f_expr += F('cancelled_annotations')
-            finished_q = Q(GreaterThanOrEqual(completed_annotations_f_expr, maximum_annotations)) | Q(
-                GreaterThanOrEqual(completed_annotations_f_expr, 1), overlap=1
-            )
+            finished_q = Q(GreaterThanOrEqual(completed_annotations_f_expr, F('overlap')))
             finished_tasks = tasks.filter(finished_q)
             finished_tasks_ids = finished_tasks.values_list('id', flat=True)
             tasks.update(is_labeled=Q(id__in=finished_tasks_ids))
@@ -1422,6 +1424,27 @@ def bulk_update_stats_project_tasks(tasks, project=None):
                     update_fields=['is_labeled'],
                     batch_size=settings.BATCH_SIZE,
                 )
+
+
+def bulk_update_stats_project_tasks(tasks, project=None):
+    # Avoid circular import
+    from projects.functions.utils import get_unique_ids_list
+
+    bulk_update_is_labeled = load_func(settings.BULK_UPDATE_IS_LABELED)
+
+    if flag_set('fflag_fix_back_plt_802_update_is_labeled_20062025_short', user='auto'):
+        task_ids = get_unique_ids_list(tasks)
+
+        if not task_ids:
+            return
+
+        if project is None:
+            first_task = Task.objects.get(id=task_ids[0])
+            project = first_task.project
+
+        bulk_update_is_labeled(task_ids, project)
+    else:
+        return deprecated_bulk_update_stats_project_tasks(tasks, project)
 
 
 Q_finished_annotations = Q(was_cancelled=False) & Q(result__isnull=False)

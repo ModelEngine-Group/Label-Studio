@@ -58,7 +58,7 @@ export class Cursor extends Events<CursorEvents> {
   private focusId = "";
 
   id = "cursor";
-  color = rgba("rgba(65, 60, 74, 0.16)");
+  color = "var(--color-neutral-border)";
   x: number;
   y: number;
   offsetX = 0;

@@ -12,6 +12,7 @@ export const Common = [
           { value: true, label: "yes" },
           { value: false, label: "no" },
         ]}
+        disabled={props.disabled}
       />
     ),
   },

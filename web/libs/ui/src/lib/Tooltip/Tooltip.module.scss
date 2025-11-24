@@ -8,16 +8,19 @@
 
   top: -1000px;
   left: -1000px;
-  color: var(--sand_0);
+  color: var(--color-neutral-inverted-content);
   display: none;
-  z-index: 10000;
+  z-index: 99999;
   padding: 4px 10px;
   font-size: 14px;
   line-height: 24px;
   position: absolute;
   pointer-events: none;
-  background-color: var(--sand_900);
+  background-color: var(--color-neutral-inverted-background);
   border-radius: 3px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  max-width: 250px;
 
   &::before {
     left: 50%;
@@ -82,8 +85,20 @@
       }
     }
 
+    &_bottom-left {
+      margin-left: calc(-1 * (var(--offset-x) - var(--pointer-size) / 2));
+
+      --animation-start: 10px;
+
+      &::before {
+        top: 0;
+        left: 24px;
+        transform: translate(-50%, -50%) rotate(45deg);
+      }
+    }
+
     &_top-left {
-      margin-left: calc(calc(var(--offset-x) - (var(--pointer-size) / 2)) * -1);
+      margin-left: calc(-1 * (var(--offset-x) - var(--pointer-size) / 2));
 
       --animation-start: -10px;
 
@@ -95,7 +110,7 @@
     }
 
     &_top-right {
-      margin-left: calc(calc(var(--offset-x) - (var(--pointer-size) / 2)));
+      margin-left: calc(var(--offset-x) - (var(--pointer-size) / 2));
 
       --animation-start: -10px;
 
@@ -107,16 +122,8 @@
       }
     }
   }
-  
-  &_theme {
-    &_light {
-      color: var(--sand_900);
-      background-color: var(--sand_0);
-      box-shadow: 0 2px 15px rgb(0 0 0 / 20%);
+}
 
-      &::before {
-        background-color: var(--sand_0);
-      }
-    }
-  }
+.wrapper {
+  display: contents;
 }

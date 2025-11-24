@@ -1,5 +1,5 @@
 import { createRef, useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
-import { FaPause, FaPlay } from "react-icons/fa";
+import { IconTimelinePause, IconTimelinePlay } from "@humansignal/icons";
 import { Block, Elem } from "../../../utils/bem";
 import { filename } from "../../../utils/helpers";
 import { Space } from "../Space/Space";
@@ -155,7 +155,7 @@ export const MediaPlayer = ({ src, video = false }) => {
           <Elem name="controls" tag={Space} spread>
             <Space size="small">
               <Elem name="play" onClick={togglePlay}>
-                {state.playing ? <FaPause /> : <FaPlay />}
+                {state.playing ? <IconTimelinePause /> : <IconTimelinePlay />}
               </Elem>
               {!video && <Elem name="track">{filename(src)}</Elem>}
             </Space>
@@ -196,7 +196,7 @@ export const MediaPlayer = ({ src, video = false }) => {
       <Elem name="controls" tag={Space} spread>
         <Space size="small">
           <Elem name="play">
-            <FaPlay />
+            <IconTimelinePlay />
           </Elem>
           <Elem name="track">Click to load</Elem>
         </Space>

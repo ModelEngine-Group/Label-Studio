@@ -70,6 +70,9 @@ Some examples include:
 
 * **Accessibility for Visually Impaired Users**: Image captioning is essential for making digital content more accessible to visually impaired users by providing descriptive alt-text for images on websites, apps, or documents. For instance, an image of a cat playing with yarn might generate the caption, "A fluffy orange cat playing with a ball of blue yarn."
 
+!!! info Tip
+    You can use the `valueList` parameter to include a series of images within each task. See [this template](/templates/multi-page-document-annotation) for an example of `valueList` in use. 
+
 ## Example Walkthroughs
 
 ### Autolabel image captions 

@@ -1,3 +1,4 @@
+import { ff } from "@humansignal/core";
 import { inject } from "mobx-react";
 import { destroy, getRoot, getType, types } from "mobx-state-tree";
 
@@ -16,6 +17,7 @@ import ToolsManager from "../../../tools/Manager";
 import { parseValue } from "../../../utils/data";
 import {
   FF_DEV_3377,
+  FF_DEV_3391,
   FF_DEV_3793,
   FF_LSDV_4583,
   FF_LSDV_4583_6,
@@ -31,8 +33,13 @@ import { ImageEntityMixin } from "./ImageEntityMixin";
 import { ImageSelection } from "./ImageSelection";
 import { RELATIVE_STAGE_HEIGHT, RELATIVE_STAGE_WIDTH, SNAP_TO_PIXEL_MODE } from "../../../components/ImageView/Image";
 import MultiItemObjectBase from "../MultiItemObjectBase";
+import { FF_BITMASK } from "@humansignal/core/lib/utils/feature-flags";
 
 const IMAGE_PRELOAD_COUNT = 3;
+const ZOOM_INTENSITY = 0.009;
+const MIN_ZOOM = 0.1;
+const MAX_ZOOM = 100;
+const MAX_ZOOM_CHANGE_PER_EVENT = 0.3; // Maximum zoom change per wheel event (30%)
 
 /**
  * The `Image` tag shows an image on the page. Use for all image annotation tasks to display an image on the labeling interface.
@@ -136,6 +143,8 @@ const IMAGE_CONSTANTS = {
   keypointlabels: "keypointlabels",
   polygonlabels: "polygonlabels",
   brushlabels: "brushlabels",
+  bitmaskModel: "BitmaskModel",
+  bitmasklabels: "bitmasklabels",
   brushModel: "BrushModel",
   ellipselabels: "ellipselabels",
 };
@@ -281,6 +290,15 @@ const Model = types
       return self.zoomScale;
     },
 
+    get layerZoomScalePosition() {
+      return {
+        scaleX: self.zoomScale,
+        scaleY: self.zoomScale,
+        x: self.zoomingPositionX + self.alignmentOffset.x,
+        y: self.zoomingPositionY + self.alignmentOffset.y,
+      };
+    },
+
     get hasTools() {
       return !!self.getToolsManager().allTools()?.length;
     },
@@ -398,6 +416,7 @@ const Model = types
         if (
           item.type === IMAGE_CONSTANTS.rectanglelabels ||
           item.type === IMAGE_CONSTANTS.brushlabels ||
+          item.type === IMAGE_CONSTANTS.bitmasklabels ||
           item.type === IMAGE_CONSTANTS.ellipselabels
         ) {
           returnedControl = item;
@@ -567,7 +586,9 @@ const Model = types
       };
     },
   }))
-
+  .volatile((self) => ({
+    manager: null,
+  }))
   // actions for the tools
   .actions((self) => {
     const manager = ToolsManager.getInstance({ name: self.name });
@@ -576,19 +597,23 @@ const Model = types
     function createImageEntities() {
       if (!self.store.task) return;
 
+      // Clear existing entities to prevent duplicates from React StrictMode double mounting
+      self.imageEntities.clear();
+
       const parsedValue = self.multiImage ? self.parsedValueList : self.parsedValue;
+      const idPostfix = self.annotation ? `@${self.annotation.id}` : "";
 
       if (Array.isArray(parsedValue)) {
         parsedValue.forEach((src, index) => {
           self.imageEntities.push({
-            id: `${self.name}#${index}`,
+            id: `${self.name}#${index}${idPostfix}`,
             src,
             index,
           });
         });
       } else {
         self.imageEntities.push({
-          id: `${self.name}#0`,
+          id: `${self.name}#0${idPostfix}`,
           src: parsedValue,
           index: 0,
         });
@@ -598,15 +623,18 @@ const Model = types
     }
 
     function afterAttach() {
-      if (self.selectioncontrol) manager.addTool("MoveTool", Tools.Selection.create({}, env));
+      if (ff.isActive(FF_DEV_3391) && !self.annotation) {
+        return;
+      }
+      if (self.selectioncontrol) manager.addTool("MoveTool", Tools.Selection.create({}, env), "MoveTool");
 
-      if (self.zoomcontrol) manager.addTool("ZoomPanTool", Tools.Zoom.create({}, env));
+      if (self.zoomcontrol) manager.addTool("ZoomPanTool", Tools.Zoom.create({}, env), "ZoomPanTool");
 
-      if (self.brightnesscontrol) manager.addTool("BrightnessTool", Tools.Brightness.create({}, env));
+      if (self.brightnesscontrol) manager.addTool("BrightnessTool", Tools.Brightness.create({}, env), "BrightnessTool");
 
-      if (self.contrastcontrol) manager.addTool("ContrastTool", Tools.Contrast.create({}, env));
+      if (self.contrastcontrol) manager.addTool("ContrastTool", Tools.Contrast.create({}, env), "ContrastTool");
 
-      if (self.rotatecontrol) manager.addTool("RotateTool", Tools.Rotate.create({}, env));
+      if (self.rotatecontrol) manager.addTool("RotateTool", Tools.Rotate.create({}, env), "RotateTool");
 
       createImageEntities();
     }
@@ -906,17 +934,61 @@ const Model = types
       self.resetZoomPositionToCenter();
     },
 
-    handleZoom(val, mouseRelativePos = { x: self.canvasSize.width / 2, y: self.canvasSize.height / 2 }) {
-      if (val) {
-        let zoomScale = self.currentZoom;
+    getInertialZoom(val) {
+      const invert = getRoot(self).settings.invertedZoom ? 1 : -1;
 
-        zoomScale = val > 0 ? zoomScale * self.zoomBy : zoomScale / self.zoomBy;
+      // Invert the delta value so that:
+      // - Pinch out (positive deltaY) zooms in
+      // - Pinch in (negative deltaY) zooms out
+      // - Scroll up (positive deltaY) zooms in
+      // - Scroll down (negative deltaY) zooms out
+      const invertedVal = val * invert;
+
+      // Calculate the zoom change using exponential formula
+      // This provides smooth zooming for both mouse wheel and trackpad pinch
+      const zoomChange = Math.exp(invertedVal * ZOOM_INTENSITY);
+
+      // Limit the maximum zoom change per event to prevent aggressive zooming
+      // This prevents users from accidentally zooming too far with a single wheel event
+      const limitedZoomChange = Math.max(
+        1 - MAX_ZOOM_CHANGE_PER_EVENT,
+        Math.min(1 + MAX_ZOOM_CHANGE_PER_EVENT, zoomChange),
+      );
+
+      return clamp(self.currentZoom * limitedZoomChange, MIN_ZOOM, MAX_ZOOM);
+    },
+
+    /**
+     * Handle zoom events from mouse wheel or trackpad pinch
+     * Unified smooth zoom behavior that works well for both input methods
+     * @param {number} val - The delta value from the wheel event
+     * @param {Object} mouseRelativePos - The mouse position relative to the canvas
+     */
+    handleZoom(
+      val,
+      mouseRelativePos = { x: self.canvasSize.width / 2, y: self.canvasSize.height / 2 },
+      isEvent = false,
+    ) {
+      if (val) {
+        const zoomScale = ff.isActive(FF_BITMASK)
+          ? isEvent
+            ? self.getInertialZoom(val)
+            : val > 0
+              ? self.currentZoom * self.zoomBy
+              : self.currentZoom / self.zoomBy
+          : val > 0
+            ? self.currentZoom * self.zoomBy
+            : self.currentZoom / self.zoomBy;
+
+        // Handle negative zoom restrictions
         if (self.negativezoom !== true && zoomScale <= 1) {
           self.setZoom(1);
           self.setZoomPosition(0, 0);
           self.updateImageAfterZoom();
           return;
         }
+
+        // Handle zoom out to fit or smaller
         if (zoomScale <= 1) {
           self.setZoom(zoomScale);
           self.setZoomPosition(0, 0);
@@ -924,7 +996,7 @@ const Model = types
           return;
         }
 
-        // DON'T TOUCH THIS
+        // Zoom to point (mouse position) - keeps the point under the cursor in the same position
         let stageScale = self.zoomScale;
 
         const mouseAbsolutePos = {

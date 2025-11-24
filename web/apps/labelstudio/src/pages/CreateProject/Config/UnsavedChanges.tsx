@@ -1,11 +1,11 @@
 import { useCallback, useRef, useState } from "react";
-import { Button } from "../../../components";
+import { Button } from "@humansignal/ui";
 import { LeaveBlocker, type LeaveBlockerCallbacks } from "../../../components/LeaveBlocker/LeaveBlocker";
 import { modal } from "../../../components/Modal/Modal";
 import { Space } from "../../../components/Space/Space";
 
 type SaveAndLeaveButtonProps = {
-  onSave: () => void;
+  onSave: () => Promise<void>;
   text?: string;
 };
 const SaveAndLeaveButton = ({ onSave, text = "Save and Leave" }: SaveAndLeaveButtonProps) => {
@@ -16,7 +16,7 @@ const SaveAndLeaveButton = ({ onSave, text = "Save and Leave" }: SaveAndLeaveBut
     setSaving(false);
   }, [onSave]);
   return (
-    <Button onClick={saveHandler} size="compact" look="primary" waiting={saving}>
+    <Button size="small" onClick={saveHandler} waiting={saving} aria-label="Save changes">
       {text}
     </Button>
   );
@@ -57,11 +57,12 @@ export const unsavedChangesModal = ({
     footer: (
       <Space align="end">
         <Button
+          look="outlined"
+          size="small"
           onClick={() => {
             onCancel?.();
             modalInstance?.close();
           }}
-          size="compact"
           autoFocus
         >
           {cancelText ?? "Cancel"}
@@ -69,12 +70,13 @@ export const unsavedChangesModal = ({
 
         {onDiscard && (
           <Button
+            variant="negative"
+            look="outlined"
             onClick={() => {
               onDiscard?.();
               modalInstance?.close();
             }}
-            size="compact"
-            look="danger"
+            size="small"
           >
             {discardText ?? "Discard and leave"}
           </Button>

@@ -1,10 +1,9 @@
+import { Button, Checkbox } from "@humansignal/ui";
 import { inject, observer } from "mobx-react";
 import React from "react";
-import { Button } from "./Button/Button";
-import { Checkbox, Tooltip } from "@humansignal/ui";
+import { Elem } from "../../utils/bem";
 import { Dropdown } from "./Dropdown/Dropdown";
 import { Menu } from "./Menu/Menu";
-import { Elem } from "../../utils/bem";
 
 const injector = inject(({ store }) => {
   return {
@@ -15,9 +14,11 @@ const injector = inject(({ store }) => {
 const FieldsMenu = observer(({ columns, WrapperComponent, onClick, onReset, selected, resetTitle }) => {
   const MenuItem = (col, onClick) => {
     return (
-      <Menu.Item key={col.key} name={col.key} onClick={onClick}>
+      <Menu.Item key={col.key} name={col.key} onClick={onClick} disabled={col.disabled}>
         {WrapperComponent && col.wra !== false ? (
-          <WrapperComponent column={col}>{col.title}</WrapperComponent>
+          <WrapperComponent column={col} disabled={col.disabled}>
+            {col.title}
+          </WrapperComponent>
         ) : (
           col.title
         )}
@@ -80,7 +81,7 @@ export const FieldsButton = injector(
 
     const renderButton = () => {
       return (
-        <Button size={size} icon={icon} extra={trailingIcon} style={style} className={className}>
+        <Button variant="neutral" size="small" look="outlined" leading={icon} trailing={trailingIcon}>
           {content.length ? content : null}
         </Button>
       );
@@ -93,22 +94,27 @@ export const FieldsButton = injector(
             columns={filter ? columns.filter(filter) : columns}
             WrapperComponent={wrapper}
             onClick={onClick}
+            size={size}
             onReset={onReset}
             selected={selected}
             resetTitle={resetTitle}
           />
         }
-        style={{
-          maxHeight: 280,
-          overflow: "auto",
-        }}
+        style={{ maxHeight: 280, overflow: "auto" }}
         openUpwardForShortViewport={openUpwardForShortViewport}
       >
         {tooltip ? (
-          <Elem name={"field-button"} style={{ zIndex: 1000 }}>
-            <Tooltip title={tooltip} theme={tooltipTheme}>
-              {renderButton()}
-            </Tooltip>
+          <Elem name={"field-button"} style={{ zIndex: 1000 }} rawClassName="h-[40px] flex items-center">
+            <Button
+              tooltip={tooltip}
+              variant="neutral"
+              size={size}
+              look="outlined"
+              leading={icon}
+              trailing={trailingIcon}
+            >
+              {content.length ? content : null}
+            </Button>
           </Elem>
         ) : (
           renderButton()
@@ -118,13 +124,14 @@ export const FieldsButton = injector(
   },
 );
 
-FieldsButton.Checkbox = observer(({ column, children }) => {
+FieldsButton.Checkbox = observer(({ column, children, disabled }) => {
   return (
     <Checkbox
       size="small"
       checked={!column.hidden}
       onChange={column.toggleVisibility}
       style={{ width: "100%", height: "100%" }}
+      disabled={disabled}
     >
       {children}
     </Checkbox>

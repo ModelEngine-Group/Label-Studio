@@ -23,8 +23,9 @@ export class Loader extends HTMLElement {
           z-index: 9999;
           justify-content: center;
           align-items: center;
-          background-color: var(--ls-loader-background-color, #fafafa);
+          background-color: var(--color-neutral-background);
           pointer-events: none;
+          color: var(--color-neutral-content);
         }
         :host([hidden]) {
           display: none;
@@ -49,7 +50,7 @@ export class Loader extends HTMLElement {
           height: 100%;
           width: 100%;
           border-radius: var(--ls-loader-progress-border-radius, 8px);
-          background-color: var(--ls-loader-progress-color, rgba(105, 192, 255, 1));
+          background-color: var(--ls-loader-progress-color, var(--color-primary-content));
           transition: transform 0.15s ease;
           transform-origin: left;
           transform: translateX(var(--ls-loader-position, -100%));
@@ -61,7 +62,7 @@ export class Loader extends HTMLElement {
         .progress-bar-info {
           display: flex;
           justify-content: space-between;
-          color: var(--ls-loader-text-color, rgba(137, 128, 152, 1));
+          color: var(--color-neutral-content);
         }
         .progress-bar-text {
           display: flex;
@@ -79,7 +80,7 @@ export class Loader extends HTMLElement {
           margin: 0;
         }
         .error {
-          color: var(--ls-loader-error-color, rgba(207, 19, 34, 1));
+          color: var(--ls-loader-error-color, var(--color-negative-content));
         }
         @keyframes shimmer {
           50% {

@@ -1,5 +1,7 @@
 import { types } from "mobx-state-tree";
 import { FF_DEV_3793, FF_ZOOM_OPTIM, isFF } from "../utils/feature-flags";
+import Constants from "../core/Constants";
+
 export const KonvaRegionMixin = types
   .model({})
   .views((self) => {
@@ -51,6 +53,28 @@ export const KonvaRegionMixin = types
     let deferredSelectId = null;
 
     return {
+      updateCursor(isHovered = false) {
+        const stage = self.parent?.stageRef;
+        if (!stage) return;
+        const style = stage.container().style;
+
+        if (isHovered) {
+          if (self.annotation.isLinkingMode) {
+            style.cursor = Constants.LINKING_MODE_CURSOR;
+          } else if (self.type !== "brushregion") {
+            style.cursor = Constants.POINTER_CURSOR;
+          }
+          return;
+        }
+
+        const selectedTool = self.parent?.getToolsManager().findSelectedTool();
+        if (!selectedTool || !selectedTool.updateCursor) {
+          style.cursor = Constants.DEFAULT_CURSOR;
+        } else {
+          selectedTool.updateCursor();
+        }
+      },
+
       checkSizes() {
         const { naturalWidth, naturalHeight, stageWidth: width, stageHeight: height } = self.parent;
 

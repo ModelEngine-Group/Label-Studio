@@ -1,12 +1,19 @@
-import { clamp } from "lodash";
+import { useResizeObserver } from "@humansignal/core/hooks/useResizeObserver";
+import clamp from "lodash/clamp";
 import { type FC, type MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useMemoizedHandlers } from "../../../../hooks/useMemoizedHandlers";
 import { Block, Elem } from "../../../../utils/bem";
 import { isDefined } from "../../../../utils/utilities";
-import type { TimelineRegion, TimelineViewProps } from "../../Types";
+import type { MSTTimelineRegion, TimelineRegion, TimelineViewProps } from "../../Types";
 import { Keypoints } from "./Keypoints";
 import "./Frames.scss";
 
+/**
+ * Effectively returns the frame on the given offset
+ * @param {number} num The offset to calculate the frame from
+ * @param {number} step Frame size, technically it's static, but comes from the props
+ * @returns {number} The frame on the given offset
+ */
 const toSteps = (num: number, step: number) => {
   return Math.floor(num / step);
 };
@@ -50,9 +57,10 @@ export const Frames: FC<TimelineViewProps> = ({
     return length * step;
   }, [length, step]);
 
+  const { width: scrollableWidth } = useResizeObserver(scrollable.current || []);
   const framesInView = useMemo(
-    () => toSteps(roundToStep((scrollable.current?.clientWidth ?? 0) - timelineStartOffset, step), step),
-    [scrollable.current, step, timelineStartOffset],
+    () => toSteps(roundToStep((scrollableWidth ?? 0) - timelineStartOffset, step), step),
+    [step, timelineStartOffset, scrollableWidth],
   );
 
   const handlers = useMemoizedHandlers({
@@ -61,10 +69,10 @@ export const Frames: FC<TimelineViewProps> = ({
 
   const background = useMemo(() => {
     const bg = [
-      `repeating-linear-gradient(90deg, #fff 1px, #fff ${step - 1}px, rgba(255,255,255,0) ${
+      `repeating-linear-gradient(90deg, var(--color-neutral-background) 1px, var(--color-neutral-background) ${step - 1}px, rgba(255,255,255,0) ${
         step - 1
       }px, rgba(255,255,255,0) ${step + 1}px)`,
-      "linear-gradient(0deg, #FAFAFA, rgba(255,255,255,0) 50%)",
+      "linear-gradient(0deg, var(--color-neutral-surface), rgba(255,255,255,0) 50%)",
     ];
 
     return bg.join(", ");
@@ -165,7 +173,20 @@ export const Frames: FC<TimelineViewProps> = ({
   const hoverHandler = useCallback(
     (e) => {
       if (scrollable.current) {
-        const currentOffset = e.pageX - scrollable.current.getBoundingClientRect().left - timelineStartOffset;
+        const offsetLeft = scrollable.current.getBoundingClientRect().left;
+        const currentOffset = e.pageX - offsetLeft - timelineStartOffset;
+        const frame = toSteps(currentOffset + currentOffsetX, step) + 1;
+        const target = e.target as Element;
+        // every region has `data-id` attribute, so looking for them
+        const regionRow = target.closest("[data-id]") as HTMLElement | null;
+        if (regionRow && !regionRow.dataset?.locked) {
+          const [start, end] = [regionRow.dataset?.start, regionRow.dataset?.end];
+          if (start === String(frame) || end === String(frame)) {
+            regionRow.style.cursor = "col-resize";
+          } else if (regionRow.style.cursor === "col-resize") {
+            regionRow.style.cursor = "auto";
+          }
+        }
 
         if (currentOffset > 0) {
           setHoverOffset(currentOffset);
@@ -191,6 +212,10 @@ export const Frames: FC<TimelineViewProps> = ({
     return value + timelineStartOffset;
   }, [position, currentOffsetX, step, length]);
 
+  /**
+   * Main function for all interactions with the timeline.
+   * It's responsible for creating new regions, updating existing ones and updating the player position.
+   */
   const onFrameScrub = useCallback(
     (e: MouseEvent) => {
       const dimensions = scrollable.current!.getBoundingClientRect();
@@ -203,44 +228,66 @@ export const Frames: FC<TimelineViewProps> = ({
       const onKeyframes = e.pageX - offsetLeft > timelineStartOffset;
       // don't draw on region lines, only on the empty space or special new line
       const isDrawing = onKeyframes && (!regionRow || regionRow.dataset?.id === "new");
-      let region: any;
+      let region: MSTTimelineRegion | undefined;
+      let mode: "new" | "edit" | undefined;
 
-      const getMouseToFrame = (e: MouseEvent | globalThis.MouseEvent) => {
+      const getMouseToOffset = (e: MouseEvent | globalThis.MouseEvent) => {
         const mouseOffset = e.pageX - offsetLeft - timelineStartOffset;
 
         return mouseOffset + currentOffsetX;
       };
 
-      const offset = getMouseToFrame(e);
-      const baseFrame = toSteps(offset, step) + 1;
+      const offset = getMouseToOffset(e);
+      let baseFrame = toSteps(offset, step) + 1;
+      let isInstant = false;
 
-      setIndicatorOffset(offset);
+      // don't scroll if we select region clicking on keyframes, outside of scrollable area
+      if (onKeyframes) setIndicatorOffset(offset);
 
       if (isDrawing) {
         // always a timeline region
-        region = props.onStartDrawing?.(baseFrame);
+        region = props.onStartDrawing?.({ frame: baseFrame });
+        mode = "new";
+      } else if (regionRow && onKeyframes) {
+        region = props.onStartDrawing?.({ region: regionRow.dataset.id, frame: baseFrame });
+        if (region) {
+          const { start, end } = region.ranges[0];
+          mode = "edit";
+          if (baseFrame === start) {
+            baseFrame = end;
+          } else if (baseFrame === end) {
+            baseFrame = start;
+          }
+          if (start === end) {
+            isInstant = true;
+          }
+        }
       }
 
       const onMouseMove = (e: globalThis.MouseEvent) => {
-        const offset = getMouseToFrame(e);
+        const offset = getMouseToOffset(e);
         const frame = toSteps(offset, step) + 1;
 
-        if (offset >= 0 && offset <= rightLimit) {
+        if (offset >= currentOffsetX && offset <= rightLimit + currentOffsetX) {
           setHoverEnabled(false);
           setRegionSelectionDisabled(true);
           setIndicatorOffset(offset);
         }
 
         if (region) {
-          const [start, end] = frame > baseFrame ? [baseFrame, frame] : [frame, baseFrame];
-          region.setRanges([start, end]);
+          if (isInstant) {
+            region.setRange([frame, frame], { mode });
+          } else {
+            const [start, end] = frame > baseFrame ? [baseFrame, frame] : [frame, baseFrame];
+            region.setRange([start, end], { mode });
+          }
         }
       };
 
       const onMouseUp = () => {
         setHoverEnabled(true);
         setRegionSelectionDisabled(false);
-        props.onFinishDrawing?.();
+        props.onFinishDrawing?.({ mode });
         document.removeEventListener("mousemove", onMouseMove);
         document.removeEventListener("mouseup", onMouseUp);
       };
@@ -281,8 +328,8 @@ export const Frames: FC<TimelineViewProps> = ({
   }, []);
 
   useEffect(() => {
-    onResize?.(toSteps(scrollable.current!.clientWidth, step));
-  }, [viewWidth, step]);
+    onResize?.(toSteps(scrollableWidth || 0, step));
+  }, [viewWidth, step, scrollableWidth]);
 
   useEffect(() => {
     const scroll = scrollable.current;
@@ -294,7 +341,7 @@ export const Frames: FC<TimelineViewProps> = ({
 
       setOffsetX(nextScrollOffset);
     }
-  }, [offset, step]);
+  }, [offset, step, scrollableWidth]);
 
   useEffect(() => {
     const scroll = scrollable.current;

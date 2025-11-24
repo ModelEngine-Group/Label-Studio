@@ -1,7 +1,6 @@
 import { when } from "mobx";
 import { inject, observer } from "mobx-react";
 import { type FC, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { Tooltip, Userpic } from "@humansignal/ui";
 import {
   IconAnnotationAccepted,
   IconAnnotationImported,
@@ -13,11 +12,14 @@ import {
   IconAnnotationSubmitted,
   IconCheck,
   IconDraftCreated,
-  LsSparks,
-} from "../../assets/icons";
+  IconSparks,
+  IconHistoryRewind,
+} from "@humansignal/icons";
+import { Tooltip, Userpic } from "@humansignal/ui";
 import { Space } from "../../common/Space/Space";
-import { Block, Elem } from "../../utils/bem";
+import { Block, cn, Elem } from "../../utils/bem";
 import { humanDateDiff, userDisplayName } from "../../utils/utilities";
+import { EmptyState } from "../SidePanels/Components/EmptyState";
 import "./AnnotationHistory.scss";
 
 type HistoryItemType =
@@ -51,7 +53,7 @@ const DraftState: FC<{
   annotation: any;
   inline?: boolean;
   isSelected?: boolean;
-}> = observer(({ annotation, inline, isSelected }) => {
+}> = observer(({ annotation, inline, isSelected }: { annotation: any; inline?: boolean; isSelected?: boolean }) => {
   const hasChanges = annotation.history.hasChanges;
   const store = annotation.list; // @todo weird name
   const infoIsHidden = store.store.hasInterface("annotations:hide-info");
@@ -60,8 +62,12 @@ const DraftState: FC<{
   const [hasUnsavedChanges, setChanges] = useState(false);
 
   // turn it on when changes just made; off when they we saved
-  useEffect(() => setChanges(true), [annotation.history.history.length]);
-  useEffect(() => setChanges(false), [annotation.draftSaved]);
+  useEffect(() => {
+    setChanges(true);
+  }, [annotation.history.history.length]);
+  useEffect(() => {
+    setChanges(false);
+  }, [annotation.draftSaved]);
 
   if (!hasChanges && !annotation.versions.draft) return null;
 
@@ -104,6 +110,9 @@ const AnnotationHistoryComponent: FC<any> = ({
   history,
   enabled = true,
   inline = false,
+  showEmptyState = true,
+  sectionHeader,
+  renderEmptyState,
 }) => {
   const annotation = annotationStore.selected;
   const lastItem = history?.length ? history[0] : null;
@@ -115,10 +124,38 @@ const AnnotationHistoryComponent: FC<any> = ({
   const isDraftSelected =
     !annotationStore.selectedHistory && (annotation.draftSelected || (!annotation.versions.draft && hasChanges));
 
+  // Determine if the empty state should be shown
+  const hasDraft = annotation?.versions?.draft;
+  const hasHistory = history && history.length > 0;
+  const shouldShowEmptyState = showEmptyState && !hasChanges && !hasDraft && !hasHistory;
+
+  // Default empty state component
+  const defaultEmptyState = (
+    <EmptyState
+      icon={<IconHistoryRewind width={24} height={24} />}
+      header="View annotation activity"
+      description={<>See a log of user actions for this annotation</>}
+    />
+  );
+
+  // If we should show empty state, render it
+  if (shouldShowEmptyState) {
+    return (
+      <Block name="annotation-history" mod={{ inline, empty: true }}>
+        {sectionHeader && (
+          <div className={`${cn("annotation-history").elem("section-head").toString()} sr-only`}>{sectionHeader}</div>
+        )}
+        {renderEmptyState ? renderEmptyState() : defaultEmptyState}
+      </Block>
+    );
+  }
+
   return (
     <Block name="annotation-history" mod={{ inline }}>
+      {sectionHeader && (
+        <div className={`${cn("annotation-history").elem("section-head").toString()} sr-only`}>{sectionHeader}</div>
+      )}
       <DraftState annotation={annotation} isSelected={isDraftSelected} inline={inline} />
-
       {enabled &&
         history.length > 0 &&
         history.map((item: any) => {
@@ -238,7 +275,7 @@ const HistoryItemComponent: FC<{
             username={isPrediction ? entity.createdBy : null}
             mod={{ prediction: isPrediction }}
           >
-            {isPrediction && <LsSparks style={{ width: 16, height: 16 }} />}
+            {isPrediction && <IconSparks style={{ width: 16, height: 16 }} />}
           </Elem>
           <Elem name="name" tag="span">
             {isPrediction ? entity.createdBy : userDisplayName(user)}
@@ -251,7 +288,7 @@ const HistoryItemComponent: FC<{
             {date && (
               <Elem name="date">
                 <Tooltip alignment="top-right" title={new Date(date).toLocaleString()}>
-                  <>{humanDateDiff(date)}</>
+                  <span>{humanDateDiff(date)}</span>
                 </Tooltip>
               </Elem>
             )}

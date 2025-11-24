@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { Circle, Rect } from "react-konva";
 import { observer } from "mobx-react";
-import { getParent, getRoot, hasParent, types } from "mobx-state-tree";
+import { getParent, hasParent, types } from "mobx-state-tree";
 
+import { RELATIVE_STAGE_HEIGHT, RELATIVE_STAGE_WIDTH } from "../components/ImageView/Image";
 import { guidGenerator } from "../core/Helpers";
 import { useRegionStyles } from "../hooks/useRegionColor";
+import { AnnotationMixin } from "../mixins/AnnotationMixin";
 import { FF_DEV_3793, isFF } from "../utils/feature-flags";
-import { RELATIVE_STAGE_HEIGHT, RELATIVE_STAGE_WIDTH } from "../components/ImageView/Image";
 
 const PolygonPointAbsoluteCoordsDEV3793 = types
   .model()
@@ -83,12 +84,10 @@ const PolygonPointRelativeCoords = types
       return self.parent?.parent;
     },
 
-    get annotation() {
-      return getRoot(self).annotationStore.selected;
-    },
     get canvasX() {
       return isFF(FF_DEV_3793) ? self.stage?.internalToCanvasX(self.x) : self.x;
     },
+
     get canvasY() {
       return isFF(FF_DEV_3793) ? self.stage?.internalToCanvasY(self.y) : self.y;
     },
@@ -196,9 +195,11 @@ const PolygonPointRelativeCoords = types
     },
   }));
 
-const PolygonPoint = isFF(FF_DEV_3793)
+const PolygonPointModel = isFF(FF_DEV_3793)
   ? PolygonPointRelativeCoords
   : types.compose("PolygonPoint", PolygonPointRelativeCoords, PolygonPointAbsoluteCoordsDEV3793);
+
+const PolygonPoint = types.compose("PolygonPoint", AnnotationMixin, PolygonPointModel);
 
 const PolygonPointView = observer(({ item, name }) => {
   if (!item.parent) return;

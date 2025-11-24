@@ -1,6 +1,3 @@
-// Outliner + Details
-export const FF_DEV_1170 = "ff_front_1170_outliner_030222_short";
-
 /**
  * Fixing "Auto Detect" tool undo functionality and bugs with skipNextUndoState.
  * @link https://app.launchdarkly.com/default/production/features/fflag_fix_front_dev_1284_auto_detect_undo_281022_short
@@ -12,21 +9,10 @@ export const FF_DEV_1442 = "ff_front_dev_1442_unselect_shape_on_click_outside_08
 // User labels for Taxonomy
 export const FF_DEV_1536 = "ff_front_dev_1536_taxonomy_user_labels_150222_long";
 
-// New Audio 2.0 UI
-export const FF_DEV_1713 = "ff_front_DEV_1713_audio_ui_150222_short";
-
-export const FF_DEV_2432 = "ff_front_dev_2432_auto_save_polygon_draft_210622_short";
-
 export const FF_DEV_2669 = "ff_front_dev_2669_paragraph_author_filter_210622_short";
 
 // Change the rotate tool from bbox
 export const FF_DEV_2671 = "ff_front_dev_2671_anchor_rotate_bbox_010722_short";
-
-/**
- * Audio v3 - new Audio UI Library
- * @link https://app.launchdarkly.com/default/production/features/ff_front_dev_2715_audio_3_280722_short
- */
-export const FF_DEV_2715 = "ff_front_dev_2715_audio_3_280722_short";
 
 export const FF_DEV_2755 = "fflag_feat_dev_2755_regions_list_grouped_by_labels_with_ordered_collapse_short";
 

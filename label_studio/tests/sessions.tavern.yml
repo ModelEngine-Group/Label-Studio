@@ -6,6 +6,7 @@ marks:
   - django_live_url
   - testing_session_timeouts
   - freeze_clock
+  - fflag_feat_utc_46_session_timeout_policy_off
 stages:
 - id: signup
   name: Sign up

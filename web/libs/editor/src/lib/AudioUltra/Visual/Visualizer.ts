@@ -1,5 +1,6 @@
+import { ff } from "@humansignal/core";
 import type { WaveformAudio } from "../Media/WaveformAudio";
-import { averageMinMax, BROWSER_SCROLLBAR_WIDTH, clamp, debounce, defaults, warn } from "../Common/Utils";
+import { BROWSER_SCROLLBAR_WIDTH, clamp, debounce, warn } from "../Common/Utils";
 import type { Waveform, WaveformOptions } from "../Waveform";
 import { type CanvasCompositeOperation, Layer, type RenderingContext } from "./Layer";
 import { Events } from "../Common/Events";
@@ -9,11 +10,25 @@ import { rgba } from "../Common/Color";
 import type { Cursor } from "../Cursor/Cursor";
 import type { Padding } from "../Common/Style";
 import type { TimelineOptions } from "../Timeline/Timeline";
+import { getCurrentTheme } from "@humansignal/ui";
 import "./Loader";
+import type { WindowFunctionType } from "./WindowFunctions";
+import { COLOR_SCHEMES, ColorMapper, type ColorScheme } from "./ColorMapper";
+import { SPECTROGRAM_DEFAULTS } from "./constants";
+import type { FFTProcessorOptions, SpectrogramScale } from "../Analysis/FFTProcessor";
+import { WaveformRenderer } from "./Renderer/WaveformRenderer";
+import { SpectrogramRenderer } from "./Renderer/SpectrogramRenderer";
+import { ResizeRenderer } from "./Renderer/ResizeRenderer";
+import type { LRUCache } from "../Common/LRUCache";
+import type { RenderContext, Renderer } from "./Renderer/Renderer";
+import { LayerM } from "./Composition/LayerM";
+import { isFF, FF_AUDIO_SPECTROGRAMS } from "../../../utils/feature-flags";
+import { RateLimitedRenderer } from "./Renderer/RateLimitedRenderer";
+import { InteractionManager } from "../Interaction/InteractionManager";
+import type { LayerInfo } from "../Interaction/InteractionManager";
+import type { Interactive } from "../Interaction/Interactive";
 
-// Amount of data samples to buffer on either side of the renderable area
-const BUFFER_SAMPLES = 2;
-const CACHE_RENDER_THRESHOLD = 10000000;
+const isSyncedBuffering = ff.isActive(ff.FF_SYNCED_BUFFERING);
 
 interface VisualizerEvents {
   draw: (visualizer: Visualizer) => void;
@@ -39,12 +54,25 @@ export type VisualizerOptions = Pick<
   | "timeline"
   | "height"
   | "waveHeight"
+  | "waveformHeight"
+  | "spectrogramHeight"
+  | "timelineHeight"
   | "gridWidth"
   | "gridColor"
   | "waveColor"
   | "backgroundColor"
   | "container"
->;
+  | "experimental"
+> & {
+  spectrogramFftSamples?: number;
+  numberOfMelBands?: number;
+  spectrogramWindowingFunction?: string;
+  spectrogramMinDb?: number;
+  spectrogramMaxDb?: number;
+  spectrogramColorScheme?: string;
+  spectrogramHopFactor?: number;
+  spectrogramScale?: SpectrogramScale;
+};
 
 export class Visualizer extends Events<VisualizerEvents> {
   private wrapper!: HTMLElement;
@@ -55,7 +83,6 @@ export class Visualizer extends Events<VisualizerEvents> {
   private audio!: WaveformAudio | null;
   private zoom = 1;
   private scrollLeft = 0;
-  private drawing = false;
   private renderId = 0;
   private amp = 1;
   private seekLocked = false;
@@ -70,26 +97,33 @@ export class Visualizer extends Events<VisualizerEvents> {
   private gridColor = rgba("rgba(0, 0, 0, 0.1)");
   private backgroundColor = rgba("#fff");
   private waveColor = rgba("#000");
-  private baseWaveHeight = 96;
-  private originalWaveHeight = 0;
-  private waveHeight = 32;
-  private lastRenderedZoom = 0;
-  private lastRenderedWidth = 0;
-  private lastRenderedAmp = 0;
-  private lastRenderedScrollLeftPx = 0;
+  private waveformHeight = 32;
+  private spectrogramHeight = 32;
+  private timelineHeight = 20;
   private _container!: HTMLElement;
   private _loader!: HTMLElement;
+  private composer?: LayerM;
 
-  timelineHeight: number = defaults.timelineHeight;
   timelinePlacement: TimelineOptions["placement"] = "top";
   maxZoom = 1500;
   playhead: Playhead;
   reservedSpace = 0;
-  samplesPerPx = 0;
+  public samplesPerPx = 0;
+
+  private waveformRenderer!: WaveformRenderer;
+  private readonly spectrogramRenderer!: SpectrogramRenderer;
+  private waveformResizeRenderer!: ResizeRenderer;
+  private spectrogramResizeRenderer!: ResizeRenderer;
+  private renderers: Renderer[] = [];
+  private rateLimitedTransfer: RateLimitedRenderer;
+  private interactionManager!: InteractionManager;
+  private initialSpectrogramHeight: number;
+  private initialWaveformHeight: number;
 
   constructor(options: VisualizerOptions, waveform: Waveform) {
     super();
 
+    const isDarkMode = getCurrentTheme() === "Dark";
     this.wf = waveform;
     this.waveContainer = options.container;
     this.waveColor = options.waveColor ? rgba(options.waveColor) : this.waveColor;
@@ -98,10 +132,12 @@ export class Visualizer extends Events<VisualizerEvents> {
     this.zoomToCursor = options.zoomToCursor ?? this.zoomToCursor;
     this.autoCenter = options.autoCenter ?? this.autoCenter;
     this.splitChannels = options.splitChannels ?? this.splitChannels;
-    this.baseWaveHeight = options.height ?? this.baseWaveHeight;
-    this.originalWaveHeight = this.baseWaveHeight;
-    this.timelineHeight = options.timeline?.height ?? this.timelineHeight;
-    this.waveHeight = options.waveHeight ?? this.waveHeight;
+    this.waveformHeight = options.waveformHeight ?? options.height ?? options.waveHeight ?? 32;
+    this.spectrogramHeight = options.spectrogramHeight ?? options.height ?? options.waveHeight ?? 32;
+    // Save initial height for computing adaptive max height during resize
+    this.initialWaveformHeight = this.waveformHeight;
+    this.initialSpectrogramHeight = this.spectrogramHeight;
+    this.timelineHeight = options.timelineHeight ?? options.timeline?.height ?? 20;
     this.timelinePlacement = options?.timeline?.placement ?? this.timelinePlacement;
     this.gridColor = options.gridColor ? rgba(options.gridColor) : this.gridColor;
     this.gridWidth = options.gridWidth ?? this.gridWidth;
@@ -112,16 +148,146 @@ export class Visualizer extends Events<VisualizerEvents> {
       {
         ...options.playhead,
         x: 0,
-        color: rgba("#000"),
-        fillColor: rgba("#BAE7FF"),
-        width: options.cursorWidth ?? 1,
+        color: isDarkMode ? rgba("#fff") : rgba("#000"),
+        fillColor: isDarkMode ? rgba("#fff") : rgba("#BAE7FF"),
+        width: options.cursorWidth ?? 2,
       },
       this,
       this.wf,
     );
 
-    this.initialRender();
+    // Visualizer should handle layer and container setup
+    if (this.container) {
+      // Set an initial height for the container, so the progress bar is visible during loading
+      const initialHeight = this.waveformHeight;
+      +this.timelineHeight;
+      this.container.style.height = `${initialHeight}px`;
+    }
+    this.createLayers();
+
+    // Initialize interaction manager - use main canvas for events since that's where content is rendered
+    const mainLayer = this.getLayer("main");
+    if (!mainLayer?.canvas || !(mainLayer.canvas instanceof HTMLCanvasElement)) {
+      throw new Error("Main canvas not found or not an HTMLCanvasElement");
+    }
+
+    this.interactionManager = new InteractionManager({
+      container: mainLayer.canvas,
+      pixelRatio: this.pixelRatio,
+      getLayerInfo: this.getLayerInfo.bind(this),
+    });
+
+    // Instantiate renderers
+    const waveformLayer = this.getLayer("waveform");
+    const backgroundLayer = this.getLayer("background");
+    if (!waveformLayer) throw new Error("Waveform layer not found");
+    if (!backgroundLayer) throw new Error("Background layer not found");
+    this.waveformRenderer = new WaveformRenderer({
+      layer: waveformLayer,
+      backgroundLayer,
+      config: {
+        renderId: this.renderId,
+        waveHeight: this.waveformHeight,
+        padding: this.padding,
+        reservedSpace: this.reservedSpace,
+        waveColor: this.waveColor,
+      },
+      onRenderTransfer: this.transferImage.bind(this),
+    });
+
+    // Initialize waveform resize renderer
+    const waveformBorderLayer = this.getLayer("waveform-resize");
+    if (waveformBorderLayer) {
+      this.waveformResizeRenderer = new ResizeRenderer({
+        layer: waveformBorderLayer,
+        config: {
+          borderColor: isDarkMode ? "#444" : "#ddd",
+          borderWidth: 5,
+          borderStyle: "solid",
+          opacity: 0.3, // More visible
+          hoverOpacity: 0.6, // More visible on hover
+          handleColor: "#ffffff", // White for blend mode contrast
+          handleOpacity: 0.8, // High opacity for visibility
+          handleHoverOpacity: 1.0, // Full opacity on hover
+          shadowColor: "rgba(0, 0, 0, 0.3)", // Subtle shadow
+          shadowBlur: 8, // Increased from 4
+          shadowOffsetX: 0,
+          shadowOffsetY: 4, // Increased from 2
+        },
+        componentName: "waveform",
+        onNeedsTransfer: this.transferImage.bind(this),
+        onHeightChange: this.handleHeightChange,
+      });
+      // Register with interaction manager
+      this.interactionManager.register(this.waveformResizeRenderer);
+    }
+
     this.attachEvents();
+
+    // Prepare a spectrogram-related state for SpectrogramRenderer
+    const spectrogramColorScheme = (options.spectrogramColorScheme as ColorScheme) ?? COLOR_SCHEMES.VIRIDIS;
+    const colorMapper = new ColorMapper(spectrogramColorScheme);
+    const spectrogramScale = options.spectrogramScale ?? "mel";
+    const numberOfMelBands = options.numberOfMelBands ?? SPECTROGRAM_DEFAULTS.MEL_BANDS;
+    const spectrogramHopFactor = options.spectrogramHopFactor ?? 2;
+    const spectrogramMinDb = options.spectrogramMinDb ?? SPECTROGRAM_DEFAULTS.MIN_DB;
+    const spectrogramMaxDb = options.spectrogramMaxDb ?? SPECTROGRAM_DEFAULTS.MAX_DB;
+    const fftSamples = options.spectrogramFftSamples ?? SPECTROGRAM_DEFAULTS.FFT_SAMPLES;
+    const windowFunction =
+      (options.spectrogramWindowingFunction as WindowFunctionType) ?? SPECTROGRAM_DEFAULTS.WINDOWING_FUNCTION;
+    const fftCache = new Map<number, LRUCache<number, Float32Array>>();
+
+    // Only initialize spectrogram renderer if feature flag is enabled
+    if (isFF(FF_AUDIO_SPECTROGRAMS)) {
+      this.spectrogramRenderer = new SpectrogramRenderer(
+        this._container,
+        this.getLayer("spectrogram")!,
+        this.getLayer("spectrogram-grid")!,
+        {
+          channelHeight: this.channelHeight,
+          spectrogramMinDb,
+          spectrogramScale,
+          spectrogramHopFactor,
+          colorMapper,
+          fftCache,
+          spectrogramColorScheme,
+          spectrogramMaxDb,
+          numberOfMelBands,
+          fftSamples,
+          windowFunction,
+        },
+        this.transferImage.bind(this),
+      );
+
+      // Initialize spectrogram resize renderer
+      const spectrogramBorderLayer = this.getLayer("spectrogram-resize");
+      if (spectrogramBorderLayer) {
+        this.spectrogramResizeRenderer = new ResizeRenderer({
+          layer: spectrogramBorderLayer,
+          config: {
+            borderColor: isDarkMode ? "#444" : "#ddd",
+            borderWidth: 5,
+            borderStyle: "solid",
+            opacity: 0.3, // More visible
+            hoverOpacity: 0.6, // More visible on hover
+            handleColor: "#ffffff", // White for blend mode contrast
+            handleOpacity: 0.8, // High opacity for visibility
+            handleHoverOpacity: 1.0, // Full opacity on hover
+            shadowColor: "rgba(0, 0, 0, 0.3)", // Subtle shadow
+            shadowBlur: 8, // Increased from 4
+            shadowOffsetX: 0,
+            shadowOffsetY: 4, // Increased from 2
+          },
+          componentName: "spectrogram",
+          onNeedsTransfer: this.transferImage.bind(this),
+          onHeightChange: this.handleHeightChange,
+        });
+        // Register with interaction manager
+        this.interactionManager.register(this.spectrogramResizeRenderer);
+      }
+    }
+
+    this.rateLimitedTransfer = new RateLimitedRenderer();
   }
 
   init(audio: WaveformAudio) {
@@ -130,13 +296,93 @@ export class Visualizer extends Events<VisualizerEvents> {
     this.setLoading(false);
 
     // This triggers the resize observer when loading in differing heights
-    // as a result of multichannel or differently configured waveHeight
+    // as a result of multichannel or differently configured waveformHeight
     this.setContainerHeight();
-    if (this.height === this.originalWaveHeight) {
-      this.handleResize();
+
+    // Update regions layer height to match the current visualizer height
+    const regionsLayer = this.getLayer("regions");
+    if (regionsLayer) {
+      regionsLayer.height = this.height;
+    }
+
+    // Set renderers array
+    this.renderers = [this.waveformRenderer];
+    if (this.waveformResizeRenderer) {
+      this.renderers.push(this.waveformResizeRenderer);
+    }
+    if (isFF(FF_AUDIO_SPECTROGRAMS) && this.spectrogramRenderer) {
+      this.renderers.push(this.spectrogramRenderer);
+      if (this.spectrogramResizeRenderer) {
+        this.renderers.push(this.spectrogramResizeRenderer);
+      }
+    }
+
+    // Dynamically set maxZoom so you can zoom to 1:1 (one sample per pixel)
+    if (this.audio && this.width > 0) {
+      this.maxZoom = Math.max(1, Math.ceil(this.audio.dataLength / this.width));
+    }
+
+    // Compose all layers together so that we cache the composition of the layers.
+    this.createComposer();
+
+    // Listen for timeline visibility changes to regenerate playhead
+    const timelineLayer = this.getLayer("timeline");
+    if (timelineLayer) {
+      timelineLayer.on("layerUpdated", this.playhead.onInit.bind(this.playhead));
+    }
+
+    // Update the playhead position
+    this.playhead.onInit();
+
+    // Initialize all renderers generically
+    for (const renderer of this.renderers) {
+      renderer.init(
+        {
+          scrollLeftPx: this.getScrollLeftPx(),
+          width: this.width,
+          zoom: this.zoom,
+          samplesPerPx: this.samplesPerPx,
+          dataLength: this.dataLength,
+        },
+        this.audio,
+      );
     }
 
     this.invoke("initialized", [this]);
+    setTimeout(() => this.draw(), 10);
+  }
+
+  private createComposer() {
+    const regionsM = LayerM.lift(this.layers.get("regions")!);
+    const timelineM = LayerM.lift(this.layers.get("timeline")!);
+
+    const waveform = LayerM.overlay([
+      LayerM.lift(this.layers.get("background")!),
+      LayerM.lift(this.layers.get("waveform")!),
+      LayerM.lift(this.layers.get("waveform-resize")!),
+    ]);
+    let waveFormAndSpectrogram = waveform;
+
+    if (isFF(FF_AUDIO_SPECTROGRAMS)) {
+      const spectrogram = LayerM.overlay([
+        LayerM.lift(this.layers.get("spectrogram")!),
+        LayerM.lift(this.layers.get("spectrogram-grid")!),
+        LayerM.lift(this.layers.get("spectrogram-resize")!),
+        LayerM.lift(this.layers.get("progress")!),
+      ]);
+      // Stack waveform and spectrogram vertically
+      waveFormAndSpectrogram = waveform.above(spectrogram);
+    }
+
+    // Add timeline padding if visible
+    const waveFormAndSpectrogramWithTimeline = LayerM.ifM(
+      timelineM.props.isVisible,
+      waveFormAndSpectrogram.shift(0, this.timelineHeight),
+      waveFormAndSpectrogram,
+    );
+
+    // Create final composition with all layers
+    this.composer = LayerM.overlay([timelineM, waveFormAndSpectrogramWithTimeline, regionsM]);
   }
 
   setLoading(loading: boolean) {
@@ -177,16 +423,17 @@ export class Visualizer extends Events<VisualizerEvents> {
 
   setZoom(value: number) {
     this.zoom = clamp(value, 1, this.maxZoom);
+
     if (this.zoomToCursor) {
       this.centerToCurrentTime();
     } else {
-      this.updatePosition(false);
+      this.updatePosition();
     }
-
     this.getSamplesPerPx();
     this.updateScrollFiller();
 
     this.wf.invoke("zoom", [this.zoom]);
+
     this.draw();
   }
 
@@ -194,17 +441,16 @@ export class Visualizer extends Events<VisualizerEvents> {
     return this.zoom;
   }
 
-  setScrollLeft(value: number, redraw = true, forceDraw = false) {
-    this.wrapper.scrollLeft = value * this.fullWidth;
-    this._setScrollLeft(value, redraw, forceDraw);
+  setScrollLeft(value: number) {
+    const maxScroll = this.scrollWidth / this.fullWidth;
+    const clamped = clamp(value, 0, maxScroll);
+    this.wrapper.scrollLeft = clamped * this.fullWidth;
   }
 
-  _setScrollLeft(value: number, redraw = true, forceDraw = false) {
-    this.scrollLeft = value;
-
-    if (redraw) {
-      this.draw(false, forceDraw);
-    }
+  _setScrollLeft(value: number, _redraw = true) {
+    const maxScroll = this.scrollWidth / this.fullWidth;
+    this.scrollLeft = clamp(value, 0, maxScroll);
+    this.draw();
   }
 
   getScrollLeft() {
@@ -223,36 +469,39 @@ export class Visualizer extends Events<VisualizerEvents> {
     this.seekLocked = false;
   }
 
-  draw(dry = false, forceDraw = false) {
-    if (this.isDestroyed) return;
-    if (this.drawing && !forceDraw) return warn("Concurrent render detected");
-
-    this.drawing = true;
-
-    setTimeout(async () => {
-      if (!dry) {
-        this.drawMiddleLine();
-
-        if (this.wf.playing && this.autoCenter) {
-          this.centerToCurrentTime();
-        }
-
-        // Render all available channels
-        await this.renderAvailableChannels();
-      }
-
-      this.renderCursor();
-
-      this.invoke("draw", [this]);
-
-      this.transferImage();
-
-      this.drawing = false;
-    });
+  drawRequestId: number | null = null;
+  drawRequestDry = true;
+  draw(dry = false) {
+    if (!isSyncedBuffering) {
+      this._draw(dry);
+      return;
+    }
+    if (this.drawRequestId) {
+      this.drawRequestDry = this.drawRequestDry && dry;
+    } else {
+      this.drawRequestDry = dry;
+      this.drawRequestId = requestAnimationFrame(() => {
+        this.drawRequestId = null;
+        if (this.isDestroyed) return;
+        this._draw(this.drawRequestDry);
+      });
+    }
   }
 
-  redrawCursor() {
-    this.renderCursor();
+  _draw(dry = false) {
+    if (this.isDestroyed) return;
+    if (!dry) {
+      // Center to the current time if playing and autoCenter are enabled
+      if (this.wf.playing && this.autoCenter) {
+        this.centerToCurrentTime();
+      }
+      // Render all available channels using the renderer
+      this.renderAvailableChannels();
+    }
+
+    this.invoke("draw", [this]);
+
+    // Ensure compositing is always done after all drawing
     this.transferImage();
   }
 
@@ -263,9 +512,25 @@ export class Visualizer extends Events<VisualizerEvents> {
     this.clear();
     this.playhead.destroy();
     this.audio = null;
+    // Call the destroy on all renderers
+    for (const renderer of this.renderers) {
+      renderer.destroy();
+    }
+    // Destroy resize renderers specifically
+    if (this.waveformResizeRenderer) {
+      this.waveformResizeRenderer.destroy();
+    }
+    if (this.spectrogramResizeRenderer) {
+      this.spectrogramResizeRenderer.destroy();
+    }
     this.removeEvents();
     this.layers.forEach((layer) => layer.remove());
     this.wrapper.remove();
+
+    // Destroy interaction manager
+    if (this.interactionManager) {
+      this.interactionManager.destroy();
+    }
 
     super.destroy();
   }
@@ -273,15 +538,6 @@ export class Visualizer extends Events<VisualizerEvents> {
   clear() {
     this.layers.get("main")?.clear();
     this.transferImage();
-  }
-
-  getAmp() {
-    return this.amp;
-  }
-
-  setAmp(amp: number) {
-    this.amp = clamp(amp, 1, Number.POSITIVE_INFINITY);
-    this.draw();
   }
 
   centerToCurrentTime() {
@@ -305,273 +561,20 @@ export class Visualizer extends Events<VisualizerEvents> {
   /**
    * Render the visible range of waveform channels to the canvas
    */
-  private async renderAvailableChannels() {
+  public renderAvailableChannels() {
     if (!this.audio) return;
 
-    const layer = this.getLayer("waveform");
+    const renderContext: RenderContext = {
+      scrollLeftPx: this.getScrollLeftPx(),
+      width: this.width,
+      zoom: this.zoom,
+      samplesPerPx: this.samplesPerPx,
+      dataLength: this.dataLength,
+    };
 
-    if (!layer || !layer.isVisible) {
-      this.lastRenderedWidth = 0;
-      return;
+    for (const renderer of this.renderers) {
+      renderer.draw(renderContext);
     }
-
-    this.renderId = performance.now();
-
-    const dataLength = this.dataLength;
-    const scrollLeftPx = this.getScrollLeftPx();
-    const iStart = clamp(scrollLeftPx * this.samplesPerPx, 0, dataLength);
-    const iEnd = clamp(iStart + this.width * this.samplesPerPx, 0, dataLength);
-
-    const renderableData = iEnd - iStart;
-    const zoom = this.zoom;
-    const amp = this.amp;
-
-    // Render all channels, full waveform
-    if (
-      this.width !== this.lastRenderedWidth ||
-      zoom !== this.lastRenderedZoom ||
-      amp !== this.lastRenderedAmp ||
-      renderableData < CACHE_RENDER_THRESHOLD
-    ) {
-      for (let i = 0; i < this.audio.channelCount; i++) {
-        await this.renderWave(i, layer, iStart, iEnd);
-      }
-    }
-    // Render partial waveform, only the change in scroll position's channel data.
-    else {
-      await this.renderPartialWave(layer, iStart, iEnd);
-    }
-  }
-
-  /**
-   * Render the waveform for a single channel
-   */
-  private renderWave(channelNumber: number, layer: Layer, iStart: number, iEnd: number): Promise<boolean> {
-    const renderId = this.renderId;
-    const height = this.baseWaveHeight / (this.audio?.channelCount ?? 1);
-    const scrollLeftPx = this.getScrollLeftPx();
-
-    const zoom = this.zoom;
-    const amp = this.amp;
-
-    const x = 0;
-
-    return new Promise((resolve) => {
-      if (this.isDestroyed || !this.audio) return resolve(false);
-
-      // The waveform layer should be cleared during the render of the first channel, and not subsequent channels in a
-      // given render cycle
-      if (channelNumber === 0) {
-        layer.clear();
-      }
-      const renderIterator = this.renderSlice(layer, height, iStart, iEnd, channelNumber, x);
-
-      // Render iterator, allowing it to be cancelled if a new render is requested
-      const render = () => {
-        if (this.renderId !== renderId) return resolve(false);
-
-        const next = renderIterator.next();
-
-        if (!next.done) {
-          requestAnimationFrame(render);
-        } else {
-          this.lastRenderedWidth = this.width;
-          this.lastRenderedZoom = zoom;
-          this.lastRenderedAmp = amp;
-          this.lastRenderedScrollLeftPx = scrollLeftPx;
-          resolve(true);
-        }
-      };
-
-      render();
-    });
-  }
-
-  /**
-   * Render a partial wave for all available channels, reusing the last rendered channel(s) wave as a starting point
-   * only drawing the new data on the left or right side of the waveform.
-   */
-  private async renderPartialWave(layer: Layer, iStart: number, iEnd: number) {
-    const renderId = this.renderId;
-    let x = 0;
-    const channelCount = this.audio?.channelCount ?? 1;
-    const height = this.baseWaveHeight / channelCount;
-    const scrollLeftPx = this.getScrollLeftPx();
-    const dataLength = this.dataLength;
-    let deltaX = this.lastRenderedScrollLeftPx - scrollLeftPx;
-
-    if ((deltaX < 1 && deltaX > -1) || !this.audio) return false;
-
-    deltaX = Math.round(deltaX);
-    const diff = deltaX * this.samplesPerPx;
-
-    this.lastRenderedScrollLeftPx = scrollLeftPx;
-
-    // Move the canvas to the left by deltaX
-    layer.shift(deltaX, 0);
-
-    for (let channelNumber = 0; channelNumber < channelCount; channelNumber++) {
-      await new Promise((resolve) => {
-        let sStart = iStart;
-        let sEnd = iEnd;
-
-        // Waveform visually moving to the right
-        if (deltaX > 0) {
-          // Draw the new data on the left
-          sEnd = iStart + diff;
-          x = 0;
-
-          // Waveform visually moving to the left
-        } else {
-          // Draw the new data on the right
-          sStart = iEnd + diff;
-          x = clamp(this.width + deltaX - BUFFER_SAMPLES, 0, this.width);
-        }
-
-        sEnd = clamp(sEnd + this.samplesPerPx * BUFFER_SAMPLES, 0, dataLength);
-
-        const renderIterator = this.renderSlice(layer, height, sStart, sEnd, channelNumber, x);
-
-        // Render iterator, allowing it to be cancelled if a new render is requested
-        const render = () => {
-          if (this.renderId !== renderId) return resolve(false);
-
-          const next = renderIterator.next();
-
-          if (!next.done) {
-            requestAnimationFrame(render);
-          } else {
-            resolve(true);
-          }
-        };
-
-        render();
-      });
-    }
-  }
-
-  /**
-   * Render a slice of the waveform for a single channel between iStart and iEnd timestamps,
-   * returning an iterator that can be used to render the slice.
-   */
-  private *renderSlice(
-    layer: Layer,
-    height: number,
-    iStart: number,
-    iEnd: number,
-    channelNumber: number,
-    x = 0,
-  ): Generator<any, void, any> {
-    const bufferChunks = this.audio?.chunks?.[channelNumber];
-
-    if (!bufferChunks) return;
-
-    const bufferChunkSize = bufferChunks.length;
-    const paddingTop = this.padding?.top ?? 0;
-    const paddingLeft = this.padding?.left ?? 0;
-    const zero = height * channelNumber + ((defaults.timelinePlacement as number) ? this.reservedSpace : 0);
-    const y = zero + paddingTop + height / 2;
-    let total = 0;
-
-    layer.save();
-    const waveColor = this.waveColor.toString();
-
-    layer.strokeStyle = waveColor;
-    layer.fillStyle = waveColor;
-    layer.lineWidth = 1;
-
-    layer.beginPath();
-    layer.moveTo(x, y);
-
-    // Find all chunks in buffer chunks that are between iStart and iEnd
-    const now = performance.now();
-
-    for (let i = 0; i < bufferChunkSize; i++) {
-      const slice = bufferChunks[i];
-      const sliceLength = slice.length;
-
-      const chunkStart = Math.floor(clamp(iStart - total, 0, sliceLength));
-      const chunkEnd = Math.ceil(clamp(iEnd - total, 0, sliceLength));
-
-      total += sliceLength;
-
-      try {
-        const chunks = slice.slice(chunkStart, chunkEnd);
-
-        const l = chunks.length - 1;
-        let i = l + 1;
-
-        while (i > 0) {
-          const index = l - i;
-          const chunk = chunks.slice(index, index + this.samplesPerPx);
-
-          if (now - performance.now() > 10) {
-            yield;
-          }
-
-          if (x >= 0 && chunk.length > 0) {
-            this.renderChunk(chunk, layer, height, x + paddingLeft, zero);
-          }
-
-          x += 1;
-          i = clamp(i - this.samplesPerPx, 0, l);
-        }
-      } catch {
-        // Ignore any out of bounds errors if they occur
-      }
-    }
-    layer.stroke();
-    layer.restore();
-  }
-
-  /**
-   * Render a single chunk of waveform data, which is a small set of contiguous samples.
-   * This takes an average min and max value for the chunk and draws a line between them.
-   */
-  private renderChunk(chunk: Float32Array, layer: Layer, height: number, offset: number, zero: number) {
-    layer.save();
-
-    const renderable = averageMinMax(chunk);
-
-    renderable.forEach((v: number) => {
-      const H2 = height / 2;
-      const H = v * this.amp * H2;
-
-      layer.lineTo(offset + 1, zero + H2 + H);
-    });
-
-    layer.restore();
-  }
-
-  private renderCursor() {
-    this.playhead.render();
-  }
-
-  private drawMiddleLine() {
-    this.useLayer("background", (layer) => {
-      layer.clear();
-      if (layer.isVisible) {
-        // Set background
-        layer.save();
-        layer.fillStyle = this.backgroundColor.toString();
-        layer.fillRect(0, 0, this.width, this.height);
-        layer.restore();
-
-        // Draw middle line
-        layer.lineWidth = this.gridWidth;
-        layer.strokeStyle = this.gridColor.toString();
-
-        // Draw middle line
-        const linePositionY = (this.height + this.reservedSpace) / 2;
-
-        layer.beginPath();
-        layer.moveTo(0, linePositionY);
-        layer.lineTo(this.width, linePositionY);
-        layer.closePath();
-        layer.stroke();
-        layer.restore();
-      }
-    });
   }
 
   get pixelRatio() {
@@ -582,22 +585,35 @@ export class Visualizer extends Events<VisualizerEvents> {
     return this.container.clientWidth;
   }
 
+  get waveformLayerHeight() {
+    if (this.splitChannels && this.audio?.channelCount) {
+      return this.waveformHeight * this.audio.channelCount;
+    }
+    return this.waveformHeight;
+  }
+
+  get spectrogramLayerHeight() {
+    if (this.splitChannels && this.audio?.channelCount) {
+      return this.spectrogramHeight * this.audio.channelCount;
+    }
+    return this.spectrogramHeight;
+  }
+
+  get timelineComponentHeight() {
+    return this.timelineHeight;
+  }
+
   get height() {
     let height = 0;
     const timelineLayer = this.getLayer("timeline");
     const waveformLayer = this.getLayer("waveform");
-    const waveformHeight =
-      Math.max(
-        this.originalWaveHeight,
-        this.waveHeight * (this.splitChannels ? this.audio?.channelCount ?? 1 : 1) + this.timelineHeight,
-      ) - this.timelineHeight;
+    const spectrogramLayer = this.getLayer("spectrogram");
 
-    if (this.baseWaveHeight !== waveformHeight) {
-      this.baseWaveHeight = waveformHeight;
-    }
+    // If the timeline layer doesn't exist yet, assume it's visible and use timelineHeight
+    height += timelineLayer === undefined ? this.timelineHeight : timelineLayer.isVisible ? this.timelineHeight : 0;
+    height += waveformLayer?.isVisible ? this.waveformLayerHeight : 0;
+    height += spectrogramLayer?.isVisible ? this.spectrogramLayerHeight : 0;
 
-    height += timelineLayer?.isVisible ? this.timelineHeight : 0;
-    height += waveformLayer?.isVisible ? waveformHeight : 0;
     return height;
   }
 
@@ -633,35 +649,65 @@ export class Visualizer extends Events<VisualizerEvents> {
     return result;
   }
 
-  get isDrawing() {
-    return this.drawing;
-  }
-
-  private initialRender() {
-    if (this.container) {
-      this.container.style.height = `${this.baseWaveHeight}px`;
-      this.createLayers();
-    } else {
-      // TBD
-    }
-
-    this.drawMiddleLine();
-    this.transferImage();
-  }
-
-  private createLayers() {
+  protected createLayers() {
     const { container } = this;
 
     this.wrapper = document.createElement("div");
     this.wrapper.style.height = "100%";
 
     const mainLayer = this.createLayer({ name: "main" });
-    this.createLayer({ name: "background", offscreen: true, zIndex: 0, isVisible: false });
-    this.createLayer({ name: "waveform", offscreen: true, zIndex: 100 });
-    this.createLayerGroup({ name: "regions", offscreen: true, zIndex: 101, compositeOperation: "source-over" });
-    const controlsLayer = this.createLayer({ name: "controls", offscreen: true, zIndex: 1000 });
+    this.createLayer({
+      name: "background",
+      offscreen: true,
+      zIndex: 0,
+      isVisible: false,
+      height: this.waveformLayerHeight,
+    });
+    this.createLayer({ name: "waveform", offscreen: true, zIndex: 100, height: this.waveformLayerHeight });
+    this.createLayer({
+      name: "waveform-resize",
+      offscreen: true,
+      zIndex: 200,
+      height: this.waveformLayerHeight,
+      compositeOperation: "difference", // Use blend mode for better visibility
+    });
 
-    this.playhead.setLayer(controlsLayer);
+    // Create spectrogram layers only if feature flag is enabled
+    if (isFF(FF_AUDIO_SPECTROGRAMS)) {
+      this.createLayer({
+        name: "spectrogram",
+        offscreen: true,
+        zIndex: 100,
+        isVisible: true,
+        height: this.spectrogramLayerHeight,
+      });
+      this.createLayer({
+        name: "spectrogram-resize",
+        offscreen: true,
+        zIndex: 200,
+        isVisible: true,
+        height: this.spectrogramLayerHeight,
+        compositeOperation: "difference", // Use blend mode for better visibility
+      });
+      this.createLayer({ name: "progress", offscreen: true, zIndex: 1020, isVisible: true, height: 0 });
+      this.createLayer({
+        name: "spectrogram-grid",
+        offscreen: true,
+        zIndex: 1100,
+        isVisible: true,
+        height: this.spectrogramLayerHeight,
+      });
+    }
+
+    // Regions only
+    this.createLayerGroup({
+      name: "regions",
+      offscreen: true,
+      zIndex: 101,
+      compositeOperation: "source-over",
+      height: this.height,
+    });
+
     this.initScrollBar();
     mainLayer.appendTo(this.wrapper);
     container.appendChild(this.wrapper);
@@ -675,10 +721,12 @@ export class Visualizer extends Events<VisualizerEvents> {
     const mainLayer = this.getLayer("main") as Layer;
     // The parent element scrolls natively, and the canvas is redrawn accordingly.
     // To maintain its position during scrolling, the element must use "sticky" positioning.
-    mainLayer.canvas.style.position = "sticky";
-    mainLayer.canvas.style.top = "0";
-    mainLayer.canvas.style.left = "0";
-    mainLayer.canvas.style.zIndex = "2";
+    if (mainLayer.canvas instanceof HTMLCanvasElement) {
+      mainLayer.canvas.style.position = "sticky";
+      mainLayer.canvas.style.top = "0";
+      mainLayer.canvas.style.left = "0";
+      mainLayer.canvas.style.zIndex = "2";
+    }
     // Adds a scroll filler element to adjust the size of the scrollable area
     this.scrollFiller = document.createElement("div");
     this.scrollFiller.style.position = "absolute";
@@ -686,13 +734,16 @@ export class Visualizer extends Events<VisualizerEvents> {
     this.scrollFiller.style.height = `${BROWSER_SCROLLBAR_WIDTH}px`;
     this.scrollFiller.style.top = "100%";
     this.scrollFiller.style.minHeight = "1px";
-    mainLayer.canvas.style.zIndex = "1";
+    if (mainLayer.canvas instanceof HTMLCanvasElement) {
+      mainLayer.canvas.style.zIndex = "1";
+    }
     this.wrapper.appendChild(this.scrollFiller);
   }
 
   updateScrollFiller() {
     const { fullWidth } = this;
-    this.scrollFiller.style.width = `${fullWidth}px`;
+    // Always make the scrollFiller at least 1px wider than the container to force the scrollbar
+    this.scrollFiller.style.width = `${fullWidth + 1}px`;
   }
 
   reserveSpace({ height }: { height: number }) {
@@ -707,8 +758,17 @@ export class Visualizer extends Events<VisualizerEvents> {
     opacity?: number;
     compositeOperation?: CanvasCompositeOperation;
     isVisible?: boolean;
+    height?: number;
   }) {
-    const { name, offscreen = false, zIndex = 1, opacity = 1, compositeOperation = "source-over", isVisible } = options;
+    const {
+      name,
+      offscreen = false,
+      zIndex = 1,
+      opacity = 1,
+      compositeOperation = "source-over",
+      isVisible,
+      height,
+    } = options;
 
     if (!options.groupName && this.layers.has(name)) throw new Error(`Layer ${name} already exists.`);
 
@@ -716,7 +776,7 @@ export class Visualizer extends Events<VisualizerEvents> {
       groupName: options.groupName,
       name,
       container: this.container,
-      height: this.baseWaveHeight,
+      height: height ?? this.waveformHeight,
       pixelRatio: this.pixelRatio,
       index: zIndex,
       offscreen,
@@ -733,20 +793,24 @@ export class Visualizer extends Events<VisualizerEvents> {
       if (!group || !group.isGroup) throw new Error(`LayerGroup ${options.groupName} does not exist.`);
 
       layer = (group as LayerGroup).addLayer(layerOptions);
+      this.layers.set(name, layer);
     } else {
       layer = new Layer(layerOptions);
       this.layers.set(name, layer);
     }
 
     this.invoke("layerAdded", [layer]);
-    layer.on("layerUpdated", () => {
+    layer.on("layerUpdated", (_layer) => {
       const mainLayer = this.getLayer("main");
-
       this.setContainerHeight();
 
       if (mainLayer) {
         mainLayer.height = this.height;
       }
+
+      // After we update the fields, let's force a redraw
+      setTimeout(() => this.transferImage(), 100);
+
       this.invokeLayersUpdated();
     });
 
@@ -760,6 +824,7 @@ export class Visualizer extends Events<VisualizerEvents> {
     opacity?: number;
     compositeAsGroup?: boolean;
     compositeOperation?: CanvasCompositeOperation;
+    height?: number;
   }) {
     const {
       name,
@@ -768,6 +833,7 @@ export class Visualizer extends Events<VisualizerEvents> {
       opacity = 1,
       compositeOperation = "source-over",
       compositeAsGroup = true,
+      height,
     } = options;
 
     if (this.layers.has(name)) throw new Error(`LayerGroup ${name} already exists.`);
@@ -775,7 +841,7 @@ export class Visualizer extends Events<VisualizerEvents> {
     const layer = new LayerGroup({
       name,
       container: this.container,
-      height: this.baseWaveHeight,
+      height: height ?? this.waveformHeight,
       pixelRatio: this.pixelRatio,
       index: zIndex,
       offscreen,
@@ -837,7 +903,7 @@ export class Visualizer extends Events<VisualizerEvents> {
     this.wrapper.addEventListener("click", this.handleSeek);
     this.wrapper.addEventListener("mousedown", this.handleMouseDown);
 
-    this.wrapper.addEventListener("scroll", (e) => {
+    this.wrapper.addEventListener("scroll", (_e) => {
       const scrollLeft = this.wrapper.scrollLeft / this.fullWidth;
       this.wf.invoke("scroll", [scrollLeft]);
       this._setScrollLeft(scrollLeft);
@@ -852,6 +918,8 @@ export class Visualizer extends Events<VisualizerEvents> {
     // WF events
     this.wf.on("playing", this.handlePlaying);
     this.wf.on("seek", this.handlePlaying);
+    // Redraw spectrogram on pause to clear artifacts
+    this.wf.on("pause", this.draw.bind(this));
   }
 
   private removeEvents() {
@@ -874,11 +942,13 @@ export class Visualizer extends Events<VisualizerEvents> {
     // WF events
     this.wf.off("playing", this.handlePlaying);
     this.wf.off("seek", this.handlePlaying);
+    // Remove pause event
+    this.wf.off("pause", this.draw.bind(this));
   }
 
   private playHeadMove = (e: MouseEvent, cursor: Cursor) => {
     if (!this.wf.loaded) return;
-    if (e.target && this.container.contains(e.target)) {
+    if (e.target && this.container.contains(e.target as Node)) {
       const { x, y } = cursor;
       const { playhead, playheadPadding, height } = this;
       const playHeadTop = this.reservedSpace - playhead.capHeight - playhead.capPadding;
@@ -892,10 +962,10 @@ export class Visualizer extends Events<VisualizerEvents> {
         if (!playhead.isHovered) {
           playhead.invoke("mouseEnter", [e]);
         }
-        this.draw(true);
+        this.draw();
       } else if (playhead.isHovered) {
         playhead.invoke("mouseLeave", [e]);
-        this.draw(true);
+        this.draw();
       }
     }
   };
@@ -905,7 +975,17 @@ export class Visualizer extends Events<VisualizerEvents> {
 
     const mainLayer = this.getLayer("main");
 
-    if (!this.wf.loaded || this.seekLocked || !(e.target && mainLayer?.canvas?.contains(e.target))) return;
+    if (
+      !this.wf.loaded ||
+      this.seekLocked ||
+      !(
+        e.target instanceof Node &&
+        mainLayer?.canvas &&
+        mainLayer.canvas instanceof HTMLCanvasElement &&
+        mainLayer.canvas.contains(e.target)
+      )
+    )
+      return;
     const offset = this.wrapper.getBoundingClientRect().left;
     const x = e.clientX - offset;
     const duration = this.wf.duration;
@@ -919,23 +999,36 @@ export class Visualizer extends Events<VisualizerEvents> {
   private handleMouseDown = (e: MouseEvent) => {
     if (e.offsetY > this.height) return;
     if (!this.wf.loaded) return;
+    (e as any)._pixelRatio = this.pixelRatio || window.devicePixelRatio || 1;
     this.playhead.invoke("mouseDown", [e]);
   };
 
   private handlePlaying = (currentTime: number) => {
     if (!this.wf.loaded) return;
     this.currentTime = currentTime / this.wf.duration;
-    this.draw(this.zoom === 1);
+    this.draw();
   };
 
   private handleScroll = (e: WheelEvent) => {
     if (!this.wf.loaded) return;
 
     if (this.isZooming(e)) {
-      const zoom = this.zoom - e.deltaY * 0.2;
+      // Store the current time position before zooming
+      const currentTimePosition = this.wf.currentTime;
 
-      this.setZoom(zoom);
-      this.wf.invoke("zoom", [this.zoom]);
+      // Calculate zoom delta based on trackpad sensitivity
+      const zoomDelta = e.deltaY * 0.1;
+      const newZoom = this.zoom * (1 - zoomDelta);
+
+      // Set the new zoom level
+      requestAnimationFrame(() => {
+        this.setZoom(newZoom);
+        this.updateCursorToTime(currentTimePosition);
+        // If the audio is not playing, we need to transfer the image to ensure the cursor is updated accurately
+        if (!this.wf.playing) {
+          this.transferImage();
+        }
+      });
     } else if (this.zoom > 1) {
       // Base values
       const maxScroll = this.scrollWidth;
@@ -956,12 +1049,12 @@ export class Visualizer extends Events<VisualizerEvents> {
     }
   };
 
-  private updatePosition(redraw = true) {
+  private updatePosition() {
     if (!this.wf.loaded) return;
     const maxScroll = this.scrollWidth;
     const maxRelativeScroll = (maxScroll / this.fullWidth) * this.zoom;
 
-    this.setScrollLeft(clamp(this.scrollLeft, 0, maxRelativeScroll), redraw);
+    this.setScrollLeft(clamp(this.scrollLeft, 0, maxRelativeScroll));
   }
 
   private get dataLength() {
@@ -996,54 +1089,338 @@ export class Visualizer extends Events<VisualizerEvents> {
   }
 
   private updateSize() {
-    const newWidth = this.wrapper.clientWidth;
-    const newHeight = this.height;
-
     this.getSamplesPerPx();
-
-    this.layers.forEach((layer) => layer.setSize(newWidth, newHeight));
   }
 
   private handleResize = () => {
     if (!this.wf.duration) return;
 
-    requestAnimationFrame(() => {
-      this.updateSize();
-      this.updateCursorToTime(this.wf.currentTime);
-      this.updateScrollFiller();
-      this.setScrollLeft(this.scrollLeft, false);
-      this.wf.renderTimeline();
-      this.resetWaveformRender();
-      this.draw(false, true);
+    // Update container height
+    this.setContainerHeight();
+
+    // Update layer dimensions
+    const mainLayer = this.getLayer("main");
+    if (mainLayer) {
+      mainLayer.pixelRatio = this.pixelRatio;
+      mainLayer.width = this.width;
+      mainLayer.height = this.height;
+    }
+
+    // Update other layers
+    this.layers.forEach((layer) => {
+      if (layer.name !== "main") {
+        layer.pixelRatio = this.pixelRatio;
+        layer.width = this.width;
+        // Update height for layers according to their type
+        if (layer.name === "waveform") {
+          layer.height = this.waveformLayerHeight;
+        } else if (layer.name === "waveform-resize") {
+          layer.height = this.waveformLayerHeight;
+        } else if (layer.name === "spectrogram" || layer.name === "spectrogram-grid") {
+          layer.height = this.spectrogramLayerHeight;
+        } else if (layer.name === "spectrogram-resize") {
+          layer.height = this.spectrogramLayerHeight;
+        }
+        // Update regions layer height to match the full visualizer height
+        if (layer.name === "regions") {
+          layer.height = this.height;
+        }
+      }
     });
+
+    this.updateSize();
+    this.updateCursorToTime(this.wf.currentTime);
+    this.updateScrollFiller();
+    this.setScrollLeft(this.scrollLeft);
+    this.wf.renderTimeline();
+
+    // Update interaction manager pixel ratio
+    if (this.interactionManager) {
+      this.interactionManager.setPixelRatio(this.pixelRatio);
+    }
+
+    // Notify all renderers about resize
+    for (const renderer of this.renderers) {
+      if (typeof renderer.onResize === "function") {
+        renderer.onResize();
+      }
+    }
+
+    this.draw();
   };
 
-  // Reset the waveform values so it can be rendered again correctly
-  // This is needed when the waveform container is resized, or visibility
-  // of a layer is changed. Otherwise its possible to be blank.
-  private resetWaveformRender() {
-    this.lastRenderedAmp = 0;
-    this.lastRenderedWidth = 0;
-    this.lastRenderedZoom = 0;
-    this.lastRenderedScrollLeftPx = 0;
+  public transferImage() {
+    this.rateLimitedTransfer.scheduleDraw(
+      { visualizer: this },
+      ({ visualizer }) => {
+        const main = visualizer.layers.get("main")!;
+        if (visualizer.composer) {
+          main.clear();
+          visualizer.composer.renderTo(main);
+          // Composite the playhead at its current position
+          const playheadX = visualizer.playhead.x;
+          // Type guard for CanvasRenderingContext2D
+          const ctx = main.context;
+          if (ctx && ctx instanceof CanvasRenderingContext2D) {
+            visualizer.playhead.renderTo(ctx, playheadX);
+          }
+        }
+      },
+      false, // not a zoom operation
+    );
   }
 
-  private transferImage(layers: string[] = ["background", "waveform", "regions", "controls"]) {
-    const main = this.layers.get("main")!;
-
-    main.clear();
-
-    if (layers) {
-      const list = Array.from(this.layers)
-        .sort((a, b) => {
-          return a[1].index - b[1].index;
-        })
-        .filter(([_, layer]) => layer.offscreen);
-
-      list.forEach(([name, layer]) => {
-        if (name === "main") return;
-        layer.transferTo(main);
-      });
+  public updateSpectrogramConfig(params: {
+    fftSamples?: number;
+    melBands?: number;
+    windowingFunction?: string;
+    colorScheme?: string;
+    minDb?: number;
+    maxDb?: number;
+    hopFactor?: number;
+    scale?: SpectrogramScale;
+  }) {
+    // Return early if feature flag is disabled
+    if (!isFF(FF_AUDIO_SPECTROGRAMS) || !this.spectrogramRenderer) {
+      return;
     }
+
+    let needsProcessorUpdate = false;
+    const processorOptions: Partial<FFTProcessorOptions> = {};
+
+    // Build new config based on current config and params
+    const currentConfig = this.spectrogramRenderer.config;
+    const newConfig = { ...currentConfig };
+
+    if (params.fftSamples !== undefined && currentConfig.fftSamples !== params.fftSamples) {
+      newConfig.fftSamples = params.fftSamples;
+      processorOptions.fftSamples = params.fftSamples;
+      needsProcessorUpdate = true;
+    }
+    if (params.melBands !== undefined && currentConfig.numberOfMelBands !== params.melBands) {
+      newConfig.numberOfMelBands = params.melBands;
+    }
+    if (params.windowingFunction !== undefined && currentConfig.windowFunction !== params.windowingFunction) {
+      newConfig.windowFunction = params.windowingFunction as WindowFunctionType;
+      processorOptions.windowingFunction = newConfig.windowFunction;
+      needsProcessorUpdate = true;
+    }
+    if (params.hopFactor !== undefined && currentConfig.spectrogramHopFactor !== params.hopFactor) {
+      newConfig.spectrogramHopFactor = params.hopFactor > 0 ? params.hopFactor : 2;
+    }
+    if (params.colorScheme !== undefined && currentConfig.spectrogramColorScheme !== params.colorScheme) {
+      newConfig.spectrogramColorScheme = params.colorScheme as ColorScheme;
+    }
+    if (params.minDb !== undefined && currentConfig.spectrogramMinDb !== params.minDb) {
+      newConfig.spectrogramMinDb = params.minDb;
+    }
+    if (params.maxDb !== undefined && currentConfig.spectrogramMaxDb !== params.maxDb) {
+      newConfig.spectrogramMaxDb = params.maxDb;
+    }
+    if (params.scale !== undefined && currentConfig.spectrogramScale !== params.scale) {
+      newConfig.spectrogramScale = params.scale;
+    }
+
+    // Update FFT Processor if necessary
+    if (needsProcessorUpdate && this.spectrogramRenderer.fftProcessor && this.audio?.sampleRate) {
+      processorOptions.sampleRate = this.audio.sampleRate; // Ensure the sample rate is included
+      this.spectrogramRenderer.fftProcessor.updateParameters(processorOptions);
+    }
+
+    // Update colorMapper if colorScheme changed
+    if (params.colorScheme !== undefined && this.spectrogramRenderer.colorMapper) {
+      this.spectrogramRenderer.colorMapper.setColorScheme(params.colorScheme as ColorScheme);
+    }
+
+    // Use updateConfig to update the renderer's config
+    this.spectrogramRenderer.updateConfig(newConfig);
+
+    // We need to force a full redrawing here to ensure the spectrogram is updated correctly
+    setTimeout(() => this.draw());
   }
+
+  /**
+   * Sync the cursor with the current time of the audio.
+   * Useful when the audio is getting controlled externally.
+   */
+  public syncCursor() {
+    this.updateCursorToTime(this.currentTime);
+  }
+
+  /**
+   * Get the vertical space allocated for a single spectrogram channel
+   */
+  get channelHeight(): number {
+    const spectrogramLayer = this.getLayer("spectrogram");
+    if (!spectrogramLayer?.isVisible) return 0;
+
+    return this.spectrogramHeight;
+  }
+
+  setAmp(amp: number) {
+    this.waveformRenderer.updateConfig({ amp: Math.max(1, amp) });
+    this.draw();
+  }
+
+  /**
+   * Get layer position information for interaction management
+   */
+  getLayerInfo(interactive: Interactive): LayerInfo | null {
+    // Determine which component this interactive belongs to
+    let componentName: string | null = null;
+
+    if (interactive === this.waveformResizeRenderer) {
+      componentName = "waveform";
+    } else if (interactive === this.spectrogramResizeRenderer) {
+      componentName = "spectrogram";
+    }
+
+    if (!componentName) return null;
+
+    const timelineLayer = this.getLayer("timeline");
+    const waveformLayer = this.getLayer("waveform");
+    const spectrogramLayer = this.getLayer("spectrogram");
+
+    // Calculate Y offset based on composition structure
+    let offsetY = 0;
+
+    // Timeline is at the top when visible
+    if (timelineLayer?.isVisible) {
+      if (componentName === "waveform" || componentName === "spectrogram") {
+        offsetY += this.timelineHeight;
+      }
+    }
+
+    // Waveform is first in the vertical stack
+    if (componentName === "spectrogram") {
+      // Spectrogram comes after waveform in the vertical stack
+      if (waveformLayer?.isVisible) {
+        offsetY += this.waveformLayerHeight;
+      }
+    }
+
+    // Get the appropriate layer dimensions
+    const width = this.width;
+    let height = 0;
+
+    if (componentName === "waveform") {
+      height = this.waveformLayerHeight;
+    } else if (componentName === "spectrogram") {
+      height = this.spectrogramLayerHeight;
+    }
+
+    return {
+      offsetX: 0,
+      offsetY,
+      width,
+      height,
+    };
+  }
+
+  /**
+   * Handle height changes from ResizeRenderer
+   */
+  private handleHeightChange = (componentName: string, newHeight: number): void => {
+    let initialHeight = 0;
+    if (componentName === "waveform") {
+      initialHeight = this.initialWaveformHeight * ((this.splitChannels && this.audio?.channelCount) || 1);
+    } else if (componentName === "spectrogram") {
+      initialHeight = this.initialSpectrogramHeight * ((this.splitChannels && this.audio?.channelCount) || 1);
+    }
+    const minHeight = 50;
+    const maxHeight = Math.max(500, initialHeight);
+    const clampedHeight = Math.max(minHeight, Math.min(maxHeight, newHeight));
+
+    if (componentName === "waveform") {
+      if (this.splitChannels && this.audio?.channelCount) {
+        this.waveformHeight = clampedHeight / this.audio.channelCount;
+      } else {
+        this.waveformHeight = clampedHeight;
+      }
+      // Update the waveform-related layers
+      const waveformLayer = this.getLayer("waveform");
+      const waveformResizeLayer = this.getLayer("waveform-resize");
+      const backgroundLayer = this.getLayer("background");
+
+      if (waveformLayer) waveformLayer.height = this.waveformLayerHeight;
+      if (waveformResizeLayer) waveformResizeLayer.height = this.waveformLayerHeight;
+      if (backgroundLayer) backgroundLayer.height = this.waveformLayerHeight;
+
+      // Update WaveformRenderer configuration
+      if (this.waveformRenderer) {
+        // For height changes, we only need to update the waveHeight config
+        // without triggering expensive redraws
+        this.waveformRenderer.config.waveHeight = this.waveformHeight;
+
+        // Don't call resetRenderState - it forces expensive redraw
+        // The waveform data doesn't change, just the rendering height
+      }
+    } else if (componentName === "spectrogram") {
+      if (this.splitChannels && this.audio?.channelCount) {
+        this.spectrogramHeight = clampedHeight / this.audio.channelCount;
+      } else {
+        this.spectrogramHeight = clampedHeight;
+      }
+      // Update the spectrogram-related layers
+      const spectrogramLayer = this.getLayer("spectrogram");
+      const spectrogramResizeLayer = this.getLayer("spectrogram-resize");
+      const spectrogramGridLayer = this.getLayer("spectrogram-grid");
+
+      if (spectrogramLayer) spectrogramLayer.height = this.spectrogramLayerHeight;
+      if (spectrogramResizeLayer) spectrogramResizeLayer.height = this.spectrogramLayerHeight;
+      if (spectrogramGridLayer) spectrogramGridLayer.height = this.spectrogramLayerHeight;
+
+      // Update SpectrogramRenderer configuration
+      if (this.spectrogramRenderer) {
+        // For height changes, we only need to update the channelHeight config
+        // without triggering expensive FFT recalculations
+        this.spectrogramRenderer.config.channelHeight = this.channelHeight;
+
+        // Don't call resetRenderState or updateConfig - it forces expensive FFT recalculation
+        // The spectrogram data doesn't change, just the rendering height
+      }
+    }
+
+    // Update container height and recreate composer
+    this.setContainerHeight();
+    this.createComposer();
+
+    // Update the main layer height to match new total height
+    const mainLayer = this.getLayer("main");
+    if (mainLayer) {
+      mainLayer.height = this.height;
+    }
+
+    // Update regions layer to match new total height
+    const regionsLayer = this.getLayer("regions");
+    if (regionsLayer) {
+      regionsLayer.height = this.height;
+    }
+
+    // Notify all renderers about the resize
+    for (const renderer of this.renderers) {
+      if (typeof renderer.onResize === "function") {
+        renderer.onResize();
+      }
+    }
+
+    // Update interaction manager pixel ratio (in case it changed)
+    if (this.interactionManager) {
+      this.interactionManager.setPixelRatio(this.pixelRatio);
+    }
+
+    // For height changes, avoid expensive redraws - just transfer the image
+    // since the data doesn't change, only the rendering dimensions
+    this.transferImage();
+
+    // Update playhead position to reflect new layout
+    this.updateCursorToTime(this.wf.currentTime);
+
+    // Re-initialize playhead to ensure it renders at correct height
+    this.playhead.onInit();
+
+    // Trigger a full redraw to ensure proper rendering at new dimensions
+    // This handles cases where the canvas might appear blank after resize
+    setTimeout(() => this.draw());
+  };
 }

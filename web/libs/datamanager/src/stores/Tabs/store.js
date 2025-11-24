@@ -7,7 +7,7 @@ import { Tab } from "./tab";
 import { TabColumn } from "./tab_column";
 import { TabFilterType } from "./tab_filter_type";
 import { TabHiddenColumns } from "./tab_hidden_columns";
-import { serializeJsonForUrl, deserializeJsonFromUrl } from "../../utils/urlJSON";
+import { serializeJsonForUrl, deserializeJsonFromUrl } from "@humansignal/core";
 import { isEmpty } from "../../utils/helpers";
 
 const storeValue = (name, value) => {
@@ -21,27 +21,31 @@ const restoreValue = (name) => {
   return value ? value === "true" : false;
 };
 
-const dataCleanup = (tab, columnIds) => {
+const dataCleanup = (tab, columns) => {
   const { data } = tab;
 
   if (!data) return { ...tab };
 
   if (data.filters) {
     data.filters.items = data.filters.items.filter(({ filter }) => {
-      return columnIds.includes(filter.replace(/^filter:/, ""));
+      return !!columns.find((c) => c.id === filter.replace(/^filter:/, ""));
     });
   }
 
   ["columnsDisplayType", "columnWidths"].forEach((key) => {
     data[key] = Object.fromEntries(
       Object.entries(data[key] ?? {}).filter(([col]) => {
-        return columnIds.includes(col);
+        const match = columns.find((c) => c.id === col);
+        return !!match && !match.isAnnotationResultsFilterColumn;
       }),
     );
   });
 
   Object.entries(data.hiddenColumns ?? {}).forEach(([key, list]) => {
-    data.hiddenColumns[key] = list.filter((k) => columnIds.includes(k));
+    data.hiddenColumns[key] = list.filter((k) => {
+      const match = columns.find((c) => c.id === k);
+      return !!match && !match.isAnnotationResultsFilterColumn;
+    });
   });
 
   return { ...tab, data };
@@ -91,7 +95,6 @@ export const TabStore = types
 
     get columns() {
       const cols = self.columnsTargetMap ?? new Map();
-
       return cols.get(self.selected?.target ?? "tasks") ?? [];
     },
 
@@ -473,10 +476,9 @@ export const TabStore = types
       const tabId = Number.parseInt(tab);
       const response = yield getRoot(self).apiCall("tabs");
       const tabs = response.tabs ?? response ?? [];
-      const columnIds = self.columns.map((c) => c.id);
 
       const snapshots = tabs.map((t) => {
-        const { data, ...tab } = dataCleanup(t, columnIds);
+        const { data, ...tab } = dataCleanup(t, self.columns ?? []);
 
         return {
           ...tab,
@@ -513,8 +515,7 @@ export const TabStore = types
 
       if (!isNaN(tabKey) && !isNaN(tabId)) {
         const tabData = yield getRoot(self).apiCall("tab", { tabId });
-        const columnIds = (self.columns ?? []).map((c) => c.id);
-        const { data, ...tabClean } = dataCleanup(tabData, columnIds);
+        const { data, ...tabClean } = dataCleanup(tabData, self.columns ?? []);
 
         self.views.push({
           ...tabClean,
@@ -528,7 +529,16 @@ export const TabStore = types
         });
         tab = self.views[self.views.length - 1];
       } else {
-        tab = yield self.getViewByKey(tabKey);
+        const viewSnapshot = {
+          key: tabKey,
+          virtual: true,
+          title: tabKey,
+          selected: {
+            all: selectedItems?.all,
+            list: selectedItems?.included ?? selectedItems?.excluded ?? [],
+          },
+        };
+        tab = yield self.addVirtualView(viewSnapshot);
       }
 
       self.selected = tab;

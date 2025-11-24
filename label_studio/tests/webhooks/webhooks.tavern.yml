@@ -19,6 +19,7 @@ stages:
       method: POST
       json:
         url: "http://127.0.0.1:6666/webhook"
+        project: "{configured_project.id}"
         headers:
           Autorization: "Token 66666666666666666666666"
           Security: "123123123123123"
@@ -35,7 +36,7 @@ stages:
       status_code: 200
       json:
         id: !int "{webhook_id}"
-        project: null
+        project: !int "{configured_project.id}"
         actions: !anylist
         created_at: !anystr
         updated_at: !anystr

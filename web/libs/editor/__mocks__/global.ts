@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 export const mockFF = () => {
   const { APP_SETTINGS = {} } = window;
   const originalAppSettings = APP_SETTINGS;

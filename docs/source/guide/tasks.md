@@ -52,8 +52,12 @@ You can import many types of data, including text, timeseries, audio, and image 
 | Structured data | .csv, .tsv | 
 | [Text](#Plain-text) | .txt, .json |
 | [Time series](#Import-CSV-or-TSV-data) | .csv, .tsv, .json |
-| [Tasks with multiple data types](#Basic-Label-Studio-JSON-format) | .csv, .tsv, .json |
+| [Tasks with multiple data types](#Basic-Label-Studio-JSON-format) | .csv, .tsv, .json, .jsonl*, .parquet*+ |
 | Video | .mp4, .webm |
+
+\* *Cloud storage only*
+
+\+ *Label Studio Enterprise and Starter Cloud only*
 
 If you don't see a supported data or file type that you want to import, please let us know by submitting an issue to the <a className="no-go" href="https://github.com/humansignal/label-studio/issues">Label Studio Repository</a>.
 
@@ -343,10 +347,11 @@ You can then import text tasks to label that match the following JSON format:
   }]
 }]
 ```
-If you're placing JSON files in [cloud storage](storage.html), place 1 task in each JSON file in the storage bucket. If you want to upload a JSON file from your machine directly into Label Studio, you can place multiple tasks in one JSON file and import it using Label Studio GUI (Data Manager => Import button). 
 
 #### Example JSON with multiple tasks
-You can place multiple tasks in one JSON file if you're uploading the JSON file using Label Studio Import Dialog only (Data Manager => Import button). 
+You can place multiple tasks in one JSON file if you're uploading the JSON file using Label Studio Import Dialog only (Data Manager => Import button), or when importing from [cloud storage](storage.html). When using cloud storage, you must ensure every task in the file is formatted the same way. 
+
+If you're using [Source cloud storage](storage.html), you can also place multiple tasks in a newline-delimited JSON file (JSONL/NDJSON).
 
 <br/>
 {% details <b>To place multiple tasks in one JSON file, use this JSON format example</b> %}
@@ -373,6 +378,22 @@ The "data" parameter must contain the "my_text" field defined in the text labeli
       "data":{
          "my_text":"Opossums like to forage for food."
       }
+   }
+]
+{% endcodeblock %}
+
+You can also use the bare contents of the "data" field without nesting, as long as you have no annotations or predictions.
+
+{% codeblock lang:json %}
+[
+   {
+      "my_text":"Opossums like to be aloft in trees."
+   },
+   {
+      "my_text":"Opossums are opportunistic."
+   },
+   {
+      "my_text":"Opossums like to forage for food."
    }
 ]
 {% endcodeblock %}

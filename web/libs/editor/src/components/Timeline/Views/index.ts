@@ -1,9 +1,7 @@
 import { default as frames } from "./Frames";
-import { default as wave } from "./Wave";
 
 const Views = {
   frames,
-  wave,
 };
 
 export type ViewTypes = keyof typeof Views;

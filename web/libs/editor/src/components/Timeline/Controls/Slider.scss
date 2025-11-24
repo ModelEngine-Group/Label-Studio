@@ -1,5 +1,5 @@
 .audio-slider {
-  --background-active-color: var(--grape_100);
+  --background-active-color: var(--color-primary-surface-active);
   --button-color: var(--primary_link);
 
   position: relative;
@@ -10,7 +10,7 @@
     padding: 0;
     appearance: none;
     height: 4px;
-    background: var(--sand_200);
+    background: var(--color-neutral-surface);
     border-radius: 8px;
     background-image: linear-gradient(var(--background-active-color), var(--background-active-color));
     background-size: 70% 100%;
@@ -41,16 +41,16 @@
     width: 40px;
     height: 24px;
     border-radius: 2px;
-    background: var(--sand_100);
-    border: 1px solid var(--sand_300);
+    background: var(--color-neutral-surface);
+    border: 1px solid var(--color-neutral-border);
     line-height: 24px;
     padding: 0;
     text-align: center;
     outline: none;
 
     &_error_control {
-      color: var(--danger_color);
-      border: 1px solid var(--red_1);
+      color: var(--color-negative-content);
+      border: 1px solid var(--color-negative-border);
     }
   }
 

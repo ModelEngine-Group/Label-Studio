@@ -4,13 +4,22 @@ const tsconfig = require("../../tsconfig.base.json");
 module.exports = {
   bail: true,
   roots: ["<rootDir>/src"],
-  preset: "ts-jest",
+  preset: "../../jest.preset.js",
   setupFilesAfterEnv: ["./jest.setup.js"],
   testEnvironment: "jsdom",
   verbose: false,
-  collectCoverageFrom: ["**/*.{js,jsx,ts,tsx}", "!**/*.d.ts", "!**/node_modules/**", "!**/examples/**"],
-  coverageDirectory: "coverage",
-  coverageReporters: ["json"],
+  collectCoverageFrom: [
+    "src/**/*.{js,jsx,ts,tsx}",
+    // @todo they actually don't work, so we had to add `istanbul ignore` directive to some files
+    "!**/__mocks__/**",
+    "!**/*.d.ts",
+    "!**/node_modules/**",
+    "!**/examples/**",
+    // it breaks internal coverage counters because of dynamic imports
+    "!src/**/SplitChannel.ts",
+  ],
+  coverageDirectory: "../../coverage",
+  coverageReporters: ["json", "lcov", "text"],
   coverageThreshold: {
     global: {
       branches: 1,
@@ -62,6 +71,5 @@ module.exports = {
     ...pathsToModuleNameMapper(tsconfig.compilerOptions.paths, { prefix: "<rootDir>/../../" }),
   },
   testPathIgnorePatterns: ["/node_modules/", "/e2e/"],
-  testRegex: "__tests__/.*.test.[tj]sx?",
   transformIgnorePatterns: ["node_modules/?!(nanoid|konva)"],
 };

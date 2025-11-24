@@ -1,5 +1,5 @@
-import { CloseOutlined, LeftCircleOutlined, QuestionCircleOutlined, RightCircleOutlined } from "@ant-design/icons";
-import { Checkbox } from "@humansignal/ui";
+import { CloseOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+import { Button, Checkbox, IconChevronLeft, IconChevronRight } from "@humansignal/ui";
 import { observer } from "mobx-react";
 import type { PropsWithChildren } from "react";
 import { createContext, useCallback, useEffect, useRef, useState } from "react";
@@ -20,6 +20,7 @@ type GridViewContextType = {
   imageField: string | undefined;
   currentTaskId: number | null;
   setCurrentTaskId: (id: number | null) => void;
+  hasImage: boolean;
 };
 
 type TaskModalProps = GridViewContextType & { view: any; imageField: string };
@@ -29,6 +30,7 @@ export const GridViewContext = createContext<GridViewContextType>({
   imageField: undefined,
   currentTaskId: null,
   setCurrentTaskId: () => {},
+  hasImage: false,
 });
 
 const TaskModal = observer(({ view, tasks, imageField, currentTaskId, setCurrentTaskId }: TaskModalProps) => {
@@ -108,14 +110,28 @@ const TaskModal = observer(({ view, tasks, imageField, currentTaskId, setCurrent
           <Icon icon={CloseOutlined} onClick={onClose} />
         </div>
       </div>
-      <div className={styles.container}>
-        <button type="button" onClick={goToPrev} disabled={index === 0}>
-          <Icon icon={LeftCircleOutlined} />
-        </button>
+      <div className="grid grid-cols-[20px_1fr_20px]">
+        <Button
+          type="button"
+          className="h-full [&_span]:aspect-auto !p-0"
+          variant="primary"
+          look="string"
+          onClick={goToPrev}
+          disabled={index === 0}
+        >
+          <IconChevronLeft />
+        </Button>
         <ImagePreview task={task} field={imageField} />
-        <button type="button" onClick={goToNext} disabled={index === tasks.length - 1}>
-          <Icon icon={RightCircleOutlined} />
-        </button>
+        <Button
+          type="button"
+          className="h-full [&_span]:aspect-auto !p-0"
+          variant="primary"
+          look="string"
+          onClick={goToNext}
+          disabled={index === tasks.length - 1}
+        >
+          <IconChevronRight />
+        </Button>
       </div>
     </div>
   );
@@ -131,6 +147,7 @@ export const GridViewProvider: React.FC<GridViewProviderProps> = ({ children, da
   const [currentTaskId, setCurrentTaskId] = useState<number | null>(null);
   const modalRef = useRef<{ update: (props: object) => void; close: () => void } | null>(null);
   const imageField = fields.find((f) => f.currentType === "Image")?.alias;
+  const hasImage = fields.some((f) => f.currentType === "Image");
 
   const onClose = useCallback(() => {
     modalRef.current = null;
@@ -152,6 +169,7 @@ export const GridViewProvider: React.FC<GridViewProviderProps> = ({ children, da
         imageField={imageField}
         currentTaskId={currentTaskId}
         setCurrentTaskId={setCurrentTaskId}
+        hasImage={hasImage}
       />
     );
 
@@ -172,7 +190,7 @@ export const GridViewProvider: React.FC<GridViewProviderProps> = ({ children, da
   useEffect(() => () => modalRef.current?.close(), []);
 
   return (
-    <GridViewContext.Provider value={{ tasks: data, imageField, currentTaskId, setCurrentTaskId }}>
+    <GridViewContext.Provider value={{ tasks: data, imageField, currentTaskId, setCurrentTaskId, hasImage }}>
       {children}
     </GridViewContext.Provider>
   );

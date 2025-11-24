@@ -1,9 +1,15 @@
 """This file and its contents are licensed under the Apache License 2.0. Please see the included NOTICE for copyright information and LICENSE for a copy of the license.
 """
+import io
+import json
 import logging
 import re
 from dataclasses import dataclass
-from typing import Union
+from typing import Optional, Union
+
+from core.feature_flags import flag_set
+from core.utils.common import load_func
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -79,3 +85,103 @@ def storage_can_resolve_bucket_url(storage, url) -> bool:
         return False
 
     return True
+
+
+def parse_range(range_header):
+    """
+    Parse HTTP Range header and extract start and end values.
+
+    Args:
+        range_header (str): Range header in format 'bytes=start-end'
+
+    Returns:
+        tuple: (start, end) where start is an integer and end is either an integer or empty string
+    """
+    start, end = 0, ''
+    if not range_header:
+        return None, None
+
+    try:
+        values = range_header.split('=')[1].split('-')
+        start = int(values[0])
+        if len(values) > 1:
+            end = values[1]
+            if end != '':
+                end = int(end)
+    except (IndexError, ValueError) as e:
+        # Return default values if parsing fails
+        logger.warning(f'Invalid range header: {range_header}: {e}')
+        start = 0
+        end = ''
+
+    return start, end
+
+
+@dataclass
+class StorageObject:
+    task_data: dict
+    key: str
+    row_index: int | None = None
+    row_group: int | None = None
+
+    @classmethod
+    def bulk_create(
+        cls, task_datas: list[dict], key, row_indexes: list[int] | None = None, row_groups: list[int] | None = None
+    ) -> list['StorageObject']:
+        if row_indexes is None:
+            row_indexes = [None] * len(task_datas)
+        if row_groups is None:
+            row_groups = [None] * len(task_datas)
+        return [
+            cls(key=key, row_index=row_idx, row_group=row_group, task_data=task_data)
+            for row_idx, row_group, task_data in zip(row_indexes, row_groups, task_datas)
+        ]
+
+
+def load_tasks_json_lso(blob: bytes, key: str) -> list[StorageObject]:
+    """
+    Parse blob containing task JSON(s) and return the validated result or raise an error.
+
+    Args:
+        blob (bytes): The blob string to parse.
+        key (str): The key of the blob. Used for error messages.
+
+    Returns:
+        list[StorageLinkParams]: link params for each task.
+    """
+
+    def _error_wrapper(exc: Optional[Exception] = None):
+        raise ValueError(
+            (
+                f'Can’t import JSON-formatted tasks from {key}. If you’re trying to import binary objects, '
+                f'perhaps you forgot to enable "Tasks" import method?'
+            )
+        ) from exc
+
+    try:
+        value = json.loads(blob)
+    except json.decoder.JSONDecodeError as e:
+        if flag_set('fflag_feat_root_11_support_jsonl_cloud_storage'):
+            try:
+                value = []
+                with io.BytesIO(blob) as f:
+                    for line in f:
+                        value.append(json.loads(line))
+                return StorageObject.bulk_create(value, key, range(len(value)))
+            except Exception as e:
+                _error_wrapper(e)
+        else:
+            _error_wrapper(e)
+
+    if isinstance(value, dict):
+        return [StorageObject(key=key, task_data=value)]
+    if isinstance(value, list):
+        return StorageObject.bulk_create(value, key, range(len(value)))
+
+    _error_wrapper()
+
+
+def load_tasks_json(blob: str, key: str) -> list[StorageObject]:
+    # uses load_tasks_json_lso here and an LSE-specific implementation in LSE
+    load_tasks_json_func = load_func(settings.STORAGE_LOAD_TASKS_JSON)
+    return load_tasks_json_func(blob, key)

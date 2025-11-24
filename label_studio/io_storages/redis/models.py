@@ -1,5 +1,6 @@
 """This file and its contents are licensed under the Apache License 2.0. Please see the included NOTICE for copyright information and LICENSE for a copy of the license.
 """
+
 import json
 import logging
 
@@ -15,6 +16,7 @@ from io_storages.base_models import (
     ImportStorageLink,
     ProjectStorageMixin,
 )
+from io_storages.utils import StorageObject, load_tasks_json
 from tasks.models import Annotation
 
 logger = logging.getLogger(__name__)
@@ -26,10 +28,15 @@ class RedisStorageMixin(models.Model):
     port = models.TextField(_('port'), null=True, blank=True, help_text='Server Port (optional)')
     password = models.TextField(_('password'), null=True, blank=True, help_text='Server Password (optional)')
     regex_filter = models.TextField(
-        _('port'), null=True, blank=True, help_text='Cloud storage regex for filtering objects'
+        _('port'),
+        null=True,
+        blank=True,
+        help_text='Cloud storage regex for filtering objects',
     )
     use_blob_urls = models.BooleanField(
-        _('use_blob_urls'), default=False, help_text='Interpret objects as BLOBs and generate URLs'
+        _('use_blob_urls'),
+        default=False,
+        help_text='Interpret objects as BLOBs and generate URLs',
     )
 
     def get_redis_connection(self, db=None, redis_config={}):
@@ -77,18 +84,30 @@ class RedisImportStorageBase(ImportStorage, RedisStorageMixin):
     def can_resolve_url(self, url):
         return False
 
-    def iterkeys(self):
+    def iter_objects(self):
         client = self.get_client()
         path = str(self.path)
         for key in client.keys(path + '*'):
             yield key
 
-    def get_data(self, key):
+    def iter_keys(self):
+        for key in self.iter_objects():
+            yield key
+
+    def get_unified_metadata(self, obj):
+        self.get_client()
+        return {
+            'key': obj,
+            'last_modified': '',
+            'size': self.client.get(self.key),
+        }
+
+    def get_data(self, key) -> list[StorageObject]:
         client = self.get_client()
-        value = client.get(key)
-        if not value:
-            return
-        return json.loads(value)
+        value_str = client.get(key)
+        if not value_str:
+            return []
+        return load_tasks_json(value_str, key)
 
     def scan_and_create_links(self):
         return self._scan_and_create_links(RedisImportStorageLink)

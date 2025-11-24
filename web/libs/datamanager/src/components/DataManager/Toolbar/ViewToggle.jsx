@@ -1,6 +1,6 @@
 import { inject, observer } from "mobx-react";
-import { LsGrid, LsList } from "../../../assets/icons";
 import { RadioGroup } from "../../Common/RadioGroup/RadioGroup";
+import { IconGrid, IconList } from "@humansignal/icons";
 import { Tooltip } from "@humansignal/ui";
 
 const viewInjector = inject(({ store }) => ({
@@ -10,18 +10,24 @@ const viewInjector = inject(({ store }) => ({
 export const ViewToggle = viewInjector(
   observer(({ view, size, ...rest }) => {
     return (
-      <RadioGroup size={size} value={view.type} onChange={(e) => view.setType(e.target.value)} {...rest}>
+      <RadioGroup
+        size={size}
+        value={view.type}
+        onChange={(e) => view.setType(e.target.value)}
+        {...rest}
+        style={{ "--button-padding": "0 var(--spacing-tighter)" }}
+      >
         <Tooltip title="List view">
           <div>
-            <RadioGroup.Button value="list">
-              <LsList />
+            <RadioGroup.Button value="list" aria-label="Switch to list view">
+              <IconList />
             </RadioGroup.Button>
           </div>
         </Tooltip>
         <Tooltip title="Grid view">
           <div>
-            <RadioGroup.Button value="grid">
-              <LsGrid />
+            <RadioGroup.Button value="grid" aria-label="Switch to grid view">
+              <IconGrid />
             </RadioGroup.Button>
           </div>
         </Tooltip>

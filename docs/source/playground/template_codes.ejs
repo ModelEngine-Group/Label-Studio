@@ -1064,25 +1064,18 @@ it will be marked as `"instant": true` in the results.
 
 
 <script data-template-pk="49" type="text"><View>
-  <Header value="Video timeline segmentation via Audio sync trick"/>
-  <HyperText name="video" value="$video"/>
+  <Header value="Video timeline segmentation via Audio sync"/>
+  <Video name="video" value="$video" sync="audio" />
   <Labels name="tricks" toName="audio" choice="multiple">
     <Label value="Kickflip" background="#1BB500" />
     <Label value="360 Flip" background="#FFA91D" />
     <Label value="Trick" background="#358EF3" />
   </Labels>
-  <Audio name="audio" value="$videoSource" speed="false"/>
+  <Audio name="audio" value="$video" sync="video" />
 </View>
 
-<!--
-  It's very important to prepare task data correctly,
-  it includes HyperText $video and
-  it must be like this example below:
--->
-
 <!-- {
- "video": "<video src='https://app.heartex.ai/static/samples/opossum_snow.mp4' width=100% muted /><img src onerror=\"$=n=>document.getElementsByTagName(n)[0];a=$('audio');v=$('video');a.onseeked=()=>{v.currentTime=a.currentTime};a.onplay=()=>v.play();a.onpause=()=>v.pause()\" />",
- "videoSource": "https://app.heartex.ai/static/samples/opossum_snow.mp4"
+ "video": "https://app.heartex.ai/static/samples/opossum_snow.mp4"
 } -->
 </script>
 

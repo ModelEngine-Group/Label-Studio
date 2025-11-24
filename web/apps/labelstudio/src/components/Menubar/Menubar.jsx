@@ -3,14 +3,18 @@ import { StaticContent } from "../../app/StaticContent/StaticContent";
 import {
   IconBook,
   IconFolder,
+  IconHome,
+  IconHotkeys,
   IconPersonInCircle,
   IconPin,
   IconTerminal,
-  LsDoor,
-  LsGitHub,
-  LsSettings,
-  LsSlack,
-} from "../../assets/icons";
+  IconDoor,
+  IconGithub,
+  IconSettings,
+  IconSlack,
+} from "@humansignal/icons";
+import { LSLogo } from "../../assets/images";
+import { Button, Userpic, ThemeToggle } from "@humansignal/ui";
 import { useConfig } from "../../providers/ConfigProvider";
 import { useContextComponent, useFixedLocation } from "../../providers/RoutesProvider";
 import { useCurrentUser } from "../../providers/CurrentUser";
@@ -20,15 +24,15 @@ import { Breadcrumbs } from "../Breadcrumbs/Breadcrumbs";
 import { Dropdown } from "../Dropdown/Dropdown";
 import { Hamburger } from "../Hamburger/Hamburger";
 import { Menu } from "../Menu/Menu";
-import { Userpic } from "@humansignal/ui";
 import { VersionNotifier, VersionProvider } from "../VersionNotifier/VersionNotifier";
 import "./Menubar.scss";
 import "./MenuContent.scss";
 import "./MenuSidebar.scss";
 import { FF_HOMEPAGE } from "../../utils/feature-flags";
-import { IconHome } from "@humansignal/ui";
-import { pages } from "@humansignal/core";
+import { pages } from "@humansignal/app-common";
 import { isFF } from "../../utils/feature-flags";
+import { ff } from "@humansignal/core";
+import { openHotkeyHelp } from "@humansignal/app-common/pages/AccountSettings/sections/Hotkeys/Help";
 
 export const MenubarContext = createContext();
 
@@ -145,18 +149,48 @@ export const Menubar = ({ enabled, defaultOpened, defaultPinned, children, onSid
 
           <div className={menubarContext}>
             <LeftContextMenu className={contextItem.mod({ left: true })} />
-
             <RightContextMenu className={contextItem.mod({ right: true })} />
           </div>
+
+          <div className={menubarClass.elem("hotkeys")}>
+            <div className={menubarClass.elem("hotkeys-button")}>
+              <Button
+                variant="neutral"
+                look="outlined"
+                tooltip="Keyboard Shortcuts"
+                data-testid="hotkeys-button"
+                size="small"
+                onClick={() => {
+                  openHotkeyHelp([
+                    "annotation",
+                    "data_manager",
+                    "regions",
+                    "tools",
+                    "audio",
+                    "video",
+                    "timeseries",
+                    "image_gallery",
+                  ]);
+                }}
+                icon={<IconHotkeys />}
+              />
+            </div>
+          </div>
+
+          {ff.isActive(ff.FF_THEME_TOGGLE) && <ThemeToggle />}
 
           <Dropdown.Trigger
             ref={useMenuRef}
             align="right"
             content={
               <Menu>
-                <Menu.Item icon={<LsSettings />} label="Account &amp; Settings" href={pages.AccountSettingsPage.path} />
+                <Menu.Item
+                  icon={<IconSettings />}
+                  label="Account &amp; Settings"
+                  href={pages.AccountSettingsPage.path}
+                />
                 {/* <Menu.Item label="Dark Mode"/> */}
-                <Menu.Item icon={<LsDoor />} label="Log Out" href={absoluteURL("/logout")} data-external />
+                <Menu.Item icon={<IconDoor />} label="Log Out" href={absoluteURL("/logout")} data-external />
                 {showNewsletterDot && (
                   <>
                     <Menu.Divider />

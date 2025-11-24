@@ -1,3 +1,4 @@
+import { useResizeObserver } from "@humansignal/core/hooks/useResizeObserver";
 import { type FC, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Block, Elem } from "../../../../utils/bem";
 import { isDefined } from "../../../../utils/utilities";
@@ -11,20 +12,21 @@ export const Minimap: FC<any> = () => {
   const [step, setStep] = useState(0);
 
   const visualization = useMemo(() => {
-    return regions.map(({ id, color, sequence }) => {
+    return regions.map(({ id, color, sequence, locked }) => {
       return {
         id,
         color,
-        lifespans: visualizeLifespans(sequence, step),
+        lifespans: visualizeLifespans(sequence, step, locked),
       };
     });
   }, [step, regions]);
 
+  const { width: rootWidth = 0 } = useResizeObserver(root.current || []);
   useEffect(() => {
     if (isDefined(root.current) && length > 0) {
-      setStep(root.current.clientWidth / length);
+      setStep(rootWidth / length);
     }
-  }, [length]);
+  }, [length, rootWidth]);
 
   return (
     <Block ref={root} name="minimap">

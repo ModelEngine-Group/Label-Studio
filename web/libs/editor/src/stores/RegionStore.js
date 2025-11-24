@@ -292,7 +292,7 @@ export default types
 
         lookup.forEach((el) => {
           const pid = el.item.parentID;
-          const parent = pid ? lookup.get(pid) ?? lookup.get(pid.replace(/#(.+)/i, "")) : null;
+          const parent = pid ? (lookup.get(pid) ?? lookup.get(pid.replace(/#(.+)/i, ""))) : null;
 
           if (parent) return parent.children.push(el);
 

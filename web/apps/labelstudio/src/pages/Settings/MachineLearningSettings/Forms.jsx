@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Button } from "../../../components";
+import { Button } from "@humansignal/ui";
 import { ErrorWrapper } from "../../../components/Error/Error";
 import { InlineError } from "../../../components/Error/InlineError";
 import { Form, Input, Select, TextArea, Toggle } from "../../../components/Form";
 import "./MachineLearningSettings.scss";
 
 const CustomBackendForm = ({ action, backend, project, onSubmit }) => {
-  const [selectedAuthMethod, setAuthMethod] = useState("");
+  const [selectedAuthMethod, setAuthMethod] = useState("NONE");
   const [, setMLError] = useState();
 
   return (
@@ -38,9 +38,8 @@ const CustomBackendForm = ({ action, backend, project, onSubmit }) => {
             { label: "No Authentication", value: "NONE" },
             { label: "Basic Authentication", value: "BASIC_AUTH" },
           ]}
-          onChange={(e) => {
-            setAuthMethod(e.target.value);
-          }}
+          value={selectedAuthMethod}
+          onChange={setAuthMethod}
         />
       </Form.Row>
 
@@ -72,7 +71,7 @@ const CustomBackendForm = ({ action, backend, project, onSubmit }) => {
       </Form.Row>
 
       <Form.Actions>
-        <Button type="submit" look="primary" onClick={() => setMLError(null)}>
+        <Button type="submit" look="primary" onClick={() => setMLError(null)} aria-label="Save machine learning form">
           Validate and Save
         </Button>
       </Form.Actions>

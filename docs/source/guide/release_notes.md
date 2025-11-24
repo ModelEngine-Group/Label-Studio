@@ -19,6 +19,1079 @@ meta_description: Review new features, enhancements, and bug fixes for on-premis
     Before upgrading, review the steps outlined in [Upgrade Label Studio Enterprise](upgrade_enterprise) and ensure that you complete the recommended tests after each upgrade. 
 
 <div class="release-note"><button class="release-note-toggle"></button>
+<a name="2260md"></a>
+
+## Label Studio Enterprise 2.26.0
+
+<div class="onprem-highlight">Time series sync, new Multichannel tag for time series, spectrograms, playground 2.0, annotation result filtering</div>
+
+*Jul 21, 2025*
+
+Helm Chart version: [1.10.0](https://github.com/HumanSignal/charts/blob/master/heartex/label-studio/Chart.yaml)
+
+### New features
+
+#### Time series synchronization with audio and video
+
+You can now use the sync parameter to align audio and video streams with time-series sensor data by mapping each frame to its corresponding timestamp.
+
+For more information, see [Time Series Labeling with Audio and Video Synchronization](/templates/timeseries_audio_video).
+
+<video style="max-width: 800px;" class="gif-border" autoplay loop muted>
+  <source src="/images/releases/video-time-series-light.mp4">
+</video>
+
+#### Group multiple time series in one channel
+
+There is a new [Multichannel tag](#MultiChannel) for visualizing time series data. You can use this tag to combine and view multiple time series channels simultaneously on a single channel, with synchronized interactions.
+
+The Multichannel tag significantly improves the usability and correlation of time series data, making it easier for users to analyze and pinpoint relationships across different signals.
+
+<video style="max-width: 800px;" class="gif-border" autoplay loop muted>
+  <source src="/images/releases/timeline.mp4">
+</video>
+
+
+#### Spectrogram support for audio analysis
+
+There is a new option to display audio files as spectrograms. You can further specify additional spectrogram settings such as windowing function, color scheme, dBs, mel bands, and more.
+
+Spectrograms can provide a deeper level of audio analysis by visualizing frequency and amplitude over time, which is crucial for identifying subtle sounds (like voices or instruments) that might be missed with traditional waveform views.
+
+![Image of spectrogram](/images/releases/spectrogram.png)
+
+#### Playground 2.0
+
+The [Label Studio Playground](https://labelstud.io/playground/) is an interactive sandbox where you can write or paste your XML labeling configuration and instantly preview it on sample tasks—no local install required.
+
+The playground has recently been updated and improved, now supporting a wider range of features, including audio labeling. It is also now [a standalone app](https://labelstud.io/playground-app) and automatically stays in sync with the main application.
+
+![Image of playground](/images/releases/2-26-playground1.png)
+
+!!! info Tip
+    To modify the data input, use a comment below the `<View>` tags:
+
+    ![Image of playground](/images/releases/2-26-playground2.png)
+
+#### Filter on annotation results
+
+When applying filters, you will see new options that correspond to annotation results.
+
+These options are identified by the results chip and correspond to control tag names and support complex filtering for multiple annotation results. For example, you can filter by “includes all” or “does not include.”
+
+This enhancement provides a much more direct, predictable, and reliable way to filter and analyze annotation results, saving time and reducing the chances of errors previously encountered with regex matching.
+
+For more information, see [Filter annotation results](#Filter-annotation-results).
+
+![Image of filtering by results](/images/releases/2-26-results.png)
+
+### Enhancements
+
+#### Interactive view all
+
+The **View All** feature when reviewing annotations has been improved so that you can now interact with all annotation elements side-by-side, making it easier to review annotations. For example, you can now play video and audio, move through timelines, and highlight regions.
+
+<video style="max-width: 800px;" class="gif-border" autoplay loop muted>
+  <source src="/images/releases/viewall.mp4">
+</video>
+
+#### Expanded email notifications
+
+Users can now receive email notifications for various actions, including when they are invited to projects and workspaces, assigned tasks, and when a project is published or completed. You can opt out of notifications from the [Account & Settings page](user_account).
+
+![Image of email options](/images/releases/2-26-email.png)
+
+#### Support for JSONL and Parquet
+
+Label Studio now supports more flexible JSON data import from cloud storage. When importing data, you can use JSONL format (where each line is a JSON object), and import Parquet files.
+
+JSONL is the format needed for OpenAI fine-tuning, and the default format from Sagemaker and HuggingFace outputs. Parquet enables smoother data imports and exports for Enterprise-grade systems including Databricks, Snowflake, and AWS feature store,
+
+This change simplifies data import for data scientists, aligns with common data storage practices, reduces manual data preparation steps, and improves efficiency by handling large, compressed data files (Parquet).
+
+!!! note
+    **Parquet support:** We do not support importing Parquet files that include predictions and/or annotations. 
+
+#### Improved grid view configurability
+
+You can now configure the following aspects of the Grid View in the Data Manager: 
+
+- **Columns**
+- **Fit images to width**
+
+![Image of grid view](/images/releases/2-26-grid.png)
+
+#### Usage & License page visibility
+
+The **Billing & Usage** page has been renamed the **Usage & License** page. Previously this page was only visible to users in the Owner role. A read-only form of this page is now available to all users in the Admin role.
+
+![Image of org page options](/images/releases/2-26-usage.png)
+
+#### Enhanced control and visibility for storage proxies
+
+There are two UI changes related to [storage proxies](#Pre-signed-URLs-vs-Storage-proxies):
+
+- On the **Usage & License** page, a new **Enable Storage Proxy** toggle allows organization owners to disable proxying for all projects within the organization. When this setting is disabled, source storages must enable pre-signed URLs. If they are not enabled, the user will be shown an error when they try to add their source storage.
+- On the **Source Storage** window, the toggle controlling whether you use pre-signed URLs now clearly indicates that OFF will enable proxying.
+
+![Image of proxy options](/images/releases/2-26-proxy1.png)
+
+![Image of proxy options](/images/releases/2-26-proxy2.png)
+
+#### Enhanced delete actions from the Data Manager
+
+When deleting annotations, reviews, or assignments, you can now select a specific user for the delete action. Previously, you were only able to delete all instances.
+
+With this change, you will have more granular control over data deletion, allowing for precise management of reviews and annotations.
+
+This enhancement is available for the following actions:
+
+- **Delete Annotations**
+- **Delete Reviews**
+- **Delete Review Assignments**
+- **Delete Annotator Assignments**
+
+![Image of before and after](/images/releases/destructive-before-after.png)
+
+#### Session timeout configuration
+
+Organization owners can use the new **Session Timeout Policies** fields to control session timeout settings for all users within their organization. These fields are available from the **Usage & License** page.
+
+Owners can configure both the maximum session age (total duration of a session) and the maximum time between activity (inactivity timeout).
+
+
+#### Miscellaneous UX improvements
+
+- Improved the message text seen when building templates using Ask AI.
+
+- Improved the scrolling action for the workspace list, making it easier for orgs with very large workspace lists.
+
+- Users on the Organization page are now sorted by email by default.
+
+- The **Delete Annotator Assignments** action is now disabled when the tooltip is in automatic task distribution mode.
+
+- The **Data Import** step has been redesigned to better reflect the drag and drop target. The text within the target has also been updated for accuracy and helpfulness.
+
+    ![Image of import screen](/images/releases/2-26-import.png)
+    
+- The empty states of the labeling interface panels have been improved to provide user guidance and, where applicable, links to the documentation.
+
+    ![Image of empty state panels](/images/releases/2-26-empty-state.png)
+
+### Security
+
+- In the Django admin settings, when **Common login enabled** is deselected, signups and invites are now also restricted.
+
+- Webhooks are restricted to administrators.
+
+- Addressed multiple security vulnerabilities.
+
+
+### Bug fixes
+
+- Fixed UI issues associated with dark mode.
+
+- Fixed UI issues related to whitelabeled environments.
+
+- Fixed small UI issues related to column sizing and padding.
+    
+- Fixed an issue where certain popovers were not appearing when hovering. 
+    
+- Fixed an issue that would cause the Data Manager to crash when interacting with the project link in the navigation bar.
+
+- Fix various style issues related to error messages in the storage modal.
+
+- Fixed a server error that would return when fetching project counts.
+
+- Fixed an issue where clicking an option on the project role drop-down menu in the Members modal would cause the modal to close unexpectedly.
+
+- Fixed an issue where in some situations users were not able to navigate after deleting a project.
+
+- Fixed an issue where users were still able to resize TimeLineLabels regions even if locked.
+
+- Fixed an issue where the COCO export option was appearing even if the labeling configuration was not compatible
+
+- Fixed an issue where Label All Tasks was not updating for users in the Reviewer role.
+
+- Fixed an issue which caused workspaces list styles to not apply to the full container when scrolled.
+
+- Fixed an issue where exports were included when duplicating a project.
+
+- Fixed an issue with `ls.tasks.get(TASK_ID)` function in SDK.
+
+- Fixed a minor visual issue with the sidebar.
+
+- Fixed an issue with the **Remove Duplicated Tasks** action where it failed when a user selected an odd number of tasks.
+
+- Fixed an issue with CSV exports when the `Repeater` tag is used.
+
+- Fixed an issue where inactive admins would appear in the project members list and could not be removed.
+
+- Fixed an issue with overflow and the date picker.
+
+- Fixed a validation error when updating the labeling configuration of existing tasks through the API.
+
+- Fixed an issue where audio regions would not reflect multiple labels.
+
+- Fixed an issue that was causing incorrect task overlap calculation.
+
+- Fixed an issue where the Plugins editor was not visible at certain zoom levels.
+
+- Fixed an issue with overflow and some drop-down menus.
+
+- Fixed an issue where resolved and unresolved comment filters were not working due to a bug in the project duplication process.
+
+- Fixed an issue where PDF files could not be imported through the Import action.
+
+- Fixed an issue where predictions from Prompts were not always displayed in Quick View.
+
+- Fixed an issue where some non-standard files such as PDFs were not correctly displayed in Quick View if using nginx.
+
+- Fixed an issue where the review stream was opening a blank page when specific labeling configs ere used.
+
+- Fixed a small UI issue related to how project-level roles appear between modals.
+
+- Fixed an issue where the step parameter on the `<Number>` tag was not working as expected.
+
+
+- Fixed an issue where NER entities were misplaced when using Prompts.
+
+- Fixed an issue where the API call for rotating tokens was not setting the expiration correctly on new tokens.
+
+- Fixed an issue where incorrect fonts were being used in the Labeling Interface settings.
+
+- Fixed an issue where filters created in a project that had been duplicated would be shared back to the original project.
+
+- Fixed an issue where information in **Show task source** would extend outside the modal.
+
+- Fixed an issue where annotator limit and evaluation settings were not kept when duplicating projects.
+
+- Fixed an issue where users will now see a warning if they try to configure a custom agreement metric that is incompatible with the current labeling configuration.
+
+- Fixed an issue where users could not see Personal Access Token information after closing the create modal.
+
+- Fixed an issue with tooltip alignment.
+
+- Fixed an issue where nested toggles were not working as expected.
+
+- Fixed an issue where there was overlap after duplicating and then flipping regions.
+
+- Fixed an issue where Prompts would return an error when processing large PDFs.
+
+- Fixed an issue where the agreement score popover did not appear for tasks that included a ground truth annotation.
+
+- Fixed an issue where hovering over a relative timestamp did not display the numerical date.
+
+- Fixed an issue where the hotkey for the Number tag was not working.
+
+- Fixed an issue where the date picker for dashboards was extending beyond the viewport
+
+- Fixed an issue where task agreement was not always calculated in cases where annotators skipped tasks.
+
+
+
+
+
+
+</div><div class="release-note"><button class="release-note-toggle"></button>
+<a name="2250md"></a>
+
+## Label Studio Enterprise 2.25.0
+
+<div class="onprem-highlight">Prompts on-prem availability, storage proxies, PDF tag, KeyPointLabels support, multi-task JSON imports for cloud</div>
+
+*Jun 17, 2025*
+
+Helm Chart version: [1.9.15](https://github.com/HumanSignal/charts/blob/master/heartex/label-studio/Chart.yaml)
+
+### New features
+
+#### Prompts availability for on-prem deployments
+
+You can now configure your on-prem environment to use Prompts! 
+
+Prompts is an interface to easily integrate LLMs into your own Label Studio deployment. Leading teams use it to pre-label data, compare models, and generate synthetic samples.
+
+You can find out more here:
+
+* [Prompts overview](prompts_overview)
+* [Prompts product page](https://humansignal.com/platform/prompts/)
+* [Blog - How to Generate Synthetic Data with Prompts in Label Studio](https://humansignal.com/blog/how-to-generate-synthetic-data-with-prompts-in-label-studio/)
+
+
+Installing Prompts requires license enablement and [additional install steps](install_prompts). Reach out to your CSM to enable a free trial!
+
+![Stylized image of Prompts](/images/releases/dog-prompts.png)
+
+#### Storage proxies for cloud files
+
+Label Studio now uses a proxy when accessing media files in connect cloud storages. For more information, see [Pre-signed URLs vs. storage proxies](https://docs.humansignal.com/guide/storage#Pre-signed-URLs-vs-Storage-proxies).
+
+Proxy mode is only used when the **Use pre-signed URLs** option is disabled in source storage.
+
+Storage proxies offer secure media access, simplified configuration, and improved performance.
+
+- Keeps data access within Label Studio's network boundary, ideal for on-premise environments
+- Enforces strict task-level access control, even for cached files
+- Eliminates the need for presigned URLs and CORS configuration
+- Solves performance and reliability issues for large files, videos, and audio
+- Media is now streamed via proxy, improving compatibility and scalability
+
+#### New PDF tag
+
+A [new PDF tag](/tags/pdf) lets you directly ingest PDF URLs for classification without needing to use hypertext tags.
+
+This also simplifies the process for using PDFs with Prompts for summarization and classification tasks. 
+
+
+
+### Enhancements
+
+#### KeyPointLabels exports for COCO and YOLO
+
+COCO and YOLO export formats now available for `KeyPointLabels`. For more information, see [our docs](https://docs.humansignal.com/guide/export#COCO). 
+
+#### Multi-task JSON imports for cloud
+
+Previously, if you loaded JSON tasks from source storage, you could only configure one task per JSON file.
+
+This restriction has been removed, and you can now specify multiple tasks per JSON file as long as all tasks follow the same format.
+
+For more information, see the examples in our [our docs](https://docs.humansignal.com/guide/storage#Off).
+
+
+#### Miscellaneous
+
+- The **Export Underlying Data** option was recently introduced and is available from the Annotations chart in the [annotator performance dashboard](dashboard_annotator). This allows you to export information about the tasks that the selected users have annotated. 
+
+    Previously, users were only identified by user ID within the CSV. With this update, you can also identify users by email.
+
+- User interface enhancements for the AI Assistant, including a new icon.
+
+
+### Bug fixes
+
+- Fixed various user interface issues associated with the new dark mode feature.
+
+- Fixed an issue where the **Not Activated** role was hidden by default on the Organization page.
+
+- Fixed several small issues related to the annotator agreement score popover.
+
+- Fixed an issue where when moving around panels in the labeling interface, groups were not sticking in place.
+
+- Fixed an issue where the token refresh function was not using the user-supplied `httpx_client`.
+
+- Fixed an issue with cloud storage in which tasks would not resolve correctly if they referenced data in different buckets.
+
+- Fixed an issue where the drop-down menu to select a user role was overflowing past the page edge.
+
+
+
+
+
+
+
+</div><div class="release-note"><button class="release-note-toggle"></button>
+<a name="2240md"></a>
+
+## Label Studio Enterprise 2.24.0
+
+<div class="onprem-highlight">Dark mode, new home page, annotator evaluation settings, plugins library, and multiple usability enhancements</div>
+
+*May 20, 2025*
+
+Helm Chart version: 1.9.10
+
+### New features
+
+#### Dark mode
+
+Label Studio can now be used in dark mode.
+
+Click your avatar in the upper right to find the toggle for dark mode.
+
+- **Auto** - Use your system settings to determine light or dark mode.
+- **Light** - Use light mode.
+- **Dark** - Use dark mode.
+
+!!! note
+    Dark mode is not available for environments that use white labeling. 
+
+![Screenshot of dark mode](/images/releases/2-24-dark-mode.png)
+
+![Animated gif of dark mode](/images/releases/2-24-darkmode.gif)
+
+![Screenshot of dark mode](/images/releases/2-24-dark-mode2.png)
+
+
+#### New Label Studio Home page
+
+When you open Label Studio, you will see a new Home page. Here you can find links to your most recent projects, shortcuts to common actions, and links to frequently used resources
+
+![Screenshot of home page](/images/releases/2-24-home.png)
+
+!!! note
+    The home page is not available for environments using whitelabeling. 
+
+#### Annotator Evaluation settings
+
+There is a new Annotator Evaluation section under **Settings > Quality**.
+
+When there are ground truth annotations within the project, an annotator will be paused if their ground truth agreement falls below a certain threshold.
+
+For more information, see [**Annotator Evaluation**](https://docs.humansignal.com/guide/project_settings_lse#annotator-eval).
+
+<img src="/images/releases/2-24-evaluation.png" style="max-width:600px; margin: 0 auto" alt="Screenshot of evaluation settings">
+
+#### New Insert Plugins menu and Testing interface
+
+There are a number of new features and changes related to plugins:
+
+- There is a new **Insert Plugins** menu available. From here you can insert a pre-built plugin that you can customize as necessary.
+- When you add a plugin, you will see a new **Testing** panel below the plugin editing field. You can use this to verify what events are triggered, manually trigger events, and modify the sample data as necessary.
+- To accompany the new **Insert Plugins** menu, there is [a new Plugins gallery](https://docs.humansignal.com/plugins/) in the documentation that discusses each option and has information on creating your own custom plugs.
+- There is also a new setting that allows you to restrict access to the Plugins tab to Administrator users. By default, it is also available to Managers. This can be set through the Django admin panel. 
+
+![Screenshot of plugins](/images/releases/2-24-plugin-menu.png)
+
+![Screenshot of plugins](/images/releases/2-24-plugin-test.png)
+
+### Enhancements
+
+#### Agreement score popover in Data Manager
+
+Click any agreement score to view pairwise agreement scores with others.
+
+![Screenshot of agreement popover](/images/releases/2-24-agreement-popover.png)
+
+#### Adjustable text spans
+
+You can now click and drag to adjust text span regions.
+
+![Animated gif of text span drag and drop](/images/releases/2-24-text-drag.gif)
+
+#### Dynamic brush sizes
+
+The cursor now adjusts dynamically to brush size to allow for more precision in segmentation tasks.
+
+<video style="max-width: 800px;" class="gif-border" autoplay loop muted>
+  <source src="/images/releases/brush-size.mp4">
+</video>
+ 
+#### Support for BrushLabels export to COCO format
+
+You can now export polygons created using the BrushLabels tag to COCO format.
+
+#### Create support tickets through AI Assistant
+
+If you have AI Assistant enabled and ask multiple questions without coming to a resolution, it will offer to create a support ticket on your behalf:
+
+<img src="/images/releases/2-24-ai-ticket.png" style="max-width:600px; margin: 0 auto" alt="Screenshot of AI assistant">
+
+#### Clear chat history in AI Assistant
+
+You can now clear your chat history to start a new chat.
+
+<img src="/images/releases/2-24-ai-new.png" style="max-width:600px; margin: 0 auto" alt="Screenshot of AI assistant">
+
+#### Export underlying data from the Annotator Performance dashboard
+
+There is a new **Export Underlying Data** action for the Annotations chart.
+
+![Screenshot of agreement popover](/images/releases/2-24-export.png)
+
+#### Annotators can now view their own performance dashboard metrics
+
+When logging in, annotators will now see a link to the Annotator performance dashboard, where they can see their own performance metrics. 
+
+<img src="/images/releases/2-24-annotator-dashboard.png" style="max-width:600px; margin: 0 auto" alt="Screenshot of annotator dashboard button">
+
+#### Improved drop-down selectors
+
+When there are a large number of options in a drop-down menu, you can now search through the list of available options.
+
+<img src="/images/releases/2-24-drop-down.png" style="max-width:400px; margin: 0 auto" alt="Screenshot of annotator dashboard button">
+
+#### Label Studio Converter CLI
+
+When you install the Label Studio SDK, you can now use the `label-studio-converter` command from your terminal.
+
+#### Miscellaneous
+
+- Performance enhancements around how membership API requests are made.
+
+- Added a new API call to rotate JWT tokens: [POST api/token/rotate](https://app.heartex.com/api/token/rotate/)
+
+
+### Security
+
+- Addressed a CSP issue by removing `unsafe-eval` usage.
+
+- Added a rule that password resets will be limited to 5 per hour.
+
+- Upgraded Babel to address vulnerabilities.
+
+- Improved security on CSV exports.
+
+- Removed an unused endpoint.
+
+- By default, CORS is permissive. However, you can now set an environment variable to ensure it is in strict mode. Set **one** of the following:
+    - `CORS_ALLOWED_ORIGINS`  
+     A comma-separated list of Origin header values the Label Studio server will receive, e.g. `https://example.org,https://example.net`
+
+    - `CORS_ALLOWED_ORIGIN_REGEXES`  
+      Same as above, except using regex. 
+    - `CORS_ALLOW_ALL_ORIGINS`  
+        Set to `false` or `0` to reject all Origin header values (that is, allow no cross-origin requests). By default this is set to `true`. 
+
+
+
+### Bug fixes
+
+- Fixed an issue where interacting with the Manage Members modal would sometimes throw an error.
+
+- Fixed an issue where white-labeled Label Studios instances were showing the incorrect logo.
+
+- Fixed an issue where the `Filter` tag did not work with `Choices` tags.
+
+- Fixed an issue where annotators were seeing a misleading message that a project was not ready, even though the project was completed.
+
+- Fixed a server worker error related to regular expressions.
+
+- Fixed several small visual issues with the AI assistant.
+
+- Fixed an issue that was causing multiple annotators to be assigned to tasks beyond the overlap settings.
+
+- Fixed an issue where “Deleted User” repeatedly appeared in filter drop-down menus.
+
+- Fixed an issue where clicking on the timeline region in the region list did not move the slider to the correct position.
+
+- Fixed an issue where a "Script running successfully" message continuously appeared for users who had plugins enabled.
+
+- Fixed an issue where the drop-down menu to select a user role was overflowing past the page edge. 
+  
+- Fixed an issue where the `visibleWhen` parameter was not working when used with a taxonomy.
+
+- Fixed an issue where there were some UI inconsistencies that would occur during certain page navigations.
+
+- Fixed an issue where certain drop-down menus were inaccessible at different zoom levels.
+
+- Fixed an issue where the Data Manager would go blank when filtering by the predicted model version.
+
+- Fixed an issue where, if a 500 error was returned when syncing storage, the user would not see the error.
+
+- Fixed an issue where forward and rewind hotkeys for audio were not working.
+
+- Fixed an issue where the bars in the Tasks graph on the project dashboard were not accurately grouped by `reviewed_at` or `completed_at`.
+
+
+
+
+
+
+</div><div class="release-note"><button class="release-note-toggle"></button>
+<a name="2230md"></a>
+
+## Label Studio Enterprise 2.23.0
+
+<div class="onprem-highlight">Google Cloud Storage WIF, drag-and-drop for video timelines, multiple security enhancements</div>
+
+*Apr 22, 2025*
+
+Helm Chart version: 1.9.9
+
+### New features
+
+#### Support for Google Cloud Storage Workload Identity Federation (WIF)
+
+When adding project storage, you now have the option to choose Google Cloud Storage WIF.
+
+Unlike the the standard GCS connection using application credentials, this allows Label Studio to request temporary credentials when connecting to your storage.
+
+For more information, see [Google Cloud Storage with Workload Identity Federation (WIF)](https://docs.humansignal.com/guide/storage#Google-Cloud-Storage-with-Workload-Identity-Federation-WIF).
+
+![Screenshot of WIF](/images/releases/2-23-wif.png)
+
+!!! note
+    While this option is available for on-prem users, the typical way to set up GCS in an on-prem environment is through persistent storage as documented [here](https://docs.humansignal.com/guide/persistent_storage.html#Configure-the-GCS-bucket). 
+
+
+### Enhancements
+
+#### Drag-and-drop adjustment for video timeline segments
+
+You can now drag and drop to adjust the length of video timeline segments.
+
+![Screenshot of video timeline](/images/releases/2-23-drag-drop.png)
+
+#### "Custom Scripts" are now "Plugins"
+
+We have renamed "Custom Scripts" to "Plugins." This is reflected in the UI and [in our docs](/plugins).
+
+![Screenshot of video timeline](/images/releases/2-23-plugins.png)
+
+#### Miscellaneous
+
+- Improved tooltips related to [pausing annotators](quality).
+
+- Ensured that when a user is deactivated, they are also automatically logged out. Previously they lost all access, but were not automatically logged out of active sessions.
+
+- Multiple performance improvements for our [AI Assistant](ask_ai).
+
+
+### Security
+
+- Made security improvements around the verbosity of certain API calls.
+
+- Made security improvements around SAML.
+
+- Made security improvements around project parameter validation.
+
+- Made security improvements around exception error messages.
+
+- Made security improvements around workspace permission checks.
+
+
+### Bug fixes
+
+- Fixed an issue where importing from the UI would fail when importing from a URL.
+
+- Fixed an issue where users were unable to edit custom agreement metrics if using manual distribution mode.
+
+- Fixed an issue where regions would be added to the wrong task when moving quickly between tasks.
+
+- Fixed an issue where **Exact frames matching for video** was always showing as an option for agreement metrics regardless of whether the labeling config referenced a video.
+
+- Fixed an issue where the `prediction-changed` value was not being reset after making manual changes to pre-annotations.
+
+- Fixed an issue where a paused annotator is unpaused when a reviewer rejects their annotation and the project is configured to requeue tasks back to the annotator.
+
+- Fixed an issue where some segments were not previewable when annotating videos with the TimeLineLabels tag.
+
+- Fixed several small issues with how labeled regions appear when completing OCR tasks.
+
+
+
+
+
+
+
+
+
+
+
+
+</div><div class="release-note"><button class="release-note-toggle"></button>
+<a name="2221md"></a>
+
+## Label Studio Enterprise 2.22.1
+
+<div class="onprem-highlight">Bug fix</div>
+
+*Apr 07, 2025*
+
+Helm Chart version: 1.9.8
+
+### Bug fixes
+
+- Fixed an issue where role changes with LDAP were broken. 
+
+
+
+
+
+
+</div><div class="release-note"><button class="release-note-toggle"></button>
+<a name="2220md"></a>
+
+## Label Studio Enterprise 2.22.0
+
+<div class="onprem-highlight">Pause annotators, set annotation limits, new API tokens, deep linking for annotation and regions, usability improvements for audio</div>
+
+*Mar 25, 2025*
+
+Helm Chart version: 1.9.6
+
+### New features
+
+#### Pause an annotator
+
+There is a new action to pause annotators. This is available from the Members dashboard and via the API.
+
+For more information, see [Pause an annotator](https://docs.humansignal.com/guide/quality#Pause-an-annotator).
+
+![Screenshot of pause](/images/review/pause.png)
+
+#### Annotation limits
+
+There is a new **Quality > Annotation Limit** section in the project settings.
+
+You can use these fields to set limits on how many tasks each user is able to annotate. Once the limit is reached, their progress will be paused.
+
+For more information, see [Annotation Limit](https://docs.humansignal.com/guide/project_settings_lse#annotation-limit).
+
+![Screenshot of annotation limits](/images/releases/2-22-annotation-limit.png)
+
+#### Personal access tokens
+
+There is a new type of token available for API access. The new tokens use JWT standards.
+
+You can enable or disable these tokens from the Organization page. Once enabled, they will be available for users to generate from their Account & Settings page. Legacy tokens can still be used unless disabled from the organization level. 
+
+For more information, see [Access tokens](access_tokens).
+
+![Screenshot of tokens 1](/images/releases/2-22-jwt-org.png)
+
+![Screenshot of tokens 2](/images/releases/2-22-jwt.png)
+
+#### Deep link annotations and regions
+
+You can now link directly to specific annotations or regions within an annotation. These actions are available from the labeling interface in the overflow menus for the annotation and the region. 
+
+![Screenshot of linking annotation](/images/releases/2-22-link-annotation.png)
+
+![Screenshot of linking region](/images/releases/2-22-link-region.png)
+
+
+### Enhancements
+
+#### Usability improvements for audio tasks
+
+**Scrollbar navigation**
+
+You can now scroll forward and backward within audio files. This can be activated using the scrolling motion on a trackpad or a mouse.
+
+![Screenshot of audio scroll](/images/releases/2-22-audio-scroll.png)
+
+**New settings**
+
+We have introduced two new settings for audio tasks:
+
+- **Auto-Play New Regions -** Automatically play a new region after it has been selected.
+- **Loop Regions** - When playing a region, loop the audio.
+  
+![Screenshot of audio scroll](/images/releases/2-22-audio-settings.png)
+
+#### New templates
+
+There are three new templates available from the template gallery:
+
+- **Natural Language Processing > [Content Moderation](/templates/content_moderation)**
+- **Computer Vision > [Medical Imaging Classification with Bounding Boxes](/templates/medical_imaging_classification)**
+- **Generative AI > [LLM Response Grading](/templates/llm_response_grading)**
+
+#### Miscellaneous
+
+- Added a link to a user’s performance summary from the Annotation Summary table on the Members dashboard.
+
+- The Label Studio URL format has been updated so that you can now link to specific workspaces.
+
+- Improved 4xx and 5xx error page design to include helpful links.
+
+- Added validation for S3 bucket name formats.
+
+- Performance improvements around notifications and caching.
+
+- Error handling improvements.
+
+- UI fixes to ensure consistency in styles across Label Studio.
+
+### Security
+
+Made security improvements regarding org membership visibility.
+
+### Bug fixes
+
+- Fixed an issue where images were distorted when zooming in.
+
+- Fixed an issue where an empty Quick View was displayed if a user tried to open a URL linking to a non-existing task ID.
+
+- Fixed an issue where deeply nested Choices were visible even if parents were hidden.
+
+- Fixed an issue where users were able to create bounding boxes outside the image boundaries.
+
+- Fixed an issue that was causing intermittent loading errors in the Data Manager.
+
+- Fixed an issue that caused incorrect video frame to be rendered when pausing.
+
+- Fixed an infinite loading issue with the notification drawer.
+
+- Fixed an issue where users in the Reviewer role were able to submit reviews via the API even if they were not a project member.
+
+- Fixed an issue that would cause an API error when switching workspaces and fetching the incorrect page of projects.
+
+- Fixed an issue where users were getting their role reset if they were provisioned via SCIM without an assigned group.
+
+- Fixed an issue where filters were not being respected when performing bulk annotation actions.
+
+- Fixed an issue where bulk annotation was sometimes failing with a 500 error.
+
+- Fixed an issue with resizing Bulk Annotation drawer after having collapsed it previously.
+
+- Fixed an issue where bulk annotation was not respecting the **Allow empty annotations** setting.
+
+- Fixed an issue where an error was sometimes thrown when loading the workspaces list.
+
+- Fixed an issue with the signup link styling for white labeled applications.
+
+
+
+
+
+
+
+</div><div class="release-note"><button class="release-note-toggle"></button>
+<a name="2210md"></a>
+
+## Label Studio Enterprise 2.21.0
+
+<div class="onprem-highlight">Bulk labeling, enable AI features, and multiple labeling and Data Manager enhancements</div>
+
+*Feb 25, 2025*
+
+Helm Chart version: 1.9.5
+
+
+### New features
+
+#### Bulk labeling and image preview 
+
+There is a new **Bulk label** action available from the Data Manager. You can use this to quickly label tasks multiple tasks at once.
+
+This feature also includes enhancements to the Grid View in the Data Manager. Now when viewing images, you can zoom in/out, scroll, and pan.
+
+For more information, see the [Bulk labeling documentation](labeling_bulk) and [Bulk Labeling: How to Classify in Batches](https://humansignal.com/blog/bulk-labeling-how-to-classify-in-batches/).
+
+![Screenshot of bulk label action](/images/releases/2-21-bulk-label.png)
+
+![Screenshot of Grid View preview](/images/releases/2-21-data-preview.png)
+
+#### Enable AI features
+
+There is a new toggle on the **Billing & Usage** page (only available to users in the Owner role). You can use this to enable [AI features](ask_ai) throughout Label Studio. 
+
+![Screenshot of enable AI](/images/releases/2-21-ai-enable.png)
+
+![Screenshot of AI banner](/images/releases/2-21-ai.png)
+
+
+### Enhancements
+
+#### Updated Billing & Usage page
+
+The **Billing & Usage** page (only accessible to users in the Owner role) has several new options:
+
+- **Early Adopter** - Opt in to new features before they're generally available.
+- **Enable AI Features** - Enables AI helper tools within Label Studio. See [AI features](ask_ai).
+- **White labeling** - Contact sales about enabling white labeling.
+- **Custom Scripts** - Contact sales to enable custom scripts. See [Custom scripts for projects](scripts).
+
+#### Updated template images
+
+The thumbnail images for the pre-built templates have been redesigned.
+
+![Screenshot of template library](/images/releases/2-21-templates.png)
+
+#### Clearer description of annotation count
+
+The annotation counter at the bottom of the Data Manager has been updated to read "Submitted Annotations." It previously read "Annotations," which could cause confusion.
+
+![Screenshot of counter](/images/releases/2-21-count.png)
+
+#### Display the prediction score in the labeling interface
+
+When you have annotations generated by predictions (pre-annotations), you will now see the prediction score (also known as the "confidence score") under the model name in the labeling interface tabs.
+
+![Screenshot of scores](/images/releases/2-21-score.png)
+
+#### Region number in Relations panel
+
+The **Relations** panel now displays the number identifier for the region when viewing relations between regions.
+
+![Screenshot of region IDs](/images/releases/2-21-regions.png)
+
+#### Export images with YOLO, YOLO_OBB, and COCO
+
+Previously, when exporting data in YOLO, YOLO_OBB, or COCO format, the images themselves were not included in the export. 
+
+To improve this, we have introduced three new choices to the export options:
+
+* **YOLO_WITH_IMAGES**
+
+* **YOLO_OBB_WITH_IMAGES**
+
+* **COCO_WITH_IMAGES**
+
+#### Set ground truths by user
+
+There is a new action from the Data Manager that allows you to mark the annotations submitted by a specific user as ground truth annotations.  
+
+![Screenshot of ground truths](/images/releases/2-21-gt.png)
+
+![Screenshot of ground truths](/images/releases/2-21-gt2.png)
+
+#### Control login redirects
+
+There is a new `LOGIN_PAGE_URL` variable will redirect the login page to the URL specified in the variable. This is useful for organizations with that have white labeling enabled and/or multiple internal groups that have different IdP provider logins (or no IdP provider login).   
+
+#### Performance improvements
+
+Various performance improvements around Members page load time, annotation creation, and memory usage for Image tags. 
+
+### Security
+
+- Updated Iodash to address security vulnerabilities.
+
+- Ensured that file paths remain hidden when import operations fail.
+
+### Bug fixes
+
+- Fixed an issue where the Annotator Performance drop-down was not filtering the results as expected.
+
+- Fixed an issue where users were unable to select and move bounding box regions after adding brush regions.
+
+- Fixed an issue where seeking within a video would display duplicate frames in the the Video tag.
+
+- Fixed an issue when managers could review skipped tasks in Quick View.
+
+- Fixed an issue where project to groups mapping was not working correctly for SAML.
+
+- Fixed an issue that caused would sometimes cause project creation to fail when pasting code into the code editor.
+
+- Fixed an issue where Sentry would still attempt to load assets even if disabled.
+
+### Feature flag updates
+
+The following feature flags have been marked stale or deleted, meaning they can no longer be turned on or off by users:
+
+`fflag_feat_front_optic_767_annotator_project_multiselect_short`  
+`fflag_fix_back_leap_612_explore_review_09042024_short`  
+`fflag_fix_optic_214_extra_blank_dashboard_charts_short`  
+`fflag_fix_optic_391_tasks_outside_low_agreement_project_counts_short`  
+`fflag_fix_all_leap_877_annotator_membership_api_03042024_short`  
+`fflag_feat_all_optic_520_annotator_report_short`  
+`feat_all_optic_71_dashboard_multiple_labeling_group_support_v1_01092023_short`  
+`fflag_feat_front_prod_281_project_list_search_19072023_short`  
+`fflag_feat_all_lsdv_e_295_project_level_roles_via_saml_scim_ldap_short`  
+`ff_back_2884_comments_notifications_02092022_short`  
+`ff_back_DEV_1711_review_queue_140222_short`  
+`ff_front_dev_1480_created_on_in_review_180122_short`  
+`fflag_fix_front_leap_32_zoom_perf_190923_short`  
+`fflag_feat_front_lsdv_5452_taxonomy_labeling_110823_short`  
+`fflag_fix_front_dev_3793_relative_coords_short`  
+`ff_front_dev_2715_audio_3_280722_short`  
+`fflag_feat_front_optic_1351_use_new_projects_counts_api_short`  
+`fflag_feature_all_optic_1421_cold_start_v2`  
+`fflag_fix_back_optic_1407_optimize_tasks_api_pagination_counts`  
+`fflag_fix_optic_1259_lse_projects_read_apis_use_replica_short`  
+`fflag_feat_all_optic_1181_membership_performance`  
+`fflag_feat_optic_1025_zendesk_widget_integration`  
+`fflag_feat_all_optic_991_dashboard_v2_short`  
+`fflag_feat_optic_378_limit_projects_per_page_to_ten_short`  
+`fflag_feat_optic_67_drag_and_drop_charts`  
+
+
+
+
+</div><div class="release-note"><button class="release-note-toggle"></button>
+<a name="2201md"></a>
+
+## Label Studio Enterprise 2.20.1
+
+<div class="onprem-highlight">Security-related fixes</div>
+
+*Feb 12, 2025*
+
+Helm Chart version: 1.9.2
+
+### Security
+
+- Image file paths are restricted as to prevent arbitrary path traversal. 
+- As an XSS prevention measure, `/projects/upload-example` no longer accepts GET requests.
+- Only recognized S3 endpoints from a list of known S3 API providers will return full list exceptions when an HTTP call is submitted.
+
+!!! note
+    If you want to use a non-standard/custom domain for hosting your S3 API and you still want full exceptions to be visible, you can add your domain to the `S3_TRUSTED_STORAGE_DOMAINS` environment variable.
+
+    Separate multiple domains with a comma. For example, if the endpoints you are using are `https://foo.mys3endpoint.net` and `https://myothers3endpoint.biz`, then you would set it as: 
+    
+    `S3_TRUSTED_STORAGE_DOMAINS=mys3endpoint.net,myothers3endpoint.biz`
+
+
+
+
+
+</div><div class="release-note"><button class="release-note-toggle"></button>
+<a name="2200md"></a>
+
+## Label Studio Enterprise 2.20.0
+
+<div class="onprem-highlight">Taxonomy for labeling, new audio hotkey, performance improvements, bug fixes </div>
+
+*Jan 28, 2025*
+
+Helm Chart version: 1.9.0
+
+### Enhancements
+
+#### Use Taxonomy for labeling
+
+There is a new `labeling` parameter available for the Taxonomy tag. When set to true, you can apply your Taxonomy classes to different regions in text. For more information, see [Taxonomy as a labeling tool](/templates/taxonomy).
+
+![Screenshot of taxonomy as labeling tool](/images/releases/2-20-taxonomy.png)
+
+#### Hotkeys for audio labeling
+
+There is a new hotkey available for pausing and starting audio: `ctrl`+`p` (Windows) or `command`+`p` (Mac). This is in addition to the space hotkey that performs the same function. However, this new hotkey is useful when you are working with audio and have a text area field in focus.
+
+#### Video frame classification template
+
+The video frame classification template is now available in the Label Studio app as well as [the documentation](/templates/video_frame_classification).
+
+
+#### Performance improvements
+
+Optimized the API calls made from the frontend within the members management and Data Manager users lists. Also optimized the Projects page for faster load times. 
+
+### Security
+
+- Upgraded pyarrow to address vulnerabilities in older packages.
+
+- Updated the default settings for CSRF cookie to be more secure and added an environment setting to control cookie age.
+
+### Breaking changes
+
+This release includes an upgrade to Django 5. As part of this change, Label Studio now requires PostgreSQL version 13+. 
+
+### Bug fixes
+
+- Fixed an issue where the Label Studio version as displayed in the side menu was not formatted properly.
+  
+- Fixed an issue where the `contextlog` was not reporting the `content_type`.
+
+- Fixed an issue with overlapping relations on the overlay on highlighting.
+
+- Fixed an issue where task IDs were being duplicated when importing a large number of tasks through the API.
+
+- Fixed an issue where users were not being redirected to the appropriate page after logging in.
+
+- Fixed an issue where users were unable to edit meta information that they previously added to bounding box regions.
+
+- Fixed multiple issues resulting from Poetry/Poetry core 2 release.
+
+- Fixed an issue where the django-rq admin page was unavailable.
+
+- Fixed a possible race condition when dynamically loading the Data Manager or editor that would prevent either from loading.
+
+- Fixed an issue where skipped tasks were not being calculated as completed when the project Skip Queue setting was set to **Ignore Skipped**.
+
+
+
+
+
+
+
+</div><div class="release-note"><button class="release-note-toggle"></button>
 <a name="2191md"></a>
 
 ## Label Studio Enterprise 2.19.1

@@ -80,3 +80,7 @@ docker-compose.override.yml
 
 # Local Netlify folder
 .netlify
+
+CLAUDE.local.md
+web/libs/editor/tests/coverage
+.cache

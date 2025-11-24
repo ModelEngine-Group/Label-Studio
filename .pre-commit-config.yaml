@@ -15,7 +15,7 @@ repos:
     hooks:
       - id: biome-check
         args: [ --config-path, ./web ]
-        additional_dependencies: [ "@biomejs/biome@1.7.1" ]
+        additional_dependencies: [ "@biomejs/biome@1.9.4" ]
         files: ^web/.*
   - repo: local
     hooks:
@@ -25,15 +25,3 @@ repos:
         language: node
         types: [ scss ]
         files: ^.*\.scss$
-  - repo: local
-    hooks:
-      - id: unstage-frontend-static
-        name: Unstage Frontend Static Before Commit
-        entry: git reset HEAD -- 'web/dist/*'
-        language: system
-        pass_filenames: false
-        files: ^web/dist/.*
-        verbose: true
-        stages:
-          - pre-commit
-          - manual

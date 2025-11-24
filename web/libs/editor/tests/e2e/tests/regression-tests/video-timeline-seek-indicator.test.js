@@ -2,7 +2,9 @@ const assert = require("assert");
 
 Feature("Video timeline seek indicator").tag("@regress");
 
-Scenario("Seek view should be in sync with indicator position", async ({ I, LabelStudio, AtVideoView }) => {
+Scenario("Seek view should be in sync with indicator position", async ({ I, LabelStudio, AtVideoView, AtPanels }) => {
+  const AtDetailsPanel = AtPanels.usePanel(AtPanels.PANEL.DETAILS);
+
   I.amOnPage("/");
   LabelStudio.init({
     config: `
@@ -21,6 +23,7 @@ Scenario("Seek view should be in sync with indicator position", async ({ I, Labe
 
   I.say("waitForObjectsReady");
   LabelStudio.waitForObjectsReady();
+  AtDetailsPanel.collapsePanel();
 
   const trackBbox = await AtVideoView.grabTrackBoundingRect();
   let positionBbox = await AtVideoView.grabPositionBoundingRect();
@@ -31,7 +34,7 @@ Scenario("Seek view should be in sync with indicator position", async ({ I, Labe
   assert.notDeepEqual({ x: 0, y: 0, width: 0, height: 0 }, indicatorBbox);
 
   const trackZeroX = trackBbox.x;
-  const halfway = (trackBbox.width - trackZeroX) / 2;
+  const halfway = trackBbox.width / 2 + trackZeroX;
 
   {
     I.say("Drag the video position indicator to the right to the middle");
@@ -41,9 +44,9 @@ Scenario("Seek view should be in sync with indicator position", async ({ I, Labe
     indicatorBbox = await AtVideoView.grabIndicatorBoundingRect();
 
     I.say("Check the video position indicator is close to 50%");
-    const delta = Math.round((positionBbox.x / (trackBbox.x + trackBbox.width)) * 10) / 10;
+    const delta = Math.round(((positionBbox.x - trackBbox.x) / trackBbox.width) * 10) / 10;
 
-    assert.equal(0.5, delta);
+    assert.equal(delta, 0.5);
 
     I.say("Check the video position indicator is within the seek indicator");
     assert.ok(
@@ -58,14 +61,14 @@ Scenario("Seek view should be in sync with indicator position", async ({ I, Labe
 
   {
     I.say("Drag the video position indicator to the end");
-    AtVideoView.drag(positionBbox, trackBbox.width, 0);
+    AtVideoView.drag(positionBbox, trackBbox.width + trackBbox.x);
     positionBbox = await AtVideoView.grabPositionBoundingRect();
     indicatorBbox = await AtVideoView.grabIndicatorBoundingRect();
 
     I.say("Check the video position indicator is close to 100%");
-    const delta = Math.round((positionBbox.x / (trackBbox.x + trackBbox.width)) * 10) / 10;
+    const delta = Math.round(((positionBbox.x - trackBbox.x) / trackBbox.width) * 10) / 10;
 
-    assert.equal(1, delta);
+    assert.equal(delta, 1);
 
     I.say("Check the video position indicator is within the seek indicator");
     assert.ok(
@@ -80,14 +83,15 @@ Scenario("Seek view should be in sync with indicator position", async ({ I, Labe
 
   {
     I.say("Drag the video position indicator to the left to the middle");
-    AtVideoView.drag(positionBbox, halfway, 0);
+
+    AtVideoView.drag(positionBbox, halfway);
     positionBbox = await AtVideoView.grabPositionBoundingRect();
     indicatorBbox = await AtVideoView.grabIndicatorBoundingRect();
 
     I.say("Check the video position indicator is close to 50%");
-    const delta = Math.round((positionBbox.x / (trackBbox.x + trackBbox.width)) * 10) / 10;
+    const delta = Math.round(((positionBbox.x - trackBbox.x) / trackBbox.width) * 10) / 10;
 
-    assert.equal(0.5, delta);
+    assert.equal(delta, 0.5);
 
     I.say("Check the video position indicator is within the seek indicator");
     assert.ok(
@@ -102,14 +106,14 @@ Scenario("Seek view should be in sync with indicator position", async ({ I, Labe
 
   {
     I.say("Drag the video position indicator to the start");
-    AtVideoView.drag(positionBbox, 0, 0);
+    AtVideoView.drag(positionBbox, trackBbox.x, 0);
     positionBbox = await AtVideoView.grabPositionBoundingRect();
     indicatorBbox = await AtVideoView.grabIndicatorBoundingRect();
 
     I.say("Check the video position indicator is close to 0%");
-    const delta = Math.round((positionBbox.x / (trackBbox.x + trackBbox.width)) * 10) / 10;
+    const delta = Math.round(((positionBbox.x - trackBbox.x) / trackBbox.width) * 10) / 10;
 
-    assert.equal(0, delta);
+    assert.equal(delta, 0);
 
     I.say("Check the video position indicator is within the seek indicator");
     assert.ok(

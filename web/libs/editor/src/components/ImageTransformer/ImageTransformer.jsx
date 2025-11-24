@@ -194,7 +194,7 @@ export default class TransformerComponent extends Component {
           // borderStroke={"red"}
           boundBoxFunc={this.constrainSizes}
           anchorSize={8}
-          flipEnabled={false}
+          flipEnabled={true}
           zoomedIn={this.props.item.zoomScale > 1}
           onDragStart={(e) => {
             const {
@@ -242,7 +242,7 @@ export default class TransformerComponent extends Component {
           // borderStroke={"red"}
           boundBoxFunc={this.constrainSizes}
           anchorSize={8}
-          flipEnabled={false}
+          flipEnabled={true}
           zoomedIn={this.props.item.zoomScale > 1}
           onDragStart={(e) => {
             const {

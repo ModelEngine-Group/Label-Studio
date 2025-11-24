@@ -1,11 +1,10 @@
+import { IconCross, IconPlus } from "@humansignal/icons";
+import { Button } from "@humansignal/ui";
+import cloneDeep from "lodash/cloneDeep";
 import { useEffect, useState } from "react";
-import { Button } from "../../components";
 import { Form, Input, Label, Toggle } from "../../components/Form";
-import { Block, cn, Elem } from "../../utils/bem";
-import { cloneDeep } from "lodash";
-import { LsPlus } from "../../assets/icons";
-import { IconCross } from "@humansignal/ui";
 import { useAPI } from "../../providers/ApiProvider";
+import { Block, cn, Elem } from "../../utils/bem";
 import "./WebhookPage.scss";
 import { Space } from "../../components/Space/Space";
 import { useProject } from "../../providers/ProjectProvider";
@@ -17,7 +16,15 @@ const WebhookDetail = ({ webhook, webhooksInfo, fetchWebhooks, onBack, onSelectA
   const rootClass = cn("webhook-detail");
 
   const api = useAPI();
-  const [headers, setHeaders] = useState(Object.entries(webhook?.headers || []));
+  const [headers, setHeaders] = useState(
+    webhook?.headers
+      ? Object.entries(webhook.headers).map(([key, value], index) => ({
+          id: `header-${Date.now()}-${index}`,
+          key,
+          value,
+        }))
+      : [],
+  );
   const [sendForAllActions, setSendForAllActions] = useState(webhook ? webhook.send_for_all_actions : true);
   const [actions, setActions] = useState(new Set(webhook?.actions));
   const [isActive, setIsActive] = useState(webhook ? webhook.is_active : true);
@@ -34,7 +41,14 @@ const WebhookDetail = ({ webhook, webhooksInfo, fetchWebhooks, onBack, onSelectA
   }, [project]);
 
   const onAddHeaderClick = () => {
-    setHeaders([...headers, ["", ""]]);
+    setHeaders([
+      ...headers,
+      {
+        id: `header-${Date.now()}-${Math.random()}`,
+        key: "",
+        value: "",
+      },
+    ]);
   };
   const onHeaderRemove = (index) => {
     const newHeaders = cloneDeep(headers);
@@ -46,10 +60,10 @@ const WebhookDetail = ({ webhook, webhooksInfo, fetchWebhooks, onBack, onSelectA
     const newHeaders = cloneDeep(headers);
 
     if (aim === "key") {
-      newHeaders[index][0] = event.target.value;
+      newHeaders[index].key = event.target.value;
     }
     if (aim === "value") {
-      newHeaders[index][1] = event.target.value;
+      newHeaders[index].value = event.target.value;
     }
     setHeaders(newHeaders);
   };
@@ -74,7 +88,13 @@ const WebhookDetail = ({ webhook, webhooksInfo, fetchWebhooks, onBack, onSelectA
       setSendPayload(true);
       return;
     }
-    setHeaders(Object.entries(webhook.headers));
+    setHeaders(
+      Object.entries(webhook.headers).map(([key, value], index) => ({
+        id: `header-${Date.now()}-${index}`,
+        key,
+        value,
+      })),
+    );
     setSendForAllActions(webhook.send_for_all_actions);
     setActions(new Set(webhook.actions));
     setIsActive(webhook.is_active);
@@ -109,7 +129,9 @@ const WebhookDetail = ({ webhook, webhooksInfo, fetchWebhooks, onBack, onSelectA
                 ...data,
                 project: projectId,
                 send_for_all_actions: sendForAllActions,
-                headers: Object.fromEntries(headers.filter(([key]) => key !== "")),
+                headers: Object.fromEntries(
+                  headers.filter((header) => header.key !== "").map((header) => [header.key, header.value]),
+                ),
                 actions: Array.from(actions),
                 is_active: isActive,
                 send_payload: sendPayload,
@@ -146,33 +168,38 @@ const WebhookDetail = ({ webhook, webhooksInfo, fetchWebhooks, onBack, onSelectA
                     <Button
                       type="button"
                       onClick={onAddHeaderClick}
+                      look="string"
+                      leading={<IconPlus />}
                       className={rootClass.elem("headers-add")}
-                      icon={<LsPlus />}
+                      tooltip="Add Header"
                     />
                   </Space>
-                  {headers.map(([headKey, headValue], index) => {
+                  {headers.map((header, index) => {
                     return (
-                      <Space key={index} className={rootClass.elem("headers-row")} columnCount={3}>
+                      <Space key={header.id} className={rootClass.elem("headers-row")} columnCount={3}>
                         <Input
                           className={rootClass.elem("headers-input")}
                           skip
                           placeholder="header"
-                          value={headKey}
+                          value={header.key}
                           onChange={(e) => onHeaderChange("key", e, index)}
                         />
                         <Input
                           className={rootClass.elem("headers-input")}
                           skip
                           placeholder="value"
-                          value={headValue}
+                          value={header.value}
                           onChange={(e) => onHeaderChange("value", e, index)}
                         />
                         <div>
                           <Button
                             className={rootClass.elem("headers-remove")}
                             type="button"
+                            variant="negative"
+                            look="string"
                             icon={<IconCross />}
                             onClick={() => onHeaderRemove(index)}
+                            tooltip="Remove Header"
                           />
                         </div>
                       </Space>
@@ -236,33 +263,66 @@ const WebhookDetail = ({ webhook, webhooksInfo, fetchWebhooks, onBack, onSelectA
               </Elem>
             </Block>
             <Elem name="controls">
-              {webhook === null ? null : (
-                <Button
-                  look="danger"
-                  type="button"
-                  className={rootClass.elem("delete-button")}
-                  onClick={() =>
-                    WebhookDeleteModal({
-                      onDelete: async () => {
-                        await api.callApi("deleteWebhook", { params: { pk: webhook.id } });
-                        onBack();
-                        await fetchWebhooks();
-                      },
-                    })
-                  }
-                >
-                  Delete Webhook
-                </Button>
+              {webhook === null ? (
+                <Space align="end">
+                  <div className={rootClass.elem("status")}>
+                    <Form.Indicator />
+                  </div>
+                  <Button
+                    type="button"
+                    variant="neutral"
+                    look="outlined"
+                    className={rootClass.elem("cancel-button")}
+                    onClick={onBack}
+                    aria-label="Cancel webhook edit"
+                  >
+                    Cancel
+                  </Button>
+                  <Button className={rootClass.elem("save-button")} aria-label="Add webhook">
+                    Add Webhook
+                  </Button>
+                </Space>
+              ) : (
+                <Space spread>
+                  <Button
+                    variant="negative"
+                    look="outlined"
+                    type="button"
+                    className={rootClass.elem("delete-button")}
+                    onClick={() =>
+                      WebhookDeleteModal({
+                        onDelete: async () => {
+                          await api.callApi("deleteWebhook", {
+                            params: { pk: webhook.id },
+                          });
+                          onBack();
+                          await fetchWebhooks();
+                        },
+                      })
+                    }
+                  >
+                    Delete Webhook
+                  </Button>
+                  <Space>
+                    <div className={rootClass.elem("status")}>
+                      <Form.Indicator />
+                    </div>
+                    <Button
+                      type="button"
+                      variant="neutral"
+                      look="outlined"
+                      className={rootClass.elem("cancel-button")}
+                      onClick={onBack}
+                      aria-label="Cancel webhook edit"
+                    >
+                      Cancel
+                    </Button>
+                    <Button className={rootClass.elem("save-button")} aria-label="Save webhook">
+                      Save Changes
+                    </Button>
+                  </Space>
+                </Space>
               )}
-              <div className={rootClass.elem("status")}>
-                <Form.Indicator />
-              </div>
-              <Button type="button" className={rootClass.elem("cancel-button")} onClick={onBack}>
-                Cancel
-              </Button>
-              <Button primary className={rootClass.elem("save-button")}>
-                {webhook === null ? "Add Webhook" : "Save"}
-              </Button>
             </Elem>
           </Form>
         </Block>

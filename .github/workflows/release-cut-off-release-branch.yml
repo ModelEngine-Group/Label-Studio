@@ -14,7 +14,7 @@ on:
         type: string
 
 env:
-  RELEASE_BRANCH_PREFIX: "ls-release"
+  RELEASE_BRANCH_PREFIX: "ls-release/"
 
 jobs:
   draft-new-release:
@@ -45,22 +45,24 @@ jobs:
       - name: Calculate branch name and version
         id: calculate_branch_name_and_version
         shell: bash
+        env:
+          VERSION: "${{ inputs.version }}"
         run: |
           set -xeuo pipefail
           
-          regexp='^[v]?([0-9]+)\.([0-9]+)\.([0-9]+)$';
+          regexp='^[v]?([0-9]+)\.([0-9]+)\.0$';
           
-          if [[ "${{ inputs.version }}" =~ $regexp ]]; then
+          if [[ "${VERSION}" =~ $regexp ]]; then
               first="${BASH_REMATCH[1]}"
               second="${BASH_REMATCH[2]}"
-              third="${BASH_REMATCH[3]}"
+              third="0"
           else
-              echo "${{ inputs.version }} does not mach the regexp ${regexp}"
+              echo "::error::${VERSION} does not mach the regexp ${regexp}"
               exit 1
           fi
           
           release_version="${first}.${second}.${third}"
-          release_branch="${{ env.RELEASE_BRANCH_PREFIX }}/${first}.${second}.${third}"
+          release_branch="${{ env.RELEASE_BRANCH_PREFIX }}${first}.${second}.${third}"
           next_develop_version="${first}.$(($second + 1)).0.dev0"
           
           echo "release_branch=${release_branch}" >> "${GITHUB_OUTPUT}"

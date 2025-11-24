@@ -13,6 +13,7 @@ export const BooleanFilter = [
           { value: true, label: "yes" },
           { value: false, label: "no" },
         ]}
+        disabled={props.disabled}
       />
     ),
   },

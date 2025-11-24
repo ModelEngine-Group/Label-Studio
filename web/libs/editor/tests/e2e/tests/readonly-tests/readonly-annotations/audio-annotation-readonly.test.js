@@ -6,7 +6,7 @@ imageExamples.add([require("../../../examples/audio-regions"), "Beat"]);
 
 Data(imageExamples).Scenario(
   "Audio Readonly Annotations",
-  async ({ I, current, LabelStudio, AtSidebar, AtAudioView }) => {
+  async ({ I, current, LabelStudio, AtOutliner, AtAudioView }) => {
     I.amOnPage("/");
     const { config, result, data } = current.example;
     const regions = result.filter((r) => {
@@ -30,8 +30,8 @@ Data(imageExamples).Scenario(
     await AtAudioView.waitForAudio();
 
     I.say("Check region is selectable");
-    AtSidebar.seeRegions(regions.length);
-    AtSidebar.clickRegion(current.regionName);
+    AtOutliner.seeRegions(regions.length);
+    AtOutliner.clickRegion(current.regionName);
 
     const regionId = regions[0].id;
 
@@ -48,6 +48,6 @@ Data(imageExamples).Scenario(
     I.pressKey("1");
 
     await AtAudioView.createRegion("audio", 50, 100);
-    AtSidebar.seeRegions(regions.length);
+    AtOutliner.seeRegions(regions.length);
   },
 );

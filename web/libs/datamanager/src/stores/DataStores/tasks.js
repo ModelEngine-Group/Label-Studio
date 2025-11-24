@@ -5,7 +5,7 @@ import { isDefined } from "../../utils/utils";
 import { Assignee } from "../Assignee";
 import { DynamicModel, registerModel } from "../DynamicModel";
 import { CustomJSON } from "../types";
-import { FF_DEV_2536, FF_LOPS_E_3, isFF } from "../../utils/feature-flags";
+import { FF_DEV_2536, FF_DISABLE_GLOBAL_USER_FETCHING, FF_LOPS_E_3, isFF } from "../../utils/feature-flags";
 
 const SIMILARITY_UPPER_LIMIT_PRECISION = 1000;
 const fileAttributes = types.model({
@@ -36,6 +36,13 @@ export const create = (columns) => {
     allow_postpone: types.maybeNull(types.boolean),
     unique_lock_id: types.maybeNull(types.string),
     updated_by: types.optional(types.array(Assignee), []),
+    ...(isFF(FF_DISABLE_GLOBAL_USER_FETCHING)
+      ? {
+          annotators_count: types.optional(types.maybeNull(types.number), 0),
+          reviewers_count: types.optional(types.maybeNull(types.number), 0),
+          comment_authors_count: types.optional(types.maybeNull(types.number), 0),
+        }
+      : {}),
     ...(isFF(FF_LOPS_E_3)
       ? {
           _additional: types.optional(fileAttributes, {}),
@@ -145,7 +152,14 @@ export const create = (columns) => {
 
         self.setLoading(taskID);
 
-        const taskData = yield self.root.apiCall("task", { taskID });
+        // Pass label stream mode context to the backend API call
+        const isLabelStream = getRoot(self).SDK?.mode === "labelstream";
+        const taskParams = { taskID };
+        if (isLabelStream) {
+          taskParams.interaction = "labelstream";
+        }
+
+        const taskData = yield self.root.apiCall("task", taskParams);
 
         if (taskData.status === 404) {
           self.finishLoading(taskID);

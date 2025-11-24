@@ -14,6 +14,7 @@ import ClassificationBase from "./ClassificationBase";
 import PerItemMixin from "../../mixins/PerItem";
 import { FF_LSDV_4583, isFF } from "../../utils/feature-flags";
 import { cn } from "../../utils/bem";
+import { safeNumber, positiveNumber } from "../../utils/number";
 
 /**
  * The Number tag supports numeric classification. Use to classify tasks using numbers.
@@ -89,10 +90,17 @@ const Model = types
         if (isDefined(self.step)) {
           const step = Number.parseFloat(self.step);
           const basis = isDefined(self.min) ? +self.min : 0;
-          const delta = (value - basis) % step;
 
-          if (delta !== 0) {
-            errors.push(`The two nearest valid values are ${value - delta} and ${value - delta + step}`);
+          const diff = value - basis;
+          const nearest = Math.round(diff / step) * step + basis;
+
+          // EPSILON will handle the floating-point imprecision of the binary representation (IEEE 754)
+          const EPSILON = 1e-8;
+          if (Math.abs(value - nearest) > EPSILON) {
+            const lower = Math.floor(diff / step) * step + basis;
+            const upper = lower + step;
+            const decimals = step.toString().split(".")[1]?.length || 0;
+            errors.push(`The two nearest valid values are ${lower.toFixed(decimals)} and ${upper.toFixed(decimals)}`);
           }
         }
         if (errors.length) {
@@ -164,15 +172,15 @@ const Model = types
       },
 
       increaseValue() {
-        if (self.number >= Number(self.max)) {
-          self.setNumber(0);
-        } else {
-          if (self.number > 0) {
-            self.setNumber(self.number + 1);
-          } else {
-            self.setNumber(1);
-          }
-        }
+        const min = safeNumber(self.min, 0);
+        const max = safeNumber(self.max, Number.POSITIVE_INFINITY);
+        const step = positiveNumber(self.step);
+        const defaultValue = safeNumber(self.defaultvalue, min);
+        const current = safeNumber(self.number, defaultValue);
+
+        const next = current + step > max ? min : current + step;
+
+        self.setNumber(next);
       },
 
       onHotKey() {

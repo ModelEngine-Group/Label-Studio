@@ -6,7 +6,7 @@ imageExamples.add([require("../../../examples/timeseries-url-indexed"), "Walk"])
 
 Data(imageExamples).Scenario(
   "Timeseries Readonly Annotations",
-  async ({ I, current, LabelStudio, AtSidebar, AtLabels, Tools }) => {
+  async ({ I, current, LabelStudio, AtOutliner, AtLabels, Tools }) => {
     I.amOnPage("/");
     const { config, result, data } = current.example;
     const regions = result.filter((r) => {
@@ -32,8 +32,8 @@ Data(imageExamples).Scenario(
     I.say("TimeSeries loaded");
 
     I.say("Check region is selectable");
-    AtSidebar.seeRegions(regions.length);
-    AtSidebar.clickRegion(current.regionName);
+    AtOutliner.seeRegions(regions.length);
+    AtOutliner.clickRegion(current.regionName);
 
     I.say("Results are equal after deletion attempt");
     I.pressKey("Backspace");
@@ -56,6 +56,6 @@ Data(imageExamples).Scenario(
       },
     );
 
-    AtSidebar.seeRegions(regions.length);
+    AtOutliner.seeRegions(regions.length);
   },
 );

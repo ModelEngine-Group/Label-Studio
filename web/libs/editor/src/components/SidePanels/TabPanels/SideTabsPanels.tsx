@@ -75,14 +75,17 @@ const SideTabsPanelsComponent: FC<SidePanelsProps> = ({
   const [breakPointActiveTab, setBreakPointActiveTab] = useState(0);
   const localSnap = useRef(snap);
   const collapsedSideRef = useRef(collapsedSide);
+  const settings = currentEntity?.store?.settings || currentEntity?.settings;
+  const contentRef = useRef<HTMLDivElement>(null);
 
   collapsedSideRef.current = collapsedSide;
   localSnap.current = snap;
   useRegionsCopyPaste(currentEntity);
 
   const panelBreakPoint = useMemo(() => {
+    if (settings?.forceBottomPanel) return true;
     return viewportSizeMatch || screenSizeMatch.matches;
-  }, [viewportSizeMatch, screenSizeMatch.matches]);
+  }, [viewportSizeMatch, screenSizeMatch.matches, settings?.forceBottomPanel]);
 
   const updatePanel = useCallback(
     (name: string, patch: Partial<PanelBBox>) => {
@@ -215,7 +218,7 @@ const SideTabsPanelsComponent: FC<SidePanelsProps> = ({
     (key: string, top: number, left: number, visible?: boolean) => {
       const panel = panelData[key];
       const parentWidth = rootRef.current?.clientWidth ?? 0;
-      const visibleHeight = visible ?? panel.visible ? panel.height : PANEL_HEADER_HEIGHT;
+      const visibleHeight = (visible ?? panel.visible) ? panel.height : PANEL_HEADER_HEIGHT;
       const detachedHeight = panel.detached ? visibleHeight : panel.height;
       const adjustedHeight =
         panel.height === rootRef.current?.clientHeight || !panel.detached ? DEFAULT_PANEL_HEIGHT : detachedHeight;
@@ -316,6 +319,7 @@ const SideTabsPanelsComponent: FC<SidePanelsProps> = ({
               ? clamp(h, DEFAULT_PANEL_HEIGHT, DEFAULT_PANEL_MAX_HEIGHT)
               : panelData[panelKey].height,
           });
+          setSnap(undefined);
         });
       });
     },
@@ -549,13 +553,13 @@ const SideTabsPanelsComponent: FC<SidePanelsProps> = ({
       >
         {initialized && (
           <>
-            <Elem name="content" mod={{ resizing: lockPanelContents || positioning }}>
+            <Elem ref={contentRef} name="content" mod={{ resizing: lockPanelContents || positioning }}>
               {children}
             </Elem>
             {panelsHidden !== true && panelBreakPoint ? (
               <>
                 <Elem name="wrapper">
-                  <PanelTabsBase {...emptyBaseProps}>
+                  <PanelTabsBase {...emptyBaseProps} contentRef={contentRef} isBottomPanel={true}>
                     <Tabs {...emptyBaseProps} />
                   </PanelTabsBase>
                 </Elem>
@@ -577,7 +581,11 @@ const SideTabsPanelsComponent: FC<SidePanelsProps> = ({
                     return <Fragment key={panelType}>{content}</Fragment>;
                   }
                   return (
-                    <Elem key={panelType} name="wrapper" mod={{ align: panelType, snap: snap === panelType }}>
+                    <Elem
+                      key={panelType}
+                      name="wrapper"
+                      mod={{ align: panelType, snap: !lockPanelContents && snap === panelType && snap !== undefined }}
+                    >
                       {content}
                     </Elem>
                   );

@@ -4,7 +4,7 @@ description: Setup frontend environment
 inputs:
   node-version:
     description: node version
-    default: "18"
+    default: "22"
     required: false
   yarn-version:
     description: yarn version

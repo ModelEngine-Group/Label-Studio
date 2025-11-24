@@ -11,7 +11,7 @@ import {
 import { Block, Elem } from "../../utils/bem";
 import { clamp, isDefined } from "../../utils/helpers";
 import { useValueTracker } from "../Form/Utils";
-import { Select } from "../Form/Elements";
+import { Select } from "@humansignal/ui";
 import "./Pagination.scss";
 import { useUpdateEffect } from "../../utils/hooks";
 
@@ -263,8 +263,8 @@ export const Pagination: FC<PaginationProps> = forwardRef(
             <Select
               value={pageSize}
               options={pageSizeOptions.map((v) => ({ label: `${v} per page`, value: v }))}
-              onChange={(e: any) => {
-                const newPageSize = Number.parseInt(e.target.value);
+              onChange={(val: string) => {
+                const newPageSize = Number.parseInt(val);
 
                 setPageSize(newPageSize);
 

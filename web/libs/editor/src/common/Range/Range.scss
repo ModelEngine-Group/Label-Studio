@@ -38,7 +38,7 @@
 
   &__line {
     border-radius: 8px;
-    background: var(--sand_100);
+    background: var(--color-neutral-surface);
 
     .range_align_horizontal & {
       height: var(--thickness);
@@ -54,7 +54,7 @@
   &__indicator {
     border-radius: 8px;
     position: absolute;
-    background-color: var(--grape_0);
+    background-color: var(--color-primary-emphasis);
 
     .range_align_horizontal & {
       top: 0;
@@ -77,9 +77,9 @@
       width: 16px;
       height: 16px;
       position: absolute;
-      background: var(--grape_500);
+      background: var(--color-primary-surface);
       border-radius: 100%;
-      box-shadow: 0 5px 10px var(--grape_100), inset 0 -1px 0 rgb(0 0 0 / 10%);
+      box-shadow: 0 5px 10px var(--color-primary-surface-content-subtle), inset 0 -1px 0 rgb(0 0 0 / 10%);
       transform: translate3d(-50%, -50%, 0);
     }
 

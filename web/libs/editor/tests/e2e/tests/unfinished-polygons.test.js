@@ -27,10 +27,6 @@ const CONFIG_MULTIPLE = `
 </View>
 `;
 
-const FLAGS = {
-  ff_front_dev_2432_auto_save_polygon_draft_210622_short: true,
-};
-
 Scenario("Drafts for unfinished polygons", async ({ I, LabelStudio, AtLabels, AtImageView }) => {
   I.amOnPage("/");
   LabelStudio.init({
@@ -42,9 +38,7 @@ Scenario("Drafts for unfinished polygons", async ({ I, LabelStudio, AtLabels, At
       onSubmitDraft: saveDraftLocally,
     },
   });
-  LabelStudio.setFeatureFlags(FLAGS);
-
-  AtImageView.waitForImage();
+  LabelStudio.waitForObjectsReady();
 
   await AtImageView.lookForStage();
 
@@ -67,7 +61,6 @@ Scenario("Drafts for unfinished polygons", async ({ I, LabelStudio, AtLabels, At
 
 Scenario("Saving polygon drawing steps to history", async ({ I, LabelStudio, AtLabels, AtImageView }) => {
   I.amOnPage("/");
-  LabelStudio.setFeatureFlags(FLAGS);
   LabelStudio.init({
     config: CONFIG,
     data: {
@@ -75,7 +68,7 @@ Scenario("Saving polygon drawing steps to history", async ({ I, LabelStudio, AtL
     },
   });
 
-  AtImageView.waitForImage();
+  LabelStudio.waitForObjectsReady();
 
   await AtImageView.lookForStage();
 
@@ -115,7 +108,6 @@ Scenario("Saving polygon drawing steps to history", async ({ I, LabelStudio, AtL
 
 Scenario("Init an annotation with old format of closed polygon result", async ({ I, LabelStudio, AtImageView }) => {
   I.amOnPage("/");
-  LabelStudio.setFeatureFlags(FLAGS);
   LabelStudio.init({
     config: CONFIG,
     data: {
@@ -148,7 +140,7 @@ Scenario("Init an annotation with old format of closed polygon result", async ({
     ],
   });
 
-  AtImageView.waitForImage();
+  LabelStudio.waitForObjectsReady();
 
   const result = await LabelStudio.serialize();
 
@@ -158,7 +150,6 @@ Scenario("Init an annotation with old format of closed polygon result", async ({
 
 Scenario("Init an annotation with result of new format of polygon results", async ({ I, LabelStudio, AtImageView }) => {
   I.amOnPage("/");
-  LabelStudio.setFeatureFlags(FLAGS);
   LabelStudio.init({
     config: CONFIG,
     data: {
@@ -212,7 +203,7 @@ Scenario("Init an annotation with result of new format of polygon results", asyn
     ],
   });
 
-  AtImageView.waitForImage();
+  LabelStudio.waitForObjectsReady();
 
   I.say("check loaded regions");
   let result = await LabelStudio.serialize();
@@ -253,7 +244,6 @@ Scenario("Init an annotation with result of new format of polygon results", asyn
 
 Scenario("Removing a polygon by going back through history", async ({ I, LabelStudio, AtLabels, AtImageView }) => {
   I.amOnPage("/");
-  LabelStudio.setFeatureFlags(FLAGS);
   LabelStudio.init({
     config: CONFIG,
     data: {
@@ -264,7 +254,7 @@ Scenario("Removing a polygon by going back through history", async ({ I, LabelSt
     },
   });
 
-  AtImageView.waitForImage();
+  LabelStudio.waitForObjectsReady();
 
   await AtImageView.lookForStage();
 
@@ -300,7 +290,6 @@ Scenario("Removing a polygon by going back through history", async ({ I, LabelSt
 
 Scenario("Continue annotating after closing region from draft", async ({ I, LabelStudio, AtLabels, AtImageView }) => {
   I.amOnPage("/");
-  LabelStudio.setFeatureFlags(FLAGS);
   LabelStudio.init({
     config: CONFIG,
     data: {
@@ -334,7 +323,7 @@ Scenario("Continue annotating after closing region from draft", async ({ I, Labe
     ],
   });
 
-  AtImageView.waitForImage();
+  LabelStudio.waitForObjectsReady();
   await AtImageView.lookForStage();
   const canvasSize = await AtImageView.getCanvasSize();
 
@@ -370,9 +359,8 @@ Scenario("Change label on unfinished polygons", async ({ I, LabelStudio, AtLabel
       onSubmitDraft: saveDraftLocally,
     },
   });
-  LabelStudio.setFeatureFlags(FLAGS);
 
-  AtImageView.waitForImage();
+  LabelStudio.waitForObjectsReady();
 
   await AtImageView.lookForStage();
 
@@ -404,7 +392,6 @@ Data(selectedLabelsVariants).Scenario(
     const { labels } = current;
 
     I.amOnPage("/");
-    LabelStudio.setFeatureFlags(FLAGS);
     LabelStudio.init({
       config: CONFIG_MULTIPLE,
       data: {
@@ -438,7 +425,7 @@ Data(selectedLabelsVariants).Scenario(
       ],
     });
 
-    AtImageView.waitForImage();
+    LabelStudio.waitForObjectsReady();
     await AtImageView.lookForStage();
     const canvasSize = await AtImageView.getCanvasSize();
 
@@ -470,12 +457,11 @@ selectedPolygonAfterCreatingVariants.add([true, "With set setting"]);
 
 Data(selectedPolygonAfterCreatingVariants).Scenario(
   "Select polygon after creating from unfinished draft",
-  async ({ I, LabelStudio, AtImageView, AtSidebar, AtSettings, current }) => {
+  async ({ I, LabelStudio, AtImageView, AtOutliner, AtSettings, current }) => {
     const { shouldSelect, description } = current;
 
     I.say(description);
     I.amOnPage("/");
-    LabelStudio.setFeatureFlags(FLAGS);
     LabelStudio.init({
       config: CONFIG,
       data: {
@@ -517,34 +503,36 @@ Data(selectedPolygonAfterCreatingVariants).Scenario(
       AtSettings.close();
     }
 
-    AtImageView.waitForImage();
+    LabelStudio.waitForObjectsReady();
     await AtImageView.lookForStage();
     const canvasSize = await AtImageView.getCanvasSize();
 
+    I.waitTicks(2);
     I.say("close loaded region");
     AtImageView.drawByClick(canvasSize.width * 0.1, canvasSize.height * 0.1);
 
     I.say(`check that region ${shouldSelect ? "is" : "is not"} selected`);
     if (shouldSelect) {
-      AtSidebar.seeSelectedRegion();
+      AtOutliner.seeSelectedRegion();
     } else {
-      AtSidebar.dontSeeSelectedRegion();
+      AtOutliner.dontSeeSelectedRegion();
     }
 
     I.say("unselect regions");
     I.pressKey("u");
-    AtSidebar.dontSeeSelectedRegion();
+    AtOutliner.dontSeeSelectedRegion();
 
     I.say("go back through the history");
     I.pressKey(["CommandOrControl", "Z"]);
-    AtSidebar.dontSeeSelectedRegion();
+    I.waitTicks(2);
+    AtOutliner.dontSeeSelectedRegion();
 
     I.say("repeat creation and checking");
     AtImageView.drawByClick(canvasSize.width * 0.1, canvasSize.height * 0.1);
     if (shouldSelect) {
-      AtSidebar.seeSelectedRegion();
+      AtOutliner.seeSelectedRegion();
     } else {
-      AtSidebar.dontSeeSelectedRegion();
+      AtOutliner.dontSeeSelectedRegion();
     }
   },
 );

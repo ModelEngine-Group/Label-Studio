@@ -6,7 +6,7 @@ Feature("Numpad hotkeys").tag("@regress");
 Scenario("Check Numpad numbers working as hotkeys", async ({ I, LabelStudio }) => {
   I.amOnPage("/");
   LabelStudio.init({
-    config: ` 
+    config: `
 <View>
   <Text name="text" value="$text"/>
   <Choices name="choises" toName="text">

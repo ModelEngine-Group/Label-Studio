@@ -11,31 +11,29 @@ config: |
         display: flex;
         justify-content: space-between;
         margin: 0 auto;
-        padding: 20px;
-        background-color: #ffffff;
-        border-radius: 5px;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
+        padding: var(--spacing-base);
+        background-color: var(--color-neutral-background);
+        border-radius: var(--corner-radius-small);
+        box-shadow: 0 4px 8px 0 rgba(var(--color-neutral-shadow-raw) / 10%);
         max-width: 800px;
+        border: 1px solid var(--color-neutral-border);
       }
 
       .text-block {
         flex: 1;
-        margin-right: 20px;
+        margin-right: var(--spacing-tight);
       }
 
       .assessment-items-container {
         flex: 1;
         display: flex;
         flex-direction: column;
-        gap: 20px;
+        gap: var(--spacing-base);
       }
 
       .assessment-item {
-        background-color: rgba(44, 62, 80, 0.6);
         padding: 1px;
-        border-radius: 5px;
-        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1), 0 3px 10px 0 rgba(0, 0, 0, 0.1);
-        color: #ffffff;
+        color: var(--color-neutral-content);
         word-wrap: break-word;
       }
     </Style>

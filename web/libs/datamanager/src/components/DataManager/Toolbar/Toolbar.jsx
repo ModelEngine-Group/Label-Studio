@@ -19,7 +19,7 @@ export const Toolbar = injector(
               {section.map((instrument, i) => {
                 const Instrument = store.SDK.getInstrument(instrument);
 
-                return Instrument ? <Instrument key={`instrument-${instrument}-${i}`} size="medium" /> : null;
+                return Instrument ? <Instrument key={`instrument-${instrument}-${i}`} size="small" /> : null;
               })}
             </Space>
           );

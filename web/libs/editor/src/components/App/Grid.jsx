@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Button, Spin } from "antd";
+import { Spin } from "antd";
+import { Button } from "@humansignal/ui";
 import { LeftCircleOutlined, RightCircleOutlined } from "@ant-design/icons";
 import styles from "./Grid.module.scss";
 import { EntityTab } from "../AnnotationTabs/AnnotationTabs";
@@ -212,8 +213,12 @@ export default class Grid extends Component {
             </div>
           )}
         </div>
-        <Button type="text" onClick={this.left} className={styles.left} icon={<LeftCircleOutlined />} />
-        <Button type="text" onClick={this.right} className={styles.right} icon={<RightCircleOutlined />} />
+        <Button size="small" look="string" onClick={this.left} className={styles.left} aria-label="Move left">
+          <LeftCircleOutlined />
+        </Button>
+        <Button size="small" look="string" onClick={this.right} className={styles.right} aria-label="Move right">
+          <RightCircleOutlined />
+        </Button>
       </div>
     );
   }

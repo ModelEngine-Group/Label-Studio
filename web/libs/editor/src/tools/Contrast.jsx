@@ -7,7 +7,7 @@ import ToolMixin from "../mixins/Tool";
 
 import { Tool } from "../components/Toolbar/Tool";
 import { Range } from "../common/Range/Range";
-import { IconContrastTool } from "../assets/icons";
+import { IconContrastTool } from "@humansignal/icons";
 
 const ToolView = observer(({ item }) => {
   return (

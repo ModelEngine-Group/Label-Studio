@@ -1,3 +1,4 @@
+import { ff } from "@humansignal/core";
 import { isAlive, types } from "mobx-state-tree";
 
 import BaseTool, { DEFAULT_DIMENSIONS } from "./Base";
@@ -5,12 +6,11 @@ import ToolMixin from "../mixins/Tool";
 import { MultipleClicksDrawingTool } from "../mixins/DrawingTool";
 import { NodeViews } from "../components/Node/Node";
 import { observe } from "mobx";
-import { FF_DEV_2432, isFF } from "../utils/feature-flags";
 
 const _Tool = types
   .model("PolygonTool", {
     group: "segmentation",
-    shortcut: "P",
+    shortcut: "tool:polygon",
   })
   .views((self) => {
     const Super = {
@@ -23,7 +23,7 @@ const _Tool = types
       get getActivePolygon() {
         const poly = self.currentArea;
 
-        if (isFF(FF_DEV_2432) && poly && !isAlive(poly)) return null;
+        if (poly && !isAlive(poly)) return null;
         if (poly && poly.closed) return null;
         if (poly === undefined) return null;
         if (poly && poly.type !== "polygonregion") return null;
@@ -73,12 +73,6 @@ const _Tool = types
     };
   })
   .actions((self) => {
-    const Super = {
-      startDrawing: self.startDrawing,
-      _finishDrawing: self._finishDrawing,
-      deleteRegion: self.deleteRegion,
-    };
-
     let disposer;
     let closed;
 
@@ -118,28 +112,22 @@ const _Tool = types
       startDrawing(x, y) {
         const point = self.control?.getSnappedPoint({ x, y });
 
-        if (isFF(FF_DEV_2432)) {
-          self.mode = "drawing";
-          self.currentArea = self.createRegion(self.createRegionOptions({ x: point.x, y: point.y }), true);
-          self.setDrawing(true);
+        self.mode = "drawing";
+        self.currentArea = self.createRegion(self.createRegionOptions({ x: point.x, y: point.y }), true);
+        self.setDrawing(true);
+        if (!ff.isActive(ff.FF_MULTIPLE_LABELS_REGIONS)) {
           self.applyActiveStates(self.currentArea);
-        } else {
-          Super.startDrawing(point.x, point.y);
         }
       },
 
       _finishDrawing() {
-        if (isFF(FF_DEV_2432)) {
-          const { currentArea, control } = self;
+        const { currentArea, control } = self;
 
-          self.currentArea.notifyDrawingFinished();
-          self.setDrawing(false);
-          self.currentArea = null;
-          self.mode = "viewing";
-          self.annotation.afterCreateResult(currentArea, control);
-        } else {
-          Super._finishDrawing();
-        }
+        self.currentArea.notifyDrawingFinished();
+        self.setDrawing(false);
+        self.currentArea = null;
+        self.mode = "viewing";
+        self.annotation.afterCreateResult(currentArea, control);
       },
 
       setDrawing(drawing) {
@@ -148,16 +136,12 @@ const _Tool = types
       },
 
       deleteRegion() {
-        if (isFF(FF_DEV_2432)) {
-          const { currentArea } = self;
+        const { currentArea } = self;
 
-          self.setDrawing(false);
-          self.currentArea = null;
-          if (currentArea) {
-            currentArea.deleteRegion();
-          }
-        } else {
-          Super.deleteRegion();
+        self.setDrawing(false);
+        self.currentArea = null;
+        if (currentArea) {
+          currentArea.deleteRegion();
         }
       },
     };

@@ -6,7 +6,7 @@ import ujson as json
 from data_manager.models import Filter, FilterGroup, View
 from django.conf import settings
 from django.db import transaction
-from drf_yasg import openapi
+from drf_spectacular.utils import extend_schema_field
 from projects.models import Project
 from rest_framework import serializers
 from tasks.models import Task
@@ -21,7 +21,35 @@ from users.models import User
 from label_studio.core.utils.common import round_floats
 
 
+class ChildFilterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Filter
+        fields = '__all__'
+
+    def to_representation(self, value):
+        parent = self.parent  # the owning FilterSerializer instance
+        serializer = parent.__class__(instance=value, context=self.context)
+        return serializer.data
+
+    def to_internal_value(self, data):
+        """Allow ChildFilterSerializer to be writable.
+
+        We instantiate the *parent* serializer class (which in this case is
+        ``FilterSerializer``) to validate the nested payload. The validated
+        data produced by that serializer is returned so that the enclosing
+        serializer (``FilterSerializer``) can include it in its own
+        ``validated_data`` structure.
+        """
+
+        parent_cls = self.parent.__class__  # FilterSerializer
+        serializer = parent_cls(data=data, context=self.context)
+        serializer.is_valid(raise_exception=True)
+        return serializer.validated_data
+
+
 class FilterSerializer(serializers.ModelSerializer):
+    child_filter = ChildFilterSerializer(required=False)
+
     class Meta:
         model = Filter
         fields = '__all__'
@@ -73,6 +101,35 @@ class FilterSerializer(serializers.ModelSerializer):
 class FilterGroupSerializer(serializers.ModelSerializer):
     filters = FilterSerializer(many=True)
 
+    def to_representation(self, instance):
+        def _build_filter_tree(filter_obj):
+            """Build hierarchical filter representation."""
+            item = {
+                'filter': filter_obj.column,
+                'operator': filter_obj.operator,
+                'type': filter_obj.type,
+                'value': filter_obj.value,
+            }
+
+            # Add child filter if exists (only one level of nesting)
+            child_filters = filter_obj.children.all()
+            if child_filters:
+                child = child_filters[0]   # Only support one child
+                child_item = {
+                    'filter': child.column,
+                    'operator': child.operator,
+                    'type': child.type,
+                    'value': child.value,
+                }
+                item['child_filter'] = child_item
+
+            return item
+
+        # Only process root filters (ordered by index)
+        roots = instance.filters.filter(parent__isnull=True).prefetch_related('children').order_by('index')
+
+        return {'conjunction': instance.conjunction, 'items': [_build_filter_tree(f) for f in roots]}
+
     class Meta:
         model = FilterGroup
         fields = '__all__'
@@ -114,15 +171,26 @@ class ViewSerializer(serializers.ModelSerializer):
         if 'filter_group' not in data and conjunction:
             data['filter_group'] = {'conjunction': conjunction, 'filters': []}
             if 'items' in filters:
+                # Support "nested" list where each root item may contain ``child_filters``
+
+                def _convert_filter(src_filter):
+                    """Convert a single filter JSON object into internal representation."""
+
+                    filter_payload = {
+                        'column': src_filter.get('filter', ''),
+                        'operator': src_filter.get('operator', ''),
+                        'type': src_filter.get('type', ''),
+                        'value': src_filter.get('value', {}),
+                    }
+
+                    if child_filter := src_filter.get('child_filter'):
+                        filter_payload['child_filter'] = _convert_filter(child_filter)
+
+                    return filter_payload
+
+                # Iterate over top-level items (roots)
                 for f in filters['items']:
-                    data['filter_group']['filters'].append(
-                        {
-                            'column': f.get('filter', ''),
-                            'operator': f.get('operator', ''),
-                            'type': f.get('type', ''),
-                            'value': f.get('value', {}),
-                        }
-                    )
+                    data['filter_group']['filters'].append(_convert_filter(f))
 
         ordering = _data.pop('ordering', {})
         data['ordering'] = ordering
@@ -131,21 +199,10 @@ class ViewSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         result = super().to_representation(instance)
+
+        # Handle filter_group serialization
         filters = result.pop('filter_group', {})
         if filters:
-            filters['items'] = []
-            filters.pop('filters', [])
-            filters.pop('id', None)
-
-            for f in instance.filter_group.filters.order_by('index'):
-                filters['items'].append(
-                    {
-                        'filter': f.column,
-                        'operator': f.operator,
-                        'type': f.type,
-                        'value': f.value,
-                    }
-                )
             result['data']['filters'] = filters
 
         selected_items = result.pop('selected_items', {})
@@ -159,11 +216,38 @@ class ViewSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def _create_filters(filter_group, filters_data):
-        filter_index = 0
-        for filter_data in filters_data:
-            filter_data['index'] = filter_index
-            filter_group.filters.add(Filter.objects.create(**filter_data))
-            filter_index += 1
+        """Create Filter objects inside the provided ``filter_group``.
+
+        * For **root** filters (``parent`` is ``None``) we enumerate the
+          ``index`` so that the UI can preserve left-to-right order.
+        * For **child** filters we leave ``index`` as ``None`` – they are not
+          shown in the top-level ordering bar.
+        """
+
+        def _create_recursive(data, parent=None, index=None):
+
+            # Extract nested children early (if any) and remove them from payload
+            child_filter = data.pop('child_filter', None)
+
+            # Handle explicit parent reference present in the JSON payload only
+            # for root elements. For nested structures we rely on the actual
+            # ``parent`` FK object instead of its primary key.
+            if parent is not None:
+                data.pop('parent', None)
+
+            # Assign display order for root filters
+            if parent is None:
+                data['index'] = index
+
+            # Persist the filter
+            obj = Filter.objects.create(parent=parent, **data)
+            filter_group.filters.add(obj)
+
+            if child_filter:
+                _create_recursive(child_filter, parent=obj)
+
+        for index, data in enumerate(filters_data):
+            _create_recursive(data, index=index)
 
     def create(self, validated_data):
         with transaction.atomic():
@@ -175,6 +259,8 @@ class ViewSerializer(serializers.ModelSerializer):
                 self._create_filters(filter_group=filter_group, filters_data=filters_data)
 
                 validated_data['filter_group_id'] = filter_group.id
+                # rather than defaulting to 0, we should get the current count and set it as the index
+                validated_data['order'] = View.objects.filter(project=validated_data['project']).count()
             view = self.Meta.model.objects.create(**validated_data)
 
             return view
@@ -188,6 +274,8 @@ class ViewSerializer(serializers.ModelSerializer):
                 filter_group = instance.filter_group
                 if filter_group is None:
                     filter_group = FilterGroup.objects.create(**filter_group_data)
+                    instance.filter_group = filter_group
+                    instance.save(update_fields=['filter_group'])
 
                 conjunction = filter_group_data.get('conjunction')
                 if conjunction and filter_group.conjunction != conjunction:
@@ -209,130 +297,140 @@ class ViewSerializer(serializers.ModelSerializer):
             return instance
 
 
+@extend_schema_field(
+    {
+        'type': 'array',
+        'title': 'User IDs',
+        'description': 'User IDs who updated this task',
+        'items': {'type': 'object', 'title': 'User IDs'},
+    }
+)
 class UpdatedByDMFieldSerializer(serializers.SerializerMethodField):
     # TODO: get_updated_by implementation is weird, but we need to adhere schema to it
-    class Meta:
-        swagger_schema_fields = {
-            'type': openapi.TYPE_ARRAY,
-            'title': 'User IDs',
-            'description': 'User IDs who updated this task',
-            'items': {'type': openapi.TYPE_OBJECT, 'title': 'User IDs'},
-        }
+    pass
 
 
+@extend_schema_field(
+    {
+        'type': 'array',
+        'title': 'Annotators IDs',
+        'description': 'Annotators IDs who annotated this task',
+        'items': {'type': 'integer', 'title': 'User IDs'},
+    }
+)
 class AnnotatorsDMFieldSerializer(serializers.SerializerMethodField):
     # TODO: get_updated_by implementation is weird, but we need to adhere schema to it
-    class Meta:
-        swagger_schema_fields = {
-            'type': openapi.TYPE_ARRAY,
-            'title': 'Annotators IDs',
-            'description': 'Annotators IDs who annotated this task',
-            'items': {'type': openapi.TYPE_INTEGER, 'title': 'User IDs'},
-        }
+    pass
 
 
+@extend_schema_field(
+    {
+        'type': 'object',
+        'title': 'User details',
+        'description': 'User details who completed this annotation.',
+    }
+)
 class CompletedByDMSerializerWithGenericSchema(serializers.PrimaryKeyRelatedField):
     # TODO: likely we need to remove full user details from GET /api/tasks/{id} as it non-secure and currently controlled by the export toggle
-    class Meta:
-        swagger_schema_fields = {
-            'type': openapi.TYPE_OBJECT,
-            'title': 'User details',
-            'description': 'User details who completed this annotation.',
-        }
+    pass
 
 
 class AnnotationsDMFieldSerializer(AnnotationSerializer):
     completed_by = CompletedByDMSerializerWithGenericSchema(required=False, queryset=User.objects.all())
 
 
+@extend_schema_field(
+    {
+        'type': 'array',
+        'title': 'Annotation drafts',
+        'description': 'Drafts for this task',
+        'items': {
+            'type': 'object',
+            'title': 'Draft object',
+            'properties': {
+                'result': {
+                    'type': 'array',
+                    'title': 'Draft result',
+                    'items': {
+                        'type': 'object',
+                        'title': 'Draft result item',
+                    },
+                },
+                'created_at': {
+                    'type': 'string',
+                    'format': 'date-time',
+                    'title': 'Creation time',
+                },
+                'updated_at': {
+                    'type': 'string',
+                    'format': 'date-time',
+                    'title': 'Last update time',
+                },
+            },
+        },
+    }
+)
 class AnnotationDraftDMFieldSerializer(serializers.SerializerMethodField):
-    class Meta:
-        swagger_schema_fields = {
-            'type': openapi.TYPE_ARRAY,
-            'title': 'Annotation drafts',
-            'description': 'Drafts for this task',
-            'items': {
-                'type': openapi.TYPE_OBJECT,
-                'title': 'Draft object',
-                'properties': {
-                    'result': {
-                        'type': openapi.TYPE_ARRAY,
-                        'title': 'Draft result',
-                        'items': {
-                            'type': openapi.TYPE_OBJECT,
-                            'title': 'Draft result item',
-                        },
-                    },
-                    'created_at': {
-                        'type': openapi.TYPE_STRING,
-                        'format': 'date-time',
-                        'title': 'Creation time',
-                    },
-                    'updated_at': {
-                        'type': openapi.TYPE_STRING,
-                        'format': 'date-time',
-                        'title': 'Last update time',
+    pass
+
+
+@extend_schema_field(
+    {
+        'type': 'array',
+        'title': 'Predictions',
+        'description': 'Predictions for this task',
+        'items': {
+            'type': 'object',
+            'title': 'Prediction object',
+            'properties': {
+                'result': {
+                    'type': 'array',
+                    'title': 'Prediction result',
+                    'items': {
+                        'type': 'object',
+                        'title': 'Prediction result item',
                     },
                 },
+                'score': {
+                    'type': 'number',
+                    'title': 'Prediction score',
+                },
+                'model_version': {
+                    'type': 'string',
+                    'title': 'Model version',
+                },
+                'model': {
+                    'type': 'object',
+                    'title': 'ML Backend instance',
+                },
+                'model_run': {
+                    'type': 'object',
+                    'title': 'Model Run instance',
+                },
+                'task': {
+                    'type': 'integer',
+                    'title': 'Task ID related to the prediction',
+                },
+                'project': {
+                    'type': 'integer',
+                    'title': 'Project ID related to the prediction',
+                },
+                'created_at': {
+                    'type': 'string',
+                    'format': 'date-time',
+                    'title': 'Creation time',
+                },
+                'updated_at': {
+                    'type': 'string',
+                    'format': 'date-time',
+                    'title': 'Last update time',
+                },
             },
-        }
-
-
+        },
+    }
+)
 class PredictionsDMFieldSerializer(serializers.SerializerMethodField):
-    class Meta:
-        swagger_schema_fields = {
-            'type': openapi.TYPE_ARRAY,
-            'title': 'Predictions',
-            'description': 'Predictions for this task',
-            'items': {
-                'type': openapi.TYPE_OBJECT,
-                'title': 'Prediction object',
-                'properties': {
-                    'result': {
-                        'type': openapi.TYPE_ARRAY,
-                        'title': 'Prediction result',
-                        'items': {
-                            'type': openapi.TYPE_OBJECT,
-                            'title': 'Prediction result item',
-                        },
-                    },
-                    'score': {
-                        'type': openapi.TYPE_NUMBER,
-                        'title': 'Prediction score',
-                    },
-                    'model_version': {
-                        'type': openapi.TYPE_STRING,
-                        'title': 'Model version',
-                    },
-                    'model': {
-                        'type': openapi.TYPE_OBJECT,
-                        'title': 'ML Backend instance',
-                    },
-                    'model_run': {
-                        'type': openapi.TYPE_OBJECT,
-                        'title': 'Model Run instance',
-                    },
-                    'task': {
-                        'type': openapi.TYPE_INTEGER,
-                        'title': 'Task ID related to the prediction',
-                    },
-                    'project': {
-                        'type': openapi.TYPE_NUMBER,
-                        'title': 'Project ID related to the prediction',
-                    },
-                    'created_at': {
-                        'type': openapi.TYPE_STRING,
-                        'format': 'date-time',
-                        'title': 'Creation time',
-                    },
-                    'updated_at': {
-                        'type': openapi.TYPE_STRING,
-                        'format': 'date-time',
-                        'title': 'Last update time',
-                    },
-                },
-            },
-        }
+    pass
 
 
 class DataManagerTaskSerializer(TaskSerializer):
@@ -450,7 +548,7 @@ class DataManagerTaskSerializer(TaskSerializer):
 
     def get_drafts(self, task):
         """Return drafts only for the current user"""
-        # it's for swagger documentation
+        # it's for openapi3 documentation
         if not isinstance(task, Task) or not self.context.get('drafts'):
             return []
 

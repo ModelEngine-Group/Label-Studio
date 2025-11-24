@@ -1,4 +1,3 @@
-import { FF_DEV_2715, isFF } from "../../utils/feature-flags";
 import { wrapArray } from "../../utils/utilities";
 import { Geometry } from "./Geometry";
 
@@ -82,19 +81,10 @@ const _detect = (region) => {
     return Geometry.getDOMBBox(region.from_name.elementRef?.current);
   }
 
-  let type = region.type;
-  if (type === "audioregion") {
-    if (isFF(FF_DEV_2715)) {
-      type = "audioregion::ultra";
-    } else {
-      type = "audioregion::old";
-    }
-  }
-  switch (type) {
+  switch (region.type) {
     case "textrange":
     case "richtextregion":
     case "textarearegion":
-    case "audioregion::old":
     case "paragraphs":
     case "timeseriesregion": {
       const regionBbox = Geometry.getDOMBBox(region.getRegionElement());
@@ -114,7 +104,7 @@ const _detect = (region) => {
 
       return regionBbox;
     }
-    case "audioregion::ultra": {
+    case "audioregion": {
       const bbox = region.bboxCoordsCanvas;
       const stageEl = region.parent?.stageRef?.current;
       const stageBbox = Geometry.getDOMBBox(stageEl, true);
@@ -134,7 +124,8 @@ const _detect = (region) => {
     case "ellipseregion":
     case "polygonregion":
     case "keypointregion":
-    case "brushregion": {
+    case "brushregion":
+    case "bitmaskregion": {
       const bbox = region.bboxCoordsCanvas;
 
       return bbox

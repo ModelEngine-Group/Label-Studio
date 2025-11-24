@@ -1,9 +1,10 @@
 import { type FC, type RefObject, useCallback, useRef } from "react";
 import { Block, Elem } from "../../utils/bem";
-import { ReactComponent as IconSend } from "../../assets/icons/send.svg";
+import { IconSend } from "@humansignal/icons";
 
 import { TextArea } from "../../common/TextArea/TextArea";
 import { observer } from "mobx-react";
+import { Button } from "@humansignal/ui";
 
 export type CommentFormProps = {
   value?: string;
@@ -65,9 +66,9 @@ export const CommentFormBase: FC<CommentFormProps> = observer(
           onBlur={(e) => onBlur?.(e)}
         />
         <Elem tag="div" name="primary-action">
-          <button type="submit">
+          <Button type="submit" aria-label="Submit comment" variant="neutral" look="string">
             <IconSend />
-          </button>
+          </Button>
         </Elem>
       </Block>
     );

@@ -79,7 +79,7 @@ export class Layer extends Events<LayerEvents> {
    * Float value of the layer opacity between 0 and 1.
    */
   private opacity = 1;
-  private pixelRatio = 1;
+  public pixelRatio = 1;
 
   name: string;
 
@@ -110,7 +110,7 @@ export class Layer extends Events<LayerEvents> {
   }
 
   get height() {
-    return this.isVisible ? this.canvas.height : 0;
+    return this.canvas.height;
   }
 
   set height(value: number) {
@@ -146,11 +146,19 @@ export class Layer extends Events<LayerEvents> {
 
   setVisibility(visibility: boolean) {
     this.isVisible = visibility;
+    // Do not clear or reset the canvas when hiding as this leads to the canvas context being lost.
     if (visibility) {
+      const width = this.container.clientWidth;
+      const height = this.options.height ?? this.container.clientHeight ?? 100;
+      this.setSize(width, height);
+      if (this.canvas instanceof HTMLCanvasElement) {
+        this.canvas.style.visibility = "visible";
+      }
       this.context.resetTransform();
     } else {
-      this.clear();
-      this.context.setTransform(0, 0, 0, 0, 0, 0);
+      if (this.canvas instanceof HTMLCanvasElement) {
+        this.canvas.style.visibility = "hidden";
+      }
     }
     this.save();
     this.invoke("layerUpdated", [this]);
@@ -264,6 +272,10 @@ export class Layer extends Events<LayerEvents> {
   copyToBuffer() {
     this.createBufferCanvas();
 
+    // This needs to be updated to ensure it has the same pixel ratio as the canvas it is copying from/to
+    this._bufferCanvas.width = this.canvas.width;
+    this._bufferCanvas.height = this.canvas.height;
+
     // Copy the current canvas to the buffer
     this._bufferContext.imageSmoothingEnabled = false;
     this._bufferContext.clearRect(0, 0, this._bufferCanvas.width, this._bufferCanvas.height);
@@ -346,37 +358,49 @@ export class Layer extends Events<LayerEvents> {
     }
   }
 
-  transferTo(targetCanvas: Layer | HTMLCanvasElement) {
+  /**
+   * Draw this layer into a specific region (x, y) on the target layer or canvas.
+   * Always draws at native size (no scaling/stretching). Ignores width/height arguments.
+   */
+  public drawToRegion(targetCanvas: Layer | HTMLCanvasElement, x: number, y: number, _width: number, _height: number) {
     try {
       if (!this.canvas) return;
 
       let context: RenderingContext | null;
-
       let targetOpacity = 1;
-
       if (targetCanvas instanceof Layer) {
         context = targetCanvas.context;
         targetOpacity = targetCanvas.opacity;
       } else {
         context = targetCanvas.getContext("2d");
       }
-
       if (!context) return;
-
       if (this.compositeAsGroup) {
         context.globalAlpha = this.opacity;
       }
-
       if (this.height > 0 && this.width > 0) {
-        context.drawImage(this.canvas, 0, 0, this.width, this.height);
+        context.drawImage(
+          this.canvas,
+          0,
+          0,
+          this.width,
+          this.height, // source rect
+          x,
+          y,
+          this.width,
+          this.height, // dest rect (native size, no scaling)
+        );
       }
-
       if (this.compositeAsGroup) {
         context.globalAlpha = targetOpacity;
       }
     } catch (e) {
-      console.error(e);
+      console.error("[Layer.drawToRegion] Outer Error:", e, `Layer: ${this.name}, size: ${this.width}x${this.height}`);
     }
+  }
+
+  transferTo(targetCanvas: Layer | HTMLCanvasElement, x = 0, y = 0) {
+    this.drawToRegion(targetCanvas, x, y, this.width, this.height);
   }
 
   setSize(width: number, height: number) {
@@ -412,7 +436,7 @@ export class Layer extends Events<LayerEvents> {
 
     canvas.id = `waveform-layer-${this.options.name ?? "default"}`;
     canvas.width = width * pixelRatio;
-    canvas.height = this.isVisible ? height * pixelRatio : 0;
+    canvas.height = height * pixelRatio;
     canvas.style.width = `${width}px`;
     canvas.style.height = `${height}px`;
     canvas.style.visibility = this.isVisible ? "visible" : "hidden";
@@ -437,7 +461,7 @@ export class Layer extends Events<LayerEvents> {
       // For better performance we're using experimental
       // OffscreenCanvas as a rendering backend
       canvas = new OffscreenCanvas(width * pixelRatio, height * pixelRatio);
-
+      // Note: OffscreenCanvas does not support style or DOM events
       this._context = canvas.getContext("2d")!;
 
       const globalAlpha = this.compositeAsGroup ? clamp(this.opacity * 1.5, 0, 1) : this.opacity;

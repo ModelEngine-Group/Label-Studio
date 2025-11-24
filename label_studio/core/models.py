@@ -1,5 +1,7 @@
+import json
 import logging
 
+from django.core import serializers
 from django.db import models
 from django.db.models import JSONField
 from django.utils.translation import gettext_lazy as _
@@ -42,3 +44,39 @@ class AsyncMigrationStatus(models.Model):
 
     def __str__(self):
         return f'(id={self.id}) ' + self.name + (' at project ' + str(self.project) if self.project else '')
+
+
+class DeletedRow(models.Model):
+    """
+    Model to store deleted rows of other models.
+    Useful for using as backup for deleted rows, in case we need to restore them.
+    """
+
+    model = models.CharField(max_length=1024)   # tasks.task, projects.project, etc.
+    row_id = models.IntegerField(null=True)   # primary key of the deleted row. task.id, project.id, etc.
+    data = JSONField(null=True, blank=True)   # serialized json of the deleted row.
+    reason = models.TextField(null=True, blank=True)   # reason for deletion.
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    # optional fields for searching purposes
+    organization_id = models.IntegerField(null=True, blank=True)
+    project_id = models.IntegerField(null=True, blank=True)
+    user_id = models.IntegerField(null=True, blank=True)
+
+    @classmethod
+    def serialize_and_create(cls, model, **kwargs) -> 'DeletedRow':
+        data = json.loads(serializers.serialize('json', [model]))[0]
+        model = data['model']
+        row_id = int(data['pk'])
+        return cls.objects.create(model=model, row_id=row_id, data=data, **kwargs)
+
+    @classmethod
+    def bulk_serialize_and_create(cls, queryset, **kwargs) -> list['DeletedRow']:
+        serialized_data = json.loads(serializers.serialize('json', queryset))
+        bulk_objects = []
+        for data in serialized_data:
+            model = data['model']
+            row_id = int(data['pk'])
+            bulk_objects.append(cls(model=model, row_id=row_id, data=data, **kwargs))
+        return cls.objects.bulk_create(bulk_objects)

@@ -50,11 +50,16 @@ def get_all_actions(user, project):
     ):
         actions = [action for action in actions if not action.get('experimental', False)]
 
-    # generate form if function is passed
     for action in actions:
+        # remove form if generator is defined
+        # will be loaded on demand in /api/actions/<action_id>/form
         form_generator = action.get('dialog', {}).get('form')
         if callable(form_generator):
-            action['dialog']['form'] = form_generator(user, project)
+            action['dialog']['form'] = None
+
+        disabled_generator = action.get('disabled')
+        if callable(disabled_generator):
+            action['disabled'] = disabled_generator(user, project)
 
     return actions
 
@@ -117,6 +122,17 @@ def perform_action(action_id, project, queryset, user, **kwargs):
         raise e
 
     return result
+
+
+def get_action_form(action_id, project, user):
+    if action_id not in settings.DATA_MANAGER_ACTIONS:
+        raise DataManagerException("Can't find '" + action_id + "' in registered actions")
+
+    action = settings.DATA_MANAGER_ACTIONS[action_id]
+    form = action.get('dialog', {}).get('form')
+    if callable(form):
+        return form(user, project)
+    return form or []
 
 
 register_actions_from_dir('data_manager.actions', os.path.dirname(__file__))

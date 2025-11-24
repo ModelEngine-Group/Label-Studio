@@ -1,9 +1,11 @@
-import React from "react";
+import { projectAtom } from "apps/labelstudio/src/providers/ProjectProvider";
+import { useAtom } from "jotai";
+import React, { useEffect } from "react";
 import { useAPI } from "../../../providers/ApiProvider";
 
 export const useDraftProject = () => {
   const api = useAPI();
-  const [project, setProject] = React.useState();
+  const [project, setProject] = useAtom(projectAtom);
 
   const fetchDraftProject = React.useCallback(async () => {
     const response = await api.callApi("projects");
@@ -25,13 +27,14 @@ export const useDraftProject = () => {
         title: projectName,
       },
     });
+    console.log({ draft });
 
     if (draft) setProject(draft);
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchDraftProject();
   }, []);
 
-  return project;
+  return { project, setProject };
 };

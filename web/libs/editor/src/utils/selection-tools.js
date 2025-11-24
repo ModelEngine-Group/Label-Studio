@@ -66,7 +66,13 @@ const trimSelectionRight = (selection) => {
   selection.removeAllRanges();
   selection.addRange(resultRange);
 };
-const trimSelection = (selection) => {
+/**
+ * Trims selection until both start and end are text nodes. We need this to make selection.move()
+ * work properly. With non-text nodes it jumps into inner/outer blocks instead of actually moving.
+ * Also removes leading and trailing spaces from selection.
+ * @param {Selection} selection
+ */
+export const trimSelection = (selection) => {
   trimSelectionLeft(selection);
   trimSelectionRight(selection);
 };
@@ -233,7 +239,7 @@ export const captureSelection = (
  * @param {Selection} selection
  * @param {string} granularity
  */
-const applyTextGranularity = (selection, granularity) => {
+export const applyTextGranularity = (selection, granularity) => {
   if (!selection.modify || !granularity || granularity === "symbol") return;
 
   try {

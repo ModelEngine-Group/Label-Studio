@@ -1,10 +1,5 @@
 import { type FC, type MouseEvent, useCallback, useContext, useMemo } from "react";
-import {
-  IconInterpolationAdd,
-  IconInterpolationRemove,
-  IconKeypointAdd,
-  IconKeypointDelete,
-} from "../../../../assets/icons/timeline";
+import { IconInterpolationAdd, IconInterpolationRemove, IconKeypointAdd, IconKeypointDelete } from "@humansignal/ui";
 import { TimelineContext } from "../../Context";
 import { ControlButton } from "../../Controls";
 import type { TimelineExtraControls } from "../../Types";
@@ -15,7 +10,7 @@ type DataType = {
 };
 
 export const Controls: FC<TimelineExtraControls<Actions, DataType>> = ({ onAction }) => {
-  const { position, regions } = useContext(TimelineContext);
+  const { position, regions, readonly } = useContext(TimelineContext);
   const hasSelectedRegion = regions.some(({ selected, timeline }) => selected && !timeline);
   const closestKeypoint = useMemo(() => {
     const region = regions.find((r) => r.selected && !r.timeline);
@@ -74,11 +69,11 @@ export const Controls: FC<TimelineExtraControls<Actions, DataType>> = ({ onActio
 
   return (
     <>
-      <ControlButton onClick={onKeypointToggle} disabled={!hasSelectedRegion} tooltip="Toggle Keypoint">
+      <ControlButton onClick={onKeypointToggle} disabled={!hasSelectedRegion || readonly} tooltip="Toggle Keypoint">
         {keypointIcon}
       </ControlButton>
 
-      <ControlButton onClick={onLifespanToggle} disabled={!closestKeypoint} tooltip="Toggle Interpolation">
+      <ControlButton onClick={onLifespanToggle} disabled={!closestKeypoint || readonly} tooltip="Toggle Interpolation">
         {interpolationIcon}
       </ControlButton>
     </>

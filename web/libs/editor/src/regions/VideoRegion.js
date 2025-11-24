@@ -1,7 +1,8 @@
-import { getRoot, types } from "mobx-state-tree";
+import { types } from "mobx-state-tree";
 
 import { guidGenerator } from "../core/Helpers";
 import { AreaMixin } from "../mixins/AreaMixin";
+import { AnnotationMixin } from "../mixins/AnnotationMixin";
 import NormalizationMixin from "../mixins/Normalization";
 import RegionsMixin from "../mixins/Regions";
 import { VideoModel } from "../tags/object/Video";
@@ -27,10 +28,6 @@ const Model = types
   .views((self) => ({
     get parent() {
       return self.object;
-    },
-
-    get annotation() {
-      return getRoot(self)?.annotationStore?.selected;
     },
 
     getShape() {
@@ -141,6 +138,13 @@ const Model = types
     },
   }));
 
-const VideoRegion = types.compose("VideoRegionModel", RegionsMixin, AreaMixin, NormalizationMixin, Model);
+const VideoRegion = types.compose(
+  "VideoRegionModel",
+  RegionsMixin,
+  AreaMixin,
+  AnnotationMixin,
+  NormalizationMixin,
+  Model,
+);
 
 export { VideoRegion };

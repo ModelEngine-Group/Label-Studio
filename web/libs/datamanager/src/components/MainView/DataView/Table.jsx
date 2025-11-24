@@ -1,25 +1,27 @@
+import { IconQuestionOutline } from "@humansignal/icons";
+import { Tooltip } from "@humansignal/ui";
 import { inject } from "mobx-react";
 import { getRoot } from "mobx-state-tree";
 import { useCallback, useMemo } from "react";
-import { FaQuestionCircle } from "react-icons/fa";
 import { useShortcut } from "../../../sdk/hotkeys";
 import { Block, Elem } from "../../../utils/bem";
-import { FF_DEV_2536, FF_LOPS_86, FF_OPTIC_2, isFF } from "../../../utils/feature-flags";
+import { FF_DEV_2536, isFF } from "../../../utils/feature-flags";
 import * as CellViews from "../../CellViews";
 import { Icon } from "../../Common/Icon/Icon";
-import { ImportButton } from "../../Common/SDKButtons";
 import { Spinner } from "../../Common/Spinner";
 import { Table } from "../../Common/Table/Table";
 import { Tag } from "../../Common/Tag/Tag";
-import { Tooltip } from "@humansignal/ui";
 import { GridView } from "../GridView/GridView";
 import "./Table.scss";
-import { Button } from "../../Common/Button/Button";
-import { useState } from "react";
-import { useEffect } from "react";
+import { Button } from "@humansignal/ui";
+import { useEffect, useState } from "react";
+import { EmptyState } from "./empty-state";
 
 const injector = inject(({ store }) => {
   const { dataStore, currentView } = store;
+  const totalTasks = store.project?.task_count ?? store.project?.task_number ?? 0;
+  const foundTasks = dataStore?.total ?? 0;
+
   const props = {
     store,
     dataStore,
@@ -37,6 +39,11 @@ const injector = inject(({ store }) => {
     isLocked: currentView?.locked ?? false,
     hasData: (store.project?.task_count ?? store.project?.task_number ?? dataStore?.total ?? 0) > 0,
     focusedItem: dataStore?.selected ?? dataStore?.highlighted,
+    // Role-based empty state props
+    role: store.SDK?.role ?? null,
+    project: store.project ?? {},
+    hasFilters: (currentView?.filtersApplied ?? 0) > 0,
+    canLabel: totalTasks > 0 && foundTasks > 0,
   };
 
   return props;
@@ -57,6 +64,10 @@ export const DataView = injector(
     hiddenColumns = [],
     hasData = false,
     isLocked,
+    role,
+    project,
+    hasFilters,
+    canLabel,
     ...props
   }) => {
     const [datasetStatusID, setDatasetStatusID] = useState(store.SDK.dataset?.status?.id);
@@ -89,7 +100,13 @@ export const DataView = injector(
           <Tag
             key="column-type"
             color="blue"
-            style={{ fontWeight: "500", fontSize: 14, cursor: "pointer", width: 45, padding: 0 }}
+            style={{
+              fontWeight: "500",
+              fontSize: 14,
+              cursor: "pointer",
+              width: 45,
+              padding: 0,
+            }}
           >
             {original?.readableType ?? parent.title}
           </Tag>,
@@ -99,7 +116,7 @@ export const DataView = injector(
       if (help && decoration?.help !== false) {
         children.push(
           <Tooltip key="help-tooltip" title={help}>
-            <Icon icon={FaQuestionCircle} style={{ opacity: 0.5 }} />
+            <Icon icon={IconQuestionOutline} style={{ opacity: 0.5 }} />
           </Tooltip>,
         );
       }
@@ -120,7 +137,7 @@ export const DataView = injector(
         } else if (e.metaKey || e.ctrlKey) {
           window.open(`./?task=${itemID}`, "_blank");
         } else {
-          if (isFF(FF_OPTIC_2)) store._sdk.lsf?.saveDraft();
+          store._sdk.lsf?.saveDraft();
           getRoot(view).startLabeling(item);
         }
       },
@@ -142,20 +159,7 @@ export const DataView = injector(
               <Elem name="title" tag="h3">
                 Failed to sync data
               </Elem>
-              {isFF(FF_LOPS_86) ? (
-                <>
-                  <Elem name="text">Check your storage settings and resync to import records</Elem>
-                  <Button
-                    onClick={async () => {
-                      window.open("./settings/storage");
-                    }}
-                  >
-                    Manage Storage
-                  </Button>
-                </>
-              ) : (
-                <Elem name="text">Check your storage settings. You may need to recreate this dataset</Elem>
-              )}
+              <Elem name="text">Check your storage settings. You may need to recreate this dataset</Elem>
             </Block>
           );
         }
@@ -181,8 +185,13 @@ export const DataView = injector(
               </Elem>
               <Elem name="text">Press the button below to see any synced records</Elem>
               <Button
+                size="small"
+                look="outlined"
                 onClick={async () => {
-                  await store.fetchProject({ force: true, interaction: "refresh" });
+                  await store.fetchProject({
+                    force: true,
+                    interaction: "refresh",
+                  });
                   await store.currentView?.reload();
                 }}
               >
@@ -191,33 +200,51 @@ export const DataView = injector(
             </Block>
           );
         }
+        // Unified empty state handling - EmptyState now handles all cases internally
         if (total === 0 || !hasData) {
+          // Use unified EmptyState for all cases
           return (
             <Block name="no-results">
-              <Elem name="description">
-                {hasData ? (
-                  <>
-                    <h3>Nothing found</h3>
-                    Try adjusting the filter
-                  </>
-                ) : (
-                  "Looks like you have not imported any data yet"
-                )}
-              </Elem>
-              {!hasData && !!store.interfaces.get("import") && (
-                <Elem name="navigation">
-                  <ImportButton look="primary" href="./import">
-                    Go to import
-                  </ImportButton>
-                </Elem>
-              )}
+              <EmptyState
+                // Import functionality props
+                canImport={!!store.interfaces.get("import")}
+                onOpenSourceStorageModal={() => getRoot(store)?.SDK?.invoke?.("openSourceStorageModal")}
+                onOpenImportModal={() => getRoot(store)?.SDK?.invoke?.("importClicked")}
+                // Role-based functionality props
+                userRole={role}
+                project={project}
+                hasData={hasData}
+                hasFilters={hasFilters}
+                canLabel={canLabel}
+                onLabelAllTasks={() => {
+                  // Use the same logic as the main Label All Tasks button
+                  // Set localStorage to indicate "label all" mode (same as main button)
+                  localStorage.setItem("dm:labelstream:mode", "all");
+
+                  // Start label stream mode (DataManager's equivalent of navigating to labeling)
+                  store.startLabelStream();
+                }}
+                onClearFilters={() => {
+                  // Clear all filters from the current view
+                  const currentView = store.currentView;
+                  if (currentView && currentView.filters) {
+                    // Create a copy of the filters array to avoid modification during iteration
+                    const filtersToDelete = [...currentView.filters];
+                    filtersToDelete.forEach((filter) => {
+                      currentView.deleteFilter(filter);
+                    });
+                    // Reload the view to refresh the data
+                    currentView.reload();
+                  }
+                }}
+              />
             </Block>
           );
         }
 
         return content;
       },
-      [hasData, isLabeling, isLoading, total, datasetStatusID],
+      [hasData, isLabeling, isLoading, total, datasetStatusID, role, project, hasFilters, canLabel],
     );
 
     const decorationContent = (col) => {

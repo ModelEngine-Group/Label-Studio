@@ -11,7 +11,7 @@ const _BaseNPointTool = types
   .model("BaseNTool", {
     group: "segmentation",
     smart: true,
-    shortcut: "R",
+    shortcut: "tool:rect",
   })
   .views((self) => {
     const Super = {
@@ -64,17 +64,43 @@ const _BaseNPointTool = types
       },
     };
   })
-  .actions((self) => ({
-    beforeCommitDrawing() {
-      const s = self.getActiveShape;
+  .actions((self) => {
+    const Super = {
+      commitDrawingRegion: self.commitDrawingRegion,
+    };
 
-      return s.width > self.MIN_SIZE.X && s.height * self.MIN_SIZE.Y;
-    },
-  }));
+    return {
+      beforeCommitDrawing() {
+        const s = self.getActiveShape;
+
+        return s.width > self.MIN_SIZE.X && s.height > self.MIN_SIZE.Y;
+      },
+
+      commitDrawingRegion() {
+        const { currentArea, control, obj } = self;
+
+        if (!currentArea) return;
+
+        // Apply snap to pixel if enabled before finalizing the region
+        if (control?.snap === "pixel") {
+          const canvasX = currentArea.parent.internalToCanvasX(currentArea.x);
+          const canvasY = currentArea.parent.internalToCanvasY(currentArea.y);
+          const canvasWidth = currentArea.parent.internalToCanvasX(currentArea.width);
+          const canvasHeight = currentArea.parent.internalToCanvasY(currentArea.height);
+
+          // Apply snap logic through setPosition which handles both corners
+          currentArea.setPosition(canvasX, canvasY, canvasWidth, canvasHeight, currentArea.rotation);
+        }
+
+        // Use the parent commitDrawingRegion to finalize the region
+        return Super.commitDrawingRegion();
+      },
+    };
+  });
 
 const _Tool = types
   .model("RectangleTool", {
-    shortcut: "R",
+    shortcut: "tool:rect",
   })
   .views((self) => ({
     get viewTooltip() {
@@ -87,7 +113,7 @@ const _Tool = types
 
 const _Tool3Point = types
   .model("Rectangle3PointTool", {
-    shortcut: "shift+R",
+    shortcut: "tool:rect-3point",
   })
   .views((self) => ({
     get viewTooltip() {

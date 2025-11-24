@@ -8,14 +8,14 @@ on:
         type: string
 
 env:
-  NODE: "18"
+  NODE: "22"
   FRONTEND_MONOREPO_DIR: "web"
 
 jobs:
   main:
     name: "yarn integration"
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 60
     steps:
       - uses: hmarr/debug-action@v3.0.0
 
@@ -39,8 +39,10 @@ jobs:
 
       - name: Run server
         id: run-server
-        timeout-minutes: 1
+        timeout-minutes: 2
         working-directory: ${{ env.FRONTEND_MONOREPO_DIR }}
+        env:
+          NODE_ENV: development
         run: |
           set -xeuo pipefail
           
@@ -56,7 +58,34 @@ jobs:
       - name: Run tests
         working-directory: ${{ env.FRONTEND_MONOREPO_DIR }}
         run: |
-          yarn test:integration
+          COLLECT_COVERAGE=1 yarn test:integration
+
+      - name: Upload coverage to Codecov
+        if: ${{ always() && github.event.pull_request.head.repo.fork == false && github.event.pull_request.user.login != 'dependabot[bot]' }}
+        uses: codecov/codecov-action@v5
+        with:
+          name: lsf-integration
+          flags: lsf-integration
+          files: web/libs/editor/.nyc_output/out.json
+          token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: true
+          fail_ci_if_error: true
+
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress coverage
+          path: web/libs/editor/coverage
+
+      - name: Upload test results and screenshots
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress test output
+          path: |
+            dist/cypress/libs/frontend-test/src/screenshots
+            dist/cypress/libs/frontend-test/src/videos
 
       - name: Kill server
         if: always()

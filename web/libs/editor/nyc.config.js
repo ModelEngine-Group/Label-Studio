@@ -20,8 +20,8 @@ module.exports = {
   include: ["src/**"],
   exclude: ["src/examples/**", "src/setupTests.js"].concat(defaultExclude),
   reporter: ["html"],
-  reportDir: "./coverageReport",
-  tempDir: "./coverage",
+  reportDir: "./coverage",
+  tempDir: "./.nyc_output",
   extension: defaultExtension,
   cwd: __dirname,
 };

@@ -51,18 +51,26 @@ from .utils import (
 boto3.set_stream_logger('botocore.credentials', logging.DEBUG)
 
 
+@pytest.fixture(autouse=True)
+def set_test_password_hasher(settings):
+    """
+    Set the password hasher to less expensive MD5 for testing purposes.
+    """
+    settings.PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']
+
+
 @pytest.fixture(autouse=False)
-def enable_csrf():
+def enable_csrf(settings):
     settings.USE_ENFORCE_CSRF_CHECKS = True
 
 
 @pytest.fixture(autouse=False)
-def label_stream_history_limit():
+def label_stream_history_limit(settings):
     settings.LABEL_STREAM_HISTORY_LIMIT = 1
 
 
 @pytest.fixture(autouse=True)
-def disable_sentry():
+def disable_sentry(settings):
     settings.SENTRY_RATE = 0
     settings.SENTRY_DSN = None
 
@@ -88,7 +96,7 @@ def aws_credentials():
     os.environ['AWS_SESSION_TOKEN'] = 'testing'
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture(autouse=True, scope='session')
 def azure_credentials():
     """Mocked Azure credentials"""
     os.environ['AZURE_BLOB_ACCOUNT_NAME'] = 'testing'
@@ -336,7 +344,7 @@ def ml_backend_for_test_predict(ml_backend):
                     'model_version': 'ModelSingle',
                     'score': 0.1,
                     'result': [
-                        {'from_name': 'label', 'to_name': 'text', 'type': 'choices', 'value': {'choices': ['Single']}}
+                        {'from_name': 'label', 'to_name': 'text', 'type': 'choices', 'value': {'choices': ['label_A']}}
                     ],
                 },
             ]
@@ -437,7 +445,7 @@ def project_dialog():
       <TextEditor>
         <Text name="dialog" value="$dialog"></Text>
         <Header value="Your answer is:"></Header>
-        <TextArea name="answer"></TextArea>
+        <TextArea name="answer" toName="dialog"></TextArea>
       </TextEditor>
     </View>"""
 
@@ -467,7 +475,7 @@ def project_choices():
     return {'label_config': label, 'title': 'test'}
 
 
-def setup_project(client, project_template, do_auth=True):
+def setup_project(client, project_template, do_auth=True, legacy_api_tokens_enabled=False):
     """Create new test@gmail.com user, login via client, create test project.
     Project configs are thrown over params and automatically grabs from functions names started with 'project_'
 
@@ -487,6 +495,9 @@ def setup_project(client, project_template, do_auth=True):
 
     create_business(user)
     org = Organization.create_organization(created_by=user, title=user.first_name)
+    if legacy_api_tokens_enabled:
+        org.jwt.legacy_api_tokens_enabled = True
+        org.jwt.save()
     user.active_organization = org
     user.save()
 
@@ -522,7 +533,7 @@ def setup_project_dialog(client):
 
 @pytest.fixture
 def setup_project_for_token(client):
-    return setup_project(client, project_dialog, do_auth=False)
+    return setup_project(client, project_dialog, do_auth=False, legacy_api_tokens_enabled=True)
 
 
 @pytest.fixture
@@ -560,6 +571,8 @@ def business_client(client):
 
     user.save()
     org = Organization.create_organization(created_by=user, title=user.first_name)
+    org.jwt.legacy_api_tokens_enabled = True
+    org.jwt.save()
     client.business = business if business else SimpleNamespace(admin=user)
     client.team = None if business else SimpleNamespace(id=1)
     client.admin = user
@@ -669,38 +682,19 @@ def async_import_off():
     from core.feature_flags import flag_set
 
     def fake_flag_set(*args, **kwargs):
-        if args[0] == 'fflag_feat_all_lsdv_4915_async_task_import_13042023_short':
-            return False
         return flag_set(*args, **kwargs)
 
     with mock.patch('data_import.api.flag_set', wraps=fake_flag_set):
         yield
 
 
-@pytest.fixture(name='fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_on')
-def fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_on():
-    from core.feature_flags import flag_set
-
-    def fake_flag_set(*args, **kwargs):
-        if args[0] == 'fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short':
-            return True
-        return flag_set(*args, **kwargs)
-
-    with mock.patch('tasks.models.flag_set', wraps=fake_flag_set):
-        yield
-
-
-@pytest.fixture(name='fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_off')
-def fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_off():
-    from core.feature_flags import flag_set
-
-    def fake_flag_set(*args, **kwargs):
-        if args[0] == 'fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short':
-            return False
-        return flag_set(*args, **kwargs)
-
-    with mock.patch('tasks.models.flag_set', wraps=fake_flag_set):
-        yield
+@pytest.fixture(autouse=True, scope='session')
+def set_feature_flag_envvar():
+    """
+    Automatically set the environment variable for all tests, including Tavern tests.
+    """
+    os.environ['fflag_optic_all_optic_1938_storage_proxy'] = 'true'
+    os.environ['fflag_feat_utc_210_prediction_validation_15082025'] = 'true'
 
 
 @pytest.fixture(name='fflag_feat_back_lsdv_3958_server_side_encryption_for_target_storage_short_on')
@@ -739,6 +733,32 @@ def ff_back_dev_4664_remove_storage_file_on_export_delete_29032023_short_on():
         return flag_set(*args, **kwargs)
 
     with mock.patch('data_export.api.flag_set', wraps=fake_flag_set):
+        yield
+
+
+@pytest.fixture(name='fflag_feat_utc_46_session_timeout_policy_off')
+def fflag_feat_utc_46_session_timeout_policy_off():
+    from core.feature_flags import flag_set
+
+    def fake_flag_set(*args, **kwargs):
+        if args[0] == 'fflag_feat_utc_46_session_timeout_policy':
+            return False
+        return flag_set(*args, **kwargs)
+
+    with mock.patch('core.middleware.flag_set', wraps=fake_flag_set):
+        yield
+
+
+@pytest.fixture(name='fflag_feat_utc_46_session_timeout_policy_on')
+def fflag_feat_utc_46_session_timeout_policy_on():
+    from core.feature_flags import flag_set
+
+    def fake_flag_set(*args, **kwargs):
+        if args[0] == 'fflag_feat_utc_46_session_timeout_policy':
+            return True
+        return flag_set(*args, **kwargs)
+
+    with mock.patch('core.middleware.flag_set', wraps=fake_flag_set):
         yield
 
 

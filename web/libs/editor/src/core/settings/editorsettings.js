@@ -1,3 +1,5 @@
+import { FF_BITMASK } from "@humansignal/core/lib/utils/feature-flags";
+
 export default {
   enableHotkeys: {
     newUI: {
@@ -83,5 +85,16 @@ export default {
     description: "Enable image smoothing when zoom",
     onChangeEvent: "toggleSmoothing",
     defaultValue: true,
+  },
+  invertedZoom: {
+    newUI: {
+      tags: "Image Tag",
+      title: "Invert zoom direction",
+      description: "Invert the direction of scroll-to-zoom",
+    },
+    description: "Enable inverted zoom direction",
+    onChangeEvent: "toggleInvertedZoom",
+    defaultValue: false,
+    flag: FF_BITMASK,
   },
 };

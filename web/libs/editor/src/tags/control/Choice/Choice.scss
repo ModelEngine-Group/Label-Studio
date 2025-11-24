@@ -18,8 +18,8 @@
     line-height: 40px;
   }
 
-  &_leaf &_hidden,
-  &_notLeaf &_hidden {
+  @at-root #{selector-append(&,_leaf,&,_hidden)},
+  #{selector-append(&,_notLeaf,&,_hidden)} {
     display: none;
   }
 
@@ -66,4 +66,70 @@
       display: none;
     }
   }
+}
+
+body :global(.ant-checkbox-wrapper) {
+  color: var(--color-neutral-content);
+}
+
+body :global(.ant-checkbox .ant-checkbox-inner) {
+  background-color: var(--color-neutral-surface);
+  border-color: var(--color-neutral-border) !important;
+}
+
+body :global(.ant-checkbox-checked .ant-checkbox-inner) {
+  background-color: var(--color-primary-surface);
+  border-color: var(--color-primary-surface);
+}
+
+body :global(.ant-checkbox-checked)::after {
+  border: 1px solid var(--color-primary-surface);
+}
+
+:global(.ant-checkbox-wrapper span + span) {
+  color: var(--color-neutral-content);
+}
+
+body :global(.ant-checkbox-disabled .ant-checkbox-inner) {
+  background-color: var(--color-neutral-background);
+}
+
+body :global(.ant-checkbox-disabled.ant-checkbox-checked .ant-checkbox-inner::after) {
+  border-color: var(--color-neutral-content-subtlest);
+}
+
+body :global(.ant-radio .ant-radio-inner) {
+  border-color: var(--color-neutral-border);
+  background-color: var(--color-neutral-surface);
+  transition: all 150ms ease-out;
+}
+
+body :global(.ant-radio-wrapper) {
+  color: var(--color-neutral-content);
+}
+
+body :global(.ant-radio:hover .ant-radio-inner) {
+  border-color: var(--color-primary-border);
+  background-color: var(--color-neutral-background);
+}
+
+
+body :global(.ant-radio .ant-radio-input:focus + .ant-radio-inner) {
+  border-color: var(--color-primary-border);
+  background-color: var(--color-neutral-background);
+  box-shadow: 0 0 0 4px var(--color-primary-focus-outline);
+}
+
+body :global(.ant-radio-checked .ant-radio-inner) {
+  border-color: var(--color-primary-surface);
+}
+
+body :global(.ant-radio-checked .ant-radio-inner::after) {
+  background-color: var(--color-primary-surface);
+}
+
+body :global(.ant-radio-checked .ant-radio-input:focus + .ant-radio-inner) {
+  border-color: var(--color-primary-border);
+  background-color: var(--color-neutral-background);
+  box-shadow: 0 0 0 4px var(--color-primary-focus-outline);
 }

@@ -20,13 +20,14 @@
     display: flex;
     flex-flow: row;
     align-items: center;
+    color: var(--color-primary-icon);
 
     .link-state_action & {
-      color: var(--primary-action-color);
+      color: var(--color-primary-icon);
     }
 
     .link-state_display & {
-      color: var(--secondary-action-color-hover);
+      color: var(--color-primary-icon);
 
       // align linked region icon with the rest
       align-self: flex-start;
@@ -51,6 +52,7 @@
   width: 100%;
   opacity: var(--comment-item-region-opacity, 1);
   overflow: hidden;
+  padding-left: var(--spacing-tightest);
 
   &_interactive {
     user-select: none
@@ -78,19 +80,19 @@
     margin-top: 3px; // to align with 24px icon
     display: flex;
     font-size: 9px;
-    color: var(--sand_0);
+    color: var(--color-neutral-content);
     text-align: center;
     align-items: center;
     border-radius: 4px;
     justify-content: center;
-    background-color: var(--text-color, var(--sand_900));
+    background-color: var(--icon-color, var(--color-neutral-surface));
     flex-grow: 0;
   }
 
   &__title {
     align-items: center;
     flex: 1;
-    color: var(--text-color, var(--sand_900));
+    color: var(--color-neutral-content);
     min-width: 0;
     margin-top: 3px; // to align with icon and index
 
@@ -128,10 +130,18 @@
   }
 
   &__text {
-    color: var(--sand_900);
+    color: var(--color-neutral-content);
   }
 
   &__close {
     flex-grow: 0;
   }
+}
+
+:global(.ant-btn-icon-only svg) {
+  color: var(--color-neutral-icon);
+}
+
+:global(.ant-btn-icon-only svg:hover) {
+  color: var(--color-primary-icon);
 }

@@ -1,12 +1,16 @@
 import { observer } from "mobx-react";
 import { useCallback, useMemo } from "react";
-import { Select } from "../../../common/Select/Select";
+import { Select } from "@humansignal/ui";
 import ColorScheme from "pleasejs";
 import Utils from "../../../utils";
 import styles from "./Paragraphs.module.scss";
 
 const AuthorTag = ({ name, selected }) => {
   const itemStyle = { border: `2px solid ${Utils.Colors.convertToRGBA(ColorScheme.make_color({ seed: name })[0])}` };
+
+  if (name === "all") {
+    return <>Show all authors</>;
+  }
 
   return (
     <span
@@ -32,21 +36,26 @@ const renderMultipleSelected = (selected) => {
 
 export const AuthorFilter = observer(({ item, onChange }) => {
   const placeholder = useMemo(() => <span className={styles.authorFilter__placeholder}>Show all authors</span>, []);
-  const value = item.filterByAuthor;
-  const options = useMemo(
-    () => item._value.reduce((all, v) => (all.includes(v[item.namekey]) ? all : [...all, v[item.namekey]]), []).sort(),
-    [item._value, item.namekey],
-  );
-  const filteredOptions = item.searchAuthor
-    ? options.filter((o) => o.toLowerCase().includes(item.searchAuthor.toLowerCase()))
-    : options;
+  const initialValue = "all";
+  const options = useMemo(() => {
+    const authorOptions = item._value
+      .reduce((all, v) => (all.includes(v[item.namekey]) ? all : [...all, v[item.namekey]]), [])
+      .sort()
+      .map((name) => ({
+        value: name,
+        label: <AuthorTag name={name} />,
+      }));
+    return [{ value: initialValue, label: <AuthorTag name={initialValue} />, children: authorOptions }];
+  }, [item._value, item.namekey, initialValue]);
+
   const onFilterChange = useCallback(
     (next) => {
+      const nextVal = next?.value ?? next;
       // ensure this is cleared if any action promoting an empty value change is made
-      if (!next || next?.includes(null)) {
+      if (!nextVal || nextVal?.includes("all")) {
         item.setAuthorFilter([]);
-      } else {
-        item.setAuthorFilter(next);
+      } else if (nextVal) {
+        item.setAuthorFilter(nextVal);
       }
 
       onChange?.();
@@ -58,33 +67,12 @@ export const AuthorFilter = observer(({ item, onChange }) => {
     <div className={styles.authorFilter}>
       <Select
         placeholder={placeholder}
-        value={value}
         options={options}
         onChange={onFilterChange}
-        renderMultipleSelected={renderMultipleSelected}
         size="compact"
-        variant="rounded"
-        surface="emphasis"
-        multiple
-      >
-        <div className={styles.authorFilter__search}>
-          <input
-            autoComplete="off"
-            className={styles.authorFilter__search__input}
-            name="search_author"
-            placeholder="Search"
-            onInput={(e) => item.setAuthorSearch(e.target.value)}
-          />
-        </div>
-        <Select.Option value={null} key="showAllAuthors" exclude>
-          <span className={styles.authorFilter__showall}>Show all authors</span>
-        </Select.Option>
-        {filteredOptions.map((name) => (
-          <Select.Option value={name} key={name}>
-            <AuthorTag name={name} selected={false} />
-          </Select.Option>
-        ))}
-      </Select>
+        multiple={true}
+        searchable={true}
+      />
     </div>
   );
 });

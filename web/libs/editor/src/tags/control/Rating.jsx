@@ -2,6 +2,7 @@ import { Rate } from "antd";
 import { inject, observer } from "mobx-react";
 import { types } from "mobx-state-tree";
 import { StarOutlined } from "@ant-design/icons";
+import { ReadOnlyControlMixin } from "../../mixins/ReadOnlyMixin";
 
 import RequiredMixin from "../../mixins/Required";
 import PerRegionMixin from "../../mixins/PerRegion";
@@ -34,7 +35,6 @@ import { FF_LSDV_4583, isFF } from "../../utils/feature-flags";
  * @param {number} [maxRating=5]              - Maximum rating value
  * @param {number} [defaultValue=0]           - Default rating value
  * @param {small|medium|large} [size=medium]  - Rating icon size
- * @param {star|heart|fire|smile} [icon=star] - Rating icon
  * @param {string} hotkey                     - HotKey for changing rating value
  * @param {boolean} [required=false]          - Whether rating validation is required
  * @param {string} [requiredMessage]          - Message to show if validation fails
@@ -121,6 +121,7 @@ const RatingModel = types.compose(
   ControlBase,
   ClassificationBase,
   RequiredMixin,
+  ReadOnlyControlMixin,
   PerRegionMixin,
   ...(isFF(FF_LSDV_4583) ? [PerItemMixin] : []),
   AnnotationMixin,
@@ -164,6 +165,7 @@ const HtxRating = inject("store")(
           count={Number(item.maxrating)}
           defaultValue={Number(item.defaultvalue)}
           onChange={item.setRating}
+          disabled={item.isReadOnly()}
         />
         {store.settings.enableTooltips && store.settings.enableHotkeys && item.hotkey && (
           <sup style={{ fontSize: "9px" }}>[{item.hotkey}]</sup>

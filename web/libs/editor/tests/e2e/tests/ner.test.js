@@ -1,4 +1,4 @@
-const { initLabelStudio, serialize } = require("./helpers");
+const { serialize } = require("./helpers");
 
 const assert = require("assert");
 
@@ -54,14 +54,14 @@ const results = [
   },
 ];
 
-Scenario("NER labeling for HyperText", async ({ I }) => {
+Scenario("NER labeling for HyperText", async ({ I, LabelStudio }) => {
   const params = {
     config: configSimple,
     data: { text },
   };
 
   I.amOnPage("/");
-  I.executeScript(initLabelStudio, params);
+  LabelStudio.init(params);
 
   // create regions inside iframe
   I.switchTo("iframe");

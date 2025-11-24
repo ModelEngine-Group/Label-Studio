@@ -1,12 +1,8 @@
-import { LabelStudio } from "./LabelStudio";
-import { FF_DEV_1170 } from "../../feature-flags";
+const metaModifier = window.navigator.platform.toLowerCase().indexOf("mac") >= 0 ? "metaKey" : "ctrlKey";
 
 export const Sidebar = {
   get outliner() {
     return cy.get(".lsf-outliner");
-  },
-  get legacySidebar() {
-    return cy.get(".lsf-sidebar-tabs");
   },
   get toolBar() {
     return this.outliner.get(".lsf-view-controls");
@@ -28,15 +24,9 @@ export const Sidebar = {
     this.orderRegionsButton.click();
   },
   get regions() {
-    return LabelStudio.getFeatureFlag(FF_DEV_1170).then((isFFDEV1170) => {
-      if (isFFDEV1170) {
-        return this.outliner
-          .should("be.visible")
-          .get(".lsf-tree__node:not(.lsf-tree__node_type_footer) .lsf-tree-node-content-wrapper");
-      }
-
-      return this.legacySidebar.should("be.visible").get(".lsf-region-item");
-    });
+    return this.outliner
+      .should("be.visible")
+      .get(".lsf-tree__node:not(.lsf-tree__node_type_footer) .lsf-tree-node-content-wrapper");
   },
   findRegion(selector: string) {
     return this.regions.filter(selector);
@@ -81,11 +71,11 @@ export const Sidebar = {
       // @link https://docs.cypress.io/api/commands/hover#Example-of-clicking-on-a-hidden-element
       .click({ force: true });
   },
-  toggleRegionSelection(selectorOrIndex: string | number) {
+  toggleRegionSelection(selectorOrIndex: string | number, withModifier = false) {
     const regionFinder =
       typeof selectorOrIndex === "number" ? this.findRegionByIndex.bind(this) : this.findRegion.bind(this);
 
-    regionFinder(selectorOrIndex).click();
+    regionFinder(selectorOrIndex).click({ [metaModifier]: withModifier });
   },
   collapseDetailsRightPanel() {
     cy.get(".lsf-sidepanels__wrapper_align_right .lsf-panel__toggle").should("be.visible").click();

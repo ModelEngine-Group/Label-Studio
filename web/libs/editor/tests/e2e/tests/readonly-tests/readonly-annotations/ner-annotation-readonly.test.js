@@ -4,7 +4,7 @@ const imageExamples = new DataTable(["example", "regionName"]);
 
 imageExamples.add([require("../../../examples/text-html"), "Date"]);
 
-Data(imageExamples).Scenario("NER Readonly Annotations", async ({ I, current, LabelStudio, AtSidebar }) => {
+Data(imageExamples).Scenario("NER Readonly Annotations", async ({ I, current, LabelStudio, AtOutliner }) => {
   I.amOnPage("/");
   const { config, result, data } = current.example;
   const regions = result.filter((r) => {
@@ -26,8 +26,8 @@ Data(imageExamples).Scenario("NER Readonly Annotations", async ({ I, current, La
   LabelStudio.init(params);
 
   I.say("Check region is selectable");
-  AtSidebar.seeRegions(regions.length);
-  AtSidebar.clickRegion(current.regionName);
+  AtOutliner.seeRegions(regions.length);
+  AtOutliner.clickRegion(current.regionName);
   //
   I.pressKey("Backspace");
   I.say("Results are equal after deletion attempt");
@@ -36,5 +36,5 @@ Data(imageExamples).Scenario("NER Readonly Annotations", async ({ I, current, La
   I.say("Can't draw new shape");
   I.pressKey("1");
   //
-  AtSidebar.seeRegions(regions.length);
+  AtOutliner.seeRegions(regions.length);
 });

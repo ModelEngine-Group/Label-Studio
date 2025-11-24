@@ -1,4 +1,3 @@
-import { Select } from "antd";
 import { observer } from "mobx-react";
 import { types } from "mobx-state-tree";
 
@@ -21,12 +20,11 @@ import DynamicChildrenMixin from "../../mixins/DynamicChildrenMixin";
 import { FF_LSDV_4583, isFF } from "../../utils/feature-flags";
 import { ReadOnlyControlMixin } from "../../mixins/ReadOnlyMixin";
 import SelectedChoiceMixin from "../../mixins/SelectedChoiceMixin";
-import { HintTooltip } from "../../components/Taxonomy/Taxonomy";
 import ClassificationBase from "./ClassificationBase";
 import PerItemMixin from "../../mixins/PerItem";
 import Infomodal from "../../components/Infomodal/Infomodal";
-
-const { Option } = Select;
+import { useMemo } from "react";
+import { Select, Tooltip } from "@humansignal/ui";
 
 /**
  * The `Choices` tag is used to create a group of choices, with radio buttons or checkboxes. It can be used for single or multi-class classification. Also, it is used for advanced classification tasks where annotators can choose one or multiple answers.
@@ -94,6 +92,7 @@ const { Option } = Select;
  * @param {boolean} [perItem]          - Use this tag to select a choice for a specific item inside the object instead of the whole object
  * @param {string} [value]             - Task data field containing a list of dynamically loaded choices (see example below)
  * @param {boolean} [allowNested]      - Allow to use `children` field in dynamic choices to nest them. Submitted result will contain array of arrays, every item is a list of values from topmost parent choice down to selected one.
+ * @param {select|inline|vertical} [layout] - Layout of the choices: `select` for dropdown/select box format, `inline` for horizontal single row display, `vertical` for vertically stacked display (default)
  */
 const TagAttrs = types.model({
   toname: types.maybeNull(types.string),
@@ -253,11 +252,25 @@ const ChoicesModel = types.compose(
 );
 
 const ChoicesSelectLayout = observer(({ item }) => {
+  const options = useMemo(
+    () =>
+      item.tiedChildren.map((i) => ({
+        value: i._value,
+        label: (
+          <Tooltip title={i.hint}>
+            <span data-testid="choiceOptionText" className="w-full">
+              {i._value}
+            </span>
+          </Tooltip>
+        ),
+      })),
+    [item.tiedChildren],
+  );
   return (
     <Select
       style={{ width: "100%" }}
       value={item.selectedLabels.map((l) => l._value)}
-      mode={item.choice === "multiple" ? "multiple" : ""}
+      multiple={item.choice === "multiple"}
       disabled={item.isReadOnly()}
       onChange={(val) => {
         if (Array.isArray(val)) {
@@ -272,15 +285,8 @@ const ChoicesSelectLayout = observer(({ item }) => {
           }
         }
       }}
-    >
-      {item.tiedChildren.map((i) => (
-        <Option key={i._value} value={i._value}>
-          <HintTooltip title={i.hint} wrapper="div">
-            {i._value}
-          </HintTooltip>
-        </Option>
-      ))}
-    </Select>
+      options={options}
+    />
   );
 });
 

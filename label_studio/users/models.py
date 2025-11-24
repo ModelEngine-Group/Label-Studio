@@ -3,6 +3,7 @@
 import datetime
 from typing import Optional
 
+from core.feature_flags import flag_set
 from core.utils.common import load_func
 from core.utils.db import fast_first
 from django.conf import settings
@@ -17,6 +18,7 @@ from django.utils.translation import gettext_lazy as _
 from organizations.models import Organization
 from rest_framework.authtoken.models import Token
 from users.functions import hash_upload
+from users.functions.last_activity import get_user_last_activity, schedule_activity_sync, set_user_last_activity
 
 YEAR_START = 1980
 YEAR_CHOICES = []
@@ -65,8 +67,36 @@ class UserLastActivityMixin(models.Model):
     last_activity = models.DateTimeField(_('last activity'), default=timezone.now, editable=False)
 
     def update_last_activity(self):
-        self.last_activity = timezone.now()
-        self.save(update_fields=['last_activity'])
+        """Update user's last activity timestamp using Redis caching."""
+        current_time = timezone.now()
+
+        if flag_set('fflag_fix_back_plt_840_redis_last_activity_29072025_short', user='auto'):
+            redis_success = set_user_last_activity(self.id, current_time)
+
+            if not redis_success:
+                self.last_activity = current_time
+                self.save(update_fields=['last_activity'])
+            else:
+                schedule_activity_sync()
+        else:
+            self.last_activity = current_time
+            self.save(update_fields=['last_activity'])
+
+    def get_last_activity(self):
+        """Get user's last activity timestamp with Redis caching."""
+        # Try Redis first, fallback to database
+        cached_activity = get_user_last_activity(self.id)
+
+        if cached_activity is not None:
+            return cached_activity
+
+        # If not in Redis, return database value
+        return self.last_activity
+
+    @property
+    def last_activity_cached(self):
+        """Property for accessing cached last activity."""
+        return self.get_last_activity()
 
     class Meta:
         abstract = True
@@ -90,6 +120,13 @@ class User(UserMixin, AbstractBaseUser, PermissionsMixin, UserLastActivityMixin)
     last_name = models.CharField(_('last name'), max_length=256, blank=True)
     phone = models.CharField(_('phone'), max_length=256, blank=True)
     avatar = models.ImageField(upload_to=hash_upload, blank=True)
+    custom_hotkeys = models.JSONField(
+        _('custom hotkeys'),
+        default=dict,
+        blank=True,
+        null=True,
+        help_text=_('Custom keyboard shortcuts configuration for the user interface'),
+    )
 
     is_staff = models.BooleanField(
         _('staff status'), default=False, help_text=_('Designates whether the user can log into this admin site.')

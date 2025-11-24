@@ -69,7 +69,9 @@ export const ModelVersionSelector = ({
     setLoading(false);
   }, [project?.id, apiName]);
 
-  useEffect(fetchMLVersions, [fetchMLVersions]);
+  useEffect(() => {
+    fetchMLVersions();
+  }, [fetchMLVersions]);
 
   return (
     <div>
@@ -80,9 +82,10 @@ export const ModelVersionSelector = ({
             name={name}
             disabled={!versions.length && !models.length}
             value={version}
-            onChange={(e) => setVersion(e.target.value)}
+            onChange={setVersion}
             options={[...models, ...versions]}
-            placeholder={loading ? "Loading ..." : placeholder ? placeholder : "Please select model or predictions"}
+            placeholder={placeholder || "Please select model or predictions"}
+            isInProgress={loading}
             {...props}
           />
         </div>

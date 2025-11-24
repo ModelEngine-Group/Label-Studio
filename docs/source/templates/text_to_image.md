@@ -26,7 +26,6 @@ Based on the natural language prompt, you can generate the set of images from wh
     <Style>
     .ch-title {
       font-size: 2em;
-      box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
       text-align: center;
     }
     .ch-title .lsf-richtext__line:before {
@@ -42,7 +41,7 @@ Based on the natural language prompt, you can generate the set of images from wh
       padding: 8px;
     }
     .ant-checkbox-checked+span {
-      border-color: red;
+      border-color: var(--color-primary-border-subtle);
     }
     .ant-checkbox+span sup {
       position: absolute;
@@ -50,7 +49,6 @@ Based on the natural language prompt, you can generate the set of images from wh
       top: 8px;
       z-index: 2;
       display: block;
-      background: white;
       width: 24px;
       line-height: 16px;
       text-align: center;

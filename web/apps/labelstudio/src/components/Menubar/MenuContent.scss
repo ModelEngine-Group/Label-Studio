@@ -2,6 +2,7 @@
   display: flex;
   min-height: 100vh;
   flex-direction: column;
+  background-color: var(--color-neutral-background);
 
   &__body {
     flex: 1;
@@ -18,10 +19,9 @@
     flex-direction: column;
     margin-left: 0;
     height: 100%;
-    background-color: var(--sand_0);
-    transition: margin var(--menu-animation-duration) var(--menu-animation-curve);
     will-change: margin-left;
-
+    transition: background-color 400ms ease-out;
+    
     &_withSidebar {
       margin-left: var(--menu-sidebar-width);
     }

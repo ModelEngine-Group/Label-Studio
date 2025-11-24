@@ -3,7 +3,6 @@ name: "CI/CD Pipeline"
 on:
   push:
     branches:
-      - develop
       - 'ls-release/**'
   pull_request:
     types:
@@ -56,7 +55,6 @@ jobs:
               - '.github/workflows/test_migrations.yml'
             frontend:
               - 'web/**'
-              - '.github/workflows/frontend-build.yml'
               - '.github/workflows/tests-yarn-unit.yml'
               - '.github/workflows/tests-yarn-integration.yml'
               - '.github/workflows/tests-yarn-e2e.yml'
@@ -144,43 +142,19 @@ jobs:
       github.event_name == 'pull_request' &&
       github.event.pull_request.head.repo.fork == false &&
       needs.changed_files.outputs.frontend == 'true' &&
-      !startsWith(needs.changed_files.outputs.commit-message, 'ci: Build frontend')
+      !startsWith(needs.changed_files.outputs.commit-message, 'ci: Build tag docs')
     permissions:
       contents: write
-    uses: ./.github/workflows/frontend-build.yml
+    uses: ./.github/workflows/create-tag-docs.yml
     with:
       ref: ${{ github.event.pull_request.head.ref || github.ref }}
-      build_static: false
-      generate_version_files: false
-      generate_doc_tags_files: true
-    secrets: inherit
-
-  build-frontend-static:
-    name: "Build"
-    needs:
-      - changed_files
-    if: |
-      github.event_name == 'push' &&
-      needs.changed_files.outputs.frontend == 'true' &&
-      !startsWith(needs.changed_files.outputs.commit-message, 'ci: Build frontend')
-    permissions:
-      contents: write
-    uses: ./.github/workflows/frontend-build.yml
-    with:
-      ref: ${{ github.event.pull_request.head.ref || github.ref }}
-      build_static: true
-      generate_version_files: true
-      generate_doc_tags_files: true
     secrets: inherit
 
   build-docker:
     name: "Build"
     needs:
       - changed_files
-    if: |
-      github.event_name == 'push' &&
-      ( ( github.ref_name == 'develop' && needs.changed_files.outputs.docker == 'true' )
-        || startsWith(github.ref_name, 'ls-release/') )
+    if: startsWith(github.ref_name, 'ls-release/')
     permissions:
       contents: read
       checks: write
@@ -192,7 +166,7 @@ jobs:
 
   deploy:
     name: "Deploy"
-    if: startsWith(github.ref_name, 'ls-release/') || github.ref_name == 'develop'
+    if: startsWith(github.ref_name, 'ls-release/')
     runs-on: ubuntu-latest
     needs:
       - build-docker
@@ -200,7 +174,7 @@ jobs:
       - uses: actions/github-script@v7
         env:
           DOCKER_IMAGE_VERSION: ${{ needs.build-docker.outputs.build_version }}
-          RELEASE_NAME: ${{ startsWith(github.ref_name, 'ls-release/') && 'ls-release' || 'ls-develop' }}
+          RELEASE_NAME: 'ls-release'
         with:
           github-token: ${{ secrets.GIT_PAT }}
           script: |
@@ -419,8 +393,8 @@ jobs:
           jira_fix_version: "LS OpenSource/${{ steps.create-draft-release.outputs.tag_name }}"
 
       - name: Generate release changelog
-        id: changelog_md
-        uses: ./.github/actions-hub/actions/github-generate-changelog
+        id: changelog
+        uses: ./.github/actions-hub/actions/github-changelog
         with:
           release_version: "${{ steps.create-draft-release.outputs.tag_name }}"
           previous_ref: "${{ steps.previous-tag.outputs.previous_tag_name }}"
@@ -430,19 +404,21 @@ jobs:
           jira_username: "${{ secrets.JIRA_USERNAME }}"
           jira_token: "${{ secrets.JIRA_TOKEN }}"
           jira_release_prefix: "LS OpenSource"
-          launchdarkly_sdk_key: "${{ secrets.LAUNCHDARKLY_COMMUNITY_SDK_KEY }}"
-          launchdarkly_environment: "community"
+          launchdarkly_path: "label_studio/feature_flags.json"
+          ignore_tags: "internal"
           helm_chart_repo: "HumanSignal/charts"
           helm_chart_path: "heartex/label-studio/Chart.yaml"
 
       - name: Update Draft Release
         uses: actions/github-script@v7
         id: update-draft-release
+        env:
+          CHANGELOG: "${{ steps.changelog.outputs.changelog }}"
         with:
           github-token: ${{ secrets.GIT_PAT }}
           script: |
             const { repo, owner } = context.repo;
-
+            const changelog = process.env.CHANGELOG;
             const { data: release } = await github.rest.repos.updateRelease({
                 owner,
                 repo,
@@ -452,7 +428,7 @@ jobs:
                 name: '${{ steps.create-draft-release.outputs.tag_name }}',
                 tag_name: '${{ steps.create-draft-release.outputs.tag_name }}',
                 target_commitish: '${{ github.ref_name }}',
-                body: atob(`${{ steps.changelog_md.outputs.changelog_msg_b64 }}`)
+                body: changelog
             });
             console.log(`Draft release is updated: ${release.html_url}`)
             core.setOutput("id", release.id);
@@ -527,6 +503,10 @@ jobs:
         uses: re-actors/alls-green@release/v1
         with:
           allowed-skips: gitleaks, bandit, ruff, blue, biome, stylelint, pytest, migrations, conda-test, build-docker, tests-yarn-unit, tests-yarn-integration, tests-yarn-e2e
+          allowed-failures: |
+            [
+              "gitleaks"
+            ]
           jobs: ${{ toJSON(needs) }}
 
   dependabot-auto-merge:

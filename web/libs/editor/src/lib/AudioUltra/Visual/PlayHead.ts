@@ -3,7 +3,6 @@ import { rgba, type RgbaColorArray } from "../Common/Color";
 import { Events } from "../Common/Events";
 import { clamp, getCursorTime } from "../Common/Utils";
 import { CursorSymbol } from "../Cursor/Cursor";
-import type { Layer } from "../Visual/Layer";
 import type { Visualizer } from "../Visual/Visualizer";
 import type { Waveform } from "../Waveform";
 
@@ -38,7 +37,6 @@ export class Playhead extends Events<PlayheadEvents> {
   private color: RgbaColorArray = rgba("#ccc");
   private fillColor: RgbaColorArray = rgba("#eee");
   private visualizer: Visualizer;
-  private layer!: Layer;
   private layerName: string;
   private wf: Waveform;
   private capWidth: number;
@@ -50,6 +48,10 @@ export class Playhead extends Events<PlayheadEvents> {
   width: number;
   isHovered = false;
   isDragging = false;
+
+  private playheadCanvas: HTMLCanvasElement;
+  private playheadCanvasWidth = 0;
+  private playheadCanvasHeight = 0;
 
   constructor(options: PlayheadOptions, visualizer: Visualizer, wf: Waveform) {
     super();
@@ -68,20 +70,100 @@ export class Playhead extends Events<PlayheadEvents> {
     this.capPadding = options.capPadding ?? 3;
     this.hoveredStrokeMultiplier = options.hoveredStrokeMultiplier ?? 2;
 
+    this.playheadCanvas = document.createElement("canvas");
+  }
+
+  public onInit() {
+    this.drawPlayheadSlice();
     this.initialize();
   }
 
-  updatePositionFromTime(time: number, renderVisible = false, useClamp = true) {
+  /**
+   * Redraw the playhead's offscreen canvas.
+   * Should be called:
+   * - On hover in/out (to update shadow or style)
+   * - On drag start/end (if style changes)
+   * - On construction (initial draw)
+   * - On style/size changes (color, width, cap, height, etc.)
+   * Should NOT be called on every time/position update.
+   */
+  public drawPlayheadSlice() {
+    const pixelRatio = (this.visualizer as any).pixelRatio || window.devicePixelRatio || 1;
+    const width = this.capWidth + 2;
+    const height = this.visualizer.height;
+    if (
+      this.playheadCanvasWidth !== width ||
+      this.playheadCanvasHeight !== height ||
+      this.playheadCanvas.width !== width * pixelRatio ||
+      this.playheadCanvas.height !== height * pixelRatio
+    ) {
+      this.playheadCanvas.width = width * pixelRatio;
+      this.playheadCanvas.height = height * pixelRatio;
+      this.playheadCanvasWidth = width;
+      this.playheadCanvasHeight = height;
+    }
+    const ctx = this.playheadCanvas.getContext("2d")!;
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    ctx.clearRect(0, 0, width, height);
+    ctx.save();
+    if (this.isHovered) {
+      ctx.shadowColor = "rgba(0,0,0,0.85)";
+      ctx.shadowBlur = 12;
+    } else {
+      ctx.shadowColor = "rgba(0,0,0,0.45)";
+      ctx.shadowBlur = 16;
+    }
+    const x = width / 2;
+    const y = this.visualizer.reservedSpace;
+    ctx.fillStyle = this.fillColor.toString();
+    ctx.strokeStyle = this.color.toString();
+    ctx.lineWidth = this.width;
+    this.moveTo(ctx, x, y, height);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  private moveTo(ctx: CanvasRenderingContext2D, x: number, y: number, height: number) {
+    const { capWidth, capHeight, capPadding } = this;
+    const playheadCapY = y - capHeight - capPadding;
+    const halfCapWidth = capWidth / 2;
+    ctx.moveTo(x - halfCapWidth, playheadCapY);
+    ctx.lineTo(x + halfCapWidth, playheadCapY);
+    ctx.lineTo(x + halfCapWidth, playheadCapY + capHeight - 1);
+    ctx.lineTo(x, playheadCapY + capHeight);
+    ctx.lineTo(x, height);
+    ctx.lineTo(x, playheadCapY + capHeight);
+    ctx.lineTo(x - halfCapWidth, playheadCapY + capHeight - 1);
+  }
+
+  public renderTo(ctx: CanvasRenderingContext2D, x: number) {
+    if (
+      !ctx ||
+      this.playheadCanvas.width === 0 ||
+      this.playheadCanvas.height === 0 ||
+      ctx.canvas.width === 0 ||
+      ctx.canvas.height === 0
+    ) {
+      return;
+    }
+    ctx.save();
+    const pixelRatio = (this.visualizer as any).pixelRatio || window.devicePixelRatio || 1;
+    ctx.globalAlpha = 1.0;
+    ctx.drawImage(this.playheadCanvas, (x - this.playheadCanvasWidth / 2) * pixelRatio, 0);
+    ctx.restore();
+  }
+
+  updatePositionFromTime(time: number, _renderVisible = false, useClamp = true) {
     const newX = (time / this.wf.duration - this.scroll) * this.fullWidth;
     const x = useClamp ? clamp(newX, 0, this.fullWidth) : newX;
 
     this.setX(x);
-
-    if (this.isVisible && renderVisible) this.render();
   }
 
   private mouseDown = (e: MouseEvent) => {
-    if (this.isVisible && this.isHovered) {
+    if (this.isHovered) {
       e.preventDefault();
       e.stopPropagation();
       this.isDragging = true;
@@ -98,7 +180,8 @@ export class Playhead extends Events<PlayheadEvents> {
           if (x !== this._x) {
             this.setX(x);
             this.wf.currentTime = getCursorTime(e, this.visualizer, this.wf.duration);
-            this.render();
+            this.drawPlayheadSlice();
+            this.visualizer.transferImage();
           }
         }
       };
@@ -110,31 +193,35 @@ export class Playhead extends Events<PlayheadEvents> {
           this.isDragging = false;
           document.removeEventListener("mousemove", handleMouseMove);
           document.removeEventListener("mouseup", handleMouseUp);
-          this.render();
+          this.drawPlayheadSlice();
+          this.visualizer.draw();
           this.wf.cursor.set(CursorSymbol.default);
         }
       };
 
       document.addEventListener("mousemove", handleMouseMove);
       document.addEventListener("mouseup", handleMouseUp);
-      this.render();
+      this.drawPlayheadSlice();
+      this.visualizer.transferImage();
     }
   };
 
   private mouseEnter = () => {
-    if (this.isVisible && !this.isDragging) {
+    if (!this.isDragging) {
       if (!this.wf.cursor.hasFocus()) {
         this.wf.cursor.set(CursorSymbol.grab, "playhead");
       }
       this.isHovered = true;
-      this.render();
+      this.drawPlayheadSlice();
+      this.visualizer.transferImage();
     }
   };
 
   private mouseLeave = () => {
-    if (this.isVisible && !this.isDragging) {
+    if (!this.isDragging) {
       this.isHovered = false;
-      this.render();
+      this.drawPlayheadSlice();
+      this.visualizer.transferImage();
       if (this.wf.cursor.isFocused("playhead")) {
         this.wf.cursor.set(CursorSymbol.default);
       }
@@ -155,10 +242,6 @@ export class Playhead extends Events<PlayheadEvents> {
     this.playing(this.time, false);
   };
 
-  private toggleVisibility = () => {
-    this.isVisible ? this.render() : this.layer.clear();
-  };
-
   private initialize() {
     this.on("mouseDown", this.mouseDown);
     this.on("mouseEnter", this.mouseEnter);
@@ -175,7 +258,6 @@ export class Playhead extends Events<PlayheadEvents> {
     this.wf.off("playing", this.playing);
     this.wf.off("zoom", this.onZoom);
     this.wf.off("scroll", this.onScroll);
-    this.layer.off("layerUpdated", this.toggleVisibility);
   }
 
   private get scroll() {
@@ -184,10 +266,6 @@ export class Playhead extends Events<PlayheadEvents> {
 
   private get zoom() {
     return this.wf.zoom;
-  }
-
-  private get isVisible() {
-    return this.layer?.isVisible ?? true;
   }
 
   get time() {
@@ -206,53 +284,8 @@ export class Playhead extends Events<PlayheadEvents> {
     return this.visualizer.fullWidth;
   }
 
-  /**
-   * Render the playhead on the canvas
-   */
-  render() {
-    const { color, fillColor, layer, _x, isHovered, width, hoveredStrokeMultiplier } = this;
-    const { reservedSpace } = this.visualizer;
-
-    if (layer?.isVisible) {
-      layer.clear();
-      layer.save();
-      layer.fillStyle = fillColor.toString();
-      layer.strokeStyle = color.toString();
-      layer.lineWidth = isHovered ? width * hoveredStrokeMultiplier : width;
-      layer.beginPath();
-      this.moveTo(_x, reservedSpace);
-      layer.closePath();
-      layer.stroke();
-      layer.fill();
-      layer.restore();
-    }
-  }
-
-  moveTo(x: number, y: number) {
-    const { layer, capWidth, capHeight, capPadding, visualizer } = this;
-    const { height } = visualizer;
-    const playheadCapY = y - capHeight - capPadding;
-    const halfCapWidth = capWidth / 2;
-
-    layer.moveTo(x - halfCapWidth, playheadCapY);
-    layer.lineTo(x + halfCapWidth, playheadCapY);
-    layer.lineTo(x + halfCapWidth, playheadCapY + capHeight - 1);
-    layer.lineTo(x, playheadCapY + capHeight);
-    layer.lineTo(x, height);
-    layer.lineTo(x, playheadCapY + capHeight);
-    layer.lineTo(x - halfCapWidth, playheadCapY + capHeight - 1);
-  }
-
   setX(x: number) {
     this._x = x;
-  }
-
-  setLayer(layer: Layer) {
-    if (this.layer) {
-      this.layer.off("layerUpdated", this.toggleVisibility);
-    }
-    this.layer = layer;
-    this.layer.on("layerUpdated", this.toggleVisibility);
   }
 
   toJSON() {
@@ -267,7 +300,6 @@ export class Playhead extends Events<PlayheadEvents> {
   /**
    * Destroy playhead
    * Remove all event listeners and remove the playhead from the canvas
-   * Remove playhead's layer
    */
   destroy() {
     if (this.isDestroyed) return;

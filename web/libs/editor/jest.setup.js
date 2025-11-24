@@ -1,4 +1,6 @@
+/* istanbul ignore file */
 require("jest-fetch-mock").enableMocks();
+require("@testing-library/jest-dom");
 
 // Mock HTMLMediaElement data and methods not implemented by jsdom.
 window.HTMLMediaElement.prototype._mock = {

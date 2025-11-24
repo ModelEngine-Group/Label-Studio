@@ -1,7 +1,7 @@
 import { observer } from "mobx-react";
 import { type FC, useState } from "react";
-import { Tooltip, Userpic } from "@humansignal/ui";
-import { IconCheck, IconEllipsis } from "../../../assets/icons";
+import { Tooltip, Userpic, Button } from "@humansignal/ui";
+import { IconCheck, IconEllipsis } from "@humansignal/icons";
 import { Space } from "../../../common/Space/Space";
 import { Dropdown } from "../../../common/Dropdown/Dropdown";
 import { Menu } from "../../../common/Menu/Menu";
@@ -10,7 +10,6 @@ import { humanDateDiff, userDisplayName } from "../../../utils/utilities";
 import { CommentFormBase } from "../CommentFormBase";
 
 import "./CommentItem.scss";
-import { Button } from "../../../common/Button/Button";
 
 interface Comment {
   comment: {
@@ -74,7 +73,7 @@ export const CommentItem: FC<any> = observer(
         return (
           <Elem name="date">
             <Tooltip alignment="top-right" title={new Date(time).toLocaleString()}>
-              <>{`${isEdited ? "updated" : ""} ${humanDateDiff(time)}`}</>
+              <span>{`${isEdited ? "updated" : ""} ${humanDateDiff(time)}`}</span>
             </Tooltip>
           </Elem>
         );
@@ -115,10 +114,22 @@ export const CommentItem: FC<any> = observer(
               <Elem name="confirmForm">
                 <Elem name="question">Are you sure?</Elem>
                 <Elem name="controls">
-                  <Button onClick={() => deleteComment()} size="compact" look="danger" autoFocus>
+                  <Button
+                    onClick={() => deleteComment()}
+                    size="small"
+                    variant="negative"
+                    look="outlined"
+                    autoFocus
+                    aria-label="Delete comment"
+                  >
                     Yes
                   </Button>
-                  <Button onClick={() => setConfirmMode(false)} size="compact">
+                  <Button
+                    onClick={() => setConfirmMode(false)}
+                    size="small"
+                    look="outlined"
+                    aria-label="Cancel comment deletion"
+                  >
                     No
                   </Button>
                 </Elem>
@@ -168,7 +179,7 @@ export const CommentItem: FC<any> = observer(
                   </Menu>
                 }
               >
-                <Button size="small" type="text" icon={<IconEllipsis />} />
+                <Button size="small" look="string" leading={<IconEllipsis />} aria-label="Comment options" />
               </Dropdown.Trigger>
             )}
           </Elem>

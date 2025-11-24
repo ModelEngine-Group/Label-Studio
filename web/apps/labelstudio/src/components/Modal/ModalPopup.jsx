@@ -1,9 +1,9 @@
 import React, { createContext, useContext } from "react";
 import { createPortal } from "react-dom";
-import { IconCross } from "@humansignal/ui";
+import { IconCross } from "@humansignal/icons";
 import { BemWithSpecifiContext, cn } from "../../utils/bem";
 import { aroundTransition } from "@humansignal/core/lib/utils/transition";
-import { Button } from "../Button/Button";
+import { Button } from "@humansignal/ui";
 import "./Modal.scss";
 
 const { Block, Elem } = BemWithSpecifiContext();
@@ -24,7 +24,7 @@ export class Modal extends React.Component {
       title: props.title,
       body: props.body,
       footer: props.footer,
-      visible: props.animateAppearance ? false : props.visible ?? false,
+      visible: props.animateAppearance ? false : (props.visible ?? false),
       transition: props.visible ? "visible" : null,
     };
   }
@@ -40,6 +40,7 @@ export class Modal extends React.Component {
   }
 
   componentWillUnmount() {
+    document.body.style.overflow = "";
     document.removeEventListener("keydown", this.closeOnEscape, { capture: !this.props.allowToInterceptEscape });
   }
 
@@ -102,7 +103,9 @@ export class Modal extends React.Component {
                 <Modal.Header>
                   <Elem name="title">{this.state.title}</Elem>
                   {this.props.allowClose !== false && (
-                    <Elem tag={Button} name="close" type="text" icon={<IconCross />} />
+                    <Button name="close" look="string" onClick={() => this.hide()} aria-label="Close modal">
+                      <IconCross />
+                    </Button>
                   )}
                 </Modal.Header>
               )}

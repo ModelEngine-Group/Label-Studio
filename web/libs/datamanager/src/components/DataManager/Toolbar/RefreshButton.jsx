@@ -1,6 +1,6 @@
 import { inject } from "mobx-react";
-import { LsRefresh } from "../../../assets/icons";
-import { Button } from "../../Common/Button/Button";
+import { IconRefresh } from "@humansignal/icons";
+import { Button } from "@humansignal/ui";
 
 const injector = inject(({ store }) => {
   return {
@@ -13,22 +13,17 @@ const injector = inject(({ store }) => {
 export const RefreshButton = injector(({ store, needsDataFetch, projectFetch, size, style, ...rest }) => {
   return (
     <Button
-      size={size}
-      look={needsDataFetch}
+      size={size ?? "small"}
+      look={needsDataFetch ? "filled" : "outlined"}
+      variant={needsDataFetch ? "primary" : "neutral"}
       waiting={projectFetch}
+      aria-label="Refresh data"
       onClick={async () => {
         await store.fetchProject({ force: true, interaction: "refresh" });
         await store.currentView?.reload();
       }}
-      style={{
-        ...(style ?? {}),
-        minWidth: 0,
-        padding: 0,
-        width: 32,
-      }}
-      {...rest}
     >
-      {<LsRefresh style={{ width: 20, height: 20 }} />}
+      <IconRefresh />
     </Button>
   );
 });

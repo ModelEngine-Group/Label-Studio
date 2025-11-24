@@ -19,6 +19,7 @@ const TaskStore = types
     id: types.maybeNull(types.number),
     load: types.optional(types.boolean, false),
     auth: types.maybeNull(AuthStore),
+    agreement: types.maybeNull(types.number),
     /**
      * Data of task, may contain an object but in App Store will be transformed into string
      * MST doesn't support processing of dynamic objects with unkown keys value

@@ -22,6 +22,20 @@ Configure the labels and task type for annotators using the templates included w
 5. Configure additional settings relevant to the labeling interface functionality. For example, when labeling text you might have the option to **Select text by words**.
 6. Click **Save**.
 
+<div class="opensource-only">
+
+!!! error enterprise
+    Label Studio Enterprise has the option include plugins as part of your labeling interface. Plugins allow you to use Javascript to extend your interface and customize annotator workflows. For more information, see [Plugins](https://docs.humansignal.com/guide/plugins).
+
+</div>
+
+<div class="enterprise-only">
+
+!!! info Tip
+    You can also implement plugins as part of your labeling interface. Plugins allow you to use Javascript to extend your interface and customize annotator workflows. For more information, see [Plugins](plugins).
+
+</div>
+
 ### Modify the labeling interface
 
 You can make changes to the labeling interface and configuration in the project settings.

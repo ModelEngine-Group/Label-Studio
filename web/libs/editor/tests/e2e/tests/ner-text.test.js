@@ -1,4 +1,4 @@
-const { initLabelStudio, serialize, selectText } = require("./helpers");
+const { serialize, selectText } = require("./helpers");
 
 const assert = require("assert");
 
@@ -82,7 +82,7 @@ const newResult = {
   value: { start: 233, end: 237, text: "come", labels: ["Words"] },
 };
 
-Scenario("NERText", async ({ I, AtTopbar }) => {
+Scenario("NERText", async ({ I, LabelStudio, AtOutliner, AtTopbar }) => {
   const params = {
     annotations: [{ id: "TestCmpl", result: results }],
     config: configSimple,
@@ -90,7 +90,7 @@ Scenario("NERText", async ({ I, AtTopbar }) => {
   };
 
   I.amOnPage("/");
-  I.executeScript(initLabelStudio, params);
+  LabelStudio.init(params);
   // better to always check the text are on the page,
   // so there are no errors and text is displayed correctly;
   // text should not be from regions to check the object tag, not the regions list
@@ -137,7 +137,7 @@ Scenario("NERText", async ({ I, AtTopbar }) => {
   // @todo this hotkey doesn't work. why?
   // I.pressKey('R')
   I.wait(5);
-  I.click(locate("li").withText("Alice"));
+  AtOutliner.clickRegion("Alice");
   I.click("Create Relation");
   I.click(locate(".htx-highlight").withText("come"));
   I.wait(1);
@@ -154,7 +154,7 @@ Scenario("NERText", async ({ I, AtTopbar }) => {
   assert.equal(result[3].to_id, result[2].id);
 });
 
-Scenario("NER Text with text field missing", async ({ I }) => {
+Scenario("NER Text with text field missing", async ({ I, LabelStudio }) => {
   const params = {
     annotations: [{ id: "TestCmpl", result: resultsWithoutText }],
     config: configSimple,
@@ -162,7 +162,7 @@ Scenario("NER Text with text field missing", async ({ I }) => {
   };
 
   I.amOnPage("/");
-  I.executeScript(initLabelStudio, params);
+  LabelStudio.init(params);
   I.see("Alice remarked");
 
   // restore saved result and check it back that it didn't change
@@ -172,7 +172,7 @@ Scenario("NER Text with text field missing", async ({ I }) => {
 });
 
 // for security reasons text is not saved by default for valueType=url
-Scenario("NER Text from url", async ({ I }) => {
+Scenario("NER Text from url", async ({ I, LabelStudio }) => {
   const params = {
     annotations: [{ id: "TestCmpl", result: resultsFromUrl }],
     config: configUrl,
@@ -180,7 +180,7 @@ Scenario("NER Text from url", async ({ I }) => {
   };
 
   I.amOnPage("/");
-  I.executeScript(initLabelStudio, params);
+  LabelStudio.init(params);
   // wait for text to be loaded
   I.see("American political leader");
 
@@ -190,7 +190,7 @@ Scenario("NER Text from url", async ({ I }) => {
   assert.deepEqual(result, resultsFromUrlWithoutText);
 });
 
-Scenario("NER Text from url with text saved", async ({ I }) => {
+Scenario("NER Text from url with text saved", async ({ I, LabelStudio }) => {
   const params = {
     annotations: [{ id: "TestCmpl", result: resultsFromUrlWithoutText }],
     config: configUrlSaveText,
@@ -198,7 +198,7 @@ Scenario("NER Text from url with text saved", async ({ I }) => {
   };
 
   I.amOnPage("/");
-  I.executeScript(initLabelStudio, params);
+  LabelStudio.init(params);
   // wait for text to be loaded
   I.see("American political leader");
 
@@ -270,7 +270,6 @@ Scenario("NER Text regions in Outliner", async ({ I, LabelStudio }) => {
   I.amOnPage("/");
   // enabling both flags for New UI, but will work with Outliner one only as well
   LabelStudio.setFeatureFlags({
-    ff_front_1170_outliner_030222_short: true,
     fflag_feat_front_dev_3873_labeling_ui_improvements_short: true,
   });
   LabelStudio.init(params);

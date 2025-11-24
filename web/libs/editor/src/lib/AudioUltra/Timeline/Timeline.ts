@@ -1,3 +1,4 @@
+import { getCurrentTheme } from "@humansignal/ui";
 import { rgba, type RgbaColorArray } from "../Common/Color";
 import type { Padding } from "../Common/Style";
 import { defaults, toPrecision } from "../Common/Utils";
@@ -23,6 +24,7 @@ type LabelMaxWidth = {
   [includeMs: string]: number; // true | false
 };
 
+const isDarkMode = getCurrentTheme() === "Dark";
 export type TimelineMark = { x: number; time: number; type: "mark" | "label"; includeMs: boolean };
 
 export class Timeline {
@@ -36,9 +38,9 @@ export class Timeline {
   private fontSize = 12;
   private gridWidth = 1;
   private fontFamily = "Arial";
-  private fontColor = rgba("#413C4A");
-  private selectionColor = rgba("rgba(65, 60, 74, 0.08)");
-  private gridColor = rgba("rgba(137,128,152,0.16)");
+  private fontColor = isDarkMode ? rgba("rgba(200,200,200,0.8)") : rgba("#413C4A");
+  private selectionColor = isDarkMode ? rgba("rgba(200,200,200,0.08)") : rgba("rgba(65, 60, 74, 0.08)");
+  private gridColor = isDarkMode ? rgba("rgba(200,200,200,0.16)") : rgba("rgba(137,128,152,0.16)");
   private backgroundColor = rgba("#fff");
   private _labeMaxWidth: LabelMaxWidth = {
     true: 0, // includeMs
@@ -53,7 +55,7 @@ export class Timeline {
     this.fontSize = options?.fontSize ?? this.fontSize;
     this.fontFamily = options?.fontFamily ?? this.fontFamily;
     this.height =
-      options?.height ?? defaults.timelinePlacement ? options?.height ?? defaults.timelineHeight : this.height;
+      (options?.height ?? defaults.timelinePlacement) ? (options?.height ?? defaults.timelineHeight) : this.height;
     this.initHeight = this.height;
     this.gridWidth = options?.gridWidth ?? this.gridWidth;
     this.fontColor = options?.fontColor ? rgba(options?.fontColor) : this.fontColor;
@@ -214,14 +216,24 @@ export class Timeline {
 
     const factor = 10 ** 10;
 
+    // Enforce a minimum pixel spacing between labels to prevent overlap
+    const minLabelSpacing = 40; // px, adjust as needed
+    let lastLabelX = Number.NEGATIVE_INFINITY;
+
     for (let i = segmentStart; i < segmentEnd; i += interval) {
       const time = toPrecision(i, precision);
-
       const isLabelInterval = Math.round(time * factor) % Math.round(labelInterval * factor);
+      const x = this.mapToPx(i - exactStart);
 
-      const intervalType: TimelineMark["type"] = isLabelInterval === 0 ? "label" : "mark";
-
-      this.renderInterval({ x: this.mapToPx(i - exactStart), time, type: intervalType, includeMs });
+      let intervalType: TimelineMark["type"] = "mark";
+      if (isLabelInterval === 0) {
+        // Only draw label if far enough from previous
+        if (x - lastLabelX >= minLabelSpacing) {
+          intervalType = "label";
+          lastLabelX = x;
+        }
+      }
+      this.renderInterval({ x, time, type: intervalType, includeMs });
     }
   }
 

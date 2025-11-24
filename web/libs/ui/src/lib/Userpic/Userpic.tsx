@@ -166,10 +166,12 @@ export const Userpic = forwardRef(
     const userFullName = useMemo(() => {
       const curUser = user ?? userRef.current;
 
-      if (curUser?.first_name || curUser?.last_name) {
-        return `${curUser?.first_name ?? ""} ${curUser?.last_name ?? ""}`.trim();
+      if (!curUser) return username;
+      if (curUser.displayName) return curUser.displayName;
+      if (curUser.first_name || curUser.last_name) {
+        return `${curUser.first_name ?? ""} ${curUser.last_name ?? ""}`.trim();
       }
-      if (curUser?.email) {
+      if (curUser.email) {
         return curUser.email;
       }
       return username;

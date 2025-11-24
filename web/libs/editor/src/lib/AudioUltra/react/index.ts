@@ -1,9 +1,13 @@
+import { useRefCallback } from "@humansignal/core/hooks/useRefCallback";
 import { type MutableRefObject, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import { TimelineContext } from "../../../components/Timeline/Context";
 import { isTimeRelativelySimilar } from "../Common/Utils";
 import type { Layer } from "../Visual/Layer";
 import { Waveform, type WaveformFrameState, type WaveformOptions } from "../Waveform";
+import { ff } from "@humansignal/core";
+
+const isSyncedBuffering = ff.isActive(ff.FF_SYNCED_BUFFERING);
 
 export const useWaveform = (
   containter: MutableRefObject<HTMLElement | null | undefined>,
@@ -16,6 +20,7 @@ export const useWaveform = (
     autoLoad?: boolean;
     showLabels?: boolean;
     onFrameChanged?: (frame: { width: number; height: number; zoom: number; scroll: number }) => void;
+    onBuffering?: (buffering: boolean) => void;
   },
 ) => {
   const waveform = useRef<Waveform>();
@@ -23,6 +28,7 @@ export const useWaveform = (
   const [zoom, setZoom] = useState(1);
   const [volume, setVolume] = useState(options?.volume ?? 1);
   const [playing, setPlaying] = useState(false);
+  const setBuffering = useRefCallback(options?.onBuffering ?? (() => {}));
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [amp, setAmp] = useState(options?.amp ?? 1);
@@ -36,6 +42,13 @@ export const useWaveform = (
     if (!waveform.current || !settings) return;
     waveform.current.settings = settings;
   }, [settings, waveform.current]);
+
+  if (isSyncedBuffering) {
+    useEffect(() => {
+      if (!waveform.current) return;
+      waveform.current.buffering = options?.buffering || false;
+    }, [options?.buffering]);
+  }
 
   const onFrameChangedRef = useRef(options?.onFrameChanged);
   onFrameChangedRef.current = options?.onFrameChanged;
@@ -115,6 +128,10 @@ export const useWaveform = (
       setLayerVisibility(layerVis);
     });
 
+    if (isSyncedBuffering) {
+      wf.on("buffering", setBuffering);
+    }
+
     waveform.current = wf;
 
     return () => {
@@ -123,49 +140,65 @@ export const useWaveform = (
   }, []);
 
   useEffect(() => {
-    const wf = waveform.current;
+    const animationFrameId = requestAnimationFrame(() => {
+      if (!waveform.current) return;
 
-    if (wf && wf.loaded) {
-      wf.zoom = zoom;
-    }
-  }, [zoom]);
+      const isWfPlaying = waveform.current.playing ?? false;
+      if (playing !== isWfPlaying) {
+        if (playing) {
+          waveform.current.play();
+        } else {
+          waveform.current.pause();
+        }
+      }
+    });
 
-  useEffect(() => {
-    const wf = waveform.current;
-
-    if (wf && wf.loaded) {
-      wf.volume = volume;
-    }
-  }, [volume]);
-
-  useEffect(() => {
-    const wf = waveform.current;
-
-    if (wf && wf.loaded) {
-      wf.rate = rate;
-    }
-  }, [rate]);
-
-  useEffect(() => {
-    const wf = waveform.current;
-
-    if (wf && wf.loaded) {
-      wf.amp = amp;
-    }
-  }, [amp]);
-
-  useEffect(() => {
     options?.onPlaying?.(playing);
+
+    return () => cancelAnimationFrame(animationFrameId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playing]);
 
   useEffect(() => {
-    if (waveform.current) {
-      waveform.current.muted = muted;
-    }
+    const animationFrameId = requestAnimationFrame(() => {
+      if (waveform.current && waveform.current.zoom !== zoom) waveform.current.zoom = zoom;
+    });
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [zoom]);
+
+  useEffect(() => {
+    const animationFrameId = requestAnimationFrame(() => {
+      if (waveform.current && waveform.current.volume !== volume) waveform.current.volume = volume;
+    });
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [volume]);
+
+  useEffect(() => {
+    const animationFrameId = requestAnimationFrame(() => {
+      if (waveform.current && waveform.current.rate !== rate) waveform.current.rate = rate;
+    });
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [rate]);
+
+  useEffect(() => {
+    const animationFrameId = requestAnimationFrame(() => {
+      if (waveform.current && waveform.current.amp !== amp) waveform.current.amp = amp;
+    });
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [amp]);
+
+  useEffect(() => {
+    const animationFrameId = requestAnimationFrame(() => {
+      if (waveform.current && waveform.current.muted !== muted) waveform.current.muted = muted;
+    });
+    return () => cancelAnimationFrame(animationFrameId);
   }, [muted]);
 
   useEffect(() => {
-    waveform.current?.updateLabelVisibility(showLabels);
+    const animationFrameId = requestAnimationFrame(() => {
+      waveform.current?.updateLabelVisibility(showLabels);
+    });
+    return () => cancelAnimationFrame(animationFrameId);
   }, [showLabels]);
 
   return {

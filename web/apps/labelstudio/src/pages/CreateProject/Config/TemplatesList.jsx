@@ -3,7 +3,8 @@ import { Spinner } from "../../../components";
 import { useAPI } from "../../../providers/ApiProvider";
 import { cn } from "../../../utils/bem";
 import "./Config.scss";
-import { IconInfo } from "../../../assets/icons";
+import { IconInfo } from "@humansignal/icons";
+import { Button } from "@humansignal/ui";
 
 const listClass = cn("templates-list");
 
@@ -37,14 +38,17 @@ export const TemplatesList = ({ selectedGroup, selectedRecipe, onCustomTemplate,
   const [templates, setTemplates] = React.useState();
   const api = useAPI();
 
-  React.useEffect(async () => {
-    const res = await api.callApi("configTemplates");
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const res = await api.callApi("configTemplates");
 
-    if (!res) return;
-    const { templates, groups } = res;
+      if (!res) return;
+      const { templates, groups } = res;
 
-    setTemplates(templates);
-    setGroups(groups);
+      setTemplates(templates);
+      setGroups(groups);
+    };
+    fetchData();
   }, []);
 
   const selected = selectedGroup || groups[0];
@@ -67,9 +71,17 @@ export const TemplatesList = ({ selectedGroup, selectedRecipe, onCustomTemplate,
             </li>
           ))}
         </ul>
-        <button type="button" onClick={onCustomTemplate} className={listClass.elem("custom-template")}>
+        <Button
+          type="button"
+          align="left"
+          look="string"
+          size="small"
+          onClick={onCustomTemplate}
+          className="w-full"
+          aria-label="Create custom template"
+        >
           Custom template
-        </button>
+        </Button>
       </aside>
       <main>
         {!templates && <Spinner style={{ width: "100%", height: 200 }} />}

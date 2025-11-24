@@ -1,10 +1,11 @@
 import { inject, observer } from "mobx-react";
 import React, { useEffect, useRef } from "react";
-import { FaAngleDown } from "react-icons/fa";
+import { IconChevronDown } from "@humansignal/icons";
 import { Filters } from "../Filters/Filters";
 import { Badge } from "./Badge/Badge";
-import { Button } from "./Button/Button";
+import { Button } from "@humansignal/ui";
 import { Dropdown } from "./Dropdown/Dropdown";
+import { Icon } from "./Icon/Icon";
 
 const buttonInjector = inject(({ store }) => {
   const { viewsStore, currentView } = store;
@@ -22,14 +23,22 @@ export const FiltersButton = buttonInjector(
       const hasFilters = activeFiltersNumber > 0;
 
       return (
-        <Button ref={ref} size={size} onClick={() => sidebarEnabled && viewsStore.toggleSidebar()} {...rest}>
+        <Button
+          ref={ref}
+          size="small"
+          variant="neutral"
+          look="outlined"
+          onClick={() => sidebarEnabled && viewsStore.toggleSidebar()}
+          trailing={<Icon icon={IconChevronDown} />}
+          aria-label="Filters"
+          {...rest}
+        >
           Filters{" "}
           {hasFilters && (
             <Badge size="small" style={{ marginLeft: 5 }}>
               {activeFiltersNumber}
             </Badge>
           )}
-          <FaAngleDown size="16" style={{ marginLeft: 4 }} color="#566fcf" />
         </Button>
       );
     }),
@@ -58,6 +67,9 @@ export const FiltersPane = injector(
         disabled={sidebarEnabled}
         content={<Filters />}
         openUpwardForShortViewport={false}
+        isChildValid={(ele) => {
+          return !!ele.closest("[data-radix-popper-content-wrapper]");
+        }}
       >
         <FiltersButton {...rest} size={size} />
       </Dropdown.Trigger>

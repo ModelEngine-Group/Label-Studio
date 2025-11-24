@@ -15,6 +15,17 @@ type ApiMethods<T extends Record<string, EndpointConfig>> = {
   [K in keyof T]: (params?: Record<string, any>, options?: ApiParams) => Promise<WrappedResponse<any>>;
 };
 
+// We're catching certain types of errors that
+// are not supposed to be user-facing
+const IGNORED_ERRORS = new RegExp(
+  [
+    "abort", // Whenever the abort controller kicked in
+    "failed to fetch", // Network's offline, bad URL, CORS, etc. in Chrome
+    "networkerror", // Same as the above but Firefox,
+  ].join("|"),
+  "i",
+);
+
 export type ApiParams = {
   headers?: RequestInit["headers"];
   signal?: RequestInit["signal"];
@@ -41,6 +52,8 @@ export class APIProxy<T extends {}> {
 
   methods = {} as ApiMethods<T>;
 
+  onRequestFinished?: (res: Response) => void;
+
   constructor(options: APIProxyOptions<T>) {
     this.commonHeaders = options.commonHeaders ?? {};
     this.gateway = this.resolveGateway(options.gateway);
@@ -49,6 +62,7 @@ export class APIProxy<T extends {}> {
     this.mockDisabled = options.mockDisabled ?? false;
     this.sharedParams = options.sharedParams ?? {};
     this.alwaysExpectJSON = options.alwaysExpectJSON ?? true;
+    this.onRequestFinished = options.onRequestFinished;
 
     this.resolveMethods(options.endpoints);
   }
@@ -221,17 +235,25 @@ export class APIProxy<T extends {}> {
         } else {
           try {
             rawResponse = await fetch(apiCallURL, requestParams);
-          } catch (e: any) {
-            // we must catch an AbortError here to as it's fired if
-            // the request is aborted mid-flight
-            if (e instanceof DOMException && e.name === "AbortError") {
+          } catch (err: unknown) {
+            if (!(err instanceof Error)) {
+              console.warn("Can't handle error", err);
               return null;
             }
-            responseResult = this.generateException(e as Error);
-            rawResponse = new Response(`${e.name}: ${e.message}`, { status: 500 });
+            // we don't want the user to see some of the errors
+            // so we fail silently
+            if (err.message.match(IGNORED_ERRORS) !== null) {
+              IGNORED_ERRORS.lastIndex = -1;
+              return null;
+            }
+
+            const error = err as Error;
+            responseResult = this.generateException(error);
+            return new Response(`${err.name}: ${err.message}`, { status: 500 });
           }
         }
 
+        this.onRequestFinished?.(rawResponse);
         if (raw) return rawResponse;
 
         responseMeta = {

@@ -377,17 +377,14 @@ const HtxEllipseView = ({ item, setShapeRef }) => {
         onMouseOver={() => {
           if (store.annotationStore.selected.isLinkingMode) {
             item.setHighlight(true);
-            stage.container().style.cursor = Constants.LINKING_MODE_CURSOR;
-          } else {
-            stage.container().style.cursor = Constants.POINTER_CURSOR;
           }
+          item.updateCursor(true);
         }}
         onMouseOut={() => {
-          stage.container().style.cursor = Constants.DEFAULT_CURSOR;
-
           if (store.annotationStore.selected.isLinkingMode) {
             item.setHighlight(false);
           }
+          item.updateCursor();
         }}
         onClick={(e) => {
           if (item.parent.getSkipInteractions()) return;

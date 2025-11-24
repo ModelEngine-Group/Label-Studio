@@ -10,21 +10,6 @@
   }
 }
 
-@mixin styled-scrollbars(){
-  scrollbar-color: var(--sand_400) transparent;
-  scrollbar-width: thin;
-
-  &::-webkit-scrollbar{
-    width: 4px;
-    height: 4px;
-    background-color: var(--sand_0);
-  }
-
-  &::-webkit-scrollbar-thumb{
-    background: var(--sand_400);
-  }
-}
-
 @mixin waiting($c1: #efefef, $c2: #fff) {
   $base-color: rgba($c2, 0.2);
   $accent-color: $c1;

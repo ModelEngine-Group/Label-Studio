@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { inject, observer } from "mobx-react";
-import { ToastType, useToast, Tooltip, Userpic } from "@humansignal/ui";
-import { useCopyText } from "@humansignal/core/lib/hooks/useCopyText";
+import { useCopyText } from "@humansignal/core";
 import { isDefined, userDisplayName } from "@humansignal/core/lib/utils/helpers";
 import { Block, cn, Elem } from "../../utils/bem";
 import {
@@ -11,12 +10,13 @@ import {
   IconDuplicate,
   IconLink,
   IconTrashRect,
-  LsCommentResolved,
-  LsCommentUnresolved,
-  LsSparks,
-  LsStar,
-  LsStarOutline,
-} from "../../assets/icons";
+  IconCommentResolved,
+  IconCommentUnresolved,
+  IconSparks,
+  IconStar,
+  IconStarOutline,
+} from "@humansignal/icons";
+import { Tooltip, Userpic, ToastType, useToast } from "@humansignal/ui";
 import { TimeAgo } from "../../common/TimeAgo/TimeAgo";
 import { useDropdown } from "../../common/Dropdown/DropdownTrigger";
 
@@ -36,10 +36,10 @@ interface AnnotationButtonInterface {
 
 const renderCommentIcon = (ent: any) => {
   if (ent.unresolved_comment_count > 0) {
-    return LsCommentUnresolved;
+    return IconCommentUnresolved;
   }
   if (ent.comment_count > 0) {
-    return LsCommentResolved;
+    return IconCommentResolved;
   }
 
   return null;
@@ -114,7 +114,7 @@ export const AnnotationButton = observer(
           url.searchParams.delete("region");
           return url.toString();
         }, [entity.pk]);
-        const [copyLink] = useCopyText(annotationLink);
+        const [copyLink] = useCopyText({ defaultText: annotationLink });
         const toast = useToast();
         const dropdown = useDropdown();
         const clickHandler = () => {
@@ -169,28 +169,28 @@ export const AnnotationButton = observer(
               label: `${isGroundTruth ? "Unset " : "Set "} as Ground Truth`,
               onClick: setGroundTruth,
               icon: isGroundTruth ? (
-                <LsStar color="#FFC53D" width={iconSize} height={iconSize} />
+                <IconStar color="#FFC53D" width={iconSize} height={iconSize} />
               ) : (
-                <LsStarOutline width={iconSize} height={iconSize} />
+                <IconStarOutline width={iconSize} height={iconSize} />
               ),
               enabled: showGroundTruth,
             },
             {
               label: "Duplicate Annotation",
               onClick: duplicateAnnotation,
-              icon: <IconDuplicate width={16} height={20} />,
+              icon: <IconDuplicate width={20} height={20} />,
               enabled: showDuplicateAnnotation,
             },
             {
               label: "Copy Annotation Link",
               onClick: linkAnnotation,
-              icon: <IconLink width={24} height={24} />,
+              icon: <IconLink />,
               enabled: !isDraft && store.hasInterface("annotations:copy-link"),
             },
             {
               label: "Delete Annotation",
               onClick: deleteAnnotation,
-              icon: <IconTrashRect width={14} height={18} />,
+              icon: <IconTrashRect />,
               separator: true,
               danger: true,
               enabled: capabilities.enableAnnotationDelete && !isPrediction,
@@ -224,7 +224,7 @@ export const AnnotationButton = observer(
               mod={{ prediction: isPrediction }}
               size={24}
             >
-              {isPrediction && <LsSparks style={{ width: 18, height: 18 }} />}
+              {isPrediction && <IconSparks style={{ width: 18, height: 18 }} />}
             </Elem>
             {/* to do: return these icons when we have a better way to grab the history action type */}
             {/* {historyActionType === 'accepted' && <Elem name='status' mod={{ approved: true }}><IconCheckBold /></Elem>}

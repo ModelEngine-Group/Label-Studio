@@ -1,7 +1,7 @@
+import { Button } from "@humansignal/ui";
 import { createRef } from "react";
 import { render } from "react-dom";
 import { cn } from "../../../utils/bem";
-import { Button } from "../Button/Button";
 import { Space } from "../Space/Space";
 import { Modal } from "./ModalPopup";
 
@@ -51,8 +51,10 @@ export const confirm = ({ okText, onOk, cancelText, onCancel, buttonLook, ...pro
             onCancel?.();
             modal.close();
           }}
-          size="compact"
+          look="outlined"
           autoFocus
+          aria-label="Cancel"
+          data-testid="dialog-cancel-button"
         >
           {cancelText ?? "Cancel"}
         </Button>
@@ -62,8 +64,9 @@ export const confirm = ({ okText, onOk, cancelText, onCancel, buttonLook, ...pro
             onOk?.();
             modal.close();
           }}
-          size="compact"
-          look={buttonLook ?? "primary"}
+          variant={buttonLook === "negative" ? "negative" : "primary"}
+          aria-label={okText ?? "OK"}
+          data-testid="dialog-ok-button"
         >
           {okText ?? "OK"}
         </Button>
@@ -84,8 +87,8 @@ export const info = ({ okText, onOkPress, ...props }) => {
             onOkPress?.();
             modal.close();
           }}
-          look="primary"
-          size="compact"
+          aria-label="OK"
+          data-testid="dialog-ok-button"
         >
           {okText ?? "OK"}
         </Button>

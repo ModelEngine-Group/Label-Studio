@@ -10,6 +10,13 @@ meta_title: Time series video audio labeling
     - To use audio instead of video you should replace `.mp4` file to mp3/wav/other browser supported audio format.      
     - This approach works with Label Studio **1.4.1 and lower**.
 
+## This approach is deprecated
+
+This approach is completely deprecated.
+
+In Label Studio 1.20, we introduced a new way to sync timeseries with video and audio. See more details here:
+https://labelstud.io/templates/timeseries_audio_video
+
 
 ## Step 1: Media hosting
 

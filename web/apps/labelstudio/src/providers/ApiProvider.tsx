@@ -22,7 +22,14 @@ export const IMPROVE_GLOBAL_ERROR_MESSAGES = isFF(FF_IMPROVE_GLOBAL_ERROR_MESSAG
 // Duration for toast errors
 export const API_ERROR_TOAST_DURATION = 10000;
 
-export const API = new APIProxy(API_CONFIG);
+export const API = new APIProxy({
+  ...API_CONFIG,
+  onRequestFinished(res) {
+    if (res.status === 401) {
+      location.href = "/";
+    }
+  },
+});
 
 export type ApiEndpoints = keyof typeof API.methods;
 
@@ -121,6 +128,7 @@ const handleError = async (
   const errorDetails = errorFormatter(result);
 
   // Allow inline error handling
+  console.log(showGlobalError);
   if (!showGlobalError) {
     return errorDetails.isShutdown;
   }
@@ -219,9 +227,12 @@ export const ApiProvider = forwardRef<ApiContextType, PropsWithChildren<any>>(({
           }
         }
 
-        if (shouldShowGlobalError && suppressError !== true) {
+        // Allow inline error handling
+        if (suppressError !== true) {
           setError(result);
+        }
 
+        if (shouldShowGlobalError && suppressError !== true) {
           let displayErrorToast: ErrorDisplayMessage | undefined;
 
           // If there are no validation errors, show a toast error

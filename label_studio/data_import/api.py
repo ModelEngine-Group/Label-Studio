@@ -1,14 +1,11 @@
 """This file and its contents are licensed under the Apache License 2.0. Please see the included NOTICE for copyright information and LICENSE for a copy of the license.
 """
-import base64
 import json
 import logging
 import mimetypes
 import time
-from typing import Union
 from urllib.parse import unquote, urlparse
 
-import drf_yasg.openapi as openapi
 from core.decorators import override_report_only_csp
 from core.feature_flags import flag_set
 from core.permissions import ViewClassPermission, all_permissions
@@ -18,9 +15,11 @@ from core.utils.params import bool_from_request, list_of_strings_from_request
 from csp.decorators import csp
 from django.conf import settings
 from django.db import transaction
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from django.utils.decorators import method_decorator
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
+from label_studio_sdk.label_interface import LabelInterface
 from projects.models import Project, ProjectImport, ProjectReimport
 from ranged_fileresponse import RangedFileResponse
 from rest_framework import generics, status
@@ -54,93 +53,111 @@ logger = logging.getLogger(__name__)
 ProjectImportPermission = load_func(settings.PROJECT_IMPORT_PERMISSION)
 
 task_create_response_scheme = {
-    201: openapi.Response(
+    201: OpenApiResponse(
         description='Tasks successfully imported',
-        schema=openapi.Schema(
-            title='Task creation response',
-            description='Task creation response',
-            type=openapi.TYPE_OBJECT,
-            properties={
-                'task_count': openapi.Schema(
-                    title='task_count', description='Number of tasks added', type=openapi.TYPE_INTEGER
-                ),
-                'annotation_count': openapi.Schema(
-                    title='annotation_count', description='Number of annotations added', type=openapi.TYPE_INTEGER
-                ),
-                'predictions_count': openapi.Schema(
-                    title='predictions_count', description='Number of predictions added', type=openapi.TYPE_INTEGER
-                ),
-                'duration': openapi.Schema(
-                    title='duration', description='Time in seconds to create', type=openapi.TYPE_NUMBER
-                ),
-                'file_upload_ids': openapi.Schema(
-                    title='file_upload_ids',
-                    description='Database IDs of uploaded files',
-                    type=openapi.TYPE_ARRAY,
-                    items=openapi.Schema(title='File Upload IDs', type=openapi.TYPE_INTEGER),
-                ),
-                'could_be_tasks_list': openapi.Schema(
-                    title='could_be_tasks_list',
-                    description='Whether uploaded files can contain lists of tasks, like CSV/TSV files',
-                    type=openapi.TYPE_BOOLEAN,
-                ),
-                'found_formats': openapi.Schema(
-                    title='found_formats',
-                    description='The list of found file formats',
-                    type=openapi.TYPE_ARRAY,
-                    items=openapi.Schema(title='File format', type=openapi.TYPE_STRING),
-                ),
-                'data_columns': openapi.Schema(
-                    title='data_columns',
-                    description='The list of found data columns',
-                    type=openapi.TYPE_ARRAY,
-                    items=openapi.Schema(title='Data column name', type=openapi.TYPE_STRING),
-                ),
+        response={
+            'title': 'Task creation response',
+            'description': 'Task creation response',
+            'type': 'object',
+            'properties': {
+                'task_count': {
+                    'title': 'task_count',
+                    'description': 'Number of tasks added',
+                    'type': 'integer',
+                },
+                'annotation_count': {
+                    'title': 'annotation_count',
+                    'description': 'Number of annotations added',
+                    'type': 'integer',
+                },
+                'predictions_count': {
+                    'title': 'predictions_count',
+                    'description': 'Number of predictions added',
+                    'type': 'integer',
+                },
+                'duration': {
+                    'title': 'duration',
+                    'description': 'Time in seconds to create',
+                    'type': 'number',
+                },
+                'file_upload_ids': {
+                    'title': 'file_upload_ids',
+                    'description': 'Database IDs of uploaded files',
+                    'type': 'array',
+                    'items': {
+                        'title': 'File Upload IDs',
+                        'type': 'integer',
+                    },
+                },
+                'could_be_tasks_list': {
+                    'title': 'could_be_tasks_list',
+                    'description': 'Whether uploaded files can contain lists of tasks, like CSV/TSV files',
+                    'type': 'boolean',
+                },
+                'found_formats': {
+                    'title': 'found_formats',
+                    'description': 'The list of found file formats',
+                    'type': 'array',
+                    'items': {
+                        'title': 'File format',
+                        'type': 'string',
+                    },
+                },
+                'data_columns': {
+                    'title': 'data_columns',
+                    'description': 'The list of found data columns',
+                    'type': 'array',
+                    'items': {
+                        'title': 'Data column name',
+                        'type': 'string',
+                    },
+                },
             },
-        ),
+        },
     ),
-    400: openapi.Schema(
-        title='Incorrect task data', description='String with error description', type=openapi.TYPE_STRING
+    400: OpenApiResponse(
+        description='Bad Request',
+        response={
+            'title': 'Incorrect task data',
+            'description': 'String with error description',
+            'type': 'string',
+        },
     ),
 }
 
 
 @method_decorator(
     name='post',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Import'],
-        x_fern_sdk_group_name='projects',
-        x_fern_sdk_method_name='import_tasks',
-        x_fern_audiences=['public'],
         responses=task_create_response_scheme,
-        manual_parameters=[
-            openapi.Parameter(
+        parameters=[
+            OpenApiParameter(
                 name='id',
-                type=openapi.TYPE_INTEGER,
-                in_=openapi.IN_PATH,
+                type=OpenApiTypes.INT,
+                location='path',
                 description='A unique integer value identifying this project.',
             ),
-            openapi.Parameter(
+            OpenApiParameter(
                 name='commit_to_project',
-                type=openapi.TYPE_BOOLEAN,
-                in_=openapi.IN_QUERY,
+                type=OpenApiTypes.BOOL,
+                location='query',
                 description='Set to "true" to immediately commit tasks to the project.',
                 default=True,
                 required=False,
             ),
-            openapi.Parameter(
+            OpenApiParameter(
                 name='return_task_ids',
-                type=openapi.TYPE_BOOLEAN,
-                in_=openapi.IN_QUERY,
+                type=OpenApiTypes.BOOL,
+                location='query',
                 description='Set to "true" to return task IDs in the response.',
                 default=False,
                 required=False,
             ),
-            openapi.Parameter(
+            OpenApiParameter(
                 name='preannotated_from_fields',
-                type=openapi.TYPE_ARRAY,
-                items=openapi.Schema(type=openapi.TYPE_STRING),
-                in_=openapi.IN_QUERY,
+                many=True,
+                location='query',
                 description='List of fields to preannotate from the task data. For example, if you provide a list of'
                 ' `{"text": "text", "prediction": "label"}` items in the request, the system will create '
                 'a task with the `text` field and a prediction with the `label` field when '
@@ -149,8 +166,8 @@ task_create_response_scheme = {
                 required=False,
             ),
         ],
-        operation_summary='Import tasks',
-        operation_description="""
+        summary='Import tasks',
+        description="""
             Import data as labeling tasks in bulk using this API endpoint. You can use this API endpoint to import multiple tasks.
             One POST request is limited at 250K tasks and 200 MB.
 
@@ -165,7 +182,7 @@ task_create_response_scheme = {
 
             There are three possible ways to import tasks with this endpoint:
 
-            ### 1\. **POST with data**
+            ### 1. **POST with data**
             Send JSON tasks as POST data. Only JSON is supported for POSTing files directly.
             Update this example to specify your authorization token and Label Studio instance host, then run the following from
             the command line.
@@ -175,7 +192,7 @@ task_create_response_scheme = {
             -X POST '{host}/api/projects/1/import' --data '[{{"text": "Some text 1"}}, {{"text": "Some text 2"}}]'
             ```
 
-            ### 2\. **POST with files**
+            ### 2. **POST with files**
             Send tasks as files. You can attach multiple files with different names.
 
             - **JSON**: text files in JavaScript object notation format
@@ -188,10 +205,10 @@ task_create_response_scheme = {
 
             ```bash
             curl -H 'Authorization: Token abc123' \\
-            -X POST '{host}/api/projects/1/import' -F ‘file=@path/to/my_file.csv’
+            -X POST '{host}/api/projects/1/import' -F 'file=@path/to/my_file.csv'
             ```
 
-            ### 3\. **POST with URL**
+            ### 3. **POST with URL**
             You can also provide a URL to a file with labeling tasks. Supported file formats are the same as in option 2.
 
             ```bash
@@ -204,35 +221,12 @@ task_create_response_scheme = {
         """.format(
             host=(settings.HOSTNAME or 'https://localhost:8080')
         ),
-        request_body=openapi.Schema(
-            title='tasks',
-            description='List of tasks to import',
-            type=openapi.TYPE_ARRAY,
-            items=openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                # TODO: this example doesn't work - perhaps we need to migrate to drf-spectacular for "anyOf" support
-                # also fern will change to at least provide a list of examples FER-1969
-                # right now we can only rely on documenation examples
-                # properties={
-                #     'data': openapi.Schema(type=openapi.TYPE_OBJECT, description='Data of the task'),
-                #     'annotations': openapi.Schema(
-                #         type=openapi.TYPE_ARRAY,
-                #         items=annotation_request_schema,
-                #         description='Annotations for this task',
-                #     ),
-                #     'predictions': openapi.Schema(
-                #         type=openapi.TYPE_ARRAY,
-                #         items=prediction_request_schema,
-                #         description='Predictions for this task',
-                #     )
-                # },
-                # example={
-                #     'data': {'image': 'http://example.com/image.jpg'},
-                #     'annotations': [annotation_response_example],
-                #     'predictions': [prediction_response_example]
-                # }
-            ),
-        ),
+        request=ImportApiSerializer(many=True),
+        extensions={
+            'x-fern-sdk-group-name': 'projects',
+            'x-fern-sdk-method-name': 'import_tasks',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 # Import
@@ -273,7 +267,38 @@ class ImportAPI(generics.CreateAPIView):
 
         if preannotated_from_fields:
             # turn flat task JSONs {"column1": value, "column2": value} into {"data": {"column1"..}, "predictions": [{..."column2"}]
-            parsed_data = reformat_predictions(parsed_data, preannotated_from_fields)
+            raise_errors = flag_set('fflag_feat_utc_210_prediction_validation_15082025', user='auto')
+            logger.info(f'Reformatting predictions with raise_errors: {raise_errors}')
+            parsed_data = reformat_predictions(parsed_data, preannotated_from_fields, project, raise_errors)
+
+        # Conditionally validate predictions: skip when label config is default during project creation
+        if project.label_config_is_not_default:
+            validation_errors = []
+            li = LabelInterface(project.label_config)
+
+            for i, task in enumerate(parsed_data):
+                if 'predictions' in task:
+                    for j, prediction in enumerate(task['predictions']):
+                        try:
+                            validation_errors_list = li.validate_prediction(prediction, return_errors=True)
+                            if validation_errors_list:
+                                for error in validation_errors_list:
+                                    validation_errors.append(f'Task {i}, prediction {j}: {error}')
+                        except Exception as e:
+                            error_msg = f'Task {i}, prediction {j}: Error validating prediction - {str(e)}'
+                            validation_errors.append(error_msg)
+
+            if validation_errors:
+                error_message = f'Prediction validation failed ({len(validation_errors)} errors):\n'
+                for error in validation_errors:
+                    error_message += f'- {error}\n'
+
+                if flag_set('fflag_feat_utc_210_prediction_validation_15082025', user='auto'):
+                    raise ValidationError({'predictions': [error_message]})
+                else:
+                    logger.error(
+                        f'Prediction validation failed, not raising error - ({len(validation_errors)} errors):\n{error_message}'
+                    )
 
         if commit_to_project:
             # Immediately create project tasks and update project states and counters
@@ -383,56 +408,182 @@ class ImportAPI(generics.CreateAPIView):
         # check project permissions
         project = generics.get_object_or_404(Project.objects.for_user(self.request.user), pk=self.kwargs['pk'])
 
-        if (
-            flag_set('fflag_feat_all_lsdv_4915_async_task_import_13042023_short', request.user)
-            and settings.VERSION_EDITION != 'Community'
-        ):
+        if settings.VERSION_EDITION != 'Community':
             return self.async_import(request, project, preannotated_from_fields, commit_to_project, return_task_ids)
         else:
             return self.sync_import(request, project, preannotated_from_fields, commit_to_project, return_task_ids)
 
 
 # Import
+@extend_schema(exclude=True)
 class ImportPredictionsAPI(generics.CreateAPIView):
+    """
+    API for importing predictions to a project.
+
+    Memory optimization controlled by feature flag:
+    'fflag_fix_back_4620_memory_efficient_predictions_import_08012025_short'
+
+    When flag is enabled: Uses memory-efficient batch processing (reduces memory usage by 90-99%)
+    When flag is disabled: Uses legacy implementation for safe fallback
+    """
+
     permission_required = all_permissions.projects_change
     parser_classes = (JSONParser, MultiPartParser, FormParser)
     serializer_class = PredictionSerializer
     queryset = Project.objects.all()
-    swagger_schema = None  # TODO: create API schema
 
     def create(self, request, *args, **kwargs):
         # check project permissions
         project = self.get_object()
 
+        # Use feature flag to control memory-efficient implementation rollout
+        if flag_set('fflag_fix_back_4620_memory_efficient_predictions_import_08012025_short', user=self.request.user):
+            return self._create_memory_efficient(project)
+        else:
+            return self._create_legacy(project)
+
+    def _create_memory_efficient(self, project):
+        """Memory-efficient batch processing implementation"""
+        # Configure batch processing settings
+        # Use smaller batch size for processing to avoid memory issues
+        PROCESSING_BATCH_SIZE = getattr(settings, 'PREDICTION_IMPORT_BATCH_SIZE', 500)
+
+        request_data = self.request.data
+        total_predictions = len(request_data)
+
+        logger.debug(
+            f'Importing {total_predictions} predictions to project {project} using memory-efficient batch processing (batch size: {PROCESSING_BATCH_SIZE})'
+        )
+
+        total_created = 0
+        all_task_ids = set()
+
+        # Process predictions in smaller batches to avoid memory issues
+        for batch_start in range(0, total_predictions, PROCESSING_BATCH_SIZE):
+            batch_end = min(batch_start + PROCESSING_BATCH_SIZE, total_predictions)
+            batch_items = request_data[batch_start:batch_end]
+
+            # Extract task IDs for this batch
+            batch_task_ids = [item.get('task') for item in batch_items]
+
+            # Validate that all task IDs in this batch exist in the project
+            # This is much more memory efficient than loading all project task IDs upfront
+            existing_task_ids = set(
+                Task.objects.filter(project=project, id__in=batch_task_ids).values_list('id', flat=True)
+            )
+
+            # Build predictions for this batch
+            batch_predictions = []
+            for item in batch_items:
+                task_id = item.get('task')
+
+                if task_id not in existing_task_ids:
+                    raise ValidationError(
+                        f'{item} contains invalid "task" field: task ID {task_id} ' f'not found in project {project}'
+                    )
+
+                batch_predictions.append(
+                    Prediction(
+                        task_id=task_id,
+                        project_id=project.id,
+                        result=Prediction.prepare_prediction_result(item.get('result'), project),
+                        score=item.get('score'),
+                        model_version=item.get('model_version', 'undefined'),
+                    )
+                )
+                all_task_ids.add(task_id)
+
+            # Bulk create this batch with the configured batch size
+            batch_created = Prediction.objects.bulk_create(batch_predictions, batch_size=settings.BATCH_SIZE)
+            total_created += len(batch_created)
+
+            logger.debug(
+                f'Processed batch {batch_start}-{batch_end-1}: created {len(batch_created)} predictions '
+                f'(total so far: {total_created})'
+            )
+
+        # Update task counters for all affected tasks
+        # Only pass the unique task IDs that were actually processed
+        if all_task_ids:
+            start_job_async_or_sync(update_tasks_counters, Task.objects.filter(id__in=all_task_ids))
+
+        return Response({'created': total_created}, status=status.HTTP_201_CREATED)
+
+    def _create_legacy(self, project):
+        """Legacy implementation - kept for safe rollback"""
         tasks_ids = set(Task.objects.filter(project=project).values_list('id', flat=True))
 
         logger.debug(
-            f'Importing {len(self.request.data)} predictions to project {project} with {len(tasks_ids)} tasks'
+            f'Importing {len(self.request.data)} predictions to project {project} with {len(tasks_ids)} tasks (legacy mode)'
         )
+
+        li = LabelInterface(project.label_config)
+
+        # Validate all predictions before creating any
+        validation_errors = []
         predictions = []
-        for item in self.request.data:
+
+        for i, item in enumerate(self.request.data):
+            # Validate task ID
             if item.get('task') not in tasks_ids:
-                raise ValidationError(
-                    f'{item} contains invalid "task" field: corresponding task ID couldn\'t be retrieved '
-                    f'from project {project} tasks'
+                if flag_set('fflag_feat_utc_210_prediction_validation_15082025', user='auto'):
+                    validation_errors.append(
+                        f'Prediction {i}: Invalid task ID {item.get("task")} - task not found in project'
+                    )
+                    continue
+                else:
+                    # Before change we raised only here
+                    raise ValidationError(
+                        f'{item} contains invalid "task" field: corresponding task ID couldn\'t be retrieved '
+                        f'from project {project} tasks'
+                    )
+
+            # Validate prediction using LabelInterface only
+            try:
+                validation_errors_list = li.validate_prediction(item, return_errors=True)
+
+                # If prediction is invalid, add error to validation_errors list and continue to next prediction
+                if validation_errors_list:
+                    # Format errors for better readability
+                    for error in validation_errors_list:
+                        validation_errors.append(f'Prediction {i}: {error}')
+                    continue
+
+            except Exception as e:
+                validation_errors.append(f'Prediction {i}: Error validating prediction - {str(e)}')
+                continue
+
+            # If prediction is valid, add it to predictions list to be created
+            try:
+                predictions.append(
+                    Prediction(
+                        task_id=item['task'],
+                        project_id=project.id,
+                        result=Prediction.prepare_prediction_result(item.get('result'), project),
+                        score=item.get('score'),
+                        model_version=item.get('model_version', 'undefined'),
+                    )
                 )
-            predictions.append(
-                Prediction(
-                    task_id=item['task'],
-                    project_id=project.id,
-                    result=Prediction.prepare_prediction_result(item.get('result'), project),
-                    score=item.get('score'),
-                    model_version=item.get('model_version', 'undefined'),
-                )
-            )
+            except Exception as e:
+                validation_errors.append(f'Prediction {i}: Failed to create prediction - {str(e)}')
+                continue
+
+        # If there are validation errors, raise them before creating any predictions
+        if validation_errors:
+            if flag_set('fflag_feat_utc_210_prediction_validation_15082025', user='auto'):
+                raise ValidationError(validation_errors)
+            else:
+                logger.error(f'Prediction validation failed ({len(validation_errors)} errors):\n{validation_errors}')
+
         predictions_obj = Prediction.objects.bulk_create(predictions, batch_size=settings.BATCH_SIZE)
         start_job_async_or_sync(update_tasks_counters, Task.objects.filter(id__in=tasks_ids))
         return Response({'created': len(predictions_obj)}, status=status.HTTP_201_CREATED)
 
 
+@extend_schema(exclude=True)
 class TasksBulkCreateAPI(ImportAPI):
     # just for compatibility - can be safely removed
-    swagger_schema = None
+    pass
 
 
 class ReImportAPI(ImportAPI):
@@ -535,10 +686,10 @@ class ReImportAPI(ImportAPI):
         else:
             return self.sync_reimport(project, file_upload_ids, files_as_tasks_list)
 
-    @swagger_auto_schema(
-        auto_schema=None,
-        operation_summary='Re-import tasks',
-        operation_description="""
+    @extend_schema(
+        exclude=True,
+        summary='Re-import tasks',
+        description="""
         Re-import tasks using the specified file upload IDs for a specific project.
         """,
     )
@@ -548,43 +699,46 @@ class ReImportAPI(ImportAPI):
 
 @method_decorator(
     name='get',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Import'],
-        x_fern_sdk_group_name=['files'],
-        x_fern_sdk_method_name='list',
-        x_fern_audiences=['public'],
-        operation_summary='Get files list',
-        manual_parameters=[
-            openapi.Parameter(
+        summary='Get files list',
+        parameters=[
+            OpenApiParameter(
                 name='all',
-                type=openapi.TYPE_BOOLEAN,
-                in_=openapi.IN_QUERY,
+                type=OpenApiTypes.BOOL,
+                location='query',
                 description='Set to "true" if you want to retrieve all file uploads',
             ),
-            openapi.Parameter(
+            OpenApiParameter(
                 name='ids',
-                type=openapi.TYPE_ARRAY,
-                in_=openapi.IN_QUERY,
-                items=openapi.Schema(title='File upload ID', type=openapi.TYPE_INTEGER),
+                many=True,
+                location='query',
                 description='Specify the list of file upload IDs to retrieve, e.g. ids=[1,2,3]',
             ),
         ],
-        operation_description="""
+        description="""
         Retrieve the list of uploaded files used to create labeling tasks for a specific project.
         """,
+        extensions={
+            'x-fern-sdk-group-name': ['files'],
+            'x-fern-sdk-method-name': 'list',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 @method_decorator(
     name='delete',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Import'],
-        x_fern_sdk_group_name=['files'],
-        x_fern_sdk_method_name='delete_many',
-        x_fern_audiences=['public'],
-        operation_summary='Delete files',
-        operation_description="""
+        summary='Delete files',
+        description="""
         Delete uploaded files for a specific project.
         """,
+        extensions={
+            'x-fern-sdk-group-name': ['files'],
+            'x-fern-sdk-method-name': 'delete_many',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 class FileUploadListAPI(generics.mixins.ListModelMixin, generics.mixins.DestroyModelMixin, generics.GenericAPIView):
@@ -625,36 +779,42 @@ class FileUploadListAPI(generics.mixins.ListModelMixin, generics.mixins.DestroyM
 
 @method_decorator(
     name='get',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Import'],
-        x_fern_sdk_group_name=['files'],
-        x_fern_sdk_method_name='get',
-        x_fern_audiences=['public'],
-        operation_summary='Get file upload',
-        operation_description='Retrieve details about a specific uploaded file.',
+        summary='Get file upload',
+        description='Retrieve details about a specific uploaded file.',
+        extensions={
+            'x-fern-sdk-group-name': ['files'],
+            'x-fern-sdk-method-name': 'get',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 @method_decorator(
     name='patch',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Import'],
-        x_fern_sdk_group_name=['files'],
-        x_fern_sdk_method_name='update',
-        x_fern_audiences=['public'],
-        operation_summary='Update file upload',
-        operation_description='Update a specific uploaded file.',
-        request_body=FileUploadSerializer,
+        summary='Update file upload',
+        description='Update a specific uploaded file.',
+        request=FileUploadSerializer,
+        extensions={
+            'x-fern-sdk-group-name': ['files'],
+            'x-fern-sdk-method-name': 'update',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 @method_decorator(
     name='delete',
-    decorator=swagger_auto_schema(
+    decorator=extend_schema(
         tags=['Import'],
-        x_fern_sdk_group_name=['files'],
-        x_fern_sdk_method_name='delete',
-        x_fern_audiences=['public'],
-        operation_summary='Delete file upload',
-        operation_description='Delete a specific uploaded file.',
+        summary='Delete file upload',
+        description='Delete a specific uploaded file.',
+        extensions={
+            'x-fern-sdk-group-name': ['files'],
+            'x-fern-sdk-method-name': 'delete',
+            'x-fern-audiences': ['public'],
+        },
     ),
 )
 class FileUploadAPI(generics.RetrieveUpdateDestroyAPIView):
@@ -672,24 +832,34 @@ class FileUploadAPI(generics.RetrieveUpdateDestroyAPIView):
     def delete(self, *args, **kwargs):
         return super(FileUploadAPI, self).delete(*args, **kwargs)
 
-    @swagger_auto_schema(auto_schema=None)
+    @extend_schema(exclude=True)
     def put(self, *args, **kwargs):
         return super(FileUploadAPI, self).put(*args, **kwargs)
 
 
+@method_decorator(
+    name='get',
+    decorator=extend_schema(
+        tags=['Import'],
+        summary='Download file',
+        description='Download a specific uploaded file.',
+        extensions={
+            'x-fern-sdk-group-name': ['files'],
+            'x-fern-sdk-method-name': 'download',
+            'x-fern-audiences': ['public'],
+        },
+        responses={
+            200: OpenApiResponse(description='File downloaded successfully'),
+        },
+    ),
+)
 class UploadedFileResponse(generics.RetrieveAPIView):
+    """Serve uploaded files from local drive"""
+
     permission_classes = (IsAuthenticated,)
 
     @override_report_only_csp
     @csp(SANDBOX=[])
-    @swagger_auto_schema(
-        tags=['Import'],
-        x_fern_sdk_group_name=['files'],
-        x_fern_sdk_method_name='download',
-        x_fern_audiences=['public'],
-        operation_summary='Download file',
-        operation_description='Download a specific uploaded file.',
-    )
     def get(self, *args, **kwargs):
         request = self.request
         filename = kwargs['filename']
@@ -710,130 +880,80 @@ class UploadedFileResponse(generics.RetrieveAPIView):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 
+@extend_schema(exclude=True)
 class DownloadStorageData(APIView):
-    """Check auth for nginx auth_request"""
+    """
+    Secure file download API for persistent storage (S3, GCS, Azure, etc.)
 
-    swagger_schema = None
+    This view provides authenticated access to uploaded files and user avatars stored in
+    cloud storage or local filesystems. It supports two operational modes for optimal
+    performance and flexibility (simplicity).
+
+    ## Operation Modes:
+
+    ### 1. NGINX Mode (Default - USE_NGINX_FOR_UPLOADS=True)
+    - **High Performance**: Uses X-Accel-Redirect headers for efficient file serving
+    - **How it works**:
+      1. Validates user permissions and file access
+      2. Returns HttpResponse with X-Accel-Redirect header pointing to storage URL
+      3. NGINX intercepts and serves the file directly from storage
+    - **Benefits**: Reduces Django server load, better performance for large files
+
+    ### 2. Direct Mode (USE_NGINX_FOR_UPLOADS=False)
+    - **Direct Serving**: Django serves files using RangedFileResponse
+    - **How it works**:
+      1. Validates user permissions and file access
+      2. Opens file from storage and streams it with range request support
+      3. Supports partial content requests (HTTP 206)
+    - **Benefits**: Works without NGINX, supports range requests for media files
+
+    ## Content-Disposition Logic:
+    - **Inline**: PDFs, audio, video files - because media files are directly displayed in the browser
+    """
+
     http_method_names = ['get']
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
         """Get export files list"""
-        request = self.request
         filepath = request.GET.get('filepath')
         if filepath is None:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         filepath = unquote(request.GET['filepath'])
 
-        url = None
+        file_obj = None
         if filepath.startswith(settings.UPLOAD_DIR):
             logger.debug(f'Fetch uploaded file by user {request.user} => {filepath}')
             file_upload = FileUpload.objects.filter(file=filepath).last()
 
             if file_upload is not None and file_upload.has_permission(request.user):
-                url = file_upload.file.storage.url(file_upload.file.name, storage_url=True)
+                file_obj = file_upload.file
         elif filepath.startswith(settings.AVATAR_PATH):
             user = User.objects.filter(avatar=filepath).first()
             if user is not None and request.user.active_organization.has_user(user):
-                url = user.avatar.storage.url(user.avatar.name, storage_url=True)
+                file_obj = user.avatar
 
-        if url is None:
+        if file_obj is None:
             return Response(status=status.HTTP_403_FORBIDDEN)
 
-        protocol = urlparse(url).scheme
+        # NGINX handling is the default for better performance
+        if settings.USE_NGINX_FOR_UPLOADS:
+            url = file_obj.storage.url(file_obj.name, storage_url=True)
 
-        # Let NGINX handle it
-        response = HttpResponse()
-        # The below header tells NGINX to catch it and serve, see docker-config/nginx-app.conf
-        redirect = '/file_download/' + protocol + '/' + url.replace(protocol + '://', '')
+            protocol = urlparse(url).scheme
+            response = HttpResponse()
+            # The below header tells NGINX to catch it and serve, see deploy/default.conf
+            redirect = '/file_download/' + protocol + '/' + url.replace(protocol + '://', '')
+            response['X-Accel-Redirect'] = redirect
+            response['Content-Disposition'] = f'inline; filename="{filepath}"'
+            return response
 
-        response['X-Accel-Redirect'] = redirect
-        response['Content-Disposition'] = 'attachment; filename="{}"'.format(filepath)
-        return response
-
-
-class PresignAPIMixin:
-    def handle_presign(self, request: HttpRequest, fileuri: str, instance: Union[Task, Project]) -> Response:
-        model_name = type(instance).__name__
-
-        if not instance.has_permission(request.user):
-            return Response(status=status.HTTP_403_FORBIDDEN)
-
-        # Attempt to base64 decode the fileuri
-        try:
-            fileuri = base64.urlsafe_b64decode(fileuri.encode()).decode()
-        # For backwards compatibility, try unquote if this fails
-        except Exception as exc:
-            logger.debug(
-                f'Failed to decode base64 {fileuri} for {model_name} {instance.id}: {exc} falling back to unquote'
-            )
-            fileuri = unquote(fileuri)
-
-        try:
-            resolved = instance.resolve_storage_uri(fileuri)
-        except Exception as exc:
-            logger.error(f'Failed to resolve storage uri {fileuri} for {model_name} {instance.id}: {exc}')
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        if resolved is None or resolved.get('url') is None:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        url = resolved['url']
-        max_age = 0
-        if resolved.get('presign_ttl'):
-            max_age = resolved.get('presign_ttl') * 60
-
-        # Proxy to presigned url
-        response = HttpResponseRedirect(redirect_to=url, status=status.HTTP_303_SEE_OTHER)
-        response.headers['Cache-Control'] = f'no-store, max-age={max_age}'
-
-        return response
-
-
-class TaskPresignStorageData(PresignAPIMixin, APIView):
-    """A file proxy to presign storage urls at the task level."""
-
-    swagger_schema = None
-    http_method_names = ['get']
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request, *args, **kwargs):
-        """Get the presigned url for a given fileuri"""
-        request = self.request
-        task_id = kwargs.get('task_id')
-        fileuri = request.GET.get('fileuri')
-
-        if fileuri is None or task_id is None:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            task = Task.objects.get(pk=task_id)
-        except Task.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        return self.handle_presign(request, fileuri, task)
-
-
-class ProjectPresignStorageData(PresignAPIMixin, APIView):
-    """A file proxy to presign storage urls at the project level."""
-
-    swagger_schema = None
-    http_method_names = ['get']
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request, *args, **kwargs):
-        """Get the presigned url for a given fileuri"""
-        request = self.request
-        project_id = kwargs.get('project_id')
-        fileuri = request.GET.get('fileuri')
-
-        if fileuri is None or project_id is None:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            project = Project.objects.get(pk=project_id)
-        except Project.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        return self.handle_presign(request, fileuri, project)
+        # No NGINX: standard way for direct file serving
+        else:
+            content_type, _ = mimetypes.guess_type(filepath)
+            content_type = content_type or 'application/octet-stream'
+            response = RangedFileResponse(request, file_obj.open(mode='rb'), content_type=content_type)
+            response['Content-Disposition'] = f'inline; filename="{filepath}"'
+            response['filename'] = filepath
+            return response

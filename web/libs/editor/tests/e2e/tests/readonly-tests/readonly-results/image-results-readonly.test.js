@@ -9,7 +9,7 @@ imageExamples.add(["Image Ellipses", require("../../../examples/image-ellipses")
 imageExamples.add(["Image Keypoints", require("../../../examples/image-keypoints"), "Hello"]);
 imageExamples.add(["Image Polygons", require("../../../examples/image-polygons"), "Hello"]);
 
-Data(imageExamples).Scenario("Image Readonly Results", async ({ I, current, LabelStudio, AtSidebar, AtImageView }) => {
+Data(imageExamples).Scenario("Image Readonly Results", async ({ I, current, LabelStudio, AtOutliner, AtImageView }) => {
   I.amOnPage("/");
   const { config, result: r, data } = current.example;
 
@@ -30,13 +30,13 @@ Data(imageExamples).Scenario("Image Readonly Results", async ({ I, current, Labe
     data,
   });
 
-  await AtImageView.waitForImage();
+  LabelStudio.waitForObjectsReady();
   await AtImageView.lookForStage();
 
   I.say(`Running against ${current.example.title}`);
   I.say("Check region is selectable");
-  AtSidebar.seeRegions(regions.length);
-  AtSidebar.clickRegion(current.regionName);
+  AtOutliner.seeRegions(regions.length);
+  AtOutliner.clickRegion(current.regionName);
 
   I.pressKey("Backspace");
   I.say("Results are equal after deletion attempt");
@@ -53,7 +53,7 @@ Data(imageExamples).Scenario("Image Readonly Results", async ({ I, current, Labe
 
   I.say("Results are equal after modification attempt");
   await LabelStudio.resultsNotChanged(result, 1);
-  AtSidebar.seeRegions(regions.length);
+  AtOutliner.seeRegions(regions.length);
 
   I.say("Attempting to move a non-readonly region");
   await I.scrollPageToTop();
@@ -82,5 +82,5 @@ Data(imageExamples).Scenario("Image Readonly Results", async ({ I, current, Labe
       break;
   }
 
-  AtSidebar.seeRegions(regions.length + 1);
+  AtOutliner.seeRegions(regions.length + 1);
 });

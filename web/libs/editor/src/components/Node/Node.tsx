@@ -1,10 +1,10 @@
 import type { FC } from "react";
-import { getRoot, getType } from "mobx-state-tree";
+import { getType } from "mobx-state-tree";
 import { observer } from "mobx-react";
 import { ApartmentOutlined, AudioOutlined, LineChartOutlined, MessageOutlined } from "@ant-design/icons";
 
+import Registry from "../../core/Registry";
 import "./Node.scss";
-import { Block, Elem } from "../../utils/bem";
 import {
   IconBrushTool,
   IconBrushToolSmart,
@@ -19,15 +19,21 @@ import {
   IconRectangleTool,
   IconRectangleToolSmart,
   IconText,
-  IconWarning,
-} from "../../assets/icons";
-import { IconTimelineRegion } from "../../assets/icons/timeline";
-import { NodeView } from "./NodeView";
-import { Tooltip } from "@humansignal/ui";
+  IconTimelineRegion,
+} from "@humansignal/icons";
 
-const NodeViews = {
+interface NodeViewProps {
+  name: string;
+  icon: any;
+  altIcon?: any;
+  getContent?: (node: any) => JSX.Element | null;
+  fullContent?: (node: any) => JSX.Element | null;
+}
+
+const NodeViews: Record<string, NodeViewProps> = {
   // fake view for virtual node representing label group
   LabelModel: {
+    name: "",
     icon: () => null,
   },
 
@@ -45,136 +51,100 @@ const NodeViews = {
     ),
   },
 
-  ParagraphsRegionModel: NodeView({
+  ParagraphsRegionModel: {
     name: "Paragraphs",
     icon: IconText,
     getContent: (node) => <span style={{ color: "#5a5a5a" }}>{node.text}</span>,
-  }),
+  },
 
-  AudioRegionModel: NodeView({
+  AudioRegionModel: {
     name: "Audio",
     icon: AudioOutlined,
-  }),
+  },
 
-  TimeSeriesRegionModel: NodeView({
+  TimeSeriesRegionModel: {
     name: "TimeSeries",
     icon: LineChartOutlined,
-  }),
+  },
 
-  TextAreaRegionModel: NodeView({
+  TextAreaRegionModel: {
     name: "Input",
     icon: MessageOutlined,
     getContent: (node) => <span style={{ color: "#5a5a5a" }}>{node._value}</span>,
-  }),
+  },
 
-  RectRegionModel: NodeView({
+  RectRegionModel: {
     name: "Rect",
     icon: IconRectangleTool,
     altIcon: IconRectangleToolSmart,
-  }),
+  },
 
-  Rect3PointRegionModel: NodeView({
+  Rect3PointRegionModel: {
     name: "Rect3Point",
     icon: IconRectangle3PointTool,
     altIcon: IconRectangle3PointToolSmart,
-  }),
+  },
 
-  VideoRectangleRegionModel: NodeView({
+  VideoRectangleRegionModel: {
     name: "Video Rect",
     icon: IconRectangleTool,
     altIcon: IconRectangleToolSmart,
     getContent: (node) => <span style={{ color: "#5a5a5a" }}>from {node.sequence[0]?.frame} frame</span>,
-  }),
+  },
 
-  PolygonRegionModel: NodeView({
+  PolygonRegionModel: {
     name: "Polygon",
     icon: IconPolygonTool,
     altIcon: IconPolygonToolSmart,
-  }),
+  },
 
-  EllipseRegionModel: NodeView({
+  EllipseRegionModel: {
     name: "Ellipse",
     icon: IconCircleTool,
     altIcon: IconCircleToolSmart,
-  }),
+  },
 
   // @todo add coords
-  KeyPointRegionModel: NodeView({
+  KeyPointRegionModel: {
     name: "KeyPoint",
     icon: IconKeypointsTool,
     altIcon: IconKeypointsToolSmart,
-  }),
+  },
 
-  BrushRegionModel: NodeView({
+  BrushRegionModel: {
     name: "Brush",
     icon: IconBrushTool,
     altIcon: IconBrushToolSmart,
-  }),
+  },
 
-  ChoicesModel: NodeView({
+  BitmaskRegionModel: {
+    name: "Brush",
+    icon: IconBrushTool,
+    altIcon: IconBrushToolSmart,
+  },
+
+  ChoicesModel: {
     name: "Classification",
     icon: ApartmentOutlined,
-  }),
+  },
 
-  TextAreaModel: NodeView({
+  TextAreaModel: {
     name: "Input",
     icon: MessageOutlined,
-  }),
+  },
 
-  TimelineRegionModel: NodeView({
+  TimelineRegionModel: {
     name: "Timeline Span",
     icon: IconTimelineRegion,
-  }),
+  },
+
+  ...Object.fromEntries(Registry.customTags.map((tag) => [tag.region.name, tag.region.nodeView])),
 };
-
-const NodeDebug: FC<any> = observer(({ className, node }) => {
-  const name = useNodeName(node);
-
-  if (!(name in NodeViews)) console.error(`No ${name} in NodeView`);
-
-  const { getContent, fullContent } = NodeViews[name];
-  const labelName = node.labelName;
-
-  return (
-    <Block name="node" className={[className].filter(Boolean).join(" ")}>
-      {labelName}
-      <br />
-      {getContent(node)}
-      {fullContent && fullContent(node)}
-    </Block>
-  );
-});
-
-const Node: FC<any> = observer(({ className, node }) => {
-  const name = useNodeName(node);
-
-  if (!name || !(name in NodeViews)) {
-    console.error(`No ${name} in NodeView`);
-    return null;
-  }
-
-  const { getContent } = NodeViews[name];
-  const labelName = node.labelName;
-
-  return (
-    <Block name="node" tag="span" className={className}>
-      {labelName}
-      {node.isDrawing && (
-        <Elem tag="span" name="incomplete">
-          <Tooltip title={`Incomplete ${node.type?.replace("region", "") ?? "region"}`}>
-            <IconWarning />
-          </Tooltip>
-        </Elem>
-      )}{" "}
-      {getContent(node)}
-    </Block>
-  );
-});
 
 const NodeIcon: FC<any> = observer(({ node, ...props }) => {
   const name = useNodeName(node);
 
-  if (!(name in NodeViews)) {
+  if (!name || !(name in NodeViews)) {
     console.error(`No ${name} in NodeView`);
     return null;
   }
@@ -184,29 +154,6 @@ const NodeIcon: FC<any> = observer(({ node, ...props }) => {
   return <Icon {...props} />;
 });
 
-const NodeMinimal: FC<any> = observer(({ node }) => {
-  const { sortedRegions: regions } = useRegionStore(node);
-  const index = regions.indexOf(node);
-  const name = useNodeName(node);
-
-  if (!(name in NodeViews)) {
-    console.error(`No ${name} in NodeView`);
-    return null;
-  }
-
-  const { name: text, icon } = NodeViews[name];
-
-  return (
-    <Block name="node-minimal" tag="span">
-      {index >= 0 && <Elem name="counter">{index + 1}</Elem>}
-
-      <Elem name="icon" tag={icon} />
-
-      {text}
-    </Block>
-  );
-});
-
 const useNodeName = (node: any) => {
   // @todo sometimes node is control tag, not a region
   // @todo and for new taxonomy it can be plain object
@@ -214,10 +161,4 @@ const useNodeName = (node: any) => {
   return getType(node).name as keyof typeof NodeViews;
 };
 
-const useRegionStore = (node: any) => {
-  const root = getRoot(node);
-
-  return (root as any).annotationStore.selected.regionStore;
-};
-
-export { Node, NodeDebug, NodeIcon, NodeMinimal, NodeViews };
+export { NodeIcon, NodeViews };

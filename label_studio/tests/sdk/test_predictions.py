@@ -64,11 +64,11 @@ def test_create_predictions_with_import(django_live_url, business_client):
     ls.projects.import_tasks(
         id=p.id,
         request=[
-            {'my_text': 'Hello world', 'my_label': 'Positive'},
-            {'my_text': 'Goodbye Label Studio', 'my_label': 'Negative'},
-            {'my_text': 'What a beautiful day', 'my_label': 'Positive'},
+            {'my_text': 'Hello world', 'sentiment_class': 'Positive'},
+            {'my_text': 'Goodbye Label Studio', 'sentiment_class': 'Negative'},
+            {'my_text': 'What a beautiful day', 'sentiment_class': 'Positive'},
         ],
-        preannotated_from_fields=['my_label'],
+        preannotated_from_fields=['sentiment_class'],
     )
 
     # check predictions for each class

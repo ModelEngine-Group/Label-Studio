@@ -2,9 +2,9 @@
   --primary-action-color: var(--grape_500);
   --primary-action-padding: 4px;
   --primary-action-border-radius: 4px;
-  --primary-action-surface-color-hover: var(--grape_0);
+  --primary-action-surface-color-hover: var(--color-primary-surface-content);
   --text-input-min-height: 40px;
-  --tooltip-text-color: var(--danger_color);
+  --tooltip-text-color: var(--color-negative-content);
 
   display: grid;
   grid-template-columns: auto var(--text-input-min-height);

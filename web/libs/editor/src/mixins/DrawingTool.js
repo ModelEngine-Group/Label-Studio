@@ -1,9 +1,10 @@
 import { types } from "mobx-state-tree";
 
 import Utils from "../utils";
-import throttle from "lodash.throttle";
+import throttle from "lodash/throttle";
 import { MIN_SIZE } from "../tools/Base";
-import { FF_DEV_3793, isFF } from "../utils/feature-flags";
+import { FF_DEV_3391, FF_DEV_3793, isFF } from "../utils/feature-flags";
+import { ff } from "@humansignal/core";
 import { RELATIVE_STAGE_HEIGHT, RELATIVE_STAGE_WIDTH } from "../components/ImageView/Image";
 
 const DrawingTool = types
@@ -75,6 +76,9 @@ const DrawingTool = types
        * @return {boolean} Returns true if the interaction is allowed, otherwise false.
        */
       isAllowedInteraction(ev) {
+        if (isFF(FF_DEV_3391) && !self.annotation.editable) {
+          return false;
+        }
         if (self.group !== "segmentation") return true;
         if (ev.offsetX > self.obj.canvasSize.width) return false;
         if (ev.offsetY > self.obj.canvasSize.height) return false;
@@ -137,6 +141,9 @@ const DrawingTool = types
         self.annotation.setIsDrawing(true);
         self.annotation.regionStore.selection.drawingSelect(self.currentArea);
         self.listenForClose?.();
+        if (self.manager.findSelectedTool() !== self) {
+          self.manager.selectTool(self, true);
+        }
       },
       commitDrawingRegion() {
         const { currentArea, control, obj } = self;
@@ -165,9 +172,23 @@ const DrawingTool = types
       createRegion(opts, skipAfterCreate = false) {
         const control = self.control;
         const resultValue = control.getResultValue();
+        const activeStates = self.obj.activeStates();
+        // Remove the main control from additional states to avoid duplication
+        const additionalStates = activeStates.filter((state) => state !== control);
 
-        self.currentArea = self.annotation.createResult(opts, resultValue, control, self.obj, skipAfterCreate);
-        self.applyActiveStates(self.currentArea);
+        if (ff.isActive(ff.FF_MULTIPLE_LABELS_REGIONS)) {
+          self.currentArea = self.annotation.createResult(
+            opts,
+            resultValue,
+            control,
+            self.obj,
+            skipAfterCreate,
+            additionalStates,
+          );
+        } else {
+          self.currentArea = self.annotation.createResult(opts, resultValue, control, self.obj, skipAfterCreate);
+          self.applyActiveStates(self.currentArea);
+        }
         return self.currentArea;
       },
       deleteRegion() {

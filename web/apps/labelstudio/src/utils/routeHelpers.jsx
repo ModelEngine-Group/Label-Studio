@@ -107,9 +107,9 @@ export const resolveRoutes = (routes, props) => {
 
       return <RouteWithStaticFallback key={fullPath} path={fullPath} render={RouteComponent} />;
     }
-    const routeProps = { key: fullPath, path: fullPath, modal: !!Component.modal };
+    const routeProps = { path: fullPath, modal: !!Component.modal };
 
-    return <Route {...routeProps} exact render={() => <Component {...(props ?? {})} />} {...rest} />;
+    return <Route {...routeProps} key={fullPath} exact render={() => <Component {...(props ?? {})} />} {...rest} />;
   };
 
   const processRoutes = (routes, fullPath) => {

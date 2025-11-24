@@ -1,6 +1,6 @@
 <% const isEnterpriseTheme = theme.tier === "enterprise" %>
   <ul class="page-sidebar-list">
-    <% const pages = site.pages.filter(page => !page.hide_menu && page.path !== "guide/index.html" && page.type === type && (page.tier === theme.tier || page.tier === "all" || page.type === "tags" || page.type === "playground" || page.type === "templates")); %>
+    <% const pages = site.pages.filter(page => !page.hide_menu && page.path !== "guide/index.html" && page.type === type && (page.tier === theme.tier || page.tier === "all" || page.type === "tags" || page.type === "playground" || page.type === "templates" || page.type === "plugins")); %>
     <% if(isEnterpriseTheme) pages.forEach(page => page.order = page.order_enterprise ? page.order_enterprise : page.order) %>
     <% const orderedPages = pages.sort('order') %>
     <% const parentPages = orderedPages.filter(page => isEnterpriseTheme ? page.parent_enterprise === undefined : page.parent === undefined) %>
@@ -40,7 +40,16 @@
             "llm_response_moderation": "LLM Evaluations",
             "gallery_cv": "Template Galleries"
           }
-        }
+        },
+        {
+          type: "plugins",
+          headers: {
+            "faq": "Overview",
+            "bulk_labeling": "Automation",
+            "json_validation": "Validation",
+            "plotly": "Visualization"
+          }
+        }         
       ]
     %>
 

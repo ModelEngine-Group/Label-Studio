@@ -1,10 +1,13 @@
+/* istanbul ignore file */
+// @deprecated should be removed along with FF_DEV_3873
+
 import { observer } from "mobx-react";
 import { type CSSProperties, type FC, Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Block, Elem } from "../../utils/bem";
 import { DetailsPanel } from "./DetailsPanel/DetailsPanel";
 import { OutlinerPanel } from "./OutlinerPanel/OutlinerPanel";
 
-import { IconDetails, IconHamburger } from "../../assets/icons";
+import { IconDetails, IconHamburger } from "@humansignal/icons";
 import { useMedia } from "../../hooks/useMedia";
 import ResizeObserver from "../../utils/resize-observer";
 import { clamp } from "../../utils/utilities";
@@ -97,6 +100,7 @@ const SidePanelsComponent: FC<SidePanelsProps> = ({ currentEntity, panelsHidden,
   const rootRef = useRef<HTMLDivElement>();
   const [snap, setSnap] = useState<"left" | "right" | undefined>();
   const localSnap = useRef(snap);
+  localSnap.current = snap;
   const [panelData, setPanelData] = useState<PanelSize>({
     outliner: restorePanel("outliner", {
       top: 0,
@@ -192,7 +196,7 @@ const SidePanelsComponent: FC<SidePanelsProps> = ({ currentEntity, panelsHidden,
     const panel = panelData[name];
     const parentWidth = rootRef.current?.clientWidth ?? 0;
     const height = panel.detached
-      ? visible ?? panel.visible
+      ? (visible ?? panel.visible)
         ? panel.height
         : PANEL_HEADER_HEIGHT_PADDED
       : panel.height;
@@ -434,10 +438,6 @@ const SidePanelsComponent: FC<SidePanelsProps> = ({ currentEntity, panelsHidden,
   }, [panelData, commonProps, panelsHidden, sidepanelsCollapsed, positioning, panelMaxWidth]);
 
   useEffect(() => {
-    localSnap.current = snap;
-  }, [snap]);
-
-  useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
 
@@ -511,7 +511,7 @@ const SidePanelsComponent: FC<SidePanelsProps> = ({ currentEntity, panelsHidden,
                   }
 
                   return (
-                    <Elem key={key} name="wrapper" mod={{ align: key, snap: snap === key }}>
+                    <Elem key={key} name="wrapper" mod={{ align: key, snap: snap === key && snap !== undefined }}>
                       {content}
                     </Elem>
                   );

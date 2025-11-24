@@ -4,17 +4,18 @@
   max-height: calc(100vh - var(--header-height));
 
   &__navigation {
-    width: calc(var(--menu-sidebar-width) + 1px);
+    width: calc(var(--menu-sidebar-width));
     display: flex;
-    
+    transition: border 400ms ease-out;
+
     & .main-menu {
-      background: var(--sand_100);
+      background: var(--color-neutral-background);
 
-      &__item{
-        background: var(--sand_100);
+      &__item {
+        background: var(--color-neutral-background);
 
-        &_active{
-          background: var(--sand_200);
+        &_active {
+          background: var(--color-primary-emphasis-subtle);
           pointer-events: all;
         }
       }
@@ -25,6 +26,5 @@
     flex: 1;
     overflow: auto;
     padding: 2rem;
-    box-shadow: -1px 0 0 0 rgb(0 0 0 / 10%);
   }
 }

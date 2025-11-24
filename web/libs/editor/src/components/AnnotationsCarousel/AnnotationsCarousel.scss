@@ -1,5 +1,5 @@
 .annotations-carousel {
-  --carousel-left: 0px;
+  --carousel-left: 0;
 
   position: relative;
   height: 100%;
@@ -20,7 +20,7 @@
     display: flex;
     gap: 2px;
     white-space: nowrap;
-    padding-right: 70px;
+    padding-right: 77px;
     position: relative;
     transform: translateX(calc(-1 * var(--carousel-left)));
     transition: all 0.15s ease-in-out 0s;
@@ -44,19 +44,19 @@
     box-shadow: 0 2px 5px 0 rgb(0 0 0 / 20%);
 
     &:hover {
-      background: var(--grape_0);
+      background: var(--color-primary-emphasis-subtle);
       box-shadow: 0 2px 5px 0 rgb(0 0 0 / 20%);
     }
 
     &_disabled {
-      background: var(--sand_100);
+      background: var(--color-background-surface);
 
       svg {
         opacity: 0.4;
       }
 
       &:hover {
-        background: var(--sand_200);
+        background: var(--color-neutral-surface);
         filter: none;
       }
     }

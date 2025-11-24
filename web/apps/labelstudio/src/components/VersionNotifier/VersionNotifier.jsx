@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useAPI } from "../../providers/ApiProvider";
 import { Block, Elem } from "../../utils/bem";
 import "./VersionNotifier.scss";
-import { IconBell } from "../../assets/icons";
+import { IconBell } from "@humansignal/icons";
 
 const VersionContext = createContext();
 

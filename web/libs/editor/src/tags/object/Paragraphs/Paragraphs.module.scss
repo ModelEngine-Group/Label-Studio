@@ -1,18 +1,29 @@
 $border-thin: 1px solid rgb(137 128 152 / 16%);
 
+.paragraphs {
+  position: relative;
+}
+
 .phrase {
-  background: #e8ffd0;
+  background: var(--color-neutral-surface);
   padding: 0.5em;
-  border-radius: 5px;
-  margin-right: 5px;
+  border-radius: var(--corner-radius-small);
+  margin-right: var(--spacing-tight);
   margin-bottom: 10px;
   display: table;
+  position: relative;
 
   &.numbered::before {
     counter-increment: phrase;
     content: counter(phrase);
     margin-right: 4px;
   }
+
+}
+
+.phrase:focus {
+  outline: none;
+  box-shadow: none;
 }
 
 .name {
@@ -34,7 +45,7 @@ $border-thin: 1px solid rgb(137 128 152 / 16%);
 
 .dialoguename {
   font-weight: bold;
-  background: white;
+  background: var(--color-neutral-background);
   border-radius: 5px;
   padding: 5px;
   margin-right: 10px;
@@ -43,7 +54,7 @@ $border-thin: 1px solid rgb(137 128 152 / 16%);
 }
 
 .dialoguename span {
-  background: white !important;
+  background: var(--color-neutral-background) !important;
   padding: 0 !important;
 }
 
@@ -85,7 +96,7 @@ $border-thin: 1px solid rgb(137 128 152 / 16%);
 }
 
 .withAudio {
-  margin-left: 36px;
+  margin-left: 5px;
 }
 
 .collapsed {
@@ -128,10 +139,10 @@ $border-thin: 1px solid rgb(137 128 152 / 16%);
       height: 40px;
       padding: 0 12px;
       border: none;
-      border-bottom: 1px solid rgb(0 0 0 / 15%);
+      border-bottom: 1px solid var(--color-neutral-border);
       font-size: 14px;
       line-height: 22px;
-      background: #fafafa;
+      background: var(--color-neutral-surface);
       outline: none;
     }
   }
@@ -142,8 +153,8 @@ $border-thin: 1px solid rgb(137 128 152 / 16%);
     gap: 4px;
 
     &__item {
-      color: initial;
-      background-color: #fff;
+      color: var(--color-neutral-content);
+      background-color: var(--color-neutral-background);
       display: inline-flex;
       font-weight: 400;
       font-size: 14px;
@@ -162,25 +173,38 @@ $border-thin: 1px solid rgb(137 128 152 / 16%);
   z-index: 1;
 }
 
-.playNewUi {
-  user-select: none;
-  cursor: pointer;
-  position: absolute;
-  left: 5px;
-  margin-top: -0.3em;
-  font-size: inherit;
-
-  &:hover, &:active, &:focus {
-    background: none;
-  }
+.phraseContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;
+  margin-left: 0;
 }
+
+
+// .playNewUi {
+//   user-select: none;
+//   cursor: pointer;
+//   position: absolute;
+
+//   margin-top: -0.3em;
+//   font-size: inherit;
+//   z-index: 1; // Ensure it's above other elements
+
+//   &:hover, &:active, &:focus {
+//     background: none;
+//   }
+// }
 
 .play {
   user-select: none;
   position: absolute;
-  left: 0;
-  margin-top: -0.3em;
+  left: -32px; // Position in the left margin space
+  top: 50%; // Center vertically relative to phrase container
+  transform: translateY(-50%); // Perfect vertical centering
   font-size: inherit;
+  z-index: 1; // Ensure it's above other elements
+  margin-right: 5px;
 
   // highlight play/pause buttons on interactions
   &:active path {
@@ -193,12 +217,59 @@ $border-thin: 1px solid rgb(137 128 152 / 16%);
   }
 }
 
+.selectAllBtn {
+  user-select: none;
+  cursor: pointer;
+  position: absolute;
+  right: 5px;
+  top: 50%; // Center vertically
+  transform: translateY(-50%); // Perfect vertical centering
+  font-size: inherit;
+
+  &:hover, &:active, &:focus {
+    background: none;
+  }
+
+  // Match the play button interaction styles
+  &:active path {
+    fill: #1890ff;
+  }
+
+  &:focus path:first-child {
+    fill: #1890ff;
+  }
+}
+
+.selectAllBtnWrapper {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-block;
+}
+
+.selectAllBtnWrapper .selectAllBtn {
+  position: static;
+  transform: none;
+  top: auto;
+  right: auto;
+}
+
+.selectAllLabel {
+  margin-left: 6px;
+  font-size: 13px;
+  color: var(--color-primary-text, #333);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
 .newUI {
   transition: all .1s ease-out;
   border-radius: 4px;
   display: flex;
   flex-wrap: wrap;
   width: calc(100% - 36px);
+  position: relative;
 
   &.collapsed {
     background-color: var(--highlight-color);
@@ -206,12 +277,21 @@ $border-thin: 1px solid rgb(137 128 152 / 16%);
   }
 
   &:not(.collapsed) {
-    background-color: var(--background-color);
+    background-color: rgba(var(--background-color) / 50%);
     border-left: 4px solid var(--highlight-color);
     border-top: 1px solid rgb(137 128 152 / 16%);
     border-bottom: 1px solid rgb(137 128 152 / 16%);
     border-right: 1px solid rgb(137 128 152 / 16%);
     padding: 8px 12px;
+  }
+
+  // Only add extra padding when select all button is present
+  &.withSelectAllButton {
+    padding-right: 40px; // Space for select all button on right
+
+    &:not(.collapsed) {
+      padding-right: 50px; // More space for select all button on right when not collapsed
+    }
   }
 
   .dialoguename {
@@ -232,7 +312,7 @@ $border-thin: 1px solid rgb(137 128 152 / 16%);
     font-weight: 400;
     line-height: 20px;
     letter-spacing: 0.25px;
-    color: #1F1F1F;
+    color: var(--color-neutral-content);
     width: 100%;
     margin-top: 8px;
   }
@@ -249,7 +329,7 @@ $border-thin: 1px solid rgb(137 128 152 / 16%);
       font-weight: 600;
       line-height: 16px;
       letter-spacing: 0.5px;
-      color: #898098;
+      color: var(--color-neutral-content-subtler);
     }
   }
 

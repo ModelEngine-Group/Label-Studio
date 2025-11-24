@@ -5,7 +5,7 @@ const IMAGE =
 
 Scenario(
   "Travel through history with the selected brush region",
-  async ({ I, LabelStudio, AtImageView, AtSidebar }) => {
+  async ({ I, LabelStudio, AtImageView, AtOutliner }) => {
     I.amOnPage("/");
     LabelStudio.init({
       data: { image: IMAGE },
@@ -18,15 +18,16 @@ Scenario(
     </View>`,
     });
 
-    await AtImageView.waitForImage();
+    LabelStudio.waitForObjectsReady();
 
-    AtSidebar.seeRegions(0);
-    AtSidebar.dontSeeSelectedRegion();
+    AtOutliner.seeRegions(0);
+    AtOutliner.dontSeeSelectedRegion();
 
     I.say("Draw a brush region");
     await AtImageView.lookForStage();
 
-    AtSidebar.selectTool("brush");
+    AtImageView.selectToolByCode("brush");
+    AtImageView.hasSelectedTool("brush");
 
     AtImageView.drawThroughPoints([
       [50, 50],
@@ -34,8 +35,8 @@ Scenario(
       [50, 80],
     ]);
 
-    AtSidebar.seeRegions(1);
-    AtSidebar.seeSelectedRegion();
+    AtOutliner.seeRegions(1);
+    AtOutliner.seeSelectedRegion();
 
     I.say("Add a brush stroke to the last created region (2 strokes, 1 region)");
     AtImageView.drawThroughPoints([
@@ -45,28 +46,28 @@ Scenario(
     ]);
 
     I.say("Check that we are drawing in the same region");
-    AtSidebar.seeRegions(1);
-    AtSidebar.seeSelectedRegion();
+    AtOutliner.seeRegions(1);
+    AtOutliner.seeSelectedRegion();
 
     I.say("Go back through history");
     I.pressKey(["CommandOrControl", "z"]);
 
     I.say("The brush region still should be selected (1 stroke, 1 region)");
-    AtSidebar.seeRegions(1);
-    AtSidebar.seeSelectedRegion();
+    AtOutliner.seeRegions(1);
+    AtOutliner.seeSelectedRegion();
 
     I.say("Try the same with redo");
     I.pressKey(["CommandOrControl", "shift", "z"]);
 
     I.say("The brush region still should be selected (2 strokes, 1 region)");
-    AtSidebar.seeRegions(1);
-    AtSidebar.seeSelectedRegion();
+    AtOutliner.seeRegions(1);
+    AtOutliner.seeSelectedRegion();
   },
 );
 
 Scenario(
   "Travel through history after moving the rectangle region",
-  async ({ I, LabelStudio, AtImageView, AtSidebar }) => {
+  async ({ I, LabelStudio, AtImageView, AtOutliner }) => {
     I.amOnPage("/");
     LabelStudio.init({
       data: { image: IMAGE },
@@ -78,49 +79,51 @@ Scenario(
     </Labels>
   </View>`,
     });
-    await AtImageView.waitForImage();
-    AtSidebar.seeRegions(0);
-    AtSidebar.dontSeeSelectedRegion();
+    LabelStudio.waitForObjectsReady();
+
+    AtOutliner.seeRegions(0);
+    AtOutliner.dontSeeSelectedRegion();
 
     I.say("Draw a rectangle region");
     await AtImageView.lookForStage();
-    AtSidebar.selectTool("rectangle");
+    AtImageView.selectToolByCode("rectangle");
+    AtImageView.hasSelectedTool("rectangle");
     AtImageView.drawByDrag(100, 100, 200, 200);
 
     I.say("Select the region");
     AtImageView.clickAt(150, 150);
 
     I.say("Check that the region is created and selected");
-    AtSidebar.seeRegions(1);
-    AtSidebar.seeSelectedRegion();
+    AtOutliner.seeRegions(1);
+    AtOutliner.seeSelectedRegion();
 
     I.say("Move the last created region 2 times");
     AtImageView.drawByDrag(200, 200, 100, 0);
     AtImageView.drawByDrag(300, 200, 0, -100);
 
     I.say("When we move region we should do not create any other region or loose the selection (moved 2 times)");
-    AtSidebar.seeRegions(1);
-    AtSidebar.seeSelectedRegion();
+    AtOutliner.seeRegions(1);
+    AtOutliner.seeSelectedRegion();
 
     I.say("Go back through history");
     I.pressKey(["CommandOrControl", "z"]);
 
     I.say("The rectangle region still should be selected (moved 1 time)");
-    AtSidebar.seeRegions(1);
-    AtSidebar.seeSelectedRegion();
+    AtOutliner.seeRegions(1);
+    AtOutliner.seeSelectedRegion();
 
     I.say("Repeat going back through history");
     I.pressKey(["CommandOrControl", "z"]);
 
     I.say("The rectangle region still should be selected (moved 0 times)");
-    AtSidebar.seeRegions(1);
-    AtSidebar.seeSelectedRegion();
+    AtOutliner.seeRegions(1);
+    AtOutliner.seeSelectedRegion();
 
     I.say("Try the same with redo");
     I.pressKey(["CommandOrControl", "shift", "z"]);
 
     I.say("The brush region still should be selected (moved 1 time)");
-    AtSidebar.seeRegions(1);
-    AtSidebar.seeSelectedRegion();
+    AtOutliner.seeRegions(1);
+    AtOutliner.seeSelectedRegion();
   },
 );

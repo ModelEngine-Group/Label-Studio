@@ -53,7 +53,7 @@ const annotations = [
 
 const params = { annotations: [{ id: "test", result: annotations }], config, data };
 
-Scenario("Check the audio controls work", async ({ I, LabelStudio, AtAudioView, AtSidebar }) => {
+Scenario("Check the audio controls work", async ({ I, LabelStudio, AtAudioView, AtOutliner }) => {
   async function doNotSeeErrors() {
     await I.wait(2);
     // The potential errors should be caught by `errorsCollector` plugin
@@ -69,7 +69,7 @@ Scenario("Check the audio controls work", async ({ I, LabelStudio, AtAudioView, 
   await AtAudioView.waitForAudio();
   await AtAudioView.lookForStage();
 
-  AtSidebar.seeRegions(1);
+  AtOutliner.seeRegions(1);
 
   I.say("Check the volume updates");
 

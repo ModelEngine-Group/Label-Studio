@@ -60,6 +60,7 @@ owner_statuses = {
     '/business/stats': {'get': 401, 'post': 401, 'put': 401, 'patch': 401, 'delete': 401},
     '/business/experts/list': {'get': 401, 'post': 401, 'put': 401, 'patch': 401, 'delete': 401},
     '/user/account/': {'get': 401, 'post': 401, 'put': 401, 'patch': 401, 'delete': 401},
+    '/user/account/settings': {'get': 401, 'post': 401, 'put': 401, 'patch': 401, 'delete': 401},
     '/user/signup/': {'get': 200, 'post': 200, 'put': 200, 'patch': 200, 'delete': 200},
     '/user/login/': {'get': 200, 'post': 200, 'put': 200, 'patch': 200, 'delete': 200},
     '/django-rq/queues/1000/1000/enqueue/': {'get': 302, 'post': 302, 'put': 302, 'patch': 302, 'delete': 302},
@@ -129,6 +130,7 @@ other_business_statuses = {
     '/business/stats': {'get': 401, 'post': 401, 'put': 401, 'delete': 401},
     '/business/experts/list': {'get': 401, 'post': 401, 'put': 401, 'delete': 401},
     '/user/account/': {'get': 401, 'post': 401, 'put': 401, 'delete': 401},
+    '/user/account/settings': {'get': 401, 'post': 401, 'put': 401, 'patch': 401, 'delete': 401},
     '/user/signup/': {'get': 200, 'post': 200, 'put': 200, 'delete': 200},
     '/user/login/': {'get': 200, 'post': 200, 'put': 200, 'delete': 200},
     '/django-rq/queues/1000/1000/enqueue/': {'get': 302, 'post': 302, 'put': 302, 'delete': 302},
@@ -198,6 +200,7 @@ other_annotator_statuses = {
     '/business/stats': {'get': 401, 'post': 401, 'put': 401, 'delete': 401},
     '/business/experts/list': {'get': 401, 'post': 401, 'put': 401, 'delete': 401},
     '/user/account/': {'get': 401, 'post': 401, 'put': 401, 'delete': 401},
+    '/user/account/settings': {'get': 401, 'post': 401, 'put': 401, 'patch': 401, 'delete': 401},
     '/user/signup/': {'get': 200, 'post': 200, 'put': 200, 'delete': 200},
     '/user/login/': {'get': 200, 'post': 200, 'put': 200, 'delete': 200},
     '/django-rq/queues/1000/1000/enqueue/': {'get': 302, 'post': 302, 'put': 302, 'delete': 302},
@@ -267,6 +270,7 @@ group_annotator_statuses = {
     '/business/stats': {'get': 401, 'post': 401, 'put': 401, 'delete': 401},
     '/business/experts/list': {'get': 401, 'post': 401, 'put': 401, 'delete': 401},
     '/user/account/': {'get': 401, 'post': 401, 'put': 401, 'delete': 401},
+    '/user/account/settings': {'get': 401, 'post': 401, 'put': 401, 'patch': 401, 'delete': 401},
     '/user/signup/': {'get': 200, 'post': 200, 'put': 200, 'delete': 200},
     '/user/login/': {'get': 200, 'post': 200, 'put': 200, 'delete': 200},
     '/django-rq/queues/1000/1000/enqueue/': {'get': 302, 'post': 302, 'put': 302, 'delete': 302},
@@ -306,6 +310,8 @@ def build_urls(project_id, task_id, annotation_id):
                     kwargs[key] = 1000
                 elif key in ['key']:
                     kwargs[key] = '1000'
+                elif key == 'sub_path':
+                    kwargs[key] = 'settings'  # default sub_path for user account
 
                 # we need to use really existing project/task/annotation ids from fixture
                 if key == 'project_id' or key == 'project_pk':

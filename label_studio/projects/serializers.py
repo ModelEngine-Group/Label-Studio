@@ -106,11 +106,11 @@ class ProjectSerializer(FlexFieldsModelSerializer):
             return next(iter(self.context['user_cache']))
 
     @staticmethod
-    def get_config_has_control_tags(project):
+    def get_config_has_control_tags(project) -> bool:
         return len(project.get_parsed_config()) > 0
 
     @staticmethod
-    def get_config_suitable_for_bulk_annotation(project):
+    def get_config_suitable_for_bulk_annotation(project) -> bool:
         li = LabelInterface(project.label_config)
 
         # List of tags that should not be present
@@ -168,7 +168,7 @@ class ProjectSerializer(FlexFieldsModelSerializer):
     def get_parsed_label_config(project):
         return project.get_parsed_config()
 
-    def get_start_training_on_annotation_update(self, instance):
+    def get_start_training_on_annotation_update(self, instance) -> bool:
         # FIXME: remake this logic with start_training_on_annotation_update
         return True if instance.min_annotations_to_start_training else False
 
@@ -186,6 +186,16 @@ class ProjectSerializer(FlexFieldsModelSerializer):
             )
 
         return data
+
+    def validate_color(self, value):
+        # color : "#FF4C25"
+        if value.startswith('#') and len(value) == 7:
+            try:
+                int(value[1:], 16)
+                return value
+            except ValueError:
+                pass
+        raise serializers.ValidationError('Color must be in "#RRGGBB" format')
 
     class Meta:
         model = Project
@@ -275,14 +285,14 @@ class ProjectSerializer(FlexFieldsModelSerializer):
 
         return super().update(instance, validated_data)
 
-    def get_queue_total(self, project):
+    def get_queue_total(self, project) -> int:
         remain = project.tasks.filter(
             Q(is_labeled=False) & ~Q(annotations__completed_by_id=self.user_id)
             | Q(annotations__completed_by_id=self.user_id)
         ).distinct()
         return remain.count()
 
-    def get_queue_done(self, project):
+    def get_queue_done(self, project) -> int:
         tasks_filter = {
             'project': project,
             'annotations__completed_by_id': self.user_id,
@@ -336,13 +346,48 @@ class ProjectSummarySerializer(serializers.ModelSerializer):
 class ProjectImportSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectImport
-        fields = '__all__'
+        fields = [
+            'id',
+            'project',
+            'preannotated_from_fields',
+            'commit_to_project',
+            'return_task_ids',
+            'status',
+            'url',
+            'error',
+            'created_at',
+            'updated_at',
+            'finished_at',
+            'task_count',
+            'annotation_count',
+            'prediction_count',
+            'duration',
+            'file_upload_ids',
+            'could_be_tasks_list',
+            'found_formats',
+            'data_columns',
+            'tasks',
+            'task_ids',
+        ]
 
 
 class ProjectReimportSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectReimport
-        fields = '__all__'
+        fields = [
+            'id',
+            'project',
+            'status',
+            'error',
+            'task_count',
+            'annotation_count',
+            'prediction_count',
+            'duration',
+            'file_upload_ids',
+            'files_as_tasks_list',
+            'found_formats',
+            'data_columns',
+        ]
 
 
 class ProjectModelVersionExtendedSerializer(serializers.Serializer):
@@ -354,6 +399,7 @@ class ProjectModelVersionExtendedSerializer(serializers.Serializer):
 class GetFieldsSerializer(serializers.Serializer):
     include = serializers.CharField(required=False)
     filter = serializers.CharField(required=False, default='all')
+    search = serializers.CharField(required=False, default=None)
 
     def validate_include(self, value):
         if value is not None:

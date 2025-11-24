@@ -1,3 +1,4 @@
+import { Tooltip } from "@humansignal/ui";
 import type Keymaster from "keymaster";
 import {
   type ButtonHTMLAttributes,
@@ -12,7 +13,6 @@ import { Hotkey } from "../../core/Hotkey";
 import { useHotkey } from "../../hooks/useHotkey";
 import { Block, type CNTagName, Elem } from "../../utils/bem";
 import { isDefined } from "../../utils/utilities";
-import { Tooltip } from "@humansignal/ui";
 import "./Button.scss";
 
 type HTMLButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "type">;
@@ -32,6 +32,7 @@ export interface ButtonProps extends HTMLButtonProps {
   style?: CSSProperties;
   hotkey?: keyof typeof Hotkey.keymap;
   hotkeyScope?: string;
+  displayedHotkey?: keyof typeof Hotkey.keymap;
   tooltip?: string;
   tooltipTheme?: "light" | "dark";
   nopadding?: boolean;
@@ -65,6 +66,7 @@ export const Button: ButtonType<ButtonProps> = forwardRef(
       danger,
       hotkey,
       hotkeyScope,
+      displayedHotkey,
       tooltip,
       tooltipTheme = "light",
       nopadding,
@@ -119,9 +121,12 @@ export const Button: ButtonType<ButtonProps> = forwardRef(
       </Block>
     );
 
-    if (hotkey && isDefined(Hotkey.keymap[hotkey])) {
+    if (
+      (hotkey && isDefined(Hotkey.keymap[hotkey])) ||
+      (displayedHotkey && isDefined(Hotkey.keymap[displayedHotkey]))
+    ) {
       return (
-        <Hotkey.Tooltip name={hotkey} title={tooltip}>
+        <Hotkey.Tooltip name={hotkey || displayedHotkey} title={tooltip}>
           {buttonBody}
         </Hotkey.Tooltip>
       );

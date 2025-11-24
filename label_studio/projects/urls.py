@@ -11,7 +11,6 @@ _urlpatterns = [
     path('', views.project_list, name='project-index'),
     path('<int:pk>/settings/', views.project_settings, name='project-settings', kwargs={'sub_path': ''}),
     path('<int:pk>/settings/<sub_path>', views.project_settings, name='project-settings-anything'),
-    path('upload-example/', views.upload_example_using_config, name='project-upload-example-using-config'),
 ]
 
 # reverse for projects:api:name

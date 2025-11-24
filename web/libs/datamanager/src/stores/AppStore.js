@@ -1,6 +1,12 @@
 import { destroy, flow, types } from "mobx-state-tree";
 import { Modal } from "../components/Common/Modal/Modal";
-import { FF_DEV_2887, FF_LOPS_E_3, FF_REGION_VISIBILITY_FROM_URL, isFF } from "../utils/feature-flags";
+import {
+  FF_DEV_2887,
+  FF_DISABLE_GLOBAL_USER_FETCHING,
+  FF_LOPS_E_3,
+  FF_REGION_VISIBILITY_FROM_URL,
+  isFF,
+} from "../utils/feature-flags";
 import { History } from "../utils/history";
 import { isDefined } from "../utils/utils";
 import { Action } from "./Action";
@@ -128,6 +134,10 @@ export const AppStore = types
     get currentFilter() {
       return self.currentView.filterSnapshot;
     },
+
+    get usersMap() {
+      return new Map(self.users.map((user) => [user.id, user]));
+    },
   }))
   .volatile(() => ({
     needsDataFetch: false,
@@ -241,12 +251,9 @@ export const AppStore = types
       yield taskPromise.then(async () => {
         // wait for self.LSF to be initialized with currentAnnotation
         let maxWait = 1000;
-        while (!self.LSF?.currentAnnotation) {
+        while (!self.LSF?.currentAnnotation && maxWait > 0) {
           await new Promise((resolve) => setTimeout(resolve, 1));
           maxWait -= 1;
-          if (maxWait <= 0) {
-            break;
-          }
         }
 
         if (self.LSF) {
@@ -293,7 +300,7 @@ export const AppStore = types
       try {
         self.annotationStore.unset();
         self.taskStore.unset();
-      } catch (e) {
+      } catch (_e) {
         /* Something weird */
       }
 
@@ -545,8 +552,18 @@ export const AppStore = types
       self.SDK.updateActions(actions);
     }),
 
+    fetchActionForm: flow(function* (actionId) {
+      const form = yield self.apiCall("actionForm", { actionId });
+      return form;
+    }),
+
     fetchUsers: flow(function* () {
-      const list = yield self.apiCall("users", { __useQueryCache: 60 * 1000 });
+      const list = yield self.apiCall("users", {
+        __useQueryCache: {
+          prefixKey: "organizationMembers",
+          staleTime: 60 * 1000,
+        },
+      });
 
       self.users.push(...list);
     }),
@@ -558,11 +575,17 @@ export const AppStore = types
 
       self.viewsStore.fetchColumns();
 
-      const requests = [self.fetchProject(), self.fetchUsers()];
+      const requests = [self.fetchProject()];
+
+      // Only fetch all users if not disabled globally
+      if (!isFF(FF_DISABLE_GLOBAL_USER_FETCHING)) {
+        requests.push(self.fetchUsers());
+      }
 
       if (!isLabelStream || (self.project?.show_annotation_history && task)) {
         if (self.SDK.type === "dm") {
-          requests.push(self.fetchActions());
+          // Fetch actions in background to avoid blocking the main thread
+          setTimeout(() => self.fetchActions(), 0);
         }
 
         if (self.SDK.settings?.onlyVirtualTabs && self.project?.show_annotation_history && !task) {

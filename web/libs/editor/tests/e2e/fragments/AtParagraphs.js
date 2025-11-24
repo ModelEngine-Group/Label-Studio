@@ -3,12 +3,14 @@ const Helpers = require("../tests/helpers");
 
 module.exports = {
   _rootSelector: ".lsf-paragraphs",
-  _filterSelector: ".lsf-select__value",
+  _filterSelector: "button[data-testid*='select-trigger']",
   _phraseSelector: "[class^='phrase--']",
   _phraseDialoguetextSelector: "[class^='dialoguetext--']",
 
   getParagraphTextSelector(idx) {
-    return `${this._rootSelector} ${this._phraseSelector}:nth-child(${idx}) ${this._phraseDialoguetextSelector}`;
+    // Convert 1-based test index to 0-based data-testid index
+    const zeroBasedIdx = idx - 1;
+    return `[data-testid="phrase:${zeroBasedIdx}"] [class^='dialoguetext--']`;
   },
 
   selectTextByOffset(paragraphIdx, startOffset, endOffset) {
@@ -36,11 +38,47 @@ module.exports = {
   },
 
   clickFilter(...authors) {
-    I.click(this.locate(this._filterSelector));
+    // Open dropdown and wait for it to appear
+    I.click(locate(this._filterSelector));
+    I.waitTicks(1);
+    // For the new select component, we need to select each author
+    // and the dropdown is managed automatically
     for (const author of authors) {
-      I.fillField("search_author", author);
-      I.click(locate(".lsf-select__option").withText(author));
+      // We may or may not have a search field depending on number of options
+      const hasSearchField = I.executeScript(() => {
+        return !!document.querySelector("input[data-testid='select-search-field']");
+      });
+
+      if (hasSearchField) {
+        // Try to search if field is available
+        I.fillField(locate("input[data-testid='select-search-field']"), author);
+        I.waitTicks(3);
+      }
+
+      // Select the author option
+      I.click(locate(`div[data-testid='select-option-${author}']`));
+      I.waitTicks(3);
     }
-    I.click(this.locate(this._filterSelector));
+
+    // Close any open dropdown
+    I.pressKey("Escape");
+    I.waitTicks(3); // Wait for UI to update after filter change
+  },
+
+  // Select All button helpers
+  seeSelectAllButton(index) {
+    I.seeElement(`[data-testid="select-all-btn:${index}"]`);
+  },
+
+  clickSelectAllButton(index) {
+    I.click(`[data-testid="select-all-btn:${index}"]`);
+  },
+
+  seeSelectAllButtonDisabled(index) {
+    I.seeElement(`[data-testid="select-all-btn:${index}"][disabled]`);
+  },
+
+  dontSeeSelectAllButton(index) {
+    I.dontSeeElement(`[data-testid="select-all-btn:${index}"]`);
   },
 };

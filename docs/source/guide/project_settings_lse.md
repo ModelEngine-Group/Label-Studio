@@ -479,6 +479,92 @@ For more information about pausing annotators, including how to manually pause s
 !!! note
     Pauses affect users in Annotator and Reviewer roles. So, for example, if a Reviewer is also annotating tasks and they hit the annotation limit, they will be unable to regain access to the project to review annotations unless they are unpaused. 
 
+    Users in the Manager, Administrator, or Owner role are unaffected by pause settings.
+
+</dd>
+
+<dt id="annotator-eval">Annotator Evaluation</dt>
+
+<dd>
+
+Evaluate annotators against ground truth annotations within a project. 
+
+When configured, this setting looks at the agreement score for the annotator when compared solely against ground truth annotations. You can decide to automatically pause an annotator within the project if their ground truth agreement score falls below a certain threshold. 
+ 
+
+<table>
+<thead>
+    <tr>
+      <th>Field</th>
+      <th>Description</th>
+    </tr>
+</thead>
+<tr>
+<td>
+
+**Evaluation method**
+</td>
+<td>
+
+Use this option to determine what types of tasks annotators will see first. 
+
+* **Ongoing** - Annotators are presented with tasks in the order that is configured under [**Task Sampling**](#task-sampling). 
+
+    Keep in mind that ongoing evaluation respects the [annotator overlap](#overlap) you set above. For example, if you set overlap to `2`, then only 2 annotators will be able to complete annotations on ground truth tasks before the task is considered complete and removed from the labeling stream for other users.  
+* **Onboarding** - Annotators are first presented with tasks that have a ground truth annotation. This ensures that all annotators are evaluated and that they meet your evaluation standards before progressing through the remaining project tasks. 
+
+    Onboarding evaluation disregards the [annotator overlap](#overlap) for ground truth tasks. For example, if you set overlap to `2`, but you have 10 annotators, all 10 will still be able to add annotations to ground truth tasks. 
+
+**Note:** This setting only appears when the project is configured to [automatically distribute tasks](#distribute-tasks). If you are using Manual distribution, annotators will see tasks ordered by ID number. If you would like them to see ground truth tasks first, you should add ground truth annotations in the same order. 
+
+</td>
+</tr>
+<tr>
+<td>
+
+**Minimum number of tasks for evaluation**
+</td>
+<td>
+
+The desired ground truth score threshold will not be assessed until the annotator has completed at least the specified number of ground truth tasks. 
+
+</td>
+</tr>
+<tr>
+<td>
+
+**Desired ground truth score threshold**
+</td>
+<td>
+
+The agreement threshold the annotator must meet when evaluated against ground truth annotations. 
+
+</td>
+</tr>
+<tr>
+<td>
+
+**Pause annotator on failed evaluation**
+</td>
+<td>
+
+If, after completing the minimum number of tasks, the annotator does not meet the ground truth agreement threshold, they will be immediately paused and unable to access the project. 
+
+If you do not enable pausing, the other **Annotator Evaluation** options are calculated in the background and can be seen in the Members Dashboard, but annotators are not paused.
+
+</td>
+</tr>
+</table> 
+
+You can see which users are paused from the **Members** page. To unpause a user, you will need to relax the evaluation settings for the project by increasing the minimum number of tasks or the score threshold.  
+
+For more information about pausing annotators, including how to manually pause specific annotators, see [Pause an annotator](quality#Pause-an-annotator).
+
+!!! note
+    Pauses affect users in Annotator and Reviewer roles. So, for example, if a Reviewer is also annotating tasks and they hit the annotation limit, they will be unable to regain access to the project to review annotations unless they are unpaused. 
+
+    Users in the Manager, Administrator, or Owner role are unaffected by pause settings. 
+
 </dd>
 
 <dt id="task-agreement">Task Agreement</dt>

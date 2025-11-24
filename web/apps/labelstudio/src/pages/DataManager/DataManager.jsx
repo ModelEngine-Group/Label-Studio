@@ -1,21 +1,19 @@
+import { Button, buttonVariant, ToastContext, ToastType } from "@humansignal/ui";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { generatePath, useHistory } from "react-router";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { Spinner } from "../../components";
-import { Button } from "../../components/Button/Button";
 import { modal } from "../../components/Modal/Modal";
 import { Space } from "../../components/Space/Space";
 import { useAPI } from "../../providers/ApiProvider";
 import { useProject } from "../../providers/ProjectProvider";
-import { useContextProps, useFixedLocation, useParams } from "../../providers/RoutesProvider";
-import { addAction, addCrumb, deleteAction, deleteCrumb } from "../../services/breadrumbs";
+import { useContextProps, useParams } from "../../providers/RoutesProvider";
+import { addCrumb, deleteCrumb } from "../../services/breadrumbs";
 import { Block, Elem } from "../../utils/bem";
 import { isDefined } from "../../utils/helpers";
 import { ImportModal } from "../CreateProject/Import/ImportModal";
 import { ExportPage } from "../ExportPage/ExportPage";
 import { APIConfig } from "./api-config";
-import { ToastContext, ToastType } from "@humansignal/ui";
-import { FF_OPTIC_2, isFF } from "../../utils/feature-flags";
 
 import "./DataManager.scss";
 
@@ -114,22 +112,27 @@ export const DataManagerPage = ({ ...props }) => {
       }
 
       if (isMissingTaskError) {
-        history.push(buildLink("", { id: params.id }));
+        history.push(buildLink("", { id: params?.id ?? project?.id }));
       } else if (isMissingProjectError) {
         history.push("/projects");
       }
     });
 
     dataManager.on("settingsClicked", () => {
-      history.push(buildLink("/settings/labeling", { id: params.id }));
+      history.push(buildLink("/settings/labeling", { id: params?.id ?? project?.id }));
     });
 
     dataManager.on("importClicked", () => {
-      history.push(buildLink("/data/import", { id: params.id }));
+      history.push(buildLink("/data/import", { id: params?.id ?? project?.id }));
+    });
+
+    // Navigate to Storage Settings and auto-open Add Source Storage modal
+    dataManager.on("openSourceStorageModal", () => {
+      history.push(buildLink("/settings/storage?open=source", { id: params?.id ?? project?.id }));
     });
 
     dataManager.on("exportClicked", () => {
-      history.push(buildLink("/data/export", { id: params.id }));
+      history.push(buildLink("/data/export", { id: params?.id ?? project?.id }));
     });
 
     dataManager.on("error", (response) => {
@@ -143,7 +146,7 @@ export const DataManagerPage = ({ ...props }) => {
     dataManager.on("navigate", (route) => {
       const target = route.replace(/^projects/, "");
 
-      if (target) history.push(buildLink(target, { id: params.id }));
+      if (target) history.push(buildLink(target, { id: params?.id ?? project?.id }));
       else history.push("/projects");
     });
 
@@ -209,7 +212,9 @@ export const DataManagerPage = ({ ...props }) => {
     <Block name="crash">
       <Elem name="info">Project was deleted or not yet created</Elem>
 
-      <Button to="/projects">Back to projects</Button>
+      <Button to="/projects" aria-label="Back to projects">
+        Back to projects
+      </Button>
     </Block>
   ) : (
     <>
@@ -243,7 +248,6 @@ DataManagerPage.pages = {
   ImportModal,
 };
 DataManagerPage.context = ({ dmRef }) => {
-  const location = useFixedLocation();
   const { project } = useProject();
   const [mode, setMode] = useState(dmRef?.mode ?? "explorer");
 
@@ -253,19 +257,10 @@ DataManagerPage.context = ({ dmRef }) => {
 
   const updateCrumbs = (currentMode) => {
     const isExplorer = currentMode === "explorer";
-    const dmPath = location.pathname.replace(DataManagerPage.path, "");
 
     if (isExplorer) {
-      deleteAction(dmPath);
       deleteCrumb("dm-crumb");
     } else {
-      if (!isFF(FF_OPTIC_2)) {
-        addAction(dmPath, (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          dmRef?.store?.closeLabeling?.();
-        });
-      }
       addCrumb({
         key: "dm-crumb",
         title: "Labeling",
@@ -306,11 +301,18 @@ DataManagerPage.context = ({ dmRef }) => {
     <Space size="small">
       {project.expert_instruction && mode !== "explorer" && (
         <Button
-          size="compact"
+          size="small"
+          look="outlined"
           onClick={() => {
             modal({
               title: "Instructions",
-              body: () => <div dangerouslySetInnerHTML={{ __html: project.expert_instruction }} />,
+              body: () => (
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: project.expert_instruction,
+                  }}
+                />
+              ),
             });
           }}
         >
@@ -319,9 +321,15 @@ DataManagerPage.context = ({ dmRef }) => {
       )}
 
       {Object.entries(links).map(([path, label]) => (
-        <Button key={path} tag={NavLink} size="compact" to={`/projects/${project.id}${path}`} data-external>
+        <Link
+          key={path}
+          tag={NavLink}
+          className={buttonVariant({ size: "small", look: "outlined" })}
+          to={`/projects/${project.id}${path}`}
+          data-external
+        >
           {label}
-        </Button>
+        </Link>
       ))}
     </Space>
   ) : null;

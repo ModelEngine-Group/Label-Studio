@@ -1,5 +1,5 @@
 import { createRef, useCallback } from "react";
-import Button from "antd/lib/button/index";
+import { Button } from "@humansignal/ui";
 import Form from "antd/lib/form/index";
 import Input from "antd/lib/input/index";
 import { observer } from "mobx-react";
@@ -21,6 +21,7 @@ import { FF_LEAD_TIME, FF_LSDV_4583, isFF } from "../../../utils/feature-flags";
 import ControlBase from "../Base";
 import ClassificationBase from "../ClassificationBase";
 import "./TextAreaRegionView";
+import VisibilityMixin from "../../../mixins/Visibility";
 
 import "./TextArea.scss";
 import { cn } from "../../../utils/bem";
@@ -213,10 +214,6 @@ const Model = types
         self.onChange(region);
       },
 
-      perRegionCleanup() {
-        self.regions = [];
-      },
-
       createRegion(text, pid, leadTime) {
         const r = TextAreaRegionModel.create({ pid, leadTime, _value: text });
 
@@ -337,6 +334,7 @@ const TextAreaModel = types.compose(
   AnnotationMixin,
   ReadOnlyControlMixin,
   Model,
+  VisibilityMixin,
 );
 
 const HtxTextArea = observer(({ item }) => {
@@ -420,7 +418,7 @@ const HtxTextArea = observer(({ item }) => {
             )}
             {showAddButton && (
               <Form.Item>
-                <Button style={{ marginTop: "10px" }} type="primary" htmlType="submit">
+                <Button size="small" className="mt-[10px]" type="primary" htmlType="submit">
                   Add
                 </Button>
               </Form.Item>

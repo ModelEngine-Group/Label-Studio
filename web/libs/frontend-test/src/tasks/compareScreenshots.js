@@ -31,15 +31,20 @@ const runComparison = async (options) => {
   const totalPixels = width * height;
 
   const changedPixels = pixelmatch(img1.data, img2.data, diff.data, img1.width, img1.height, {
-    treshold: options.treshold,
+    threshold: options.threshold,
   });
   const changeRatio = changedPixels / totalPixels;
 
+  // Add debug logging for CI troubleshooting
+  console.log(
+    `Screenshot comparison - Changed pixels: ${changedPixels}/${totalPixels} (${(changeRatio * 100).toFixed(2)}%), Threshold: ${options.threshold}, Operation: ${options.compare}`,
+  );
+
   switch (options.compare) {
     case "shouldChange":
-      return changeRatio > options.treshold;
+      return changeRatio > options.threshold;
     case "shouldNotChange":
-      return changeRatio <= options.treshold;
+      return changeRatio <= options.threshold;
   }
   return false;
 };

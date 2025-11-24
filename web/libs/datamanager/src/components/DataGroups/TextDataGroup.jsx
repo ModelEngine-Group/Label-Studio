@@ -1,5 +1,6 @@
 import { format, isValid } from "date-fns";
 import { dateTimeFormat } from "../CellViews/DateTimeCell";
+import clsx from "clsx";
 
 export const valueToString = (value) => {
   if (typeof value === "string") return value;
@@ -15,18 +16,21 @@ export const valueToString = (value) => {
   }
 };
 
-export const TextDataGroup = ({ value }) => {
+export const TextDataGroup = ({ value, hasImage }) => {
   const output = valueToString(value);
   const style = {
-    padding: 5,
-    height: TextDataGroup.height,
-    overflow: "hidden",
-    whiteSpace: "nowrap",
-    textOverflow: "ellipsis",
+    height: hasImage ? TextDataGroup.height : "auto",
   };
 
   return (
-    <div style={style} title={output}>
+    <div
+      style={style}
+      title={output}
+      className={clsx("p-tight", {
+        "text-wrap leading-normal": !hasImage,
+        "text-nowrap": hasImage,
+      })}
+    >
       {output}
     </div>
   );

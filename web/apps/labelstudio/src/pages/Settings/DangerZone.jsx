@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useHistory } from "react-router";
-import { Button } from "../../components";
+import { Button } from "@humansignal/ui";
 import { Label } from "../../components/Form";
 import { confirm } from "../../components/Modal/Modal";
 import { Spinner } from "../../components/Spinner/Spinner";
@@ -19,7 +19,7 @@ export const DangerZone = () => {
       title: "Action confirmation",
       body: "You're about to delete all things. This action cannot be undone.",
       okText: "Proceed",
-      buttonLook: "destructive",
+      buttonLook: "negative",
       onOk: async () => {
         setProcessing(type);
         if (type === "annotations") {
@@ -110,7 +110,8 @@ export const DangerZone = () => {
                   {btn.help && <Label description={btn.help} style={{ width: 600, display: "block" }} />}
                   <Button
                     key={btn.type}
-                    look="danger"
+                    variant="negative"
+                    look="outlined"
                     disabled={disabled}
                     waiting={waiting}
                     onClick={handleOnClick(btn.type)}

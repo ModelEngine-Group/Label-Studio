@@ -25,11 +25,14 @@ from core.utils.common import (
     load_func,
     merge_labels_counters,
 )
-from core.utils.db import fast_first
+from core.utils.db import batch_update_with_retry, fast_first
 from django.conf import settings
+from django.contrib.postgres.search import SearchVectorField
 from django.core.validators import MaxLengthValidator, MinLengthValidator
-from django.db import models, transaction
-from django.db.models import Avg, BooleanField, Case, Count, JSONField, Max, Q, Sum, Value, When
+from django.db import connection, models, transaction
+from django.db.models import Avg, BooleanField, Case, Count, GeneratedField, JSONField, Max, Q, Sum, Value, When
+from django.db.models.expressions import RawSQL
+from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from label_studio_sdk._extensions.label_studio_tools.core.label_config import parse_config
 from labels_manager.models import Label
@@ -88,12 +91,15 @@ class ProjectManager(models.Manager):
         return self.with_counts_annotate(self, fields=fields)
 
     @staticmethod
-    def with_counts_annotate(queryset, fields=None):
+    def with_counts_annotate(queryset, fields=None, exclude=None):
         available_fields = ProjectManager.ANNOTATED_FIELDS
         if fields is None:
             to_annotate = available_fields
         else:
             to_annotate = {field: available_fields[field] for field in fields if field in available_fields}
+
+        if exclude:
+            to_annotate = {field: func for field, func in to_annotate.items() if field not in exclude}
 
         for _, annotate_func in to_annotate.items():  # noqa: F402
             queryset = annotate_func(queryset)
@@ -417,8 +423,10 @@ class Project(ProjectMixin, models.Model):
             f'{self.maximum_annotations} and percentage {self.overlap_cohort_percentage}'
         )
         # if only maximum annotations parameter is tweaked
-        if maximum_annotations_changed and (not overlap_cohort_percentage_changed or self.maximum_annotations == 1):
-            tasks_with_overlap = self.tasks.filter(overlap__gt=1)
+        if maximum_annotations_changed and not overlap_cohort_percentage_changed:
+            # if there are tasks with overlap > 1 and maximum annotations has not been set to 1, preserve the cohort.
+            # but if maximum_annotations is set to 1, then all tasks should be affected (since there is no longer a distinct cohort)
+            tasks_with_overlap = self.tasks.filter(overlap__gt=1) if self.maximum_annotations > 1 else self.tasks.all()
             if tasks_with_overlap.exists():
                 # if there is a part with overlapped tasks, affect only them
                 tasks_with_overlap.update(overlap=self.maximum_annotations)
@@ -432,12 +440,24 @@ class Project(ProjectMixin, models.Model):
             bulk_update_stats_project_tasks(tasks_with_overlap, project=self)
 
         # if cohort slider is tweaked
-        elif overlap_cohort_percentage_changed and self.maximum_annotations > 1:
-            self._rearrange_overlap_cohort()
+        elif overlap_cohort_percentage_changed:
+            if self.maximum_annotations == 1:
+                if maximum_annotations_changed:
+                    self.tasks.update(overlap=1)
+                    bulk_update_stats_project_tasks(self.tasks.all(), project=self)
+                else:
+                    logger.info(
+                        f'Project {str(self)}: cohort percentage was changed but maximum annotations was not and is 1; taking no action'
+                    )
+            else:
+                self._rearrange_overlap_cohort()
 
         # if adding/deleting tasks and cohort settings are applied
         elif tasks_number_changed and self.overlap_cohort_percentage < 100 and self.maximum_annotations > 1:
             self._rearrange_overlap_cohort()
+
+    def _batch_update_with_retry(self, queryset, batch_size=500, max_retries=3, **update_fields):
+        batch_update_with_retry(queryset, batch_size, max_retries, **update_fields)
 
     def _rearrange_overlap_cohort(self):
         """
@@ -461,7 +481,9 @@ class Project(ProjectMixin, models.Model):
         if left_must_tasks > 0:
             # if there are unfinished tasks update tasks with count(annotations) >= overlap
             ids = list(tasks_with_max_annotations.values_list('id', flat=True))
-            all_project_tasks.filter(id__in=ids).update(overlap=max_annotations, is_labeled=True)
+            self._batch_update_with_retry(
+                all_project_tasks.filter(id__in=ids), overlap=max_annotations, is_labeled=True
+            )
             # order other tasks by count(annotations)
             tasks_with_min_annotations = (
                 tasks_with_min_annotations.annotate(anno=Count('annotations')).order_by('-anno').distinct()
@@ -469,16 +491,16 @@ class Project(ProjectMixin, models.Model):
             # assign overlap depending on annotation count
             # assign max_annotations and update is_labeled
             ids = list(tasks_with_min_annotations[:left_must_tasks].values_list('id', flat=True))
-            all_project_tasks.filter(id__in=ids).update(overlap=max_annotations)
+            self._batch_update_with_retry(all_project_tasks.filter(id__in=ids), overlap=max_annotations)
             # assign 1 to left
             ids = list(tasks_with_min_annotations[left_must_tasks:].values_list('id', flat=True))
             min_tasks_to_update = all_project_tasks.filter(id__in=ids)
-            min_tasks_to_update.update(overlap=1)
+            self._batch_update_with_retry(min_tasks_to_update, overlap=1)
         else:
             ids = list(tasks_with_max_annotations.values_list('id', flat=True))
-            all_project_tasks.filter(id__in=ids).update(overlap=max_annotations)
+            self._batch_update_with_retry(all_project_tasks.filter(id__in=ids), overlap=max_annotations)
             ids = list(tasks_with_min_annotations.values_list('id', flat=True))
-            all_project_tasks.filter(id__in=ids).update(overlap=1)
+            self._batch_update_with_retry(all_project_tasks.filter(id__in=ids), overlap=1)
         # update is labeled after tasks rearrange overlap
         bulk_update_stats_project_tasks(all_project_tasks, project=self)
 
@@ -530,7 +552,6 @@ class Project(ProjectMixin, models.Model):
 
             if self.num_tasks == 0:
                 logger.debug(f'Project {self} has no tasks: nothing to validate here. Ensure project summary is empty')
-                logger.info(f'calling reset project_id={self.id} validate_config() num_tasks={self.num_tasks}')
                 summary.reset()
                 return
 
@@ -555,9 +576,6 @@ class Project(ProjectMixin, models.Model):
                     f'Project {self} has no annotations and drafts: nothing to validate here. '
                     f'Ensure annotations-related project summary is empty'
                 )
-                logger.info(
-                    f'calling reset project_id={self.id} validate_config() num_annotations={self.num_annotations} num_drafts={self.num_drafts}'
-                )
                 summary.reset(tasks_data_based=False)
                 return
 
@@ -572,6 +590,9 @@ class Project(ProjectMixin, models.Model):
             diff_str = []
             for ann_tuple in different_annotations:
                 from_name, to_name, t = ann_tuple.split('|')
+                # TODO tags that operate as both object and control tags; should be special registry/logic for them
+                if from_name == to_name and t.lower() == 'chatmessage':
+                    continue
                 if t.lower() == 'textarea':  # avoid textarea to_name check (see DEV-1598)
                     continue
                 if (
@@ -791,12 +812,8 @@ class Project(ProjectMixin, models.Model):
                 summary = ProjectSummary.objects.select_for_update().get(project=self)
                 # Ensure project.summary is consistent with current tasks / annotations
                 if self.num_tasks == 0:
-                    logger.info(f'calling reset project_id={self.id} Project.save() num_tasks={self.num_tasks}')
                     summary.reset()
                 elif self.num_annotations == 0 and self.num_drafts == 0:
-                    logger.info(
-                        f'calling reset project_id={self.id} Project.save() num_annotations={self.num_annotations} num_drafts={self.num_drafts}'
-                    )
                     summary.reset(tasks_data_based=False)
 
     def get_member_ids(self):
@@ -997,23 +1014,45 @@ class Project(ProjectMixin, models.Model):
 
         return self.get_ml_backends(state=MLBackendState.CONNECTED)
 
-    def get_all_storage_objects(self, type_='import'):
+    @cached_property
+    def get_all_import_storage_objects(self):
         from io_storages.models import get_storage_classes
 
-        if hasattr(self, '_storage_objects'):
-            return self._storage_objects
-
         storage_objects = []
-        for storage_class in get_storage_classes(type_):
+        for storage_class in get_storage_classes('import'):
             storage_objects += list(storage_class.objects.filter(project=self))
 
-        self._storage_objects = storage_objects
         return storage_objects
+
+    @cached_property
+    def get_all_export_storage_objects(self):
+        from io_storages.models import get_storage_classes
+
+        storage_objects = []
+        for storage_class in get_storage_classes('export'):
+            storage_objects += list(storage_class.objects.filter(project=self))
+
+        return storage_objects
+
+    @cached_property
+    def multipage_labeling_values(self):
+        """
+        Check if the project's label config contains an Image tag with a valueList attribute,
+        which indicates multipage labeling.
+        """
+        config = self.get_parsed_config()
+        values = []
+        for tag in config.values():
+            for object_tag in tag.get('inputs', []):
+                if object_tag.get('type') == 'Image':
+                    if object_tag.get('valueList') is not None:
+                        values.append(object_tag.get('valueList'))
+        return values
 
     def resolve_storage_uri(self, url: str) -> Optional[Mapping[str, Any]]:
         from io_storages.functions import get_storage_by_url
 
-        storage_objects = self.get_all_storage_objects()
+        storage_objects = self.get_all_import_storage_objects
         storage = get_storage_by_url(url, storage_objects)
 
         if storage:
@@ -1054,7 +1093,7 @@ class Project(ProjectMixin, models.Model):
         recalculate_stats_counts: Optional[Mapping[str, int]] = None,
     ):
         """
-        Update tasks counters and update tasks states (rearrange and\or is_labeled)
+        Update tasks counters and update tasks states (rearrange and/or is_labeled)
         :param queryset: Tasks to update queryset
         :param from_scratch: Skip calculated tasks
         :return: Count of updated tasks
@@ -1070,14 +1109,106 @@ class Project(ProjectMixin, models.Model):
 
         return objs
 
+    def get_max_annotation_result_size(self):
+        """Get the maximum annotation result size for this project"""
+        # For SQLite, return 0 (no annotations to consider)
+        if settings.DJANGO_DB == settings.DJANGO_DB_SQLITE:
+            return 0
+
+        # Using raw SQL to ensure we use the specific index annotation_proj_result_octlen_idx
+        # which is optimized for this query pattern (project_id, octet_length DESC)
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT id,
+                       octet_length(result::text) AS bytes
+                FROM   task_completion
+                WHERE  project_id = %s
+                ORDER  BY octet_length(result::text) DESC
+                LIMIT  1
+            """,
+                [self.id],
+            )
+
+            row = cursor.fetchone()
+            if not row or not row[1]:
+                return 0
+
+            return row[1]
+
+    def get_task_batch_size(self):
+        """Calculate optimal batch size based on task data size and annotation result size"""
+        # For SQLite, use default MAX_TASK_BATCH_SIZE
+        if settings.DJANGO_DB == settings.DJANGO_DB_SQLITE:
+            return settings.MAX_TASK_BATCH_SIZE
+
+        # Get maximum task data size using the optimized index
+        max_task_size = 0
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT id,
+                       octet_length(data::text) AS bytes
+                FROM   task
+                WHERE  project_id = %s
+                ORDER  BY octet_length(data::text) DESC
+                LIMIT  1
+            """,
+                [self.id],
+            )
+
+            row = cursor.fetchone()
+            if row and row[1]:
+                max_task_size = row[1]
+
+        # Get maximum annotation result size using the new optimized index
+        max_annotation_size = self.get_max_annotation_result_size()
+
+        # Use the larger of the two sizes for batch calculation
+        max_data_size = max(max_task_size, max_annotation_size)
+
+        if max_data_size == 0:
+            return settings.MAX_TASK_BATCH_SIZE
+
+        batch_size = settings.TASK_DATA_PER_BATCH // max_data_size
+
+        if batch_size > settings.MAX_TASK_BATCH_SIZE:
+            batch_size = settings.MAX_TASK_BATCH_SIZE
+        elif batch_size < 1:
+            batch_size = 1
+
+        logger.info(
+            f'Project {self.id}: max task size {max_task_size} bytes, '
+            f'max annotation size {max_annotation_size} bytes, '
+            f'calculated batch size {batch_size}'
+        )
+        return batch_size
+
     def __str__(self):
         return f'{self.title} (id={self.id})' or _('Business number %d') % self.pk
+
+    if connection.vendor == 'postgresql':
+        search_vector = GeneratedField(
+            expression=RawSQL(
+                "setweight(to_tsvector('english', COALESCE(CAST(id AS TEXT), '')), 'A') || "
+                "setweight(to_tsvector('english', COALESCE(title, '')), 'B') || "
+                "setweight(to_tsvector('english', COALESCE(SUBSTRING(description, 1, 250000), '')), 'C')",
+                params=[],
+                output_field=SearchVectorField(),
+            ),
+            output_field=SearchVectorField(),
+            db_persist=True,
+        )
+    else:
+        search_vector = models.TextField(null=True, blank=True)
 
     class Meta:
         db_table = 'project'
         indexes = [
             models.Index(fields=['pinned_at', 'created_at']),
         ]
+        # This index is added with an async migration
+        #     indexes.append(GinIndex(fields=['search_vector'], name='project_search_vector_idx'))
 
 
 class ProjectOnboardingSteps(models.Model):
@@ -1180,11 +1311,6 @@ class ProjectSummary(models.Model):
         return self.project.has_permission(user)
 
     def reset(self, tasks_data_based=True):
-        import traceback
-
-        logger.info(
-            f'reset summary project_id={self.project_id} {tasks_data_based=} {self.all_data_columns=} {traceback.format_stack(limit=4)=}'
-        )
         if tasks_data_based:
             self.all_data_columns = {}
             self.common_data_columns = []
@@ -1214,8 +1340,6 @@ class ProjectSummary(models.Model):
             self.common_data_columns = list(sorted(common_data_columns))
         else:
             self.common_data_columns = list(sorted(set(self.common_data_columns) & common_data_columns))
-        logger.info(f'update summary.all_data_columns project_id={self.project_id} {self.all_data_columns=}')
-        logger.info(f'update summary.common_data_columns project_id={self.project_id} {self.common_data_columns=}')
         self.save(update_fields=['all_data_columns', 'common_data_columns'])
 
     def remove_data_columns(self, tasks):
@@ -1238,8 +1362,6 @@ class ProjectSummary(models.Model):
                 if key in common_data_columns:
                     common_data_columns.remove(key)
             self.common_data_columns = common_data_columns
-        logger.info(f'remove summary.all_data_columns project_id={self.project_id} {self.all_data_columns=}')
-        logger.info(f'remove summary.common_data_columns project_id={self.project_id} {self.common_data_columns=}')
         self.save(
             update_fields=[
                 'all_data_columns',

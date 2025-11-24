@@ -273,7 +273,14 @@ def generate_sample_task_without_check(label_config, mode='upload', secure_mode=
 
         # detect secured mode - objects served as URLs
         value_type = p.get('valueType') or p.get('valuetype')
-        only_urls = secure_mode or value_type == 'url'
+
+        only_urls = value_type == 'url'
+        if secure_mode and p.tag in ['Paragraphs', 'HyperText', 'Text']:
+            # In secure mode default valueType for Paragraphs and RichText is "url"
+            only_urls = only_urls or value_type is None
+        if p.tag == 'TimeSeries':
+            # for TimeSeries default valueType is "url"
+            only_urls = only_urls or value_type is None
 
         example_from_field_name = examples.get('$' + value)
         if example_from_field_name:
@@ -300,10 +307,10 @@ def generate_sample_task_without_check(label_config, mode='upload', secure_mode=
             # TimeSeries special case - generate signals on-the-fly
             time_column = p.get('timeColumn')
             value_columns = []
-            for ts_child in p:
-                if ts_child.tag != 'Channel':
-                    continue
-                value_columns.append(ts_child.get('column'))
+            if hasattr(p, 'findall'):
+                channels = p.findall('.//Channel[@column]')
+                for ts_child in channels:
+                    value_columns.append(ts_child.get('column'))
             sep = p.get('sep')
             time_format = p.get('timeFormat')
 
@@ -362,6 +369,29 @@ def _is_strftime_string(s):
     return '%' in s
 
 
+def _get_smallest_time_freq(time_format):
+    """Determine the smallest time component in strftime format and return pandas frequency"""
+    if not time_format:
+        return 'D'  # default to daily
+
+    # Order from smallest to largest (we want the smallest one)
+    time_components = [
+        ('%S', 's'),  # second
+        ('%M', 'min'),  # minute
+        ('%H', 'h'),  # hour
+        ('%d', 'D'),  # day
+        ('%m', 'MS'),  # month start
+        ('%Y', 'YS'),  # year start
+    ]
+
+    # Find the smallest time component present in the format
+    for strftime_code, pandas_freq in time_components:
+        if strftime_code in time_format:
+            return pandas_freq
+
+    return 'D'  # default to daily if no time components found
+
+
 def generate_time_series_json(time_column, value_columns, time_format=None):
     """Generate sample for time series"""
     n = 100
@@ -372,10 +402,26 @@ def generate_time_series_json(time_column, value_columns, time_format=None):
     if time_format is None:
         times = np.arange(n).tolist()
     else:
-        times = pd.date_range('2020-01-01', periods=n, freq='D').strftime(time_format).tolist()
+        # Automatically determine the appropriate frequency based on time format
+        freq = _get_smallest_time_freq(time_format)
+        times = pd.date_range('2020-01-01', periods=n, freq=freq)
+        new_times = []
+        prev_time_str = None
+        for time in times:
+            time_str = time.strftime(time_format)
+
+            # Check if formatted string is monotonic (to handle cycling due to format truncation)
+            if prev_time_str is not None and time_str <= prev_time_str:
+                break
+
+            new_times.append(time_str)
+            prev_time_str = time_str  # Update prev_time_str for next iteration
+
+        times = new_times
+
     ts = {time_column: times}
     for value_col in value_columns:
-        ts[value_col] = np.random.randn(n).tolist()
+        ts[value_col] = np.random.randn(len(times)).tolist()
     return ts
 
 

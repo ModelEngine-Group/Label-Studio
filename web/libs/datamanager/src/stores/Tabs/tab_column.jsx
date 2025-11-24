@@ -1,14 +1,14 @@
 import { getRoot, getSnapshot, types } from "mobx-state-tree";
 import {
-  CommentCheck,
-  CommentRed,
-  LsAnnotation,
-  LsBanSquare,
-  LsSparkSquare,
-  LsStarSquare,
-  LsThumbsDown,
-  LsThumbsUp,
-} from "../../assets/icons";
+  IconCommentCheck,
+  IconCommentRed,
+  IconAnnotation,
+  IconBanSquare,
+  IconSparkSquare,
+  IconStarSquare,
+  IconThumbsDown,
+  IconThumbsUp,
+} from "@humansignal/icons";
 import * as CellViews from "../../components/CellViews";
 import { normalizeCellAlias } from "../../components/CellViews";
 import { all } from "../../utils/utils";
@@ -75,13 +75,16 @@ export const TabColumn = types
     target: types.enumeration(["tasks", "annotations"]),
     orderable: types.optional(types.boolean, true),
     help: types.maybeNull(types.string),
+    // Column alias whose filter should be joined automatically when a filter is created for this column
+    child_filter: types.maybeNull(types.string),
+    disabled: types.optional(types.boolean, false),
   })
   .views((self) => ({
     get hidden() {
       if (self.children) {
         return all(self.children, (c) => c.hidden);
       }
-      return self.parentView?.hiddenColumns.hasColumn(self) ?? (self.parent.hidden || false);
+      return self.disabled || (self.parentView?.hiddenColumns.hasColumn(self) ?? (self.parent.hidden || false));
     },
 
     get parentView() {
@@ -143,7 +146,7 @@ export const TabColumn = types
         const childColumns = [].concat(...self.children.map((subColumn) => subColumn.asField));
 
         result.push(...childColumns);
-      } else {
+      } else if (!self.isAnnotationResultsFilterColumn) {
         result.push({
           ...self,
           id: self.key,
@@ -161,21 +164,21 @@ export const TabColumn = types
     get icon() {
       switch (self.alias) {
         case "total_annotations":
-          return <LsAnnotation width="20" height="20" style={{ color: "#617ADA" }} />;
+          return <IconAnnotation width="20" height="20" style={{ color: "#617ADA" }} />;
         case "cancelled_annotations":
-          return <LsBanSquare width="20" height="20" style={{ color: "#DD0000" }} />;
+          return <IconBanSquare width="20" height="20" style={{ color: "#DD0000" }} />;
         case "total_predictions":
-          return <LsSparkSquare width="20" height="20" style={{ color: "#944BFF" }} />;
+          return <IconSparkSquare width="20" height="20" style={{ color: "#944BFF" }} />;
         case "reviews_accepted":
-          return <LsThumbsUp width="20" height="20" style={{ color: "#2AA000" }} />;
+          return <IconThumbsUp width="20" height="20" style={{ color: "#2AA000" }} />;
         case "reviews_rejected":
-          return <LsThumbsDown width="20" height="20" style={{ color: "#DD0000" }} />;
+          return <IconThumbsDown width="20" height="20" style={{ color: "#DD0000" }} />;
         case "ground_truth":
-          return <LsStarSquare width="20" height="20" style={{ color: "#FFB700" }} />;
+          return <IconStarSquare width="20" height="20" style={{ color: "#FFB700" }} />;
         case "comment_count":
-          return <CommentCheck width="20" height="20" style={{ color: "#FFB700" }} />;
+          return <IconCommentCheck width="20" height="20" style={{ color: "#FFB700" }} />;
         case "unresolved_comment_count":
-          return <CommentRed width="20" height="20" style={{ color: "#FFB700" }} />;
+          return <IconCommentRed width="20" height="20" style={{ color: "#FFB700" }} />;
         default:
           return null;
       }
@@ -193,6 +196,12 @@ export const TabColumn = types
       const cellView = CellViews[self.type] ?? CellViews[normalizeCellAlias(self.alias)];
 
       return cellView?.filterable !== false;
+    },
+
+    get isAnnotationResultsFilterColumn() {
+      // these columns are not visible in the column selector, but are used for filtering
+      const hidden_column_ids = ["annotations_results_json", "predictions_results_json"];
+      return hidden_column_ids.some((id) => self.id.includes(`${id}.`) || self.id.endsWith(`:${id}`));
     },
   }))
   .actions((self) => ({

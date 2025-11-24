@@ -1,8 +1,9 @@
 import { useCallback, useContext, useEffect, useState } from "react";
-import { FaEllipsisV } from "react-icons/fa";
-import { Button, Card, Dropdown, Menu } from "../../../components";
+import { Card, Dropdown, Menu } from "../../../components";
+import { Button } from "@humansignal/ui";
 import { ApiContext } from "../../../providers/ApiProvider";
 import { StorageSummary } from "./StorageSummary";
+import { IconEllipsisVertical } from "@humansignal/icons";
 
 export const StorageCard = ({ rootClass, target, storage, onEditStorage, onDeleteStorage, storageTypes }) => {
   const [syncing, setSyncing] = useState(false);
@@ -38,7 +39,7 @@ export const StorageCard = ({ rootClass, target, storage, onEditStorage, onDelet
 
   return (
     <Card
-      header={storageData.title?.slice?.(0, 70) ?? `Untitled ${storageData.type}`}
+      header={storageData.title ?? `Untitled ${storageData.type}`}
       extra={
         <Dropdown.Trigger
           align="right"
@@ -49,7 +50,9 @@ export const StorageCard = ({ rootClass, target, storage, onEditStorage, onDelet
             </Menu>
           }
         >
-          <Button type="link" style={{ width: 32, height: 32, marginRight: -10 }} icon={<FaEllipsisV />} />
+          <Button look="string" className="-ml-3" aria-label="Storage options">
+            <IconEllipsisVertical />
+          </Button>
         </Dropdown.Trigger>
       }
     >
@@ -60,8 +63,14 @@ export const StorageCard = ({ rootClass, target, storage, onEditStorage, onDelet
         storageTypes={storageTypes}
       />
       <div className={rootClass.elem("sync")}>
-        <div>
-          <Button waiting={syncing} onClick={startSync} disabled={notSyncedYet}>
+        <div className="mt-base">
+          <Button
+            look="outlined"
+            waiting={syncing}
+            onClick={startSync}
+            disabled={notSyncedYet}
+            aria-label="Sync Storage"
+          >
             Sync Storage
           </Button>
           {notSyncedYet && (

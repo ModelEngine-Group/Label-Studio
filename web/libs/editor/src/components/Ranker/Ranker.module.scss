@@ -12,7 +12,7 @@
 .column {
   flex: 1;
   border: 1px solid var(--ranker-border-color);
-  background-color: var(--sand_0);
+  background-color: var(--color-neutral-background);
   padding: var(--ranker-gap);
   border-radius: 2px;
   display: flex;
@@ -67,7 +67,7 @@
   padding: var(--ranker-gap);
   border-radius: 2px;
   background-color: var(--sand_200);
-  color: var(--sand_900);
+  color: var(--color-neutral-content);
 }
 
 .itemLine {

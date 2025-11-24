@@ -196,7 +196,7 @@ const HtxKeyPointView = ({ item, setShapeRef }) => {
     includeFill: true,
     defaultFillColor: "#000",
     defaultStrokeColor: "#fff",
-    defaultOpacity: item.style ?? item.tag ? 0.6 : 1,
+    defaultOpacity: (item.style ?? item.tag) ? 0.6 : 1,
     // avoid size glitching when user select/unselect region
     sameStrokeWidthForSelected: true,
   });
@@ -258,17 +258,14 @@ const HtxKeyPointView = ({ item, setShapeRef }) => {
         onMouseOver={() => {
           if (store.annotationStore.selected.isLinkingMode) {
             item.setHighlight(true);
-            stage.container().style.cursor = "crosshair";
-          } else {
-            stage.container().style.cursor = "pointer";
           }
+          item.updateCursor(true);
         }}
         onMouseOut={() => {
-          stage.container().style.cursor = "default";
-
           if (store.annotationStore.selected.isLinkingMode) {
             item.setHighlight(false);
           }
+          item.updateCursor();
         }}
         onClick={(e) => {
           if (item.parent.getSkipInteractions()) return;

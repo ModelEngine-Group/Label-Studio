@@ -8,12 +8,7 @@ meta_description: Customize Label Studio by using the Relation tag to add a sing
 
 The `Relation` tag represents a single relation label. Use with the `Relations` tag to specify the value of a label to apply to a relation between regions.
 
-### Parameters
-
-| Param | Type | Description |
-| --- | --- | --- |
-| value | <code>string</code> | Value of the relation |
-| [background] | <code>string</code> | Background color of the active label in hexadecimal |
+{% insertmd includes/tags/relation.md %}
 
 ### Example
 

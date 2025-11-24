@@ -21,7 +21,7 @@ class TaskMixin:
         pass
 
     @staticmethod
-    def after_bulk_delete_actions(tasks_ids):
+    def after_bulk_delete_actions(tasks_ids, project):
         """
         Actions to execute after bulk task deletion
         """

@@ -1,5 +1,4 @@
 export { Breadcrumbs } from "./Breadcrumbs/Breadcrumbs";
-export { Button } from "./Button/Button";
 export { Card } from "./Card/Card";
 export { Columns } from "./Columns/Columns";
 export { Dropdown } from "./Dropdown/Dropdown";

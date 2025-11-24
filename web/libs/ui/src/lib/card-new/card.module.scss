@@ -1,8 +1,8 @@
 .card {
 width: 660px;
-border-radius: var(--corder-radius-small, 8px);
-border: 1px solid var(--color-neutral-border, #E1DED5);
-background: var(--color-neutral-background, #FDFDFC);
+border-radius: var(--corner-radius-small);
+border: 1px solid var(--color-neutral-border);
+background: var(--color-neutral-background);
 }
 
 .cardHeader {
@@ -11,7 +11,7 @@ background: var(--color-neutral-background, #FDFDFC);
 }
 
 .cardTitle{
-color: var(--color-neutral-content, #262522);
+color: var(--color-neutral-content);
 
 /* headline/medium */
 font-family: var(--font-family-headings, Figtree);
@@ -23,8 +23,8 @@ letter-spacing: var(--letter-spacing-denser, -0.15px);
 }
 
 .cardDescription{
-  padding-top: var(--spacing-tight, 8px);
-color: var(--color-neutral-content-subtler, #6B6860);
+  padding-top: var(--spacing-tight);
+color: var(--color-neutral-content-subtler);
 
 /* title/medium */
 font-family: var(--font-family-headings, Figtree);

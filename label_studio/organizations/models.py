@@ -65,7 +65,10 @@ class OrganizationMember(OrganizationMemberMixin, models.Model):
             self.user.active_organization = self.user.organizations.filter(
                 organizationmember__deleted_at__isnull=True
             ).first()
-            self.user.save(update_fields=['active_organization'])
+            if self.user.avatar:
+                self.user.avatar.delete(save=False)
+                self.user.avatar = None
+            self.user.save(update_fields=['active_organization', 'avatar'])
 
         self.user.task_locks.all().delete()
 

@@ -119,10 +119,11 @@ const maxUsageDataTable = new DataTable(["maxUsage"]);
 
 Data(maxUsageImageToolsDataTable).Scenario(
   "Max usages of separated labels in ImageView on region creating",
-  async ({ I, LabelStudio, AtImageView, AtSidebar, current }) => {
+  async ({ I, LabelStudio, AtImageView, AtOutliner, AtPanels, Modals, current }) => {
     const { maxUsage, shapeName } = current;
     const shape = shapes[shapeName];
     const annotations = [];
+    const AtDetailsPanel = AtPanels.usePanel(AtPanels.PANEL.DETAILS);
 
     for (let k = 0; k < maxUsage; k++) {
       annotations.push({
@@ -152,23 +153,25 @@ Data(maxUsageImageToolsDataTable).Scenario(
         },
       ],
     });
-    await AtImageView.waitForImage();
+    AtDetailsPanel.collapsePanel();
+    LabelStudio.waitForObjectsReady();
     await AtImageView.lookForStage();
-    AtSidebar.seeRegions(maxUsage);
+    AtOutliner.seeRegions(maxUsage);
 
     I.pressKey("1");
     I.pressKey(shape.shortcut);
     AtImageView.clickAt(50, 50);
 
-    I.see(`You can't use Label_1 more than ${maxUsage} time(s)`);
+    Modals.seeWarning(`You can't use Label_1 more than ${maxUsage} time(s)`);
   },
 );
 
 Data(maxUsageImageToolsDataTable).Scenario(
   "Max usages of labels in ImageView on region creating",
-  async ({ I, LabelStudio, AtImageView, AtSidebar, current }) => {
+  async ({ I, LabelStudio, AtImageView, AtOutliner, AtPanels, Modals, current }) => {
     const { maxUsage, shapeName } = current;
     const shape = shapes[shapeName];
+    const AtDetailsPanel = AtPanels.usePanel(AtPanels.PANEL.DETAILS);
 
     I.amOnPage("/");
     LabelStudio.init({
@@ -177,32 +180,32 @@ Data(maxUsageImageToolsDataTable).Scenario(
         image: IMAGE,
       },
     });
+    AtDetailsPanel.collapsePanel();
 
-    await AtImageView.waitForImage();
+    LabelStudio.waitForObjectsReady();
     await AtImageView.lookForStage();
-    AtSidebar.seeRegions(0);
+    AtOutliner.seeRegions(0);
 
     for (let k = 0; k < maxUsage; k++) {
       I.pressKey(shape.hotkey);
       drawShapeByBbox(shape, 1 + 50 * k, 1, 30, 30, AtImageView);
       I.pressKey("u");
+      AtOutliner.seeRegions(k + 1);
+      I.waitTicks(2);
     }
 
     I.pressKey(shape.hotkey);
     AtImageView.clickAt(50, 50);
 
-    I.see(`You can't use ${shapeName}_1 more than ${maxUsage} time(s)`);
+    Modals.seeWarning(`You can't use ${shapeName}_1 more than ${maxUsage} time(s)`);
   },
 );
 
 Data(maxUsageDataTable).Scenario(
   "Max usages of labels in Audio on region creation",
-  async ({ I, LabelStudio, AtSidebar, AtAudioView, current }) => {
+  async ({ I, LabelStudio, AtOutliner, AtAudioView, Modals, current }) => {
     const { maxUsage } = current;
 
-    LabelStudio.setFeatureFlags({
-      ff_front_dev_2715_audio_3_280722_short: true,
-    });
     I.amOnPage("/");
     LabelStudio.init({
       config: `
@@ -220,7 +223,7 @@ Data(maxUsageDataTable).Scenario(
 
     await AtAudioView.waitForAudio();
     await AtAudioView.lookForStage();
-    AtSidebar.seeRegions(0);
+    AtOutliner.seeRegions(0);
 
     for (let k = 0; k < maxUsage; k++) {
       I.pressKey("1");
@@ -230,14 +233,14 @@ Data(maxUsageDataTable).Scenario(
     I.pressKey("1");
     AtAudioView.dragAudioElement(10 + 40 * maxUsage, 30);
 
-    AtSidebar.seeRegions(maxUsage);
-    I.see(`You can't use Label_1 more than ${maxUsage} time(s)`);
+    AtOutliner.seeRegions(maxUsage);
+    Modals.seeWarning(`You can't use Label_1 more than ${maxUsage} time(s)`);
   },
 );
 
 Data(maxUsageDataTable).Scenario(
   "Max usages of labels in RichText on region creation",
-  async ({ I, LabelStudio, AtSidebar, AtRichText, current }) => {
+  async ({ I, LabelStudio, AtOutliner, AtRichText, Modals, current }) => {
     const { maxUsage } = current;
 
     I.amOnPage("/");
@@ -255,8 +258,8 @@ Data(maxUsageDataTable).Scenario(
       },
     });
 
+    AtOutliner.seeRegions(0);
     LabelStudio.waitForObjectsReady();
-    AtSidebar.seeRegions(0);
 
     for (let k = 0; k < maxUsage; k++) {
       I.pressKey("1");
@@ -266,13 +269,13 @@ Data(maxUsageDataTable).Scenario(
     I.pressKey("1");
     AtRichText.selectTextByGlobalOffset(1 + 5 * maxUsage, 5 * (maxUsage + 1));
 
-    I.see(`You can't use Label_1 more than ${maxUsage} time(s)`);
+    Modals.seeWarning(`You can't use Label_1 more than ${maxUsage} time(s)`);
   },
 );
 
 Data(maxUsageDataTable).Scenario(
   "Max usages of labels in Paragraphs on region creation",
-  async ({ I, LabelStudio, AtSidebar, AtParagraphs, current }) => {
+  async ({ I, LabelStudio, AtOutliner, AtParagraphs, current }) => {
     const { maxUsage } = current;
 
     I.amOnPage("/");
@@ -288,24 +291,39 @@ Data(maxUsageDataTable).Scenario(
       data: require("../examples/text-paragraphs").data,
     });
 
+    AtOutliner.seeRegions(0);
     LabelStudio.waitForObjectsReady();
-    AtSidebar.seeRegions(0);
 
     for (let k = 0; k < maxUsage; k++) {
       I.pressKey("1");
       AtParagraphs.selectTextByOffset(k + 1, 0, 3);
       I.pressKey("u");
+      I.pressKey("Escape");
     }
+
     I.pressKey("1");
     AtParagraphs.selectTextByOffset(maxUsage + 1, 0, 3);
 
-    I.see(`You can't use Label_1 more than ${maxUsage} time(s)`);
+    // Verify that exactly maxUsage regions exist (not maxUsage + 1)
+    AtOutliner.seeRegions(maxUsage);
+
+    // Additional validation: Check that the 4th region creation was prevented
+    I.executeScript((maxUsageValue) => {
+      const regions = window.Htx.annotation?.regionStore?.regions || [];
+      const label1Regions = regions.filter((r) => r.hasLabel("Label_1"));
+
+      if (label1Regions.length > maxUsageValue) {
+        throw new Error(
+          `Max usage validation failed: ${label1Regions.length} Label_1 regions created, but max is ${maxUsageValue}`,
+        );
+      }
+    }, maxUsage);
   },
 );
 
 Data(maxUsageDataTable).Scenario(
   "Max usages of labels in Timeseries on region creation",
-  async ({ I, LabelStudio, AtSidebar, AtTimeSeries, current }) => {
+  async ({ I, LabelStudio, AtOutliner, AtTimeSeries, Modals, current }) => {
     const { maxUsage } = current;
 
     I.amOnPage("/");
@@ -324,8 +342,8 @@ Data(maxUsageDataTable).Scenario(
       data: require("../examples/data/sample-sin.json"),
     });
 
+    AtOutliner.seeRegions(0);
     LabelStudio.waitForObjectsReady();
-    AtSidebar.seeRegions(0);
     await AtTimeSeries.lookForStage();
 
     for (let k = 0; k < maxUsage; k++) {
@@ -336,6 +354,6 @@ Data(maxUsageDataTable).Scenario(
     I.pressKey("1");
     AtTimeSeries.drawByDrag(1 + maxUsage * 20, 10);
 
-    I.see(`You can't use Label_1 more than ${maxUsage} time(s)`);
+    Modals.seeWarning(`You can't use Label_1 more than ${maxUsage} time(s)`);
   },
 );

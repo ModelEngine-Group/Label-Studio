@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "license": "MIT",
   "private": true,
-  "dependencies": {},
   "main": "src/index.ts",
-  "files": ["src/tailwind.css", "src/shad/components", "src/ui/assets", "src/ui/typography"]
+  "files": ["src/tailwind.css", "src/shad/components", "src/ui/assets"],
+  "dependencies": {
+    "@radix-ui/react-accordion": "^1.2.11",
+    "@radix-ui/react-radio-group": "^1.3.7"
+  }
 }

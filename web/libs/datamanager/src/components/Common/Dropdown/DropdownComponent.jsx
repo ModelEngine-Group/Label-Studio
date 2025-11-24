@@ -10,7 +10,7 @@ import { DropdownTrigger } from "./DropdownTrigger";
 
 let lastIndex = 1;
 
-export const Dropdown = React.forwardRef(({ animated = true, visible = false, ...props }, ref) => {
+export const Dropdown = React.forwardRef(({ animated = true, visible = false, rawClassName, ...props }, ref) => {
   const rootName = cn("dropdown-dm");
 
   /**@type {import('react').RefObject<HTMLElement>} */
@@ -18,7 +18,7 @@ export const Dropdown = React.forwardRef(({ animated = true, visible = false, ..
   const { triggerRef } = React.useContext(DropdownContext) ?? {};
   const isInline = triggerRef === undefined;
 
-  const { children, align, openUpwardForShortViewport } = props;
+  const { children, align, openUpwardForShortViewport, constrainHeight = false } = props;
   const [currentVisible, setVisible] = React.useState(visible);
   const [offset, setOffset] = React.useState({});
   const [visibility, setVisibility] = React.useState(visible ? "visible" : null);
@@ -31,11 +31,12 @@ export const Dropdown = React.forwardRef(({ animated = true, visible = false, ..
       dropdownEl,
       align ?? "bottom-left",
       0,
+      constrainHeight,
       openUpwardForShortViewport ?? true,
     );
 
     setOffset({ left, top });
-  }, [triggerRef]);
+  }, [triggerRef, align, openUpwardForShortViewport, constrainHeight]);
 
   const dropdownIndex = React.useMemo(() => {
     return lastIndex++;
@@ -155,7 +156,7 @@ export const Dropdown = React.forwardRef(({ animated = true, visible = false, ..
   const result = (
     <div
       ref={dropdown}
-      className={clsx(rootName.toString(), rootName.mix([props.className, visibilityClasses]).toString())}
+      className={clsx(rootName.toString(), rootName.mix([props.className, visibilityClasses]).toString(), rawClassName)}
       style={compositeStyles}
       onClick={(e) => e.stopPropagation()}
     >

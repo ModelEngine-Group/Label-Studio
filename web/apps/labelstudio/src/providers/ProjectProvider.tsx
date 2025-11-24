@@ -5,8 +5,11 @@ import { FF_UNSAVED_CHANGES, isFF } from "../utils/feature-flags";
 import { useAPI, type WrappedResponse } from "./ApiProvider";
 import { useAppStore } from "./AppStoreProvider";
 import { useParams } from "./RoutesProvider";
+import { atom, useSetAtom } from "jotai";
 
 type Empty = Record<string, never>;
+
+export const projectAtom = atom<APIProject | Empty>({});
 
 type Context = {
   project: APIProject | Empty;
@@ -29,7 +32,13 @@ export const ProjectProvider: React.FunctionComponent = ({ children }) => {
   const params = useParams();
   const { update: updateStore } = useAppStore();
   // @todo use null for missed project data
-  const [projectData, setProjectData] = useState<APIProject | Empty>(projectCache.get(+params.id) ?? {});
+  const [projectData, _setProjectData] = useState<APIProject | Empty>(projectCache.get(+params.id) ?? {});
+  const setProject = useSetAtom(projectAtom);
+
+  const setProjectData = (project: APIProject | Empty) => {
+    _setProjectData(project);
+    setProject(project);
+  };
 
   const fetchProject: Context["fetchProject"] = useCallback(
     async (id, force = false) => {

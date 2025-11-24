@@ -1,5 +1,5 @@
 import { debounce } from "../../utils/debounce";
-import { FF_DEV_2715, FF_PER_FIELD_COMMENTS, isFF } from "../../utils/feature-flags";
+import { FF_PER_FIELD_COMMENTS, isFF } from "../../utils/feature-flags";
 import { wrapArray } from "../../utils/utilities";
 import { Geometry } from "./Geometry";
 import { RelationShape } from "./RelationShape";
@@ -29,13 +29,7 @@ const obtainWatcher = (node) => {
     case "paragraphs":
       return DOMWatcher;
     case "audioregion": {
-      if (isFF(FF_DEV_2715)) {
-        return createPropertyWatcher(["bboxTriggers"]);
-      }
-      if (node.getRegionElement) {
-        return DOMWatcher;
-      }
-      return null;
+      return createPropertyWatcher(["bboxTriggers"]);
     }
     case "rectangleregion":
       return createPropertyWatcher(["x", "y", "width", "height", "hidden", parentImagePropsWatch]);

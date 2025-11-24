@@ -21,6 +21,7 @@ jobs:
           ISSUE_USER: ${{ github.event.issue.user.login }}
           ISSUE_URL: ${{ github.event.issue.html_url }}
           WORKFLOW_RUN_LINK: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          REPO_NAME: ${{ github.event.repository.name }}
         run: |
           body=$(jq -n --arg body "$ISSUE_BODY" '{body: $body}' | jq .body)
           echo "$body"
@@ -32,7 +33,7 @@ jobs:
             --data-binary @- <<DATA
           {
             "ticket": {
-              "subject": "Github_Issue: $ISSUE_TITLE",
+              "subject": "Github_Issue - ${REPO_NAME}: ${ISSUE_TITLE:0:35}",
               "comment": {
                 "body": "[GITHUB_ISSUE_DESCRIPTION]\n\n${body:1:-1}\n\nGITHUB ISSUE URL: ${ISSUE_URL}\nWORKFLOW RUN: ${WORKFLOW_RUN_LINK}"
               },

@@ -13,7 +13,7 @@
 
   &__task-id {
     grid-area: id;
-    color: var(--sand_900);
+    color: var(--color-neutral-content);
     font-size: 14px;
     user-select: text;
 
@@ -60,7 +60,7 @@
     }
 
     &_next&_postpone::before {
-      border-color: var(--grape_500);
+      border-color: var(--color-primary-border-subtle);
     }
 
     &_prev {

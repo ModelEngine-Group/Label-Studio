@@ -1,5 +1,6 @@
+import { ff } from "@humansignal/core";
 import { getEnv, getRoot, types } from "mobx-state-tree";
-import { cloneNode } from "../core/Helpers";
+import { FF_DEV_3391 } from "../utils/feature-flags";
 import { AnnotationMixin } from "./AnnotationMixin";
 
 const ToolMixin = types
@@ -10,6 +11,13 @@ const ToolMixin = types
   })
   .views((self) => ({
     get obj() {
+      if (ff.isActive(FF_DEV_3391)) {
+        // It's a temporal solution (see root description)
+        const root = self.manager?.root;
+        if (root?.annotationStore.selected) {
+          return root.annotationStore.selected.names.get(self.manager?.name);
+        }
+      }
       return self.manager?.obj ?? getEnv(self).object;
     },
 
@@ -18,6 +26,16 @@ const ToolMixin = types
     },
 
     get control() {
+      if (ff.isActive(FF_DEV_3391)) {
+        // It's a temporal solution (see root description)
+        const control = getEnv(self).control;
+        const { name } = control;
+        const root = self.manager?.root;
+        if (root?.annotationStore.selected) {
+          return root.annotationStore.selected.names.get(name);
+        }
+        return control;
+      }
       return getEnv(self).control;
     },
 
@@ -27,22 +45,6 @@ const ToolMixin = types
 
     get fullName() {
       return self.toolName + (self.dynamic ? "-dynamic" : "");
-    },
-
-    get clonedStates() {
-      const states = [self.control];
-      const activeStates = states
-        ? states.filter((c) => c.isSelected)
-        : // .filter(
-          //   c =>
-          //     c.type === IMAGE_CONSTANTS.rectanglelabels ||
-          //     c.type === IMAGE_CONSTANTS.keypointlabels ||
-          //     c.type === IMAGE_CONSTANTS.polygonlabels ||
-          //     c.type === IMAGE_CONSTANTS.brushlabels,
-          // )
-          null;
-
-      return activeStates ? activeStates.map((s) => cloneNode(s)) : null;
     },
 
     get getActiveShape() {
@@ -61,9 +63,9 @@ const ToolMixin = types
     },
 
     get shouldPreserveSelectedState() {
-      if (!self.obj) return false;
+      if ((!ff.isActive(FF_DEV_3391) && !self.obj) || !self.control) return false;
 
-      const settings = getRoot(self.obj).settings;
+      const settings = getRoot(ff.isActive(FF_DEV_3391) ? self.control : self.obj).settings;
 
       return settings.preserveSelectedTool;
     },

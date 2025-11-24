@@ -31,7 +31,7 @@ describe("Control Tags - Choice", () => {
       LabelStudio.params().config(choicesSelectLayoutConfig).data(simpleData).withResult([]).init();
 
       Choices.toggleSelect();
-      Choices.findOption("Choice 2").trigger("mouseover");
+      Choices.findOption("Choice 2").trigger("mouseover", { force: true });
       Tooltip.hasText("A hint for Choice 2");
     });
   });

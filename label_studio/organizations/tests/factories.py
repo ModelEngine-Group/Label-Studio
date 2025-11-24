@@ -1,10 +1,12 @@
 import factory
+from core.utils.common import load_func
+from django.conf import settings
 from organizations.models import Organization
 
 
 class OrganizationFactory(factory.django.DjangoModelFactory):
     title = factory.Faker('company')
-    created_by = factory.SubFactory('users.tests.factories.UserFactory', active_organization=None)
+    created_by = factory.SubFactory(load_func(settings.USER_FACTORY), active_organization=None)
 
     class Meta:
         model = Organization

@@ -4,16 +4,17 @@ Different thoughts and investingations related to LSF init.
 
 ## App render
 
+TODO: Rewrite this part when both FF_1170 and FF_3873 are gone! First is removed, the second is still there.
+
 We have 3 UI versions: old (awful), medium (outliner v1), modern (draggable panels)
 
-Flags:
+Flag:
 
-- `ff_front_1170_outliner_030222_short` — initial **FF_1170**
 - `fflag_feat_front_dev_3873_labeling_ui_improvements_short` — modern **FF_3873**
 
 Components:
 
-- modern (FF_1170 + FF_3873): `SideTabsPanels` + `SidePanels/TabPanels` + `OutlinerTree` + `BottomBar`
+- modern (FF_1170 + FF_3873): `SidePanels/TabPanels/SideTabsPanels` (sic!!) + `OutlinerTree` + `BottomBar`
 - medium (FF_1170): `SidePanels` + `OutlinerTree`
 - old: `SidebarTabs` + `AnnotationTab` + `Entities/RegionTree` and surprisingly `BottomBar` if FF_3873 enabled without FF_1170
 
@@ -82,6 +83,8 @@ called from 3 places:
 - `onDeleteAnnotation()`
 
 ## Huge mess with "side panels"
+
+TODO: Rewrite this part when both FF_1170 and FF_3873 are gone! First is removed, the second is still there.
 
 We have three versions of interface:
 1. with DEV-1170 FF off we have old interface with `components/SidebarTabs`

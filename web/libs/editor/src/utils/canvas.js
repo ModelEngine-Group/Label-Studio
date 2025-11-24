@@ -345,13 +345,27 @@ function Region2RLE(region) {
   return rle;
 }
 
-function brushSizeCircle(size) {
+/**
+ * Creates a custom circular cursor visual representation based on the provided brush size.
+ * Max size: 128px according to browser limitations.
+ *
+ * @param {number} size - The diameter of the brush in pixels.
+ * Determines the size of the circular cursor.
+ * @return {string} A CSS-compatible string for setting the custom cursor,
+ * including a data URL with the cursor image and its hotspot coordinates.
+ */
+function createBrushSizeCircleCursor(size) {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
-  const canvasPadding = 8;
-  const canvasOffset = 4;
-  const canvasSize = size * 4 + canvasPadding;
-  const circlePos = size / 2 + canvasOffset;
+  const strokeWidth = 3;
+  const marginReserve = 1;
+  const canvasOffset = strokeWidth + marginReserve;
+  const canvasPadding = canvasOffset * 2;
+  // Calculate the minimum canvas size needed:
+  // diameter + (stroke width + reserve) for padding on both sides
+  const canvasSize = size + canvasPadding;
+  // Position the circle in the center of the canvas
+  const circlePos = canvasSize / 2;
   const circleRadius = size / 2;
 
   canvas.width = canvasSize;
@@ -360,18 +374,19 @@ function brushSizeCircle(size) {
   ctx.beginPath();
   ctx.arc(circlePos, circlePos, circleRadius, 0, 2 * Math.PI, false);
 
-  ctx.lineWidth = 3;
+  ctx.lineWidth = strokeWidth;
   ctx.strokeStyle = "black";
   ctx.stroke();
 
   ctx.beginPath();
   ctx.arc(circlePos, circlePos, circleRadius, 0, 2 * Math.PI, false);
 
-  ctx.lineWidth = 2;
+  ctx.lineWidth = strokeWidth - 1;
   ctx.strokeStyle = "white";
   ctx.stroke();
 
-  return canvas.toDataURL();
+  const base64 = canvas.toDataURL();
+  return `url('${base64}') ${circlePos} ${circlePos}, auto`;
 }
 
 /**
@@ -567,7 +582,7 @@ export default {
   RLE2Region,
   mask2DataURL,
   maskDataURL2Image,
-  brushSizeCircle,
+  createBrushSizeCircleCursor,
   labelToSVG,
   trim,
 };

@@ -1,11 +1,12 @@
 import { type FC, type RefObject, useCallback, useEffect, useRef } from "react";
 import { Block, Elem } from "../../../utils/bem";
-import { ReactComponent as IconSend } from "../../../assets/icons/send.svg";
+import { IconSend } from "@humansignal/icons";
 
 import "./CommentForm.scss";
 import { TextArea } from "../../../common/TextArea/TextArea";
 import { observer } from "mobx-react";
 import { FF_DEV_3873, isFF } from "../../../utils/feature-flags";
+import { Button } from "@humansignal/ui";
 
 export type CommentFormProps = {
   commentStore: any;
@@ -86,9 +87,9 @@ export const CommentForm: FC<CommentFormProps> = observer(
           onBlur={clearTooltipMessage}
         />
         <Elem tag="div" name="primary-action">
-          <button type="submit">
+          <Button type="submit" aria-label="Submit comment" variant="neutral" look="string">
             <IconSend />
-          </button>
+          </Button>
         </Elem>
         {commentStore.tooltipMessage && <Elem name="tooltipMessage">{commentStore.tooltipMessage}</Elem>}
       </Block>

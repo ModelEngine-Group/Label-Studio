@@ -1,8 +1,8 @@
 import React, { type FormEvent, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Dropdown, Menu } from "antd";
 
-import { LsChevron } from "../../assets/icons";
-import { Tooltip } from "@humansignal/ui";
+import { IconChevron } from "@humansignal/icons";
+import { Button, Tooltip } from "@humansignal/ui";
 import { useToggle } from "../../hooks/useToggle";
 import type { CNTagName } from "../../utils/bem";
 import { isArraysEqual } from "../../utils/utilities";
@@ -247,7 +247,7 @@ const Item: React.FC<RowProps> = ({ style, item, dimensionCallback, maxWidth, is
           <HintTooltip title={hint}>
             <div className={[styles.taxonomy__item, customClassname].join(" ")}>
               <div className={styles.taxonomy__grouping} onClick={() => toggle(id)}>
-                <LsChevron stroke="#09f" style={arrowStyle} />
+                <IconChevron stroke="#09f" style={arrowStyle} />
               </div>
               <input
                 className="item"
@@ -435,9 +435,16 @@ const TaxonomyDropdown = ({ show, flatten, items, dropdownRef, isEditable }: Tax
             <UserLabelForm path={[]} onAddLabel={onAddLabel} onFinish={closeForm} />
           ) : isEditable ? (
             <div className={styles.taxonomy__add}>
-              <button type="button" onClick={addInside}>
+              <Button
+                size="small"
+                variant="neutral"
+                look="string"
+                type="button"
+                onClick={addInside}
+                aria-label="Add new label"
+              >
                 Add
-              </button>
+              </Button>
             </div>
           ) : null}
         </div>
@@ -566,7 +573,7 @@ const Taxonomy = ({
         <div className={["htx-taxonomy", styles.taxonomy, isOpenClassName].join(" ")} ref={taxonomyRef}>
           <span onClick={() => setOpen((val) => !val)}>
             {options.placeholder || "Click to add..."}
-            <LsChevron stroke="#09f" />
+            <IconChevron stroke="#09f" />
           </span>
           <TaxonomyDropdown
             show={isOpen}

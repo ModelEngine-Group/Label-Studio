@@ -94,6 +94,7 @@ const Model = types
       "polygon",
       "keypoint",
       "brush",
+      "bitmask",
       "magicwand",
       "rectanglelabels",
       "ellipselabels",
@@ -102,6 +103,7 @@ const Model = types
       "brushlabels",
       "hypertextlabels",
       "timeserieslabels",
+      "bitmasklabels",
       "text",
       "audio",
       "image",
@@ -119,9 +121,11 @@ const Model = types
       "pagedview",
       "paragraphs",
       "paragraphlabels",
+      "pdf",
       "video",
       "videorectangle",
       "timelinelabels",
+      ...Registry.customTags.map((t) => t.tag.toLowerCase()),
     ]),
   })
   .views((self) => ({

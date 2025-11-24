@@ -1,15 +1,13 @@
-import { EnterpriseBadge } from "@humansignal/ui";
+import { EnterpriseBadge, Select, Typography } from "@humansignal/ui";
 import { useCallback, useContext } from "react";
-import { Button } from "../../components";
-import { Form, Input, Select, TextArea } from "../../components/Form";
+import { Button } from "@humansignal/ui";
+import { Form, Input, TextArea } from "../../components/Form";
 import { RadioGroup } from "../../components/Form/Elements/RadioGroup/RadioGroup";
 import { ProjectContext } from "../../providers/ProjectProvider";
 import { Block, Elem } from "../../utils/bem";
-import "./settings.scss";
 import { HeidiTips } from "../../components/HeidiTips/HeidiTips";
 import { FF_LSDV_E_297, isFF } from "../../utils/feature-flags";
 import { createURL } from "../../components/HeidiTips/utils";
-import { Caption } from "../../components/Caption/Caption";
 
 export const GeneralSettings = () => {
   const { project, fetchProject } = useContext(ProjectContext);
@@ -42,7 +40,7 @@ export const GeneralSettings = () => {
                     <EnterpriseBadge className="ml-2" />
                   </Elem>
                   <Select placeholder="Select an option" disabled options={[]} />
-                  <Caption>
+                  <Typography size="small" className="my-tight">
                     Simplify project management by organizing projects into workspaces.{" "}
                     <a
                       target="_blank"
@@ -54,10 +52,11 @@ export const GeneralSettings = () => {
                         },
                       )}
                       rel="noreferrer"
+                      className="underline hover:no-underline"
                     >
                       Learn more
                     </a>
-                  </Caption>
+                  </Typography>
                 </Block>
               )}
               <RadioGroup name="color" label="Color" size="large" labelProps={{ size: "large" }}>
@@ -111,7 +110,7 @@ export const GeneralSettings = () => {
               <Form.Indicator>
                 <span case="success">Saved!</span>
               </Form.Indicator>
-              <Button type="submit" look="primary" style={{ width: 120 }}>
+              <Button type="submit" className="w-[150px]" aria-label="Save general settings">
                 Save
               </Button>
             </Form.Actions>

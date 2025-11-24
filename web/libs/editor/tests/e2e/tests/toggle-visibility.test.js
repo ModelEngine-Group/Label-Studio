@@ -1,10 +1,12 @@
 const assert = require("assert");
-const { initLabelStudio, countKonvaShapes, switchRegionTreeView } = require("./helpers");
+const { countKonvaShapes, switchRegionTreeView } = require("./helpers");
 
-const ALL_VISIBLE_SELECTOR = ".lsf-entities__visibility:not(.lsf-entities__visibility_hidden)";
-const ALL_HIDDEN_SELECTOR = ".lsf-entities__visibility.lsf-entities__visibility_hidden";
-const ONE_VISIBLE_SELECTOR = ".lsf-region-item__toggle.lsf-region-item__toggle_active";
-const ONE_HIDDEN_SELECTOR = ".lsf-region-item__toggle:not(.lsf-region-item__toggle_active)";
+const ALL_VISIBLE_SELECTOR = '[aria-label="Hide all regions"]';
+const ALL_VISIBLE_SELECTOR_DISABLED = `${ALL_VISIBLE_SELECTOR}[disabled]`;
+const ALL_HIDDEN_SELECTOR = '[aria-label="Show all regions"]';
+const ONE_VISIBLE_SELECTOR = ".lsf-tree__node:not(.lsf-tree__node_type_label):not(.lsf-tree__node_hidden)";
+const ONE_HIDDEN_SELECTOR = ".lsf-tree__node:not(.lsf-tree__node_type_label).lsf-tree__node_hidden";
+const ONE_VISIBILITY_TOGGLE_BUTTON = ".lsf-outliner-item__control_type_visibility button";
 
 const config = `
 <View>
@@ -54,7 +56,7 @@ const annotations = [
 
 Feature("Toggle regions visibility");
 
-Scenario("Checking mass toggling of visibility", async ({ I, AtImageView, AtSidebar }) => {
+Scenario("Checking mass toggling of visibility", async ({ I, LabelStudio, AtOutliner }) => {
   const checkVisible = async (num) => {
     switch (num) {
       case 0:
@@ -85,16 +87,18 @@ Scenario("Checking mass toggling of visibility", async ({ I, AtImageView, AtSide
     I.click(ALL_HIDDEN_SELECTOR);
   };
   const hideOne = () => {
-    I.click(ONE_VISIBLE_SELECTOR);
+    I.moveCursorTo(ONE_VISIBLE_SELECTOR);
+    I.click(ONE_VISIBILITY_TOGGLE_BUTTON);
   };
   const showOne = () => {
-    I.click(ONE_HIDDEN_SELECTOR);
+    I.moveCursorTo(ONE_HIDDEN_SELECTOR);
+    I.click(ONE_VISIBILITY_TOGGLE_BUTTON);
   };
 
   await I.amOnPage("/");
-  I.executeScript(initLabelStudio, { annotations, config, data });
-  AtImageView.waitForImage();
-  AtSidebar.seeRegions(3);
+  LabelStudio.init({ annotations, config, data });
+  LabelStudio.waitForObjectsReady();
+  AtOutliner.seeRegions(3);
   await checkVisible(3);
   hideOne();
   await checkVisible(2);
@@ -114,19 +118,19 @@ Scenario("Checking mass toggling of visibility", async ({ I, AtImageView, AtSide
   await checkVisible(0);
 });
 
-Scenario("Hiding bulk visibility toggle", ({ I, AtImageView, AtLabels, AtSidebar }) => {
+Scenario("Hiding bulk visibility toggle", ({ I, LabelStudio, AtImageView, AtLabels, AtOutliner }) => {
   I.amOnPage("/");
-  I.executeScript(initLabelStudio, { config, data });
-  AtImageView.waitForImage();
-  AtSidebar.seeRegions(0);
-  I.dontSeeElement(ALL_VISIBLE_SELECTOR);
+  LabelStudio.init({ config, data });
+  LabelStudio.waitForObjectsReady();
+  AtOutliner.seeRegions(0);
+  I.seeElement(ALL_VISIBLE_SELECTOR_DISABLED);
   AtLabels.clickLabel("Planet");
   AtImageView.dragKonva(300, 300, 50, 50);
-  AtSidebar.seeRegions(1);
+  AtOutliner.seeRegions(1);
   I.seeElement(ALL_VISIBLE_SELECTOR);
 });
 
-Scenario("Checking regions grouped by label", async ({ I, AtImageView }) => {
+Scenario("Checking regions grouped by label", async ({ I, LabelStudio }) => {
   const checkVisible = async (num) => {
     switch (num) {
       case 0:
@@ -157,17 +161,32 @@ Scenario("Checking regions grouped by label", async ({ I, AtImageView }) => {
     I.click(ALL_HIDDEN_SELECTOR);
   };
   const hideOne = () => {
-    I.click(ONE_VISIBLE_SELECTOR);
+    I.moveCursorTo(ONE_VISIBLE_SELECTOR);
+    I.click(ONE_VISIBILITY_TOGGLE_BUTTON);
   };
   const showOne = () => {
-    I.click(ONE_HIDDEN_SELECTOR);
+    I.moveCursorTo(ONE_HIDDEN_SELECTOR);
+    I.click(ONE_VISIBILITY_TOGGLE_BUTTON);
   };
 
   await I.amOnPage("/");
-  I.executeScript(initLabelStudio, { annotations, config, data });
-  AtImageView.waitForImage();
-  I.executeScript(switchRegionTreeView, "labels");
-  I.see("Labels");
+  LabelStudio.init({ annotations, config, data });
+  LabelStudio.waitForObjectsReady();
+
+  // Wait for ViewControls to be visible
+  I.waitForElement(".lsf-view-controls", 5);
+
+  // Switch to label grouping using UI interaction
+  I.click('[data-testid="grouping-manual"]');
+  I.waitForElement(".lsf-menu", 2);
+
+  I.waitForElement(".lsf-dropdown.lsf-visible");
+  // Click on the "Group by Label" option in the dropdown
+  I.click('//div[contains(@class, "lsf-view-controls__label") and contains(text(), "Group by Label")]');
+
+  // Wait for UI to update and verify the grouping button changed
+  I.waitForElement('[data-testid="grouping-label"]', 5);
+
   await checkVisible(3);
   hideOne();
   await checkVisible(2);
@@ -207,25 +226,28 @@ examples.forEach((example) => {
   examplesTable.add([title, config, data, result]);
 });
 
-Data(examplesTable).Scenario("Check visibility switcher through all examples", ({ I, AtSidebar, current }) => {
-  const { config, data, result } = current;
-  const params = { annotations: [{ id: "test", result }], config, data };
+Data(examplesTable).Scenario(
+  "Check visibility switcher through all examples",
+  ({ I, LabelStudio, AtOutliner, current }) => {
+    const { config, data, result } = current;
+    const params = { annotations: [{ id: "test", result }], config, data };
 
-  const ids = [];
+    const ids = [];
 
-  result.forEach((r) => !ids.includes(r.id) && Object.keys(r.value).length > 1 && ids.push(r.id));
+    result.forEach((r) => !ids.includes(r.id) && Object.keys(r.value).length > 1 && ids.push(r.id));
 
-  I.amOnPage("/");
-  I.executeScript(initLabelStudio, params);
-  const regionsCount = ids.length;
+    I.amOnPage("/");
+    LabelStudio.init(params);
+    const regionsCount = ids.length;
 
-  AtSidebar.seeRegions(regionsCount);
+    AtOutliner.seeRegions(regionsCount);
 
-  if (regionsCount) {
-    I.seeElement(ALL_VISIBLE_SELECTOR);
-    I.seeNumberOfElements(ONE_VISIBLE_SELECTOR, regionsCount);
-    I.click(ALL_VISIBLE_SELECTOR);
-    I.seeElement(ALL_HIDDEN_SELECTOR);
-    I.seeNumberOfElements(ONE_HIDDEN_SELECTOR, regionsCount);
-  }
-});
+    if (regionsCount) {
+      I.seeElement(ALL_VISIBLE_SELECTOR);
+      I.seeNumberOfElements(ONE_VISIBLE_SELECTOR, regionsCount);
+      I.click(ALL_VISIBLE_SELECTOR);
+      I.seeElement(ALL_HIDDEN_SELECTOR);
+      I.seeNumberOfElements(ONE_HIDDEN_SELECTOR, regionsCount);
+    }
+  },
+);

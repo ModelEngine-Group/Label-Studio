@@ -33,7 +33,7 @@
 }
 
 .toast-viewport {
-  --toast-spacing: var(--spacing-small);
+  --toast-spacing: var(--spacing-tight);
 
   position: fixed;
   display: flex;
@@ -87,10 +87,10 @@
 }
 
 .toast {
-  --text-color: var(--sand_900);
-  --background-color: var(--sand_100);
-  --border-color: var(--sand_300);
-  --hover-color: var(--sand_300);
+  --text-color: var(--color-neutral-inverted-content);
+  --background-color: var(--color-neutral-inverted-surface);
+  --border-color: var(--color-neutral-inverted-border);
+  --hover-color: var(--color-neutral-inverted-surface-hover);
   --padding: var(--toast-spacing) calc(var(--toast-spacing) * 2);
 
   display: flex;
@@ -132,7 +132,7 @@
     align-items: center;
 
     &:hover {
-      background-color: var(--hover-color);
+      color: var(--color-negative-border);
     }
   }
 
@@ -157,24 +157,27 @@
   }
 
   &_info {
-    --text-color: var(--sand_100);
-    --background-color: var(--sand_900);
-    --border-color: var(--sand_700);
-    --hover-color: var(--sand_700);
+    // Always maintain a dark background for info toasts
+    --text-color: var(--color-sand-100);
+    --background-color: var(--color-sand-900);
+    --border-color: var(--color-neutral-border);
+    --hover-color: var(--color-sand-800);
   }
 
   &_error {
-    --border-color: var(--sand_300);
-    --background-color: var(--red_7);
-    --hover-color: var(--red_10);
-    --text-color: var(--sand_100);
+    --text-color: var(--color-negative-surface-content);
+    --background-color: var(--color-negative-surface);
+    --border-color: var(--color-negative-border);
+    --hover-color: var(--color-negative-surface-hover);
   }
 
   &_alertError {
-    --text-color: var(--sand_900);
-    --border-color: var(--sand_400);
+    --text-color: var(--color-neutral-content);
+    --background-color: var(--color-neutral-surface);
+    --border-color: var(--color-neutral-border);
+    --hover-color: var(--color-neutral-inverted-surface-hover);
 
-    border-bottom: 5px solid var(--red_7);
+    border-bottom: 5px solid var(--color-negative-border);
     border-radius: 4px;
     text-align: center;
 

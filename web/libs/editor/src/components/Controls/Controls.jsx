@@ -4,8 +4,7 @@ import { CheckCircleOutlined, CheckOutlined } from "@ant-design/icons";
 import Hint from "../Hint/Hint";
 import { DraftPanel } from "../Annotations/Annotations";
 import styles from "./Controls.module.scss";
-import { Button } from "../../common/Button/Button";
-import { Tooltip } from "@humansignal/ui";
+import { Button } from "@humansignal/ui";
 import { cn } from "../../utils/bem";
 
 export default inject("store")(
@@ -57,48 +56,45 @@ export default inject("store")(
 
       if (store.hasInterface("skip")) {
         skipButton = (
-          <Tooltip title="Cancel (skip) task: [ Ctrl+Space ]">
-            <Button
-              disabled={disabled}
-              look="danger"
-              onClick={store.skipTask}
-              className={`${styles.skip} ${skipButtonClassName}`}
-            >
-              Skip {buttons.skip}
-            </Button>
-          </Tooltip>
+          <Button
+            disabled={disabled}
+            look="danger"
+            onClick={store.skipTask}
+            tooltip="Cancel (skip) task: [ Ctrl+Space ]"
+            className={`${styles.skip} ${skipButtonClassName}`}
+          >
+            Skip {buttons.skip}
+          </Button>
         );
       }
 
       if ((userGenerate && !sentUserGenerate) || (store.explore && !userGenerate && store.hasInterface("submit"))) {
         submitButton = (
-          <Tooltip title="Save results: [ Ctrl+Enter ]">
-            <Button
-              disabled={disabled}
-              look="primary"
-              icon={<CheckOutlined />}
-              onClick={store.submitAnnotation}
-              className={`${styles.submit} ${submitButtonClassName}`}
-            >
-              Submit {buttons.submit}
-            </Button>
-          </Tooltip>
+          <Button
+            disabled={disabled}
+            look="primary"
+            icon={<CheckOutlined />}
+            onClick={store.submitAnnotation}
+            tooltip="Save results: [ Ctrl+Enter ]"
+            className={`${styles.submit} ${submitButtonClassName}`}
+          >
+            Submit {buttons.submit}
+          </Button>
         );
       }
 
       if ((userGenerate && sentUserGenerate) || (!userGenerate && store.hasInterface("update"))) {
         updateButton = (
-          <Tooltip title="Update this task: [ Alt+Enter ]">
-            <Button
-              disabled={disabled}
-              look="primary"
-              icon={<CheckCircleOutlined />}
-              onClick={store.updateAnnotation}
-              className={updateButtonClassName}
-            >
-              {sentUserGenerate || versions.result ? "Update" : "Submit"} {buttons.update}
-            </Button>
-          </Tooltip>
+          <Button
+            disabled={disabled}
+            look="primary"
+            icon={<CheckCircleOutlined />}
+            onClick={store.updateAnnotation}
+            tooltip="Update this task: [ Alt+Enter ]"
+            className={updateButtonClassName}
+          >
+            {sentUserGenerate || versions.result ? "Update" : "Submit"} {buttons.update}
+          </Button>
         );
       }
 

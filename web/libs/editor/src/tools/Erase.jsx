@@ -3,12 +3,12 @@ import { types } from "mobx-state-tree";
 
 import BaseTool from "./Base";
 import ToolMixin from "../mixins/Tool";
-import Canvas from "../utils/canvas";
 import { clamp, findClosestParent } from "../utils/utilities";
 import { DrawingTool } from "../mixins/DrawingTool";
-import { IconEraserTool } from "../assets/icons";
+import { IconEraserTool } from "@humansignal/icons";
 import { Tool } from "../components/Toolbar/Tool";
 import { Range } from "../common/Range/Range";
+import { BrushCursorMixin } from "./Brush";
 
 const MIN_SIZE = 1;
 const MAX_SIZE = 50;
@@ -32,7 +32,7 @@ const ToolView = observer(({ item }) => {
     <Tool
       label="Eraser"
       ariaLabel="eraser"
-      shortcut="E"
+      shortcut="tool:eraser"
       active={item.selected}
       extraShortcuts={item.extraShortcuts}
       tool={item}
@@ -84,13 +84,13 @@ const _Tool = types
     },
     get extraShortcuts() {
       return {
-        "[": [
+        "tool:decrease-tool": [
           "Decrease size",
           () => {
             self.setStroke(clamp(self.strokeWidth - 5, MIN_SIZE, MAX_SIZE));
           },
         ],
-        "]": [
+        "tool:increase-tool": [
           "Increase size",
           () => {
             self.setStroke(clamp(self.strokeWidth + 5, MIN_SIZE, MAX_SIZE));
@@ -103,16 +103,6 @@ const _Tool = types
     let brush;
 
     return {
-      updateCursor() {
-        if (!self.selected || !self.obj?.stageRef) return;
-        const val = 24;
-        const stage = self.obj.stageRef;
-        const base64 = Canvas.brushSizeCircle(val);
-        const cursor = ["url('", base64, "')", " ", Math.floor(val / 2) + 4, " ", Math.floor(val / 2) + 4, ", auto"];
-
-        stage.container().style.cursor = cursor.join("");
-      },
-
       afterUpdateSelected() {
         self.updateCursor();
       },
@@ -123,6 +113,7 @@ const _Tool = types
 
       setStroke(val) {
         self.strokeWidth = val;
+        self.updateCursor();
       },
 
       mouseupEv() {
@@ -174,6 +165,6 @@ const _Tool = types
     };
   });
 
-const Erase = types.compose(_Tool.name, ToolMixin, BaseTool, DrawingTool, _Tool);
+const Erase = types.compose(_Tool.name, ToolMixin, BaseTool, DrawingTool, BrushCursorMixin, _Tool);
 
 export { Erase };

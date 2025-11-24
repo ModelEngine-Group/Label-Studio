@@ -25,7 +25,7 @@ export const usePersistentState = <T>(key: string, defaultValue: T, options: Opt
     const localStorageValue = localStorage.getItem(key);
 
     return typeof localStorageValue === "string"
-      ? decoder?.(localStorageValue, defaultValue) ?? (localStorageValue as T)
+      ? (decoder?.(localStorageValue, defaultValue) ?? (localStorageValue as T))
       : defaultValue;
   }, []);
   const [value, setValue] = useState<T>(initialState);

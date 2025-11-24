@@ -7,7 +7,6 @@ imageExamples.add([require("../../../examples/audio-regions"), 1]);
 Data(imageExamples).Scenario("Audio Readonly Regions", async ({ I, current, LabelStudio, AtOutliner, AtAudioView }) => {
   LabelStudio.setFeatureFlags({
     ff_front_dev_2715_audio_3_280722_short: true,
-    ff_front_1170_outliner_030222_short: true,
   });
 
   I.amOnPage("/");
@@ -40,7 +39,7 @@ Data(imageExamples).Scenario("Audio Readonly Regions", async ({ I, current, Labe
   I.say("Attempt to move a readonly region");
   const readonlyRegionId = regions[0].id;
 
-  await AtAudioView.moveRegionV3(readonlyRegionId, 100);
+  await AtAudioView.moveRegion(readonlyRegionId, 100);
 
   I.say("Results are equal after modification attempt");
   await LabelStudio.resultsNotChanged(result);
@@ -48,7 +47,7 @@ Data(imageExamples).Scenario("Audio Readonly Regions", async ({ I, current, Labe
   I.say("Attempt to move a non-readonly region (and it will be selected after this)");
   const nonReadonlyRegionId = regions[1].id;
 
-  await AtAudioView.moveRegionV3(nonReadonlyRegionId, 100);
+  await AtAudioView.moveRegion(nonReadonlyRegionId, 100);
 
   I.say("Results are not equal after modification attempt");
   await LabelStudio.resultsChanged(result);

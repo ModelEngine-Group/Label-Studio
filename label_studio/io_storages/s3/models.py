@@ -1,9 +1,11 @@
 """This file and its contents are licensed under the Apache License 2.0. Please see the included NOTICE for copyright information and LICENSE for a copy of the license.
 """
+
 import json
 import logging
 import re
 from typing import Union
+from urllib.parse import urlparse
 
 import boto3
 from core.feature_flags import flag_set
@@ -20,10 +22,13 @@ from io_storages.base_models import (
     ImportStorageLink,
     ProjectStorageMixin,
 )
-from io_storages.s3.utils import catch_and_reraise_from_none, get_client_and_resource, resolve_s3_url
-from io_storages.utils import storage_can_resolve_bucket_url
+from io_storages.s3.utils import (
+    catch_and_reraise_from_none,
+    get_client_and_resource,
+    resolve_s3_url,
+)
+from io_storages.utils import StorageObject, load_tasks_json, storage_can_resolve_bucket_url
 from tasks.models import Annotation
-from tasks.validation import ValidationError as TaskValidationError
 
 from label_studio.io_storages.s3.utils import AWS
 
@@ -38,14 +43,22 @@ class S3StorageMixin(models.Model):
     bucket = models.TextField(_('bucket'), null=True, blank=True, help_text='S3 bucket name')
     prefix = models.TextField(_('prefix'), null=True, blank=True, help_text='S3 bucket prefix')
     regex_filter = models.TextField(
-        _('regex_filter'), null=True, blank=True, help_text='Cloud storage regex for filtering objects'
+        _('regex_filter'),
+        null=True,
+        blank=True,
+        help_text='Cloud storage regex for filtering objects',
     )
     use_blob_urls = models.BooleanField(
-        _('use_blob_urls'), default=False, help_text='Interpret objects as BLOBs and generate URLs'
+        _('use_blob_urls'),
+        default=False,
+        help_text='Interpret objects as BLOBs and generate URLs',
     )
     aws_access_key_id = models.TextField(_('aws_access_key_id'), null=True, blank=True, help_text='AWS_ACCESS_KEY_ID')
     aws_secret_access_key = models.TextField(
-        _('aws_secret_access_key'), null=True, blank=True, help_text='AWS_SECRET_ACCESS_KEY'
+        _('aws_secret_access_key'),
+        null=True,
+        blank=True,
+        help_text='AWS_SECRET_ACCESS_KEY',
     )
     aws_session_token = models.TextField(_('aws_session_token'), null=True, blank=True, help_text='AWS_SESSION_TOKEN')
     aws_sse_kms_key_id = models.TextField(
@@ -112,6 +125,54 @@ class S3StorageMixin(models.Model):
     def type_full(self):
         return 'Amazon AWS S3'
 
+    @catch_and_reraise_from_none
+    def get_bytes_stream(self, uri, range_header=None):
+        """Get file directly from S3 using iter_chunks without wrapper.
+
+        This method forwards Range headers directly to S3 and returns the raw stream.
+        Note: The returned stream is NOT seekable and will break if seeking backwards.
+
+        Args:
+            uri: The S3 URI of the file to retrieve
+            range_header: Optional HTTP Range header to forward to S3
+
+        Returns:
+            Tuple of (stream, content_type, metadata) where metadata contains
+            important S3 headers like ETag, ContentLength, etc.
+        """
+        # Parse URI to get bucket and key
+        parsed_uri = urlparse(uri, allow_fragments=False)
+        bucket_name = parsed_uri.netloc
+        key = parsed_uri.path.lstrip('/')
+
+        # Get S3 client
+        client = self.get_client()
+
+        try:
+            # Forward Range header to S3 if provided
+            request_params = {'Bucket': bucket_name, 'Key': key}
+            if range_header:
+                request_params['Range'] = range_header
+
+            # Get the object from S3
+            response = client.get_object(**request_params)
+
+            # Extract metadata to return
+            metadata = {
+                'ETag': response.get('ETag'),
+                'ContentLength': response.get('ContentLength'),
+                'ContentRange': response.get('ContentRange'),
+                'LastModified': response.get('LastModified'),
+                'StatusCode': response['ResponseMetadata']['HTTPStatusCode'],
+            }
+
+            # Return the streaming body directly
+            return response['Body'], response.get('ContentType'), metadata
+
+        except Exception as e:
+            logger.error(f'Error getting direct stream from S3 for uri {uri}: {e}', exc_info=True)
+            return None, None, {}
+
     class Meta:
         abstract = True
 
@@ -125,19 +186,20 @@ class S3ImportStorageBase(S3StorageMixin, ImportStorage):
         _('presign_ttl'), default=1, help_text='Presigned URLs TTL (in minutes)'
     )
     recursive_scan = models.BooleanField(
-        _('recursive scan'), default=False, help_text=_('Perform recursive scan over the bucket content')
+        _('recursive scan'),
+        default=False,
+        help_text=_('Perform recursive scan over the bucket content'),
     )
 
     @catch_and_reraise_from_none
-    def iterkeys(self):
-        client, bucket = self.get_client_and_bucket()
+    def iter_objects(self):
+        _, bucket = self.get_client_and_bucket()
+        list_kwargs = {}
         if self.prefix:
-            list_kwargs = {'Prefix': self.prefix.rstrip('/') + '/'}
-            if not self.recursive_scan:
-                list_kwargs['Delimiter'] = '/'
-            bucket_iter = bucket.objects.filter(**list_kwargs).all()
-        else:
-            bucket_iter = bucket.objects.all()
+            list_kwargs['Prefix'] = self.prefix.rstrip('/') + '/'
+        if not self.recursive_scan:
+            list_kwargs['Delimiter'] = '/'
+        bucket_iter = bucket.objects.filter(**list_kwargs).all()
         regex = re.compile(str(self.regex_filter)) if self.regex_filter else None
         for obj in bucket_iter:
             key = obj.key
@@ -147,37 +209,38 @@ class S3ImportStorageBase(S3StorageMixin, ImportStorage):
             if regex and not regex.match(key):
                 logger.debug(key + ' is skipped by regex filter')
                 continue
-            yield key
+            logger.debug(f's3 {key} has passed the regex filter')
+            yield obj
+
+    @catch_and_reraise_from_none
+    def iter_keys(self):
+        for obj in self.iter_objects():
+            yield obj.key
+
+    def get_unified_metadata(self, obj):
+        return {
+            'key': obj.key,
+            'last_modified': obj.last_modified,
+            'size': obj.size,
+        }
 
     @catch_and_reraise_from_none
     def scan_and_create_links(self):
         return self._scan_and_create_links(S3ImportStorageLink)
 
-    def _get_validated_task(self, parsed_data, key):
-        """Validate parsed data with labeling config and task structure"""
-        if not isinstance(parsed_data, dict):
-            raise TaskValidationError(
-                'Error at ' + str(key) + ':\n' 'Cloud storage supports one task (one dict object) per JSON file only. '
-            )
-        return parsed_data
-
     @catch_and_reraise_from_none
-    def get_data(self, key):
+    def get_data(self, key) -> list[StorageObject]:
         uri = f'{self.url_scheme}://{self.bucket}/{key}'
         if self.use_blob_urls:
             data_key = settings.DATA_UNDEFINED_NAME
-            return {data_key: uri}
+            task = {data_key: uri}
+            return [StorageObject(key=key, task_data=task)]
 
         # read task json from bucket and validate it
         _, s3 = self.get_client_and_resource()
         bucket = s3.Bucket(self.bucket)
-        obj = s3.Object(bucket.name, key).get()['Body'].read().decode('utf-8')
-        value = json.loads(obj)
-        if not isinstance(value, dict):
-            raise ValueError(f'Error on key {key}: For S3 your JSON file must be a dictionary with one task')
-
-        value = self._get_validated_task(value, key)
-        return value
+        obj = s3.Object(bucket.name, key).get()['Body'].read()
+        return load_tasks_json(obj, key)
 
     @catch_and_reraise_from_none
     def generate_http_url(self, url):
@@ -224,7 +287,8 @@ class S3ExportStorage(S3StorageMixin, ExportStorage):
 
         self.cached_user = getattr(self, 'cached_user', self.project.organization.created_by)
         if flag_set(
-            'fflag_feat_back_lsdv_3958_server_side_encryption_for_target_storage_short', user=self.cached_user
+            'fflag_feat_back_lsdv_3958_server_side_encryption_for_target_storage_short',
+            user=self.cached_user,
         ):
             if self.aws_sse_kms_key_id:
                 additional_params['SSEKMSKeyId'] = self.aws_sse_kms_key_id

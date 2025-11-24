@@ -14,6 +14,7 @@ import type { Padding } from "./Common/Style";
 import { clamp, getCursorTime } from "./Common/Utils";
 import type { PlayheadOptions } from "./Visual/PlayHead";
 import type { Layer } from "./Visual/Layer";
+import type { SpectrogramScale } from "./Analysis/FFTProcessor";
 
 export interface WaveformOptions {
   /** URL of an audio or video */
@@ -23,16 +24,37 @@ export interface WaveformOptions {
   container: string | HTMLElement;
 
   /**
-   * Height of the interface. Inferred from the container size
-   * @default 110
+   * Height of the interface.
+   * @deprecated Use waveformHeight and spectrogramHeight for explicit control
+   * Falls back to this value for both components if specific heights not provided
+   * @default 96
    * */
   height?: number;
 
   /**
    * Height of a single waveform per channel.
-   * @default 30
+   * @deprecated Use waveformHeight instead
+   * @default 32
    * */
   waveHeight?: number;
+
+  /**
+   * Height of the waveform component
+   * @default height ?? 32
+   */
+  waveformHeight?: number;
+
+  /**
+   * Height of the spectrogram component
+   * @default height ?? 32
+   */
+  spectrogramHeight?: number;
+
+  /**
+   * Height of the timeline component
+   * @default 20
+   */
+  timelineHeight?: number;
 
   /**
    * Zoom factor. 1 – no zoom
@@ -57,6 +79,12 @@ export interface WaveformOptions {
    * @default false
    * */
   muted?: boolean;
+
+  /**
+   * Buffering true/false.
+   * @default false
+   * */
+  buffering?: boolean;
 
   /**
    * Playback speed rate. 1 – normal speed
@@ -128,9 +156,6 @@ export interface WaveformOptions {
    */
   followCursor?: "center" | "paged" | false;
 
-  // Spectro styles
-  // @todo: implement the sepctrogram
-
   // Other options
   seekStep?: number;
 
@@ -184,6 +209,7 @@ interface WaveformEventTypes extends RegionsGlobalEvents, RegionGlobalEvents {
   scroll: (scroll: number) => void;
   layersUpdated: (layers: Map<string, Layer>) => void;
   frameDrawn: (frameState: WaveformFrameState) => void;
+  buffering: (buffering: boolean) => void;
 }
 
 export class Waveform extends Events<WaveformEventTypes> {
@@ -214,7 +240,7 @@ export class Waveform extends Events<WaveformEventTypes> {
     params.decoderType = params.decoderType ?? "webaudio";
     // Need to restrict ffmpeg to html5 player as it doesn't support webaudio
     // because of chunked decoding raw Float32Arrays and no AudioBuffer support
-    params.playerType = params.decoderType === "ffmpeg" ? "html5" : params.playerType ?? "html5";
+    params.playerType = params.decoderType === "ffmpeg" ? "html5" : (params.playerType ?? "html5");
 
     this.src = params.src;
     this.params = params;
@@ -320,7 +346,7 @@ export class Waveform extends Events<WaveformEventTypes> {
     const time = this.currentTime;
 
     this.visualizer.updateCursorToTime(time);
-    this.visualizer.redrawCursor();
+    this.visualizer.transferImage();
   }
 
   seek(value: number) {
@@ -342,7 +368,7 @@ export class Waveform extends Events<WaveformEventTypes> {
 
     const scrollLeft = clamp(time / this.duration - offset, 0, 1);
 
-    this.visualizer.setScrollLeft(scrollLeft, true, true);
+    this.visualizer.setScrollLeft(scrollLeft);
     this.invoke("scroll", [scrollLeft]);
   }
 
@@ -444,6 +470,14 @@ export class Waveform extends Events<WaveformEventTypes> {
     return this.player.playing;
   }
 
+  get buffering() {
+    return this.player.buffering;
+  }
+
+  set buffering(buffering: boolean) {
+    this.player.buffering = buffering;
+  }
+
   /**
    * Sets zoom multiplier 1-150
    * @default 1
@@ -525,13 +559,22 @@ export class Waveform extends Events<WaveformEventTypes> {
     }
   }
 
+  updateSpectrogramConfig(config: {
+    fftSamples?: number;
+    melBands?: number;
+    windowingFunction?: string;
+    colorScheme?: string;
+    minDb?: number;
+    maxDb?: number;
+    hopFactor?: number;
+    scale?: SpectrogramScale;
+  }) {
+    this.visualizer.updateSpectrogramConfig(config);
+  }
+
   /**
    * Waveform amplification factor
    */
-  get amp() {
-    return this.visualizer.getAmp();
-  }
-
   set amp(value: number) {
     this.visualizer.setAmp(value);
   }
@@ -550,9 +593,6 @@ export class Waveform extends Events<WaveformEventTypes> {
     return this.media.sampleRate;
   }
 
-  get isDrawing() {
-    return this.visualizer.isDrawing;
-  }
   /**
    * Initialize events
    */

@@ -39,7 +39,7 @@ describe("Relations: Audio", () => {
 
     Relations.overlayItems.should("have.length", 3);
 
-    AudioView.zoomIn({ times: 2 });
+    AudioView.zoomIn({ times: 2.5 });
     Relations.overlayItems.should("have.length", 1);
 
     AudioView.scroll({ times: 3, speed: 300 });

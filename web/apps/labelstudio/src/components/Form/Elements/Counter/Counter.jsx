@@ -1,10 +1,10 @@
 import React from "react";
-import { FaMinus, FaPlus } from "react-icons/fa";
 import { Block, Elem } from "../../../../utils/bem";
 import { Oneof } from "../../../Oneof/Oneof";
 import { FormField } from "../../FormField";
 import { default as Label } from "../Label/Label";
 import "./Counter.scss";
+import { IconMinus, IconPlus } from "@humansignal/icons";
 
 const allowedKeys = ["ArrowUp", "ArrowDown", "Backspace", "Delete", /[0-9]/];
 
@@ -85,6 +85,13 @@ const Counter = ({ label, className, validate, required, skip, labelProps, ...pr
     if (type === "decrease") return decrease();
   };
 
+  // Update currentValue when props.value changes
+  React.useEffect(() => {
+    if (props.value !== undefined && props.value !== null) {
+      setCurrentValue(normalizeValue(Number(props.value)));
+    }
+  }, [props.value]);
+
   const field = (
     <FormField
       label={label}
@@ -158,8 +165,8 @@ const CounterButton = ({ type }) => {
       onMouseDownCapture={(e) => e.preventDefault()}
     >
       <Oneof value={type}>
-        <FaMinus case="decrease" />
-        <FaPlus case="increase" />
+        <IconMinus case="decrease" />
+        <IconPlus case="increase" />
       </Oneof>
     </Elem>
   );

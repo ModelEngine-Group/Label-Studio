@@ -94,7 +94,7 @@ describe("Classification - MIG perTag - DateTime", () => {
 
     ImageView.waitForImage();
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasWarning(DATETIME_REQUIRED_WARNING);
   });
 
@@ -105,7 +105,7 @@ describe("Classification - MIG perTag - DateTime", () => {
 
     DateTime.type("2000-01-01T01:01");
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasNoWarnings();
   });
 });
@@ -165,7 +165,7 @@ describe("Control Tags - MIG perRegion - DateTime", () => {
 
     ImageView.waitForImage();
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasWarning(DATETIME_REQUIRED_WARNING);
   });
 
@@ -181,7 +181,7 @@ describe("Control Tags - MIG perRegion - DateTime", () => {
     Sidebar.findRegionByIndex(0).click();
     DateTime.type("2000-01-01T01:01");
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasWarning(DATETIME_REQUIRED_WARNING);
   });
 
@@ -201,7 +201,7 @@ describe("Control Tags - MIG perRegion - DateTime", () => {
     ImageView.waitForImage();
     DateTime.type("2000-02-02T02:02");
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasNoWarnings();
   });
 });
@@ -289,7 +289,7 @@ describe("Control Tags - MIG perItem - DateTime", () => {
 
     ImageView.waitForImage();
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasWarning(DATETIME_REQUIRED_WARNING);
   });
 
@@ -304,7 +304,7 @@ describe("Control Tags - MIG perItem - DateTime", () => {
 
     DateTime.type("2000-01-01T01:01");
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasWarning(DATETIME_REQUIRED_WARNING);
   });
 
@@ -331,7 +331,7 @@ describe("Control Tags - MIG perItem - DateTime", () => {
 
     DateTime.type("2000-04-04T04:04");
 
-    ToolBar.submitBtn.click();
+    ToolBar.updateBtn.click();
     Modals.hasNoWarnings();
   });
 });

@@ -47,7 +47,7 @@ import { instruments } from "../components/DataManager/Toolbar/instruments";
 import { APIProxy } from "../utils/api-proxy";
 import { FF_LSDV_4620_3_ML, isFF } from "../utils/feature-flags";
 import { objectToMap } from "../utils/helpers";
-import { serializeJsonForUrl, deserializeJsonFromUrl } from "../utils/urlJSON";
+import { serializeJsonForUrl, deserializeJsonFromUrl } from "@humansignal/core";
 import { isDefined } from "../utils/utils";
 import { APIConfig } from "./api-config";
 import { createApp } from "./app-create";
@@ -55,7 +55,7 @@ import { LSFWrapper } from "./lsf-sdk";
 import { taskToLSFormat } from "./lsf-utils";
 
 const DEFAULT_TOOLBAR =
-  "actions columns filters ordering label-button loading-possum error-box | refresh import-button export-button view-toggle";
+  "actions columns filters ordering label-button loading-possum error-box | refresh import-button export-button grid-size view-toggle";
 
 const prepareInstruments = (instruments) => {
   const result = Object.entries(instruments).map(([name, builder]) => [name, builder({ inject, observer })]);
@@ -137,6 +137,9 @@ export class DataManager {
   /** @type {"dm" | "labelops"} */
   type = "dm";
 
+  /** @type {string} */
+  role = null;
+
   /**
    * Constructor
    * @param {DMConfig} config
@@ -144,7 +147,7 @@ export class DataManager {
   constructor(config) {
     this.root = config.root;
     this.project = config.project;
-    this.projectId = config.projectId;
+    this.projectId = config.projectId ?? this?.project?.id;
     this.dataset = config.dataset;
     this.datasetId = config.datasetId;
     this.settings = config.settings;
@@ -162,6 +165,7 @@ export class DataManager {
     this.instruments = prepareInstruments(config.instruments ?? {});
     this.apiTransform = config.apiTransform ?? {};
     this.preload = config.preload ?? {};
+    this.role = config.role ?? null;
     this.interfaces = objectToMap({
       tabs: true,
       toolbar: true,

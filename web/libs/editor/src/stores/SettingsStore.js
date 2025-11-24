@@ -2,7 +2,6 @@ import { getEnv, getRoot, onSnapshot, types } from "mobx-state-tree";
 
 import { Hotkey } from "../core/Hotkey";
 import EditorSettings from "../core/settings/editorsettings";
-import Utils from "../utils";
 
 const SIDEPANEL_MODE_REGIONS = "SIDEPANEL_MODE_REGIONS";
 const SIDEPANEL_MODE_LABELS = "SIDEPANEL_MODE_LABELS";
@@ -39,6 +38,12 @@ const SettingsModel = types
 
     bottomSidePanel: types.optional(types.boolean, false),
 
+    forceBottomPanel: types.optional(types.boolean, false),
+
+    collapsibleBottomPanel: types.optional(types.boolean, false),
+
+    defaultCollapsedBottomPanel: types.optional(types.boolean, false),
+
     sidePanelMode: types.optional(
       types.enumeration([SIDEPANEL_MODE_REGIONS, SIDEPANEL_MODE_LABELS]),
       SIDEPANEL_MODE_REGIONS,
@@ -64,6 +69,10 @@ const SettingsModel = types
     videoHopSize: types.optional(types.number, 10),
 
     isDestroying: types.optional(types.boolean, false),
+
+    videoDrawOutside: types.optional(types.boolean, false),
+
+    invertedZoom: types.optional(types.boolean, false),
   })
   .views((self) => ({
     get annotation() {
@@ -71,6 +80,9 @@ const SettingsModel = types
     },
     get displayLabelsByDefault() {
       return self.sidePanelMode === SIDEPANEL_MODE_LABELS;
+    },
+    get effectiveBottomSidePanel() {
+      return self.forceBottomPanel ? true : self.bottomSidePanel;
     },
   }))
   .actions((self) => ({
@@ -128,13 +140,11 @@ const SettingsModel = types
     toggleShowLabels() {
       self.showLabels = !self.showLabels;
 
-      Utils.HTML.toggleLabelsAndScores(self.showLabels);
-
-      // const c = getRoot(self).annotationStore.selected;
-      // c.regionStore.regions.forEach(r => {
-      //   // TODO there is no showLables in the regions right now
-      //   return typeof r.showLabels === "boolean" && r.setShowLables(self.showLabels);
-      // });
+      // Update appearance of all regions to reflect the new setting
+      const annotation = getRoot(self).annotationStore.selected;
+      if (annotation) {
+        annotation.updateAppearenceFromState();
+      }
     },
 
     toggleShowLineNumbers() {
@@ -192,6 +202,7 @@ const SettingsModel = types
     },
 
     toggleBottomSP() {
+      if (self.forceBottomPanel) return;
       self.bottomSidePanel = !self.bottomSidePanel;
     },
 
@@ -219,12 +230,24 @@ const SettingsModel = types
       self.enableSmoothing = value;
     },
 
+    toggleInvertedZoom() {
+      self.invertedZoom = !self.invertedZoom;
+    },
+
+    setInvertedZoom(value) {
+      self.invertedZoom = value;
+    },
+
     setVideoHopSize(value) {
       self.videoHopSize = value;
     },
 
     setProperty(name, value) {
       self[name] = value;
+    },
+
+    toggleProperty(name) {
+      self[name] = !self[name];
     },
   }));
 

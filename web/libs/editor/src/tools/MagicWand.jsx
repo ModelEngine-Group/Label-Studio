@@ -10,7 +10,7 @@ import { DrawingTool } from "../mixins/DrawingTool";
 import { getActualZoomingPosition, getTransformedImageData } from "../utils/image";
 import { drawMask } from "../utils/magic-wand";
 import { guidGenerator } from "../core/Helpers";
-import { IconMagicWandTool } from "../assets/icons";
+import { IconMagicWandTool } from "@humansignal/icons";
 import { Tool } from "../components/Toolbar/Tool";
 
 /**
@@ -70,7 +70,7 @@ const ToolView = observer(({ item }) => {
     <Tool
       label="Magic Wand"
       ariaLabel="magicwand"
-      shortcut="W"
+      shortcut="tool:magic-wand"
       active={item.selected}
       icon={item.iconClass}
       tool={item}
@@ -86,7 +86,7 @@ const ToolView = observer(({ item }) => {
 const _Tool = types
   .model("MagicWandTool", {
     group: "segmentation",
-    shortcut: "W",
+    shortcut: "tool:magic-wand",
     smart: true,
     unselectRegionOnToolChange: false,
   })

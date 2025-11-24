@@ -15,6 +15,7 @@ import { TimelineRegionModel } from "./TimelineRegion";
 import { TimeSeriesRegionModel } from "./TimeSeriesRegion";
 import { ParagraphsRegionModel } from "./ParagraphsRegion";
 import { VideoRectangleRegionModel } from "./VideoRectangleRegion";
+import { BitmaskRegionModel } from "./BitmaskRegion";
 
 // general Area type for classification Results which doesn't belong to any real Area
 const ClassificationArea = types.compose(
@@ -47,11 +48,17 @@ const Area = types.union(
     dispatcher(sn) {
       // for some deserializations
       if (sn.$treenode) return sn.$treenode.type;
+
+      for (const customTag of Registry.customTags) {
+        if (sn.value?.[customTag.resultName] || sn[customTag.resultName]) return customTag.region;
+      }
+
       if (
         !sn.points && // dirty hack to make it work with polygons, but may be the whole condition is not necessary at all
         // `sequence` and `ranges` are used for video regions
         !sn.sequence &&
         !sn.ranges &&
+        !sn.imageDataURL &&
         sn.value &&
         Object.values(sn.value).length <= 1
       )
@@ -84,8 +91,10 @@ const Area = types.union(
   EllipseRegionModel,
   PolygonRegionModel,
   BrushRegionModel,
+  BitmaskRegionModel,
   VideoRectangleRegionModel,
   ClassificationArea,
+  ...Registry.customTags.map((t) => t.region),
 );
 
 export default Area;

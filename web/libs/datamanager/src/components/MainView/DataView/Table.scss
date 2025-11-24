@@ -3,7 +3,7 @@
   display: flex;
   overflow: hidden;
   flex-direction: column;
-  background: var(--sand_0);
+  background: var(--color-neutral-background);
   margin-bottom: 2.5rem;
 }
 
@@ -13,12 +13,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  position: relative;
 
-  &__description {
-    font-size: 16px;
-    text-align: center;
-    color: rgb(var(--black-raw) / 60%);
-  }
 }
 
 .syncInProgress {
@@ -29,7 +25,7 @@
   align-items: center;
   font-size: 16px;
   text-align: center;
-  color: var(--sand_600);
+  color: var(--color-neutral-content-subtler);
 
   .button-dm {
     color: var(--primary_link);

@@ -15,7 +15,14 @@ export const UserExtended = types
   })
   .preProcessSnapshot((sn) => {
     return camelizeKeys(sn ?? {});
-  });
+  })
+  .views((self) => ({
+    get displayName() {
+      if (self.firstName || self.lastName) return [self.firstName, self.lastName].join(" ").trim();
+
+      return "";
+    },
+  }));
 
 /**
  * User store of Label Studio

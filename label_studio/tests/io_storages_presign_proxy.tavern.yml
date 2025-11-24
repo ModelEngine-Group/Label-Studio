@@ -4,7 +4,6 @@ strict: false
 marks:
   - usefixtures:
       - django_live_url
-      - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_on
 stages:
   - id: signup
     type: ref
@@ -31,6 +30,7 @@ stages:
         title: Testing S3 storage (bucket from conftest.py)
         use_blob_urls: true
         presign_ttl: 3600
+        recursive_scan: true
       method: POST
       url: "{django_live_url}/api/storages/s3"
     response:
@@ -61,7 +61,7 @@ stages:
     response:
       json:
         data:
-          image_url: !re_match "/tasks/\\d+/presign/\\?fileuri=czM6Ly9weXRlc3QtczMtaW1hZ2VzL2ltYWdlMS5qcGc="
+          image_url: !re_match "/tasks/\\d+/resolve/\\?fileuri=czM6Ly9weXRlc3QtczMtaW1hZ2VzL2ltYWdlMS5qcGc="
       status_code: 200
   - name: stage
     request:
@@ -82,7 +82,7 @@ stages:
       json:
         tasks:
           - data:
-              image_url: !re_match "/tasks/\\d+/presign/\\?fileuri=czM6Ly9weXRlc3QtczMtaW1hZ2VzL2ltYWdlMS5qcGc="
+              image_url: !re_match "/tasks/\\d+/resolve/\\?fileuri=czM6Ly9weXRlc3QtczMtaW1hZ2VzL2ltYWdlMS5qcGc="
       status_code: 200
   - name: stage
     request:
@@ -128,7 +128,6 @@ strict: false
 marks:
   - usefixtures:
       - django_live_url
-      - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_on
 stages:
   - id: signup
     type: ref
@@ -197,7 +196,6 @@ strict: false
 marks:
   - usefixtures:
       - django_live_url
-      - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_on
 stages:
   - id: signup
     type: ref
@@ -246,7 +244,6 @@ test_name: test_import_from_gcs_storage
 strict: false
 marks:
   - usefixtures:
-      - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_on
       - django_live_url
 stages:
   - id: signup
@@ -273,6 +270,7 @@ stages:
         project: "{project_pk}"
         title: Test GCS storage import (mocked GCS client from conftest.py)
         use_blob_urls: true
+        recursive_scan: true
       method: POST
       url: "{django_live_url}/api/storages/gcs"
     response:
@@ -303,7 +301,7 @@ stages:
     response:
       json:
         data:
-          image_url: !re_match "/tasks/\\d+/presign/\\?fileuri=Z3M6Ly90ZXN0LWdzLWJ1Y2tldC90ZXN0LWdzLWJ1Y2tldC9hYmM="
+          image_url: !re_match "/tasks/\\d+/resolve/\\?fileuri=Z3M6Ly90ZXN0LWdzLWJ1Y2tldC9hYmM="
       status_code: 200
 ---
 test_name: test_invalidate_gcs_storage
@@ -311,7 +309,6 @@ strict: false
 marks:
   - usefixtures:
       - django_live_url
-      - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_on
 stages:
   - id: signup
     type: ref
@@ -339,6 +336,7 @@ stages:
         title: Test Invalidate GCS storage (mocked GCS client from conftest.py)
         use_blob_urls: true
         google_application_credentials: '{{"wrong": "service account info"}}'
+        recursive_scan: true
       method: POST
       url: "{django_live_url}/api/storages/gcs/validate"
     response:
@@ -350,7 +348,6 @@ strict: false
 marks:
   - usefixtures:
       - django_live_url
-      - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_on
 stages:
   - id: signup
     type: ref
@@ -376,6 +373,7 @@ stages:
         project: "{project_pk}"
         title: Test GCS storage import (mocked GCS client from conftest.py)
         use_blob_urls: false
+        recursive_scan: true
       method: POST
       url: "{django_live_url}/api/storages/gcs"
     response:
@@ -404,7 +402,6 @@ strict: false
 marks:
   - usefixtures:
       - django_live_url
-      - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_on
 stages:
   - id: signup
     type: ref
@@ -461,6 +458,7 @@ stages:
         project: "{project_pk}"
         title: Test GCS storage import (mocked GCS client from conftest.py)
         use_blob_urls: false
+        recursive_scan: true
       method: POST
       url: "{django_live_url}/api/storages/gcs"
     response:
@@ -476,16 +474,16 @@ stages:
     response:
       json:
         data:
-          image: !re_match "/tasks/\\d+/presign/\\?fileuri=Z3M6Ly90ZXN0LWdzLWJ1Y2tldF9KU09OL21hbnVhbC5saW5rLmpwZw=="
+          image: !re_match "/tasks/\\d+/resolve/\\?fileuri=Z3M6Ly90ZXN0LWdzLWJ1Y2tldF9KU09OL21hbnVhbC5saW5rLmpwZw=="
           dict:
-            key1: !re_match "/tasks/\\d+/presign/\\?fileuri=Z3M6Ly90ZXN0LWdzLWJ1Y2tldF9KU09OL21hbnVhbC5saW5rLmpwZw=="
+            key1: !re_match "/tasks/\\d+/resolve/\\?fileuri=Z3M6Ly90ZXN0LWdzLWJ1Y2tldF9KU09OL21hbnVhbC5saW5rLmpwZw=="
             array:
-              - !re_match "/tasks/\\d+/presign/\\?fileuri=Z3M6Ly90ZXN0LWdzLWJ1Y2tldF9KU09OL21hbnVhbC5saW5rLmpwZw=="
-              - !re_match "/tasks/\\d+/presign/\\?fileuri=Z3M6Ly90ZXN0LWdzLWJ1Y2tldF9KU09OL21hbnVhbC5saW5rLmpwZw=="
+              - !re_match "/tasks/\\d+/resolve/\\?fileuri=Z3M6Ly90ZXN0LWdzLWJ1Y2tldF9KU09OL21hbnVhbC5saW5rLmpwZw=="
+              - !re_match "/tasks/\\d+/resolve/\\?fileuri=Z3M6Ly90ZXN0LWdzLWJ1Y2tldF9KU09OL21hbnVhbC5saW5rLmpwZw=="
           array:
-            - item1: !re_match "/tasks/\\d+/presign/\\?fileuri=Z3M6Ly90ZXN0LWdzLWJ1Y2tldF9KU09OL21hbnVhbC5saW5rLmpwZw=="
+            - item1: !re_match "/tasks/\\d+/resolve/\\?fileuri=Z3M6Ly90ZXN0LWdzLWJ1Y2tldF9KU09OL21hbnVhbC5saW5rLmpwZw=="
               some: "some text"
-            - item2: !re_match "/tasks/\\d+/presign/\\?fileuri=Z3M6Ly90ZXN0LWdzLWJ1Y2tldF9KU09OL21hbnVhbC5saW5rLmpwZw=="
+            - item2: !re_match "/tasks/\\d+/resolve/\\?fileuri=Z3M6Ly90ZXN0LWdzLWJ1Y2tldF9KU09OL21hbnVhbC5saW5rLmpwZw=="
               some: "some text"
             # This link should remain unresolved - no matching bucket
             - item3: !re_match "gs://bad-bucket/manual.link.+"
@@ -497,7 +495,6 @@ strict: true
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_on
 stages:
 - id: signup
   type: ref
@@ -542,7 +539,6 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_on
 stages:
 - id: signup
   type: ref
@@ -625,7 +621,6 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_on
 stages:
 - id: signup
   type: ref
@@ -649,6 +644,7 @@ stages:
       bucket: pytest-export-gcs-bucket
       project: '{project_pk}'
       title: Testing Export GCS storage (bucket from conftest.py)
+      recursive_scan: true
     method: POST
     url: '{django_live_url}/api/storages/export/gcs'
   response:
@@ -721,7 +717,6 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_on
 stages:
 - id: signup
   type: ref
@@ -748,7 +743,6 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_on
 stages:
 - id: signup
   type: ref
@@ -801,7 +795,6 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_on
 stages:
 - id: signup
   type: ref
@@ -826,6 +819,7 @@ stages:
       project: '{project_pk}'
       title: Testing Azure storage (bucket from conftest.py)
       use_blob_urls: true
+      recursive_scan: true
     method: POST
     url: '{django_live_url}/api/storages/azure'
   response:
@@ -848,7 +842,7 @@ stages:
   response:
     json:
       data:
-        image_url: !re_match "/tasks/\\d+/presign/\\?fileuri=YXp1cmUtYmxvYjovL3B5dGVzdC1henVyZS1pbWFnZXMvYWJj"
+        image_url: !re_match "/tasks/\\d+/resolve/\\?fileuri=YXp1cmUtYmxvYjovL3B5dGVzdC1henVyZS1pbWFnZXMvYWJj"
     status_code: 200
 - name: stage
   request:
@@ -883,7 +877,6 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_on
 stages:
 - id: signup
   type: ref
@@ -965,7 +958,6 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_on
 stages:
 - id: signup
   type: ref
@@ -1029,7 +1021,6 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_on
 stages:
 - id: signup
   type: ref
@@ -1093,7 +1084,7 @@ stages:
   response:
     json:
       data:
-        pdf: !re_match "<embed src='/tasks/\\d+/presign/\\?fileuri=Z3M6Ly9oZWFydGV4LXRlc3QvZmlsZS5wZGY="
+        pdf: !re_match "<embed src='/tasks/\\d+/resolve/\\?fileuri=Z3M6Ly9oZWFydGV4LXRlc3QvZmlsZS5wZGY='/>"
     status_code: 200
 ---
 # we check here 2 things:
@@ -1104,7 +1095,6 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_on
 stages:
 - id: signup
   type: ref
@@ -1158,7 +1148,7 @@ stages:
   response:
     json:
       data:
-        text: !re_match "<a href=\"/tasks/\\d+/presign/\\?fileuri=czM6Ly9weXRlc3QtczMtanNvbnMtaHlwZXJ0ZXh0L2ZpbGUgd2l0aCAvc3BhY2VzIGFuZCcgLyAnIC8gcXVvdGVzLmpwZw=="
+        text: !re_match "<a href=\"/tasks/\\d+/resolve/\\?fileuri=czM6Ly9weXRlc3QtczMtanNvbnMtaHlwZXJ0ZXh0L2ZpbGUgd2l0aCAvc3BhY2VzIGFuZCcgLyAnIC8gcXVvdGVzLmpwZw=="
     status_code: 200
 ---
 # - Check that json blobs containing partially encoded contents resolve correctly from the bucket,
@@ -1168,7 +1158,6 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_on
 stages:
 - id: signup
   type: ref
@@ -1222,7 +1211,7 @@ stages:
   response:
     json:
       data:
-        text: !re_match "<a href=\"/tasks/\\d+/presign/\\?fileuri=czM6Ly9weXRlc3QtczMtanNvbi1wYXJ0aWFsbHktZW5jb2RlZC9maWxlIHdpdGggL3NwYWNlcyBhbmQnIC8gJyAvICUyQnF1b3RlcyUzRC5qcGc="
+        text: !re_match "<a href=\"/tasks/\\d+/resolve/\\?fileuri=czM6Ly9weXRlc3QtczMtanNvbi1wYXJ0aWFsbHktZW5jb2RlZC9maWxlIHdpdGggL3NwYWNlcyBhbmQnIC8gJyAvICUyQnF1b3RlcyUzRC5qcGc=\"/>"
     status_code: 200
 ---
 # we don't fail when unexisted s3:// links occur in the list
@@ -1231,7 +1220,6 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_on
 stages:
 - id: signup
   type: ref
@@ -1281,7 +1269,7 @@ stages:
     status_code: 200
     json:
       data:
-        image: 's3://pytest-s3-jsons-unexisted_links/some-unexisted-image.jpg'
+        image: !re_match "/tasks/\\d+/resolve/\\?fileuri=czM6Ly9weXRlc3QtczMtanNvbnMtdW5leGlzdGVkX2xpbmtzL3NvbWUtdW5leGlzdGVkLWltYWdlLmpwZw=="
 
 ---
 test_name: test_connection_to_import_redis_storage
@@ -1289,7 +1277,6 @@ strict: false
 marks:
 - usefixtures:
   - django_live_url
-  - fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short_on
 stages:
 - id: signup
   type: ref

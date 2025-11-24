@@ -139,6 +139,9 @@ export const APIConfig = {
     /** List of available actions */
     actions: "/actions",
 
+    /** Get action form */
+    actionForm: "/actions/:actionId/form",
+
     /** Subtract item from the current selection */
     deleteSelectedItem: {
       path: "/views/:tabID/selected-items",

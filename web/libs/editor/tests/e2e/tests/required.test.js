@@ -1,5 +1,3 @@
-const { initLabelStudio } = require("./helpers");
-
 Feature("Test required param");
 
 const createConfig = ({ visibleWhen = "choice-selected" } = {}) => {
@@ -84,20 +82,16 @@ const result = {
 };
 const annotations = [{ id: "1", result: [result] }];
 
-Scenario("Check required param", async ({ I }) => {
+Scenario("Check required param", async ({ I, LabelStudio, Modals }) => {
   const params = { config: createConfig(), data: { text } };
 
   const waitForError = (name) => {
-    I.waitForText("OK");
-    I.see("Warning");
-    I.see(`Checkbox "${name}" is required`);
-    I.seeElement(".ant-modal");
-    I.click("OK");
-    I.waitToHide(".ant-modal");
+    Modals.seeWarning(`Checkbox "${name}" is required`);
+    Modals.closeWarning();
   };
 
   I.amOnPage("/");
-  I.executeScript(initLabelStudio, params);
+  LabelStudio.init(params);
 
   // Add new Annotation to be able to submit it
   I.click('[aria-label="Annotations List Toggle"]');
@@ -119,7 +113,7 @@ Scenario("Check required param", async ({ I }) => {
   I.seeAnnotationSubmitted();
 
   // Reload to check another combination
-  I.executeScript(initLabelStudio, params);
+  LabelStudio.init(params);
   // Page is reloaded, there are no new annotation from prev steps
   I.dontSee("New annotation");
   I.click('[aria-label="Annotations List Toggle"]');
@@ -130,23 +124,19 @@ Scenario("Check required param", async ({ I }) => {
   I.see('Checkbox "second" is required');
 });
 
-Scenario("Check required param in complex config", async ({ I }) => {
+Scenario("Check required param in complex config", async ({ I, LabelStudio, AtOutliner, Modals }) => {
   const params = { annotations, config: complex, data: { text } };
 
   const waitForError = (name) => {
-    I.waitForText("OK");
-    I.see("Warning");
     // Two possible errors:
     // - Checkbox "name" is required.
     // - Input for the textarea "name" is required.
-    I.see(`"${name}" is required`);
-    I.seeElement(".ant-modal");
-    I.click("OK");
-    I.waitToHide(".ant-modal");
+    Modals.seeWarning(`"${name}" is required`);
+    Modals.closeWarning();
   };
 
   I.amOnPage("/");
-  I.executeScript(initLabelStudio, params);
+  LabelStudio.init(params);
 
   // we already have an annotation
   I.updateAnnotation();
@@ -179,7 +169,7 @@ Scenario("Check required param in complex config", async ({ I }) => {
 
   I.click("Me neither");
   // select labeled region
-  I.click(locate("li").withText("have"));
+  AtOutliner.clickRegion("have");
   I.see("Valid");
   I.updateAnnotation();
   I.dontSee("Valid");
@@ -189,7 +179,7 @@ Scenario("Check required param in complex config", async ({ I }) => {
   waitForError("choice-description");
   I.fillField("choice-description", "test text");
   // select labeled region
-  I.click(locate("li").withText("have"));
+  AtOutliner.clickRegion("have");
   I.see("Valid");
   I.updateAnnotation();
   I.dontSee("Valid");
@@ -203,15 +193,11 @@ Scenario("Check required param in complex config", async ({ I }) => {
   I.seeAnnotationSubmitted();
 });
 
-Scenario("Check required param with visibleWhen='choice-unselected'", async ({ I, LabelStudio }) => {
+Scenario("Check required param with visibleWhen='choice-unselected'", async ({ I, LabelStudio, Modals }) => {
   const params = { config: createConfig({ visibleWhen: "choice-unselected" }), data: { text } };
   const waitForError = (name) => {
-    I.waitForText("OK");
-    I.see("Warning");
-    I.see(`Checkbox "${name}" is required`);
-    I.seeElement(".ant-modal");
-    I.click("OK");
-    I.waitToHide(".ant-modal");
+    Modals.seeWarning(`Checkbox "${name}" is required`);
+    Modals.closeWarning();
   };
 
   I.amOnPage("/");

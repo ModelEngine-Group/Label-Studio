@@ -13,9 +13,11 @@ export const CustomButton = types
     id: types.optional(types.identifier, guidGenerator),
     name: types.string,
     title: types.string,
-    look: types.maybe(
-      types.enumeration(["primary", "danger", "destructive", "alt", "outlined", "active", "disabled"] as const),
+    variant: types.maybe(
+      types.enumeration(["primary", "neutral", "positive", "negative", "warning", "inverted"] as const),
     ),
+    look: types.maybe(types.enumeration(["filled", "outlined", "string"])),
+    size: types.maybe(types.enumeration(["medium", "small", "smaller"])),
     tooltip: types.maybe(types.string),
     ariaLabel: types.maybe(types.string),
     disabled: types.maybe(types.boolean),

@@ -1,6 +1,3 @@
-// Outliner + Details
-export const FF_DEV_1170 = "ff_front_1170_outliner_030222_short";
-
 /**
  * Fixing "Auto Detect" tool undo functionality and bugs with skipNextUndoState.
  * @link https://app.launchdarkly.com/default/production/features/fflag_fix_front_dev_1284_auto_detect_undo_281022_short
@@ -12,21 +9,16 @@ export const FF_DEV_1442 = "ff_front_dev_1442_unselect_shape_on_click_outside_08
 // User labels for Taxonomy
 export const FF_DEV_1536 = "ff_front_dev_1536_taxonomy_user_labels_150222_long";
 
-// New Audio 2.0 UI
-export const FF_DEV_1713 = "ff_front_DEV_1713_audio_ui_150222_short";
-
-export const FF_DEV_2432 = "ff_front_dev_2432_auto_save_polygon_draft_210622_short";
-
 export const FF_DEV_2669 = "ff_front_dev_2669_paragraph_author_filter_210622_short";
 
 // Change the rotate tool from bbox
 export const FF_DEV_2671 = "ff_front_dev_2671_anchor_rotate_bbox_010722_short";
 
 /**
- * Audio v3 - new Audio UI Library
- * @link https://app.launchdarkly.com/default/production/features/ff_front_dev_2715_audio_3_280722_short
+ * Enable audio spectrograms
+ * @link https://app.launchdarkly.com/default/production/features/fflag_feat_optic_2123_audio_spectrograms
  */
-export const FF_DEV_2715 = "ff_front_dev_2715_audio_3_280722_short";
+export const FF_AUDIO_SPECTROGRAMS = "fflag_feat_optic_2123_audio_spectrograms";
 
 export const FF_DEV_2755 = "fflag_feat_dev_2755_regions_list_grouped_by_labels_with_ordered_collapse_short";
 
@@ -72,6 +64,13 @@ export const FF_DEV_4174 = "fflag_fix_back_dev_4174_overlap_issue_experiments_10
 export const FF_LSDV_E_278 = "fflag_feat_front_lsdv_e_278_contextual_scrolling_short";
 
 /**
+ * Enhanced paragraph annotation with automatic label selection and smart duplicate prevention
+ * Enables automatic phrase annotation when labels are selected, with priority for user text selection
+ * @link https://app.launchdarkly.com/default/production/features/fflag_feat_front_bros_199_enable_select_all_in_ner_phrase_short
+ */
+export const FF_NER_SELECT_ALL = "fflag_feat_front_bros_199_enable_select_all_in_ner_phrase_short";
+
+/**
  * Annotations with LLM assistance
  * @link https://app.launchdarkly.com/default/production/features/fflag_feat_all_lsdv_e_294_llm_annotations_180723_long
  */
@@ -112,9 +111,6 @@ export const FF_LSDV_4620_3_ML = "fflag_fix_front_lsdv_4620_memory_leaks_100723_
  * Fixes how presigned urls are generated and accessed to remove possibility of CORS errors.
  */
 export const FF_LSDV_4711 = "fflag_fix_all_lsdv_4711_cors_errors_accessing_task_data_short";
-
-/** Fix "No Label" for Dynamic Labels by switching off missing labels removal */
-export const FF_LSDV_4988 = "fflag_fix_front_lsdv_4988_dynamic_no_label_120523_short";
 
 /**
  * Fixing issues related to selection tool functional (selecting hidden regions, onClick in Konva, interaction with regions inside selection area)
@@ -194,6 +190,14 @@ export const FF_IMAGE_MEMORY_USAGE = "fflag_feat_front_optic_1479_improve_image_
 
 export const FF_VIDEO_FRAME_SEEK_PRECISION = "fflag_fix_front_optic_1608_improve_video_frame_seek_precision_short";
 
+/**
+ * Allows the time series component to participate in synchronized playback with other media components (like audio and video)
+ * when the feature flag is enabled, while maintaining independent operation when the flag is disabled.
+ *
+ * @link https://app.launchdarkly.com/projects/default/flags/fflag_feat_optic_2125_timeseries_sync
+ */
+export const FF_TIMESERIES_SYNC = "fflag_feat_optic_2125_timeseries_sync";
+
 Object.assign(window, {
   APP_SETTINGS: {
     ...(window.APP_SETTINGS ?? {}),
@@ -213,11 +217,11 @@ function getFeatureFlags() {
 
 export function isFF(id: string) {
   const featureFlags = getFeatureFlags();
-
   // TODO: remove the override + if statement once LSE and LSO start building react the same way and fflag_fix_front_lsdv_4620_memory_leaks_100723_short is removed
   const override: Record<string, boolean> = {
     fflag_fix_front_lsdv_4620_memory_leaks_100723_short: false,
   };
+
   if (id in override) {
     return override[id];
   }

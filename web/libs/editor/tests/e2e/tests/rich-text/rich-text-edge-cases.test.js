@@ -2,12 +2,6 @@ const assert = require("assert");
 
 Feature("Richtext edge cases");
 
-Before(({ LabelStudio }) => {
-  LabelStudio.setFeatureFlags({
-    ff_front_1170_outliner_030222_short: true,
-  });
-});
-
 const edgeCaseConfig = `<View>
     <Labels name="label" toName="html">
         <Label value="Highlight" background="rgb(255, 64, 182)" />

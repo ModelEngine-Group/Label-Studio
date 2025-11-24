@@ -131,8 +131,33 @@ def tasks_from_url(file_upload_ids, project, user, url, could_be_tasks_list):
         response = ssrf_safe_get(
             url, verify=project.organization.should_verify_ssl_certs(), stream=True, headers={'Accept-Encoding': None}
         )
+
+        # Try to get filename from resolved URL after redirects
+        resolved_url = response.url if hasattr(response, 'url') else url
+        if resolved_url != url:
+            # Parse filename from the resolved URL after redirect
+            from urllib.parse import unquote, urlparse
+
+            parsed_url = urlparse(resolved_url)
+            path = unquote(parsed_url.path)
+            resolved_filename = path.rsplit('/', 1)[-1]
+            # Remove query parameters
+            if '?' in resolved_filename:
+                resolved_filename = resolved_filename.split('?')[0]
+            _, resolved_ext = os.path.splitext(resolved_filename)
+            filename = resolved_filename
+
+        # Check file extension
+        _, ext = os.path.splitext(filename)
+        if ext and ext.lower() not in settings.SUPPORTED_EXTENSIONS:
+            raise ValidationError(f'{ext} extension is not supported')
+
+        # Check file size before downloading
+        content_length = response.headers.get('content-length')
+        if content_length:
+            check_tasks_max_file_size(int(content_length))
+
         file_content = response.content
-        check_tasks_max_file_size(int(response.headers['content-length']))
         file_upload = create_file_upload(user, project, SimpleUploadedFile(filename, file_content))
         if file_upload.format_could_be_tasks_list:
             could_be_tasks_list = True

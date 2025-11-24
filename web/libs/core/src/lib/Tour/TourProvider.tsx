@@ -142,7 +142,7 @@ export const TourProvider: React.FC<{
       }
 
       if (response.state === "completed" || response.state === "skipped") {
-        console.info(`Tour "${name}" is already completed`);
+        console.debug(`Tour "${name}" is already completed`);
         return;
       }
 

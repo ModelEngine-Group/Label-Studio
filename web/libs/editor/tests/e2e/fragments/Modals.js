@@ -5,6 +5,7 @@ module.exports = {
     I.seeElement(".ant-modal");
     I.see("Warning");
     I.see(text);
+    I.waitTicks(3);
     I.see("OK");
   },
   dontSeeWarning(text) {

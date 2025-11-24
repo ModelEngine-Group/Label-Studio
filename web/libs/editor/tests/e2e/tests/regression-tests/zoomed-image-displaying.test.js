@@ -12,7 +12,7 @@ const config = `
 const ZOOM = 10;
 const EPSILON = 0.01;
 
-Scenario("Image displaying precision.", async ({ I, LabelStudio, AtImageView, AtSidebar }) => {
+Scenario("Image displaying precision.", async ({ I, LabelStudio, AtImageView, AtOutliner }) => {
   const params = {
     config,
     data: { image: IMAGE },
@@ -21,8 +21,8 @@ Scenario("Image displaying precision.", async ({ I, LabelStudio, AtImageView, At
   I.amOnPage("/");
 
   LabelStudio.init(params);
-  AtImageView.waitForImage();
-  AtSidebar.seeRegions(0);
+  LabelStudio.waitForObjectsReady();
+  AtOutliner.seeRegions(0);
 
   const { imageTransform } = await I.executeScript(async () => {
     const img = window.document.querySelector('[alt="LS"]');

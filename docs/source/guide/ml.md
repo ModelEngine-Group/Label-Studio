@@ -16,6 +16,20 @@ You can use an ML backend to integrate your model development pipeline with your
 - **Interactive labeling:** Integrate ML models into the platform to help humans label or annotate large datasets more efficiently and accurately.
 - **Model evaluation and fine-tuning:** Labelers review and analyze the model outputs to assess model accuracy and optimize performance.
 
+<div class="opensource-only">
+
+!!! error enterprise
+    Label Studio Enterprise features an out-of-the-box solution for LLM-assisted auto-labeling and model evaluation. Compare LLMs based on accuracy and cost. For more information, see [Prompts](https://docs.humansignal.com/guide/prompts_overview).
+
+</div>
+
+<div class="enterprise-only">
+
+!!! info Tip
+    Prompts is an out-of-the-box solution for LLM-assisted auto-labeling and model evaluation. For more information, see [Prompts](prompts_overview).
+
+</div>
+
 For example, for an image classification task, the model pre-selects an image class for data annotators to verify. For audio transcriptions, the model displays a transcription that data annotators can modify. 
 
 Once a model is connected, the way it works is:

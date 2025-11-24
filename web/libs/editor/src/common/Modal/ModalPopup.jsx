@@ -1,9 +1,9 @@
 import { Component, createRef } from "react";
 import { createPortal } from "react-dom";
-import { LsRemove } from "../../assets/icons";
+import { IconRemove } from "@humansignal/icons";
 import { BemWithSpecifiContext, cn } from "../../utils/bem";
 import { aroundTransition } from "@humansignal/core/lib/utils/transition";
-import { Button } from "../Button/Button";
+import { Button } from "@humansignal/ui";
 import "./Modal.scss";
 
 const { Block, Elem } = BemWithSpecifiContext();
@@ -18,7 +18,7 @@ export class Modal extends Component {
       title: props.title,
       body: props.body,
       footer: props.footer,
-      visible: props.animateAppearance ? false : props.visible ?? false,
+      visible: props.animateAppearance ? false : (props.visible ?? false),
       transition: props.visible ? "visible" : null,
     };
   }
@@ -76,7 +76,9 @@ export class Modal extends Component {
               <Modal.Header>
                 <Elem name="title">{this.state.title}</Elem>
                 {this.props.allowClose !== false && (
-                  <Elem tag={Button} name="close" type="text" style={{ color: "0099FF" }} icon={<LsRemove />} />
+                  <Button look="string" size="small" onClick={() => this.hide()}>
+                    <IconRemove />
+                  </Button>
                 )}
               </Modal.Header>
             )}

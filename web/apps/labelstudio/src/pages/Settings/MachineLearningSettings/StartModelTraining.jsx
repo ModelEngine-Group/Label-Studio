@@ -1,8 +1,7 @@
 import { useCallback, useState } from "react";
-import { Button } from "../../../components";
+import { Button } from "@humansignal/ui";
 import { useAPI } from "../../../providers/ApiProvider";
-import { Description } from "../../../components/Description/Description";
-import { Block } from "../../../utils/bem";
+import { Typography } from "@humansignal/ui";
 
 export const StartModelTraining = ({ backend }) => {
   const api = useAPI();
@@ -22,17 +21,17 @@ export const StartModelTraining = ({ backend }) => {
   );
 
   return (
-    <Block name="test-request">
-      <Description style={{ marginTop: 0, maxWidth: 680 }}>
+    <div className="max-w-[680px]">
+      <Typography size="small" className="text-neutral-content-subtler">
         You're about to manually trigger your model's training process. This action will start the learning phase based
-        on how the train method is implemented in the ML Backend. Proceed to begin this process.
-        <br />
-        <br />
+        on how train method is implemented in the ML Backend. Proceed to begin this process.
+      </Typography>
+      <Typography size="small" className="text-neutral-content-subtler mt-base mb-wide">
         *Note: Currently, there is no built-in feedback loop within this interface for tracking the training progress.
         You'll need to monitor the model's training steps directly through the model's own tools and environment.
-      </Description>
+      </Typography>
 
-      {response || (
+      {!response && (
         <Button
           onClick={() => {
             onStartTraining(backend);
@@ -42,12 +41,12 @@ export const StartModelTraining = ({ backend }) => {
         </Button>
       )}
 
-      {response && (
+      {!!response && (
         <>
           <pre>Request Sent!</pre>
           <pre>Response: {JSON.stringify(response, null, 2)}</pre>
         </>
       )}
-    </Block>
+    </div>
   );
 };

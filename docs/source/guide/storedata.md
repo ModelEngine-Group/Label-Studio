@@ -68,6 +68,15 @@ To configure MinIO settings, create a `.env` file. Remember to override the defa
 ````.dotenv
 MINIO_ROOT_USER=minio_admin_do_not_use_in_production
 MINIO_ROOT_PASSWORD=minio_admin_do_not_use_in_production
+
+# To automatically select the right compose file for minio you can add on of the following lines:
+# Windows
+COMPOSE_FILE=docker-compose.yml;docker-compose.minio.yml
+# Linux/Mac
+COMPOSE_FILE=docker-compose.yml:docker-compose.minio.yml
+
+# To use a specific minio version you can set the following env var
+# MINIO_VERSION=RELEASE.2025-04-22T22-12-26Z
 ````
 
 ### Connect Label Studio to local MinIO

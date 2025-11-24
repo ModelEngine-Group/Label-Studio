@@ -25,8 +25,8 @@
 /* GUTTER */
 
 .CodeMirror-gutters {
-  border-right: 1px solid #ddd;
-  background-color: #f7f7f7;
+  border-right: 1px solid var(--color-neutral-border);
+  background-color: var(--color-neutral-surface);
   white-space: nowrap;
 }
 .CodeMirror-linenumbers {
@@ -43,13 +43,13 @@
   color: black;
 }
 .CodeMirror-guttermarker-subtle {
-  color: #999;
+  color: var(--color-neutral-content-subtlest);
 }
 
 /* CURSOR */
 
 .CodeMirror-cursor {
-  border-left: 1px solid black;
+  border-left: 1px solid var(--color-neutral-inverted-content);
   border-right: none;
   width: 0;
 }
@@ -134,16 +134,16 @@
 /* DEFAULT THEME */
 
 .cm-s-default .cm-header {
-  color: #617ADA;
+  color: var(--color-accent-grape-bold);
 }
 .cm-s-default .cm-quote {
-  color: #34988D;
+  color: var(--color-accent-kale-bold);
 }
 .cm-negative {
-  color: #E6694E;
+  color: var(--color-negative-content);
 }
 .cm-positive {
-  color: #34988D;
+  color: var(--color-positive-content);
 }
 .cm-header,
 .cm-strong {
@@ -181,16 +181,16 @@
 }
 .cm-s-default .cm-variable-3,
 .cm-s-default .cm-type {
-  color: #34988D;
+  color: var(--color-accent-kale-bold);
 }
 .cm-s-default .cm-comment {
-  color: #E69559;
+  color: var(--color-accent-canteloupe-bold);
 }
 .cm-s-default .cm-string {
-  color: #CC6FBE;
+  color: var(--color-accent-plum-bold);
 }
 .cm-s-default .cm-string-2 {
-  color: #E6694E;
+  color: var(--color-accent-persimmon-bold);
 }
 .cm-s-default .cm-meta {
   color: #6B6860;
@@ -218,10 +218,10 @@
 }
 
 .cm-s-default .cm-error {
-  color: #E6694E;
+  color: var(--color-negative-content);
 }
 .cm-invalidchar {
-  color: #E6694E;
+  color: var(--color-negative-content);
 }
 
 .CodeMirror-composing {
@@ -231,10 +231,10 @@
 /* Default styles for common addons */
 
 div.CodeMirror span.CodeMirror-matchingbracket {
-  color: #0b0;
+  color: var(--color-positive-content);
 }
 div.CodeMirror span.CodeMirror-nonmatchingbracket {
-  color: #a22;
+  color: var(--color-negative-content);
 }
 .CodeMirror-matchingtag {
   background: rgba(255, 150, 0, 0.3);
@@ -251,7 +251,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .CodeMirror {
   position: relative;
   overflow: hidden;
-  background: white;
+  background: var(--color-neutral-background);
 }
 
 .CodeMirror-scroll {

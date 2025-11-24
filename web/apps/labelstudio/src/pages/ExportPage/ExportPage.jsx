@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router";
-import { Button } from "../../components";
+import { Button } from "@humansignal/ui";
 import { Form, Input } from "../../components/Form";
 import { Modal } from "../../components/Modal/Modal";
 import { Space } from "../../components/Space/Space";
@@ -132,9 +132,9 @@ export const ExportPage = () => {
             <Elem name="actions">
               <Space>
                 {downloadingMessage && "Files are being prepared. It might take some time."}
-                <Elem tag={Button} name="finish" look="primary" onClick={proceedExport} waiting={downloading}>
+                <Button className="w-[135px]" onClick={proceedExport} waiting={downloading} aria-label="Export data">
                   Export
-                </Elem>
+                </Button>
               </Space>
             </Elem>
           </Space>

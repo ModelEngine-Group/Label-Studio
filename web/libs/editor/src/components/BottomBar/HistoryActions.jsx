@@ -1,48 +1,52 @@
 import { observer } from "mobx-react";
-import { LsRedo, LsRemove, LsUndo } from "../../assets/icons";
-import { Button } from "../../common/Button/Button";
-import { Tooltip } from "@humansignal/ui";
-import { Block, Elem } from "../../utils/bem";
+import { IconRedo, IconRemove, IconUndo } from "@humansignal/icons";
+import { Tooltip, Button, Space } from "@humansignal/ui";
 import "./HistoryActions.scss";
 
 export const EditingHistory = observer(({ entity }) => {
   const { history } = entity;
 
   return (
-    <Block name="history-buttons">
+    <Space size="small">
       <Tooltip title="Undo">
-        <Elem
-          tag={Button}
-          name="action"
-          type="text"
+        <Button
+          variant="neutral"
+          size="small"
           aria-label="Undo"
+          look="string"
           disabled={!history?.canUndo}
           onClick={() => entity.undo()}
-          icon={<LsUndo />}
-        />
+          className="!p-0"
+        >
+          <IconUndo />
+        </Button>
       </Tooltip>
       <Tooltip title="Redo">
-        <Elem
-          tag={Button}
-          name="action"
-          type="text"
+        <Button
+          variant="neutral"
+          size="small"
+          look="string"
           aria-label="Redo"
           disabled={!history?.canRedo}
           onClick={() => entity.redo()}
-          icon={<LsRedo />}
-        />
+          className="!p-0"
+        >
+          <IconRedo />
+        </Button>
       </Tooltip>
       <Tooltip title="Reset">
-        <Elem
-          tag={Button}
-          name="action"
-          type="text"
+        <Button
+          variant="negative"
+          look="string"
+          size="small"
           aria-label="Reset"
           disabled={!history?.canUndo}
           onClick={() => history?.reset()}
-          icon={<LsRemove />}
-        />
+          className="!p-0"
+        >
+          <IconRemove />
+        </Button>
       </Tooltip>
-    </Block>
+    </Space>
   );
 });

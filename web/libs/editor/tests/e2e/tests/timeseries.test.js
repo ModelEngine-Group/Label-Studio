@@ -1,4 +1,3 @@
-const { initLabelStudio } = require("./helpers");
 const assert = require("assert");
 
 const config = ({ timeformat }) => `
@@ -90,6 +89,19 @@ const scenarios = {
       I.seeElement(locate(".lsf-errors"));
     },
   },
+
+  "Works with microseconds in time column and %f timeFormat": {
+    timeformat: "%Y-%m-%d %H:%M:%S.%f",
+    timeseries: {
+      time: ["2024-07-15 12:34:56.123456", "2024-07-15 12:34:57.654321", "2024-07-15 12:34:58.000123"],
+      one: [1, 2, 3],
+      two: [4, 5, 6],
+    },
+    assert(I) {
+      I.waitForVisible(".htx-timeseries", 5);
+      I.dontSeeElement(locate(".lsf-errors"));
+    },
+  },
 };
 
 function generateData(stepsNumber) {
@@ -110,7 +122,7 @@ function generateData(stepsNumber) {
 
 Feature("TimeSeries datasets");
 Object.entries(scenarios).forEach(([title, scenario]) =>
-  Scenario(title, async ({ I }) => {
+  Scenario(title, async ({ I, LabelStudio }) => {
     const cfg = config(scenario);
     const params = {
       annotations: [{ id: "test", result: [] }],
@@ -120,7 +132,7 @@ Object.entries(scenarios).forEach(([title, scenario]) =>
     // const configTree = Utils.parseXml(config);
 
     await I.amOnPage("/");
-    await I.executeScript(initLabelStudio, params);
+    LabelStudio.init(params);
 
     scenario.assert(I);
   }),
@@ -179,11 +191,11 @@ Scenario("TimeSeries with optimized data", async ({ I, LabelStudio, AtTimeSeries
   await doNotSeeProblems();
 
   I.say("try to get errors by zooming in by mouse wheel");
-  I.pressKeyDown("Control");
+  I.pressKeyDown("CommandOrControl");
   for (let i = 0; i < 10; i++) {
     await AtTimeSeries.zoomByMouse(-100, { x: 0.98 });
   }
-  I.pressKeyUp("Control");
+  I.pressKeyUp("CommandOrControl");
   await doNotSeeProblems();
 
   I.say("try to get errors by moving handle to the extreme position");

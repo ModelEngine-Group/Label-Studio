@@ -121,3 +121,7 @@ libs/datamanager/src/examples
 libs/datamanager/e2e/output
 
 libs/datamanager/.cache
+
+dist
+.cursor/rules/nx-rules.mdc
+.github/instructions/nx.instructions.md

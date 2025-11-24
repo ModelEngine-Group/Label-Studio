@@ -63,7 +63,8 @@ on:
 env:
   PYTHON_VERSION_FILE: "pyproject.toml"
   FRONTEND_MONOREPO_DIR: "web"
-  NODE: "18"
+  NODE: "22"
+  POETRY_VERSION: 2.1.4
 
 jobs:
   pypi:
@@ -112,15 +113,13 @@ jobs:
         run: yarn version:libs
 
       - name: "Install poetry"
-        env:
-          POETRY_VERSION: ${{ vars.POETRY_VERSION }}
-        run: pipx install "poetry==${POETRY_VERSION}"
+        run: pipx install "poetry==${{ env.POETRY_VERSION }}"
 
       - name: "Set up Python"
         id: setup_python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.13'
           cache: 'poetry'
 
       - name: Install Python dependencies
@@ -128,26 +127,6 @@ jobs:
 
       - name: Collect static
         run: poetry run python label_studio/manage.py collectstatic
-
-      - name: Download feature flags
-        env:
-          LAUNCHDARKLY_COMMUNITY_SDK_KEY: ${{ secrets.LAUNCHDARKLY_COMMUNITY_SDK_KEY }}
-          LAUNCHDARKLY_DOWNLOAD_PATH: "label_studio/feature_flags.json"
-        run: |
-          set -xeuo pipefail
-          curl \
-            --connect-timeout 30 \
-            --retry 5 \
-            --retry-delay 10 \
-            -H "Authorization: $LAUNCHDARKLY_COMMUNITY_SDK_KEY" \
-            "https://sdk.launchdarkly.com/sdk/latest-all" >"$LAUNCHDARKLY_DOWNLOAD_PATH"
-          if [ "$(jq 'has("flags")' <<< cat $LAUNCHDARKLY_DOWNLOAD_PATH)" = "true" ]; then
-            echo "feature_flags.json is valid"
-          else
-            echo "feature_flags.json is invalid"
-            cat $LAUNCHDARKLY_DOWNLOAD_PATH
-            exit 1
-          fi
 
       - name: Package
         env:
@@ -176,7 +155,7 @@ jobs:
 
       - name: Check SDK version is not git sha
         if: inputs.release_type == 'release'
-        run: grep 'label-studio-sdk\s*=\s*"[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*"' pyproject.toml
+        run: grep 'label-studio-sdk (==[0-9]\+\.[0-9]\+\.[0-9]\+)' pyproject.toml
 
       - name: Check Build
         run: poetry run twine check dist/*

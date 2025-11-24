@@ -1,33 +1,53 @@
 type RawResult = {
   from_name: string;
   to_name: string;
-  value: object;
+  type: string;
+  value: Record<string, any>;
 };
 
 type MSTResult = {
+  toJSON(): unknown;
   id: string;
   area: MSTRegion;
   annotation: MSTAnnotation;
   type: string;
   mainValue: any;
+  to_name: any;
   // @todo tag
   from_name: any;
 };
 
-type MSTagProps = {
+type MSTObjectTag = {
   isReady?: boolean;
+  name: string;
+  isControlTag: false;
+  isObjectTag: true;
+  type: string;
+  value: string;
+  _value?: any;
 };
 
-type MSTTagImage = {
+type MSTControlTag = {
+  isControlTag: true;
+  isObjectTag: false;
+  name: string;
+  toname: string;
+  children: Array<any>;
+  perregion: boolean;
+  type: string;
+};
+
+type MSTTagImage = MSTObjectTag & {
   type: "image";
   stageWidth: number;
   stageHeight: number;
   containerWidth: number;
   containerHeight: number;
   canvasSize?: { width: number; height: number };
-} & MSTagProps;
+  parsedValue?: string;
+};
 
-type MSTTag = MSTTagImage | (MSTagProps & { type: string });
+type MSTTag = MSTTagImage | MSTObjectTag | MSTControlTag;
 
 type MixinMSTArea = {
   id: string;
@@ -80,12 +100,14 @@ type MSTRegion = MixinMSTArea & MixinMSTRegion & MixinMSTRegionVolatile & MSTEdi
 
 type MSTAnnotation = {
   id: string;
+  pk: string;
+  user: MSTUserExtended;
+  createdBy: string; // used for predictions
   canBeReviewed: boolean;
   userGenerate: boolean;
   sentUserGenerate: boolean;
   skipped: boolean;
   editable: boolean;
-  id: string;
   draftId: string;
   versions: {
     draft?: RawResult[];
@@ -93,9 +115,11 @@ type MSTAnnotation = {
   };
   regions: MSTRegion[];
   results: MSTResult[];
+  type: "annotation" | "prediction";
   names: Map<string, MSTTag>;
   isLinkingMode: boolean;
   linkingMode: "create_relation" | "link_to_comment";
+  isNonEditableDraft: boolean;
 
   submissionInProgress: () => void;
 };
@@ -110,6 +134,7 @@ type MSTUserExtended = {
   avatar: string | null;
   initials: string | null;
   phone: string | null;
+  displayName: string | null;
 };
 
 type MSTAnchor = {
@@ -142,7 +167,7 @@ type MSTCommentStore = {
   overlayComments: MSTComment[];
   annotationId: string;
   annotation?: MSTAnnotation;
-  commentFormSubmit: () => void;
+  commentFormSubmit: () => Promise<void>;
   setTooltipMessage: (message: string) => void;
   currentComment: any;
   addedCommentThisSession: boolean;
@@ -152,16 +177,27 @@ type MSTCommentStore = {
   restoreCommentsFromCache: (cacheKey: string) => void;
 };
 
-type MSTStore = {
+export type MSTStore = {
   customButtons: CustomButtonsField;
   settings: Record<string, boolean>;
   isSubmitting: boolean;
   // @todo WHAT IS THIS?
   explore: any;
+  task: {
+    data: string;
+    dataObj: Record<string, any>;
+    agreement: number | null;
+  };
 
   annotationStore: {
+    annotations: MSTAnnotation[];
     selected: MSTAnnotation | null;
     selectedHistory: object | null;
+    store: MSTStore;
+    names: Map<string, MSTTag>;
+
+    selectAnnotation: (id: string | number) => void;
+    selectPrediction: (id: string | number) => void;
   };
   commentStore: MSTCommentStore;
 

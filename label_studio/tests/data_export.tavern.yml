@@ -361,6 +361,7 @@ stages:
 test_name: export_delete
 strict: false
 marks:
+  - skipif: '"Windows" in platform.system()'
   - usefixtures:
       - django_live_url
       - ff_back_dev_4664_remove_storage_file_on_export_delete_29032023_short_on

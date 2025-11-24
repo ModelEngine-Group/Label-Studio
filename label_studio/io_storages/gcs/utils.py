@@ -115,6 +115,7 @@ class GCS(object):
         regex_filter: str = None,
         limit: int = None,
         return_key: bool = False,
+        recursive_scan: bool = True,
     ):
         """
         Iterate files on the bucket. Optionally return limited number of files that match provided extensions
@@ -127,12 +128,18 @@ class GCS(object):
         :return: Iterator object
         """
         total_read = 0
-        blob_iter = client.list_blobs(bucket_name, prefix=prefix)
-        prefix = str(prefix) if prefix else ''
+        # Normalize prefix to end with '/'
+        normalized_prefix = (str(prefix).rstrip('/') + '/') if prefix else ''
+        # Use delimiter for non-recursive listing
+        if recursive_scan:
+            blob_iter = client.list_blobs(bucket_name, prefix=normalized_prefix or None)
+        else:
+            blob_iter = client.list_blobs(bucket_name, prefix=normalized_prefix or None, delimiter='/')
+        prefix = normalized_prefix
         regex = re.compile(str(regex_filter)) if regex_filter else None
         for blob in blob_iter:
-            # skip dir level
-            if blob.name == (prefix.rstrip('/') + '/'):
+            # skip directory entries at any level (directories end with '/')
+            if blob.name.endswith('/'):
                 continue
             # check regex pattern filter
             if regex and not regex.match(blob.name):
@@ -251,36 +258,17 @@ class GCS(object):
         return f'gs://{bucket_name}/{key}'
 
     @classmethod
-    def _try_read_json(cls, blob_str):
-        try:
-            data = json.loads(blob_str)
-        except ValueError:
-            logger.error(f"Can't parse JSON from {blob_str}")
-            return
-        return data
-
-    @classmethod
     def read_file(
         cls, client: gcs.Client, bucket_name: str, key: str, convert_to: ConvertBlobTo = ConvertBlobTo.NOTHING
     ):
         bucket = client.get_bucket(bucket_name)
         blob = bucket.blob(key)
-        blob_str = blob.download_as_bytes()
-        if convert_to == cls.ConvertBlobTo.NOTHING:
-            return blob_str
-        elif convert_to == cls.ConvertBlobTo.JSON:
-            return cls._try_read_json(blob_str)
-        elif convert_to == cls.ConvertBlobTo.JSON_DICT:
-            json_data = cls._try_read_json(blob_str)
-            if not isinstance(json_data, dict):
-                raise ValueError(
-                    f'Error on key {key}: For {cls.__name__} your JSON file must be a dictionary with one task.'
-                )
-            return json_data
-        elif convert_to == cls.ConvertBlobTo.BASE64:
-            return base64.b64encode(blob_str)
+        blob = blob.download_as_bytes()
 
-        return blob_str
+        if convert_to == cls.ConvertBlobTo.BASE64:
+            return base64.b64encode(blob)
+
+        return blob
 
     @classmethod
     def read_base64(cls, f: gcs.Blob) -> Base64:

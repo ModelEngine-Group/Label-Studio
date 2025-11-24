@@ -155,6 +155,7 @@ const LabelOnBbox = ({
 };
 
 const LabelOnEllipse = observer(({ item, color, strokewidth }) => {
+  if (!item.parent) return null;
   const isTexting = !!item.texting;
   const labelText = item.getLabelText(",");
   const obj = item.parent;
@@ -176,6 +177,7 @@ const LabelOnEllipse = observer(({ item, color, strokewidth }) => {
 });
 
 const LabelOnRect = observer(({ item, color, strokewidth }) => {
+  if (!item.parent) return null;
   const isTexting = !!item.texting;
   const labelText = item.getLabelText(",");
   const obj = item.parent;
@@ -200,6 +202,7 @@ const LabelOnRect = observer(({ item, color, strokewidth }) => {
 });
 
 const LabelOnPolygon = observer(({ item, color }) => {
+  if (!item.parent) return null;
   const isTexting = !!item.texting;
   const labelText = item.getLabelText(",");
   const bbox = item.bboxCoordsCanvas;
@@ -239,6 +242,7 @@ const LabelOnPolygon = observer(({ item, color }) => {
 });
 
 const LabelOnMask = observer(({ item, color }) => {
+  if (!item.parent) return null;
   const settings = getRoot(item).settings;
 
   if (!settings.showLabels) return null;
@@ -278,6 +282,7 @@ const LabelOnMask = observer(({ item, color }) => {
 });
 
 const LabelOnKP = observer(({ item, color }) => {
+  if (!item.parent) return null;
   const isTexting = !!item.texting;
   const labelText = item.getLabelText(",");
 

@@ -165,20 +165,20 @@ export const ImageView = {
    * Captures a new screenshot and compares it to already taken one
    * Fails if screenshots are identical
    * @param name name of the screenshot
-   * @param treshold to compare image. It's a relation between original number of pixels vs changed number of pixels
+   * @param threshold to compare image. It's a relation between original number of pixels vs changed number of pixels
    */
-  canvasShouldChange(name: string, treshold = 0.1) {
-    return this.drawingArea.compareScreenshot(name, "shouldChange", { treshold });
+  canvasShouldChange(name: string, threshold = 0.1) {
+    return this.drawingArea.compareScreenshot(name, "shouldChange", { threshold });
   },
 
   /**
    * Captures a new screenshot and compares it to already taken one
    * Fails if screenshots are different
    * @param name name of the screenshot
-   * @param treshold to compare image. It's a relation between original number of pixels vs changed number of pixels
+   * @param threshold to compare image. It's a relation between original number of pixels vs changed number of pixels
    */
-  canvasShouldNotChange(name: string, treshold = 0.1) {
-    return this.drawingArea.compareScreenshot(name, "shouldNotChange", { treshold });
+  canvasShouldNotChange(name: string, threshold = 0.1) {
+    return this.drawingArea.compareScreenshot(name, "shouldNotChange", { threshold });
   },
   selectRect3PointToolByHotkey() {
     cy.get("body").type("{shift}{R}");

@@ -167,15 +167,23 @@
   <% const quickLinks = [
       {
         label: "Docs",
-        href: "/guide/"
+        href: "/guide/",
+        tier: "all"
       },
       {
         label: "Templates",
-        href: "/templates/"
+        href: "/templates/",
+        tier: "all"
+      },
+      {
+        label: "Plugins",
+        href: "/plugins/",
+        tier: "enterprise"
       },
       {
         label: "Tags",
-        href: "/tags/"
+        href: "/tags/",
+        tier: "all"
       }
     ];
       const currentQuickLink = quickLinks.find(link => link.href.includes(page.type));
@@ -184,8 +192,10 @@
     <% if(quickLinks && quickLinks.length > 0) {%>
       <ul class="page-header-content-switcher">
       <% quickLinks.forEach(function(link) { %>
-        <li><a href="<%- link.href %>" class="<%- link.href === currentQuickLink?.href ? 'active' : '' %>"><%- link.label %></a></li>
-      <% }); %>
+          <% if(link.tier === "all" || link.tier === tier) { %>
+          <li><a href="<%- link.href %>" class="<%- link.href === currentQuickLink?.href ? 'active' : '' %>"><%- link.label %></a></li>
+          <% }; %>
+        <% }); %>
       <li>
         <a href="https://api.labelstud.io/api-reference/introduction/getting-started" target="_blank">
           API

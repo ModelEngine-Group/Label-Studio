@@ -5,6 +5,11 @@ const { serialize, selectText } = require("./helpers");
 Feature("Date Time");
 
 const config = `<View>
+<style>
+[data-radix-popper-content-wrapper] {
+  z-index: 9999 !important;
+}
+</style>
 <Header>Select text to see related smaller DateTime controls for every region</Header>
 <Labels name="label" toName="text">
   <Label value="birth" background="green"/>
@@ -51,7 +56,7 @@ const params = { config, data };
 
 Scenario(
   "Check DateTime holds state between annotations and saves result",
-  async ({ I, AtDateTime, AtLabels, AtSidebar, LabelStudio }) => {
+  async ({ I, AtDateTime, AtLabels, AtOutliner, LabelStudio, Modals }) => {
     I.amOnPage("/");
 
     LabelStudio.init(params);
@@ -64,8 +69,9 @@ Scenario(
     ////// GLOBAL
     I.say("Check validation of required global date control");
     I.updateAnnotation();
-    I.see('DateTime "created" is required');
-    I.click("OK");
+    Modals.seeWarning('DateTime "created" is required');
+    Modals.closeWarning();
+    Modals.dontSeeWarning('DateTime "created" is required');
 
     const checks = {
       incorrect: [
@@ -78,17 +84,17 @@ Scenario(
     for (const [incorrect, error] of checks.incorrect) {
       I.fillField("input[type=date]", formatDateValue(incorrect, format));
       I.updateAnnotation();
-      I.see("is not valid");
-      I.see(error);
-      I.click("OK");
+      Modals.seeWarning("is not valid");
+      Modals.seeWarning(error);
+      Modals.closeWarning();
+      Modals.dontSeeWarning("is not valid");
       assert.strictEqual(await I.grabCssPropertyFrom("[type=date]", "border-color"), "rgb(255, 0, 0)");
     }
 
     for (const [correct] of checks.correct) {
       I.fillField("input[type=date]", formatDateValue(correct, format));
       I.updateAnnotation();
-      I.dontSee("Warning");
-      I.dontSee("is not valid");
+      Modals.dontSeeWarning("is not valid");
     }
 
     // this value will be asserted at the end
@@ -111,47 +117,48 @@ Scenario(
 
     I.say("Try to submit and observe validation errors about per-regions");
     I.updateAnnotation();
-    I.see('DateTime "date" is required');
-    I.click("OK");
+    Modals.seeWarning('DateTime "date" is required');
+    Modals.closeWarning();
+    Modals.dontSeeWarning('DateTime "date" is required');
 
     // invalid region is selected on validation to reveal per-region control with error
-    AtSidebar.seeSelectedRegion(regions[0].label);
+    AtOutliner.seeSelectedRegion(regions[0].label);
     I.fillField("input[name=date-date]", formatDateValue(regions[0].dateValue, format));
     I.updateAnnotation();
     // next region with empty required date is selected and error is shown
-    I.see('DateTime "date" is required');
-    I.click("OK");
-    AtSidebar.seeSelectedRegion(regions[1].label);
+    Modals.seeWarning('DateTime "date" is required');
+    Modals.closeWarning();
+    Modals.dontSeeWarning('DateTime "date" is required');
+    AtOutliner.seeSelectedRegion(regions[1].label);
 
     I.say("Fill all per-region date fields and check it's all good");
     regions.forEach((region) => {
-      I.click(locate("li").withText(region.text));
+      AtOutliner.clickRegion(region.text);
       I.fillField("input[name=date-date]", formatDateValue(region.dateValue, format));
     });
 
-    I.click(locate("li").withText(regions[0].text));
+    AtOutliner.clickRegion(regions[0].text);
     // less than min
-    I.selectOption("select[name=year-year]", "1999");
-    assert.strictEqual("", await I.grabValueFrom("select[name=year-year]"));
-    // more than max
-    I.selectOption("select[name=year-year]", "2023");
-    assert.strictEqual("", await I.grabValueFrom("select[name=year-year]"));
+    I.click(locate("[data-testid*=select-trigger][data-name=year-year]"));
+    I.dontSee("1999");
+    // less than max
+    I.dontSee("2023");
+    I.see("2022");
     // exactly the same as max, should be correct
-    I.selectOption("select[name=year-year]", "2022");
+    I.click("div[data-testid='select-option-2022']");
     assert.strictEqual("2022", await I.grabValueFrom("select[name=year-year]"));
     I.pressKey("Escape");
 
     regions.forEach((region) => {
-      I.click(locate("li").withText(region.text));
+      AtOutliner.clickRegion(region.text);
       I.selectOption("select[name=year-year]", region.year);
     });
 
     I.updateAnnotation();
-    I.dontSee("Warning");
-    I.dontSee("is required");
+    Modals.dontSeeWarning("is required");
 
     regions.forEach((region) => {
-      I.click(locate("li").withText(region.text));
+      AtOutliner.clickRegion(region.text);
       // important to see that per-regions change their values
       I.seeInField("input[name=date-date]", region.dateValue);
       I.seeInField("select[name=year-year]", region.year);

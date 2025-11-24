@@ -1,9 +1,11 @@
 """This file and its contents are licensed under the Apache License 2.0. Please see the included NOTICE for copyright information and LICENSE for a copy of the license.
 """
+
 import json
 import logging
 import os
 import re
+from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import quote
 
@@ -19,6 +21,7 @@ from io_storages.base_models import (
     ImportStorageLink,
     ProjectStorageMixin,
 )
+from io_storages.utils import StorageObject, load_tasks_json
 from rest_framework.exceptions import ValidationError
 from tasks.models import Annotation
 
@@ -27,9 +30,16 @@ logger = logging.getLogger(__name__)
 
 class LocalFilesMixin(models.Model):
     path = models.TextField(_('path'), null=True, blank=True, help_text='Local path')
-    regex_filter = models.TextField(_('regex_filter'), null=True, blank=True, help_text='Regex for filtering objects')
+    regex_filter = models.TextField(
+        _('regex_filter'),
+        null=True,
+        blank=True,
+        help_text='Regex for filtering objects',
+    )
     use_blob_urls = models.BooleanField(
-        _('use_blob_urls'), default=False, help_text='Interpret objects as BLOBs and generate URLs'
+        _('use_blob_urls'),
+        default=False,
+        help_text='Interpret objects as BLOBs and generate URLs',
     )
 
     def validate_connection(self):
@@ -57,44 +67,58 @@ class LocalFilesImportStorageBase(LocalFilesMixin, ImportStorage):
     def can_resolve_url(self, url):
         return False
 
-    def iterkeys(self):
+    recursive_scan = models.BooleanField(
+        _('recursive scan'),
+        default=False,
+        db_default=False,
+        null=True,
+        help_text=_('Perform recursive scan over the directory content'),
+    )
+
+    def iter_objects(self):
         path = Path(self.path)
         regex = re.compile(str(self.regex_filter)) if self.regex_filter else None
         # For better control of imported tasks, file reading has been changed to ascending order of filenames.
         # In other words, the task IDs are sorted by filename order.
-        for file in sorted(path.rglob('*'), key=os.path.basename):
+        iterator = path.rglob('*') if self.recursive_scan else path.glob('*')
+        for file in sorted(iterator, key=os.path.basename):
             if file.is_file():
                 key = file.name
                 if regex and not regex.match(key):
                     logger.debug(key + ' is skipped by regex filter')
                     continue
-                yield str(file)
+                yield file
 
-    def get_data(self, key):
+    def iter_keys(self):
+        for obj in self.iter_objects():
+            yield str(obj)
+
+    def get_unified_metadata(self, obj):
+        stat = obj.stat()
+        return {
+            'key': str(obj),
+            'last_modified': datetime.fromtimestamp(stat.st_mtime, tz=timezone.utc),
+            'size': stat.st_size,
+        }
+
+    def get_data(self, key) -> list[StorageObject]:
         path = Path(key)
         if self.use_blob_urls:
             # include self-hosted links pointed to local resources via
             # {settings.HOSTNAME}/data/local-files?d=<path/to/local/dir>
             document_root = Path(settings.LOCAL_FILES_DOCUMENT_ROOT)
             relative_path = str(path.relative_to(document_root))
-            return {
+            task = {
                 settings.DATA_UNDEFINED_NAME: f'{settings.HOSTNAME}/data/local-files/?d={quote(str(relative_path))}'
             }
+            return [StorageObject(key=key, task_data=task)]
 
         try:
-            with open(path, encoding='utf8') as f:
-                value = json.load(f)
-        except (UnicodeDecodeError, json.decoder.JSONDecodeError):
-            raise ValueError(
-                f"Can't import JSON-formatted tasks from {key}. If you're trying to import binary objects, "
-                f'perhaps you\'ve forgot to enable "Treat every bucket object as a source file" option?'
-            )
-
-        if not isinstance(value, dict):
-            raise ValueError(
-                f'Error on key {key}: For {self.__class__.__name__} your JSON file must be a dictionary with one task.'
-            )
-        return value
+            with open(path, 'rb') as f:
+                blob = f.read()
+                return load_tasks_json(blob, key)
+        except OSError as e:
+            raise ValueError(f'Failed to read file {path}: {str(e)}')
 
     def scan_and_create_links(self):
         return self._scan_and_create_links(LocalFilesImportStorageLink)

@@ -6,7 +6,7 @@ import BaseTool from "./Base";
 import ToolMixin from "../mixins/Tool";
 import { Tool } from "../components/Toolbar/Tool";
 import { FlyoutMenu } from "../components/Toolbar/FlyoutMenu";
-import { IconExpand, IconHandTool, IconZoomIn, IconZoomOut } from "../assets/icons";
+import { IconExpandTool, IconHandTool, IconZoomIn, IconZoomOut } from "@humansignal/icons";
 
 const ToolView = observer(({ item }) => {
   return (
@@ -16,7 +16,7 @@ const ToolView = observer(({ item }) => {
         icon={<IconHandTool />}
         ariaLabel="pan"
         label="Pan Image"
-        shortcut="H"
+        shortcut="tool:pan-image"
         onClick={() => {
           const sel = item.selected;
 
@@ -27,24 +27,24 @@ const ToolView = observer(({ item }) => {
         icon={<IconZoomIn />}
         ariaLabel="zoom-in"
         label="Zoom In"
-        shortcut="ctrl+plus"
+        shortcut="tool:zoom-in"
         onClick={() => {
           item.handleZoom(1);
         }}
       />
       <FlyoutMenu
-        icon={<IconExpand />}
+        icon={<IconExpandTool />}
         items={[
           {
             label: "Zoom to fit",
-            shortcut: "shift+1",
+            shortcut: "tool:zoom-to-fit",
             onClick: () => {
               item.sizeToFit();
             },
           },
           {
             label: "Zoom to actual size",
-            shortcut: "shift+2",
+            shortcut: "tool:zoom-to-actual",
             onClick: () => {
               item.sizeToOriginal();
             },
@@ -55,7 +55,7 @@ const ToolView = observer(({ item }) => {
         icon={<IconZoomOut />}
         ariaLabel="zoom-out"
         label="Zoom Out"
-        shortcut="ctrl+minus"
+        shortcut="tool:zoom-out"
         onClick={() => {
           item.handleZoom(-1);
         }}

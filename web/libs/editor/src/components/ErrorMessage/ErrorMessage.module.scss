@@ -3,9 +3,9 @@
   padding: 10px 15px;
   display: block;
   border-radius: 3px;
-  color: rgb(119 27 4);
-  border: 1px solid rgb(230 138 110);
-  background-color: rgb(255 193 174);
+  color: var(--color-negative-content);
+  border: 1px solid var(--color-negative-border-subtler);
+  background-color: var(--color-negative-background);
   white-space: normal;
 
   & + & {

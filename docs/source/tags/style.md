@@ -8,12 +8,7 @@ meta_description: Customize Label Studio with CSS styles to modify the labeling 
 
 The `Style` tag is used in combination with the View tag to apply custom CSS properties to the labeling interface. See the [CSS Reference](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference) on the MDN page for a full list of available properties that you can reference. You can also adjust default Label Studio CSS classes. Use the browser developer tools to inspect the element on the UI and locate the class name, then specify that class name in the `Style` tag.
 
-### Parameters
-
-| Param | Type | Description |
-| --- | --- | --- |
-| `.<className>` | <code>string</code> | Reference the className specified in the View tag to apply to a section of the labeling configuration. |
-| [CSS property] | <code>string</code> | CSS property and value to apply. |
+{% insertmd includes/tags/style.md %}
 
 ### Example
 

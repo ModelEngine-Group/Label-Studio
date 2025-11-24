@@ -3,6 +3,7 @@
 import json
 import logging
 import re
+import types
 from datetime import timedelta
 from typing import Union
 from urllib.parse import urlparse
@@ -24,7 +25,12 @@ from io_storages.base_models import (
     ImportStorageLink,
     ProjectStorageMixin,
 )
-from io_storages.utils import storage_can_resolve_bucket_url
+from io_storages.utils import (
+    StorageObject,
+    load_tasks_json,
+    parse_range,
+    storage_can_resolve_bucket_url,
+)
 from tasks.models import Annotation
 
 from label_studio.io_storages.azure_blob.utils import AZURE
@@ -97,6 +103,92 @@ class AzureBlobStorageMixin(models.Model):
             if not blob:
                 raise KeyError(f'{self.url_scheme}://{self.container}/{self.prefix} not found.')
 
+    def get_bytes_stream(self, uri, range_header=None):
+        """Get file bytes from Azure Blob storage as a streaming object with metadata.
+
+        Implements range request support similar to GCS and S3 implementations:
+        - Accepts ``range_header`` in format ``bytes=start-end``
+        - Uses Azure's download_blob with offset/length for efficient ranged access
+        - Returns a tuple of (stream_with_iter_chunks, content_type, metadata_dict)
+
+        Args:
+            uri: The Azure URI of the file to retrieve
+            range_header: Optional HTTP Range header to limit bytes
+
+        Returns:
+            Tuple of (streaming body with iter_chunks, content_type, metadata)
+        """
+        # Parse URI to get container and blob name
+        parsed_uri = urlparse(uri, allow_fragments=False)
+        container_name = parsed_uri.netloc
+        blob_name = parsed_uri.path.lstrip('/')
+
+        try:
+            # Get the Azure client and blob client for file
+            client, _ = self.get_client_and_container()
+            blob_client = client.get_blob_client(container=container_name, blob=blob_name)
+            # Get blob properties for metadata
+            properties = blob_client.get_blob_properties()
+            total_size = properties.size
+            content_type = properties.content_settings.content_type or 'application/octet-stream'
+
+            # Parse range header
+            streaming = True
+            start, end = parse_range(range_header)
+            # Browser requesting full file without streaming
+            if start is None and end is None:
+                streaming = False
+                start, end = 0, total_size
+            # Browser requesting just headers for streaming
+            elif start == 0 and (end == 0 or end == ''):
+                start, end = 0, 1
+
+            # if streaming, we need to load blob consequently for smooth browser experience
+            if streaming:
+                # Limit initial download_blob() call size to 1Kb to avoid long delay
+                blob_client._config.max_single_get_size = 1024  # 1Kb
+                # Calculate length for Azure download_blob
+                length = (end - start) if end else None
+                # Seek & stream using StorageStreamDownloader
+                downloader = blob_client.download_blob(offset=start, length=length)
+            else:
+                length = total_size
+                # Prepare for downloading entire blob at once
+                downloader = blob_client.download_blob()
+
+            def _iter_chunks(self_downloader, chunk_size=1024 * 1024):
+                """Iterate over chunks of blob data"""
+                self_downloader._config.max_chunk_get_size = chunk_size
+                total = 0
+                for chunk in self_downloader.chunks():
+                    yield chunk
+                    total += len(chunk)
+                    if total >= length:
+                        return
+
+            # Add iter_chunks method to StorageStreamDownloader instance
+            # for compatibility with proxy_storage_data() in proxy_api.py
+            downloader.iter_chunks = types.MethodType(_iter_chunks, downloader)
+            downloader.close = types.MethodType(lambda self: None, downloader)
+
+            # Calculate content length and set appropriate status code
+            content_length = length if length is not None else (total_size - start)
+            status_code = 206 if streaming else 200
+
+            # Build metadata dictionary matching S3/GCS format
+            metadata = {
+                'ETag': properties.etag,
+                'ContentLength': content_length,
+                'ContentRange': f'bytes {start}-{start + length-1}/{total_size or 0}',
+                'LastModified': properties.last_modified,
+                'StatusCode': status_code,
+            }
+            return downloader, content_type, metadata
+
+        except Exception as e:
+            logger.error(f'Error getting bytes stream from Azure for uri {uri}: {e}', exc_info=True)
+            return None, None, {}
+
 
 class AzureBlobImportStorageBase(AzureBlobStorageMixin, ImportStorage):
     url_scheme = 'azure-blob'
@@ -105,37 +197,77 @@ class AzureBlobImportStorageBase(AzureBlobStorageMixin, ImportStorage):
     presign_ttl = models.PositiveSmallIntegerField(
         _('presign_ttl'), default=1, help_text='Presigned URLs TTL (in minutes)'
     )
+    recursive_scan = models.BooleanField(
+        _('recursive scan'),
+        default=False,
+        db_default=False,
+        null=True,
+        help_text=_('Perform recursive scan over the container content'),
+    )
 
-    def iterkeys(self):
+    def iter_objects(self):
         container = self.get_container()
-        prefix = str(self.prefix) if self.prefix else ''
-        files = container.list_blobs(name_starts_with=prefix)
+        prefix = (str(self.prefix).rstrip('/') + '/') if self.prefix else ''
         regex = re.compile(str(self.regex_filter)) if self.regex_filter else None
 
-        for file in files:
-            # skip folder
-            if file.name == (prefix.rstrip('/') + '/'):
-                continue
-            # check regex pattern filter
-            if regex and not regex.match(file.name):
-                logger.debug(file.name + ' is skipped by regex filter')
-                continue
-            yield file.name
+        if self.recursive_scan:
+            # Recursive scan - use list_blobs to get all blobs
+            files_iter = container.list_blobs(name_starts_with=prefix)
+            for file in files_iter:
+                # skip folder placeholders
+                if file.name == (prefix.rstrip('/') + '/'):
+                    continue
+                # check regex pattern filter
+                if regex and not regex.match(file.name):
+                    logger.debug(file.name + ' is skipped by regex filter')
+                    continue
+                yield file
+        else:
+            # Non-recursive scan - use walk_blobs with delimiter to handle hierarchical structure
+            def _iter_hierarchical(current_prefix=''):
+                search_prefix = prefix + current_prefix if current_prefix else (prefix or None)
+                files_iter = container.walk_blobs(name_starts_with=search_prefix, delimiter='/')
 
-    def get_data(self, key):
+                for item in files_iter:
+                    if hasattr(item, 'name') and hasattr(item, 'size'):
+                        # This is a blob (file)
+                        # skip folder placeholders
+                        if item.name == (prefix.rstrip('/') + '/'):
+                            continue
+                        # check regex pattern filter
+                        if regex and not regex.match(item.name):
+                            logger.debug(item.name + ' is skipped by regex filter')
+                            continue
+                        yield item
+                    else:
+                        # This is a BlobPrefix (directory) - skip it in non-recursive mode
+                        logger.debug(f'Skipping directory prefix: {item.name}')
+                        continue
+
+            yield from _iter_hierarchical()
+
+    def iter_keys(self):
+        for obj in self.iter_objects():
+            yield obj.name
+
+    @staticmethod
+    def get_unified_metadata(obj):
+        return {
+            'key': obj.name,
+            'last_modified': obj.last_modified,
+            'size': obj.size,
+        }
+
+    def get_data(self, key) -> list[StorageObject]:
         if self.use_blob_urls:
             data_key = settings.DATA_UNDEFINED_NAME
-            return {data_key: f'{self.url_scheme}://{self.container}/{key}'}
+            task = {data_key: f'{self.url_scheme}://{self.container}/{key}'}
+            return [StorageObject(key=key, task_data=task)]
 
         container = self.get_container()
         blob = container.download_blob(key)
-        blob_str = blob.content_as_text()
-        value = json.loads(blob_str)
-        if not isinstance(value, dict):
-            raise ValueError(
-                f'Error on key {key}: For {self.__class__.__name__} your JSON file must be a dictionary with one task'
-            )
-        return value
+        blob = blob.content_as_bytes()
+        return load_tasks_json(blob, key)
 
     def scan_and_create_links(self):
         return self._scan_and_create_links(AzureBlobImportStorageLink)

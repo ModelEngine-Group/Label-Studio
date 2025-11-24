@@ -1,8 +1,31 @@
+import { ConfigurationError } from "../utils/errors";
+
+interface ObjectTag {
+  name: string;
+}
+
+interface CustomTag<ViewTag = unknown> {
+  tag: string;
+  model: ObjectTag;
+  view: React.ComponentType<ViewTag>;
+  detector?: (value: object) => boolean;
+  region: {
+    name: string;
+    nodeView: {
+      name: string;
+      icon: any;
+      getContent?: (node: any) => JSX.Element | null;
+      fullContent?: (node: any) => JSX.Element | null;
+    };
+  };
+}
+
 /**
  * Class for register View
  */
 class _Registry {
   tags: any[] = [];
+  customTags: CustomTag[] = [];
   models: Record<string, any> = {};
   views: Record<string, any> = {};
   regions: any[] = [];
@@ -16,7 +39,7 @@ class _Registry {
 
   perRegionViews: Record<string, any> = {};
 
-  addTag(tag: string | number, model: { name: string | number }, view: any) {
+  addTag(tag: string | number, model: { name: string | number }, view: JSX.Element) {
     this.tags.push(tag);
     this.models[tag] = model;
     this.views[tag] = view;
@@ -95,7 +118,7 @@ class _Registry {
     if (!model) {
       const models = Object.keys(this.models);
 
-      throw new Error(`No model registered for tag: ${tag}\nAvailable models:\n\t${models.join("\n\t")}`);
+      throw new ConfigurationError(`No model registered for tag: ${tag}\nAvailable models:\n\t${models.join("\n\t")}`);
     }
 
     return model;
@@ -110,6 +133,13 @@ class _Registry {
 
   getPerRegionView(tag: string | number, mode: string | number) {
     return this.perRegionViews[tag]?.[mode];
+  }
+
+  addCustomTag<ViewTag = unknown>(tag: string, definition: CustomTag<ViewTag>) {
+    this.addTag(tag.toLowerCase(), definition.model, definition.view);
+    this.addObjectType(definition.model);
+    this.addRegionType(definition.region, definition.model.name, definition.detector);
+    this.customTags.push(definition);
   }
 }
 

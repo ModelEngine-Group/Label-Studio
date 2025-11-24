@@ -1,7 +1,7 @@
 import { observer } from "mobx-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { IconPlusCircle, LsComment, LsCommentRed, LsSparks } from "../../assets/icons";
 import { Space } from "../../common/Space/Space";
+import { IconPlusCircle, IconComment, IconCommentRed, IconSparks } from "@humansignal/icons";
 import { Userpic } from "@humansignal/ui";
 import { Block, Elem } from "../../utils/bem";
 import { isDefined, userDisplayName } from "../../utils/utilities";
@@ -76,10 +76,10 @@ export const Annotations = observer(({ store, annotationStore, commentStore }) =
 
   const renderCommentIcon = (ent) => {
     if (ent.unresolved_comment_count > 0) {
-      return <LsCommentRed />;
+      return <IconCommentRed />;
     }
     if (ent.comment_count > 0) {
-      return <LsComment />;
+      return <IconComment />;
     }
 
     return null;
@@ -206,7 +206,7 @@ const Annotation = observer(({ entity, selected, onClick, extra, ...props }) => 
             user={entity.user ?? { username }}
             mod={{ prediction: isPrediction }}
           >
-            {isPrediction && <LsSparks color="#944BFF" style={{ width: 18, height: 18 }} />}
+            {isPrediction && <IconSparks color="#944BFF" style={{ width: 18, height: 18 }} />}
           </Elem>
           <Space direction="vertical" size="none">
             <Elem name="user">
