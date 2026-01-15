@@ -279,15 +279,15 @@ function createViewportInfoDisplay(container: Element, mpp: number | null) {
       navigatorAutoResize: true,
       navigatorAutoFade: true,
       showRotationControl: true,
-      animationTime: 1,
+      animationTime: 0.5,
       imageLoaderLimit: 6,
-      springStiffness: 3,
+      springStiffness: 7,
       blendTime: 0.1,
       constrainDuringPan: true,
       maxZoomPixelRatio: 2,
       minZoomImageRatio: 1,
       visibilityRatio: 1,
-      zoomPerScroll: 1.2,  // Controls zoom speed (lower = slower, higher = faster)
+      zoomPerScroll: 1.1,  // Controls zoom speed (lower = slower, higher = faster)
       timeout: 120000,
       showNavigationControl: false,
       setMouseNavEnabled: true,
