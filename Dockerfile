@@ -101,9 +101,9 @@ RUN --mount=type=cache,target=/.poetry-cache,id=poetry-cache,sharing=locked \
     poetry install --no-root --without test --extras uwsgi; \
     fi
     
-# Install extra Python packages (from wheels)
-COPY wheels/ wheels/
-RUN pip install wheels/*.whl
+# (Optional) Install extra Python packages (from wheels)
+# COPY wheels/ wheels/
+# RUN pip install wheels/*.whl
 
 # Install LS
 COPY label_studio label_studio
